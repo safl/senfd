@@ -1,0 +1,40 @@
+[project]
+name = "senfd"
+version = "0.1.0"
+description = "Semantic Enhancer for Figure Documents"
+authors = [
+    { name = "Simon A. F. Lund", email = "os@safl.dk" }
+]
+license = { text = "LGPL-2.1-only" }
+dependencies = [
+    "jinja2",
+    "pydantic",
+    "pytest",
+    "pytest-cov",
+]
+readme = { file = "README.rst", content-type = "text/x-rst" }
+
+[project.scripts]
+senfd = "senfd.cli:main"
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.schema.json"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "--maxfail=1 --disable-warnings"
+testpaths = [
+    "tests",
+]

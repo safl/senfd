@@ -1,0 +1,123 @@
+{
+    "$defs": {
+        "Cell": {
+            "properties": {
+                "text": {
+                    "title": "Text",
+                    "type": "string"
+                },
+                "tables": {
+                    "items": {
+                        "$ref": "#/$defs/Table"
+                    },
+                    "title": "Tables",
+                    "type": "array"
+                }
+            },
+            "title": "Cell",
+            "type": "object"
+        },
+        "Figure": {
+            "description": "A figure as captioned in the NVMe Specification Documents.\n\nEnsuring that the 'figure' being \"enriched\" is always available. Providing a\nfactory-method, constructing the class using 'figure' information, and enriched data\nfrom 'match.groupdict()'",
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "Figure",
+            "type": "object"
+        },
+        "Meta": {
+            "properties": {
+                "version": {
+                    "default": "0.7.4",
+                    "title": "Version",
+                    "type": "string"
+                },
+                "stem": {
+                    "title": "Stem",
+                    "type": "string"
+                }
+            },
+            "title": "Meta",
+            "type": "object"
+        },
+        "Row": {
+            "properties": {
+                "cells": {
+                    "items": {
+                        "$ref": "#/$defs/Cell"
+                    },
+                    "title": "Cells",
+                    "type": "array"
+                }
+            },
+            "title": "Row",
+            "type": "object"
+        },
+        "Table": {
+            "properties": {
+                "rows": {
+                    "items": {
+                        "$ref": "#/$defs/Row"
+                    },
+                    "title": "Rows",
+                    "type": "array"
+                }
+            },
+            "title": "Table",
+            "type": "object"
+        }
+    },
+    "properties": {
+        "meta": {
+            "$ref": "#/$defs/Meta"
+        },
+        "figures": {
+            "items": {
+                "$ref": "#/$defs/Figure"
+            },
+            "title": "Figures",
+            "type": "array"
+        }
+    },
+    "title": "FigureDocument",
+    "type": "object"
+}

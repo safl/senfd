@@ -1,0 +1,270 @@
+{
+    "meta": {
+        "tabular": [],
+        "nontabular": [],
+        "uncategorized": [
+            {
+                "figure_nr": 1,
+                "caption": "Figure 1: A byte-table with an embedded bit-table",
+                "description": "A byte-table with an embedded bit-table",
+                "page_nr": 2,
+                "table": {
+                    "rows": [
+                        {
+                            "cells": [
+                                {
+                                    "text": "Figure 1: A byte-table with an embedded bit-table",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Figure 1: A byte-table with an embedded bit-table",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "Bytes",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Description",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "07:00",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Reserved",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "11:08",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Name (ACRONYM1): This is where a description would go",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "14:12",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Reserved",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "15",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Name with spaces (ACRONYM): The definition of this field is described in the table below.\n",
+                                    "tables": [
+                                        {
+                                            "rows": [
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "Bits",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Description",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "07:04",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Name with spaces (ACRONYM3): 5h as specified in some other figure",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "03:00",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Name with spaces (ACRONYM4): Valid values are specified in some other figure",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "figure_nr": 2,
+                "caption": "Figure 2: Another byte-table with an embedded bit-table",
+                "description": "Another byte-table with an embedded bit-table",
+                "page_nr": 2,
+                "table": {
+                    "rows": [
+                        {
+                            "cells": [
+                                {
+                                    "text": "Figure 2: Another byte-table with an embedded bit-table",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Figure 2: Another byte-table with an embedded bit-table",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "Bytes",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Description",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "07:00",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Reserved",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "11:08",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Name (ACRONYM1): This is where a description would go",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "14:12",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Reserved",
+                                    "tables": []
+                                }
+                            ]
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "text": "15",
+                                    "tables": []
+                                },
+                                {
+                                    "text": "Name with spaces (ACRONYM): The definition of this field is described in the table below.\n",
+                                    "tables": [
+                                        {
+                                            "rows": [
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "Bits",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Description",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "07:04",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Name with spaces (ACRONYM3): 5h as specified in some other figure",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "cells": [
+                                                        {
+                                                            "text": "03:00",
+                                                            "tables": []
+                                                        },
+                                                        {
+                                                            "text": "Name with spaces (ACRONYM4): Valid values are specified in some other figure",
+                                                            "tables": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "acronyms": [],
+    "io_controller_command_set_support": [],
+    "command_set_opcodes": [],
+    "command_support_requirements": [],
+    "command_sqe_dword": [],
+    "command_sqe_dwords": [],
+    "command_sqe_data_pointer": [],
+    "command_cqe_dword": [],
+    "command_specific_status_values": [],
+    "general_command_status_values": [],
+    "cns_values": [],
+    "feature_support": [],
+    "feature_identifiers": [],
+    "log_page_identifiers": [],
+    "offset": [],
+    "property_definition": []
+}

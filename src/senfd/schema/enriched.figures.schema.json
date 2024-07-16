@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "figures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "figure_nr": {
+            "type": "integer"
+          },
+          "page_nr": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "table": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      },
+                      "tables": {
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "text": {
+                                  "type": "string"
+                                },
+                                "tables": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "type": "string"
+                                          },
+                                          "tables": {
+                                            "type": "array"
+                                          }
+                                        },
+                                        "required": [
+                                          "tables",
+                                          "text"
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "required": [
+                                "tables",
+                                "text"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "tables",
+                      "text"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "description",
+          "figure_nr",
+          "page_nr",
+          "table",
+          "title"
+        ]
+      }
+    }
+  },
+  "required": [
+    "figures",
+    "path"
+  ]
+}

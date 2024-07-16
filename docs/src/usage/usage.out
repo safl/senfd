@@ -1,0 +1,12 @@
+usage: senfd [-h] [--output OUTPUT] [--skip-validate] document [document ...]
+
+Semantically organize and enrich figures
+
+positional arguments:
+  document         path to one or more .json document(s)
+
+options:
+  -h, --help       show this help message and exit
+  --output OUTPUT  directory where the output will be saved
+  --skip-validate  skip validation if this flag is set.
+

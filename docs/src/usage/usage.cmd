@@ -1,0 +1,1 @@
+senfd --help
