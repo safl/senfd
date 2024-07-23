@@ -43,6 +43,6 @@ release:
 bump:
 	./toolbox/project_version_update.py
 	make env uninstall build install
-	$(PROJECT_NAME) --dump-schema --output /tmp/
-	cp /tmp/figures.enriched.schema.json src/$(PROJECT_NAME)/schema/figures.enriched.schema.json
+	$(PROJECT_NAME) --dump-schema --output /tmp/senfd_schemas
+	cp /tmp/senfd_schemas/*.schema.json src/$(PROJECT_NAME)/schemas/
 	make

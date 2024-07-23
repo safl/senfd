@@ -17,8 +17,23 @@
             "title": "Cell",
             "type": "object"
         },
+        "DocumentMeta": {
+            "properties": {
+                "version": {
+                    "default": "0.1.2",
+                    "title": "Version",
+                    "type": "string"
+                },
+                "stem": {
+                    "title": "Stem",
+                    "type": "string"
+                }
+            },
+            "title": "DocumentMeta",
+            "type": "object"
+        },
         "Figure": {
-            "description": "A figure as captioned in the NVMe Specification Documents.\n\nEnsuring that the 'figure' being \"enriched\" is always available. Providing a\nfactory-method, constructing the class using 'figure' information, and enriched data\nfrom 'match.groupdict()'",
+            "description": "A figure as captioned in a table of figures in the NVMe Specification Documents.\n\nThis is a minimally enriched figure representation. The intent is that via regular\nexpressions, it should be possible to construct instances when feeding it with\nthe text from a table of figures or a table that conventionally contains a figure\ncaption in the first row.\n\nThe page number is only retrievable from table of figure captions and thus optional.\nThe table data is similarly represented in a form with minimal enrichment.",
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -64,21 +79,6 @@
             "title": "Figure",
             "type": "object"
         },
-        "Meta": {
-            "properties": {
-                "version": {
-                    "default": "0.7.4",
-                    "title": "Version",
-                    "type": "string"
-                },
-                "stem": {
-                    "title": "Stem",
-                    "type": "string"
-                }
-            },
-            "title": "Meta",
-            "type": "object"
-        },
         "Row": {
             "properties": {
                 "cells": {
@@ -108,7 +108,7 @@
     },
     "properties": {
         "meta": {
-            "$ref": "#/$defs/Meta"
+            "$ref": "#/$defs/DocumentMeta"
         },
         "figures": {
             "items": {

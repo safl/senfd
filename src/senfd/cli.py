@@ -10,8 +10,8 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
 import senfd
-import senfd.schema
-from senfd.documents import CategorizedFigureDocument
+import senfd.schemas
+from senfd.documents import FigureDocument, CategorizedFigureDocument
 
 
 def parse_args() -> Namespace:
@@ -35,7 +35,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--dump-schema",
         action="store_true",
-        help=f"dump schema({senfd.schema.FILENAME}) and exit",
+        help="dump schema(s) and exit",
     )
     parser.add_argument(
         "--version",
@@ -60,9 +60,10 @@ def main() -> int:
         return 0
 
     if args.dump_schema:
-        CategorizedFigureDocument.to_schema_file(
-            args.output / CategorizedFigureDocument.FILENAME_SCHEMA
-        )
+        for docclass in [FigureDocument, CategorizedFigureDocument]:
+            docclass.to_schema_file(
+                args.output / docclass.FILENAME_SCHEMA
+            )
         return 0
 
     for path in args.document:

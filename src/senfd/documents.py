@@ -7,17 +7,19 @@ NVMe specification document from a raw extract into something semantically rich.
 
 """
 
+import importlib.resources as pkg_resources
 import inspect
 import json
 import re
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field, ValidationError
 
 import senfd.figures
 import senfd.tables
+import senfd.schemas
 
 TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
     {
@@ -70,7 +72,14 @@ class Document(BaseModel):
         with path.open("w") as schema_file:
             json.dump(cls.schema(), schema_file, indent=4)
 
-    def get_json_filename(self):
+    @classmethod
+    def schema_static(cls) -> Dict[str, Any]:
+        """Returns the content of the associated JSON schema-file"""
+
+        with pkg_resources.open_text(senfd.schemas, cls.FILENAME_SCHEMA) as content:
+            return json.load(content)
+
+    def get_json_filename(self) -> str:
         return f"{self.meta.stem}.{self.SUFFIX_JSON}"
 
     def to_json(self) -> str:
@@ -85,7 +94,7 @@ class Document(BaseModel):
             path = (Path.cwd() / self.meta.stem).with_suffix(self.SUFFIX_JSON)
         path.write_text(self.to_json())
 
-    def get_html_filename(self):
+    def get_html_filename(self) -> str:
         return f"{self.meta.stem}.{self.SUFFIX_HTML}"
 
     def to_html(self) -> str:
@@ -95,7 +104,7 @@ class Document(BaseModel):
             loader=PackageLoader("senfd", "templates"),
             autoescape=select_autoescape(["html", "xml"]),
         )
-        template = env.get_template(self.FILENAME_HTML_TEMPLATES)
+        template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
         return template.render(document=self)
 
@@ -106,7 +115,7 @@ class Document(BaseModel):
             path = (Path.cwd() / self.meta.stem).with_suffix(self.SUFFIX_HTML)
         path.write_text(self.to_html())
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """Returns True when validator raises no exceptions, False otherwise"""
 
         try:
