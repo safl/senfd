@@ -12,7 +12,3 @@ command-line utility.
 Thus, install it, using `pipx <https://pipx.pypa.io/stable/>`_, using like so::
 
   pipx install senfd
-
-.. note::
-  ``pipx`` does not install the system libraries ``libxml2`` and ``libxslt``
-  that the tool depends upon, so ensure that you have these installed.
