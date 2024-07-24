@@ -1,4 +1,4 @@
-from senfd.documents import FigureDocument, CategorizedFigureDocument
+from senfd.documents import CategorizedFigureDocument, FigureDocument
 
 
 def test_check_schema_equivalence():

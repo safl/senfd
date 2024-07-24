@@ -18,8 +18,8 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field, ValidationError
 
 import senfd.figures
-import senfd.tables
 import senfd.schemas
+import senfd.tables
 
 TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
     {

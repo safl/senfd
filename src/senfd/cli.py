@@ -11,7 +11,7 @@ from pathlib import Path
 
 import senfd
 import senfd.schemas
-from senfd.documents import FigureDocument, CategorizedFigureDocument
+from senfd.documents import CategorizedFigureDocument, FigureDocument
 
 
 def parse_args() -> Namespace:
@@ -61,9 +61,7 @@ def main() -> int:
 
     if args.dump_schema:
         for docclass in [FigureDocument, CategorizedFigureDocument]:
-            docclass.to_schema_file(
-                args.output / docclass.FILENAME_SCHEMA
-            )
+            docclass.to_schema_file(args.output / docclass.FILENAME_SCHEMA)
         return 0
 
     for path in args.document:
