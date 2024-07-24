@@ -49,7 +49,7 @@
         "CategorizedFigureDocumentMeta": {
             "properties": {
                 "version": {
-                    "default": "0.1.2",
+                    "default": "0.1.1",
                     "title": "Version",
                     "type": "string"
                 },
