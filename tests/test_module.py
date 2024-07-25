@@ -12,12 +12,12 @@ def test_module(tmp_path):
 
     for path in paths:
         document = CategorizedFigureDocument.from_figure_document_file(path)
+        assert document.is_valid()
 
         json_str = document.to_json()
         assert json_str, "Failed producing a string of JSON"
 
-        json_path = tmp_path / document.get_json_filename()
-        json_str = document.to_json_file(json_path)
-        assert json_path.exists(), "Failed producing a string of JSON"
+        document.to_json_file(tmp_path / "test.json")
 
-        assert document.is_valid()
+        from_disk = CategorizedFigureDocument.parse_file(tmp_path / "test.json")
+        assert document == from_disk

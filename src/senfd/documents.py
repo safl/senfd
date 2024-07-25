@@ -47,6 +47,15 @@ class DocumentMeta(BaseModel):
     stem: str = Field(default_factory=str)
 
 
+def to_file(content: str, filename: str, path: Optional[Path] = None):
+    if path is None:
+        path = Path.cwd() / filename
+    if path.is_dir():
+        path = path / filename
+
+    path.write_text(content)
+
+
 class Document(BaseModel):
     """
     Base document - providing functionality for describing and persisting documents
@@ -63,14 +72,18 @@ class Document(BaseModel):
     meta: DocumentMeta = Field(default_factory=DocumentMeta)
 
     @classmethod
+    def schema_filename(cls) -> str:
+        return cls.FILENAME_SCHEMA
+
+    @classmethod
     def to_schema_file(cls, path: Optional[Path] = None):
         """Writes the document JSON schema to file at the given 'path'"""
 
-        if path is None:
-            path = Path.cwd() / cls.FILENAME_HTML_TEMPLATE
-
-        with path.open("w") as schema_file:
-            json.dump(cls.schema(), schema_file, indent=4)
+        to_file(
+            json.dumps(cls.schema(), indent=4),
+            cls.schema_filename(),
+            path,
+        )
 
     @classmethod
     def schema_static(cls) -> Dict[str, Any]:
@@ -79,7 +92,7 @@ class Document(BaseModel):
         with pkg_resources.open_text(senfd.schemas, cls.FILENAME_SCHEMA) as content:
             return json.load(content)
 
-    def get_json_filename(self) -> str:
+    def json_filename(self) -> str:
         return f"{self.meta.stem}.{self.SUFFIX_JSON}"
 
     def to_json(self) -> str:
@@ -90,11 +103,9 @@ class Document(BaseModel):
     def to_json_file(self, path: Optional[Path] = None):
         """Writes the document, formated as JSON, to file at the given 'path'"""
 
-        if path is None:
-            path = (Path.cwd() / self.meta.stem).with_suffix(self.SUFFIX_JSON)
-        path.write_text(self.to_json())
+        to_file(self.to_json(), self.json_filename(), path)
 
-    def get_html_filename(self) -> str:
+    def html_filename(self) -> str:
         return f"{self.meta.stem}.{self.SUFFIX_HTML}"
 
     def to_html(self) -> str:
@@ -111,9 +122,7 @@ class Document(BaseModel):
     def to_html_file(self, path: Optional[Path] = None):
         """Writes the document to HTML-formatted file"""
 
-        if path is None:
-            path = (Path.cwd() / self.meta.stem).with_suffix(self.SUFFIX_HTML)
-        path.write_text(self.to_html())
+        to_file(self.to_html(), self.html_filename(), path)
 
     def is_valid(self) -> bool:
         """Returns True when validator raises no exceptions, False otherwise"""

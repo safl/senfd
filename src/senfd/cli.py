@@ -61,15 +61,12 @@ def main() -> int:
 
     if args.dump_schema:
         for docclass in [FigureDocument, CategorizedFigureDocument]:
-            docclass.to_schema_file(args.output / docclass.FILENAME_SCHEMA)
+            docclass.to_schema_file(args.output)
         return 0
 
     for path in args.document:
         document = CategorizedFigureDocument.from_figure_document_file(path)
-        document.to_json_file(
-            args.output
-            / Path(path.name).with_suffix(CategorizedFigureDocument.SUFFIX_JSON).name
-        )
+        document.to_json_file(args.output)
 
         if args.skip_validate:
             continue
