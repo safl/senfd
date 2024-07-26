@@ -28,11 +28,6 @@ def parse_args() -> Namespace:
         default=Path("output"),
     )
     parser.add_argument(
-        "--skip-validate",
-        action="store_true",
-        help="skip post-parse validation",
-    )
-    parser.add_argument(
         "--dump-schema",
         action="store_true",
         help="dump schema(s) and exit",
@@ -67,8 +62,5 @@ def main() -> int:
     for path in args.document:
         document = CategorizedFigureDocument.from_figure_document_file(path)
         document.to_json_file(args.output)
-
-        if not args.skip_validate and not document.is_valid():
-            print("Document is invalid, see above for details.")
 
     return 0
