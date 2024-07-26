@@ -20,7 +20,7 @@
         "DocumentMeta": {
             "properties": {
                 "version": {
-                    "default": "0.1.5",
+                    "default": "0.1.6",
                     "title": "Version",
                     "type": "string"
                 },
