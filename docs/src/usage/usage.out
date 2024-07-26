@@ -1,4 +1,4 @@
-usage: senfd [-h] [--output OUTPUT] [--skip-validate] document [document ...]
+usage: senfd [-h] [--output OUTPUT] [--dump-schema] [--version] [document ...]
 
 Semantically organize and enrich figures
 
@@ -8,5 +8,6 @@ positional arguments:
 options:
   -h, --help       show this help message and exit
   --output OUTPUT  directory where the output will be saved
-  --skip-validate  skip validation if this flag is set.
+  --dump-schema    dump schema(s) and exit
+  --version        print the version and exit
 
