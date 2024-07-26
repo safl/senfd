@@ -19,7 +19,7 @@ in the sections below.
 Figure Document
 ---------------
 
-* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schema/figure.document.schema.json
+* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/figure.document.schema.json
 
 .. literalinclude:: ../../../src/senfd/schemas/figure.document.schema.json
    :language: json
@@ -29,7 +29,7 @@ Figure Document
 Categorized Figure Document
 ---------------------------
 
-* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schema/categorized.figure.document.schema.json
+* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/categorized.figure.document.schema.json
 
 .. literalinclude:: ../../../src/senfd/schemas/categorized.figure.document.schema.json
    :language: json

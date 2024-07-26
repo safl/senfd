@@ -1,5 +1,7 @@
 {
     "meta": {
+        "version": "0.1.5",
+        "stem": "example",
         "tabular": [],
         "nontabular": [],
         "uncategorized": [

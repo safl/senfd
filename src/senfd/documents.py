@@ -56,6 +56,12 @@ def to_file(content: str, filename: str, path: Optional[Path] = None):
     path.write_text(content)
 
 
+def strip_all_suffixes(file_path):
+    p = Path(file_path)
+    while p.suffix:
+        p = p.with_suffix('')
+    return p.name
+
 class Document(BaseModel):
     """
     Base document - providing functionality for describing and persisting documents
@@ -221,6 +227,7 @@ class CategorizedFigureDocument(Document):
         figure_document = senfd.documents.FigureDocument.parse_file(path)
 
         document = cls()
+        document.meta.stem = strip_all_suffixes(path.stem)
 
         figure_organizers = get_figure_enriching_classes()
         for figure in figure_document.figures:
