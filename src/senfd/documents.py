@@ -59,8 +59,9 @@ def to_file(content: str, filename: str, path: Optional[Path] = None):
 def strip_all_suffixes(file_path):
     p = Path(file_path)
     while p.suffix:
-        p = p.with_suffix('')
+        p = p.with_suffix("")
     return p.name
+
 
 class Document(BaseModel):
     """
