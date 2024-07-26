@@ -17,6 +17,7 @@ def test_cli_tool(tmp_path):
 
         assert not result.returncode, f"Got returncode: {result.returncode}"
 
+
 def test_cli_tool_noargs(tmp_path):
 
     result = run(["senfd"], capture_output=True, text=True)
