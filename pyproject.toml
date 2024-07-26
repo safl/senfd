@@ -25,7 +25,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"*" = ["*.schema.json"]
+"*" = ["*.jinja2", "*.schema.json"]
 
 [tool.black]
 line-length = 88
