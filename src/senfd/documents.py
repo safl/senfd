@@ -93,7 +93,7 @@ class Document(BaseModel):
             return json.load(content)
 
     def json_filename(self) -> str:
-        return f"{self.meta.stem}.{self.SUFFIX_JSON}"
+        return f"{self.meta.stem}{self.SUFFIX_JSON}"
 
     def to_json(self) -> str:
         """Returns the document as a JSON-formated string"""
@@ -106,7 +106,7 @@ class Document(BaseModel):
         to_file(self.to_json(), self.json_filename(), path)
 
     def html_filename(self) -> str:
-        return f"{self.meta.stem}.{self.SUFFIX_HTML}"
+        return f"{self.meta.stem}{self.SUFFIX_HTML}"
 
     def to_html(self) -> str:
         """Returns the document as a HTML-formatted string"""
