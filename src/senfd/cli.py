@@ -68,10 +68,7 @@ def main() -> int:
         document = CategorizedFigureDocument.from_figure_document_file(path)
         document.to_json_file(args.output)
 
-        if args.skip_validate:
-            continue
-
-        if not document.is_valid():
+        if not args.skip_validate and not document.is_valid():
             print("Document is invalid, see above for details.")
 
     return 0
