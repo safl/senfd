@@ -11,7 +11,8 @@ from pathlib import Path
 
 import senfd
 import senfd.schemas
-from senfd.documents import CategorizedFigureDocument, FigureDocument
+from senfd.documents.categorized import CategorizedFigureDocument
+from senfd.documents.figure import FigureDocument
 
 
 def parse_args() -> Namespace:

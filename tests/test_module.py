@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-from senfd.documents import CategorizedFigureDocument
+from senfd.documents.categorized import CategorizedFigureDocument
 
 
 def test_module(tmp_path):
