@@ -14,6 +14,7 @@ from senfd.documents.base import (
     DocumentMeta,
     strip_all_suffixes,
 )
+from senfd.documents.figure import FigureDocument
 from senfd.figures import get_figure_enriching_classes
 
 
@@ -83,13 +84,13 @@ class FromFigureDocument(Converter):
 
     @staticmethod
     def is_applicable(path: Path) -> bool:
-        return True
+        return path.suffix.lower() == ".figure.document.json"
 
     @staticmethod
     def convert(path: Path):
         """Instantiate an 'organized' Document from a 'figure' document"""
 
-        figure_document = senfd.documents.figure.FigureDocument.parse_file(path)
+        figure_document = FigureDocument.parse_file(path)
 
         document = CategorizedFigureDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
