@@ -1,4 +1,3 @@
-import inspect
 import re
 from pathlib import Path
 from typing import ClassVar, List
@@ -15,6 +14,7 @@ from senfd.documents.base import (
     DocumentMeta,
     strip_all_suffixes,
 )
+from senfd.figures import get_figure_enriching_classes
 
 
 class CategorizedFigureDocumentMeta(DocumentMeta):
@@ -77,20 +77,6 @@ class CategorizedFigureDocument(Document):
 
         document, errors = FromFigureDocument.convert(path)
         return document
-
-
-def get_figure_enriching_classes():
-    """
-    To avoid manually crafting a list of classes, this function
-    introspectively examines this module for applicable
-    classes with "REGEX_FIGURE_DESCRIPTION" class attribute.
-    """
-    return [
-        cls
-        for _, cls in inspect.getmembers(senfd.figures, inspect.isclass)
-        if issubclass(cls, senfd.figures.FromFigureDescriptionMatch)
-        and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
-    ]
 
 
 class FromFigureDocument(Converter):

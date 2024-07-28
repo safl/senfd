@@ -5,6 +5,7 @@ Figures
 The following classses model the figures found in documents.
 """
 
+import inspect
 import re
 from typing import ClassVar, Optional
 
@@ -177,3 +178,17 @@ class Offset(FromFigureDescriptionMatch):
 
 class PropertyDefinition(FromFigureDescriptionMatch):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Property Definition.*"
+
+
+def get_figure_enriching_classes():
+    """
+    To avoid manually crafting a list of classes, this function
+    introspectively examines this module for applicable
+    classes with "REGEX_FIGURE_DESCRIPTION" class attribute.
+    """
+    return [
+        cls
+        for _, cls in inspect.getmembers(senfd.figures, inspect.isclass)
+        if issubclass(cls, senfd.figures.FromFigureDescriptionMatch)
+        and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
+    ]
