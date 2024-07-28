@@ -42,12 +42,30 @@ TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
 
 
 def to_file(content: str, filename: str, path: Optional[Path] = None):
+    """
+    Writes 'content' to a file and returns the file path.
+    
+    Args:
+        content (str): The content to write.
+        filename (str): The file name.
+        path (str, optional): The directory or file path. Defaults to None.
+        
+    Returns:
+        str: The path to the written file.
+    
+    Behavior:
+        - Uses the current working directory if 'path' is not provided.
+        - Uses 'filename' within the provided directory if 'path' is a directory.
+        - Uses 'path' directly if it is a full file path.
+    """
     if path is None:
         path = Path.cwd() / filename
     if path.is_dir():
         path = path / filename
 
     path.write_text(content)
+
+    return path
 
 
 def strip_all_suffixes(file_path):
@@ -82,10 +100,10 @@ class Document(BaseModel):
         return cls.FILENAME_SCHEMA
 
     @classmethod
-    def to_schema_file(cls, path: Optional[Path] = None):
+    def to_schema_file(cls, path: Optional[Path] = None) -> Path:
         """Writes the document JSON schema to file at the given 'path'"""
 
-        to_file(
+        return to_file(
             json.dumps(cls.schema(), indent=4),
             cls.schema_filename(),
             path,
@@ -106,10 +124,10 @@ class Document(BaseModel):
 
         return self.model_dump_json(indent=4)
 
-    def to_json_file(self, path: Optional[Path] = None):
+    def to_json_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document, formated as JSON, to file at the given 'path'"""
 
-        to_file(self.to_json(), self.json_filename(), path)
+        return to_file(self.to_json(), self.json_filename(), path)
 
     def html_filename(self) -> str:
         return f"{self.meta.stem}{self.SUFFIX_HTML}"
@@ -125,10 +143,10 @@ class Document(BaseModel):
 
         return template.render(document=self)
 
-    def to_html_file(self, path: Optional[Path] = None):
+    def to_html_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document to HTML-formatted file"""
 
-        to_file(self.to_html(), self.html_filename(), path)
+        return to_file(self.to_html(), self.html_filename(), path)
 
     def is_valid(self) -> bool:
         """Returns True when validator raises no exceptions, False otherwise"""
