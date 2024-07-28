@@ -3,7 +3,6 @@ Command-Line Interface
 ======================
 
 Produces organized and semantically enriched ``.json`` documents from
-"figure-documents".
 """
 
 from argparse import ArgumentParser, Namespace
@@ -21,7 +20,7 @@ def parse_args() -> Namespace:
 
     parser = ArgumentParser(description="Semantically organize and enrich figures")
     parser.add_argument(
-        "document", nargs="*", type=Path, help="path to one or more .json document(s)"
+        "document", nargs="*", type=Path, help="path to one or more document(s)"
     )
     parser.add_argument(
         "--output",
