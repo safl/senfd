@@ -11,8 +11,8 @@ from pathlib import Path
 
 import senfd
 import senfd.schemas
+from senfd.documents import get_document_classes
 from senfd.documents.categorized import CategorizedFigureDocument
-from senfd.documents.figure import FigureDocument
 
 
 def parse_args() -> Namespace:
@@ -56,7 +56,7 @@ def main() -> int:
         return 0
 
     if args.dump_schema:
-        for docclass in [FigureDocument, CategorizedFigureDocument]:
+        for docclass in get_document_classes():
             docclass.to_schema_file(args.output)
         return 0
 
