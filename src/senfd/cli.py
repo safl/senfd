@@ -10,6 +10,7 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
 import senfd
+import senfd.errors
 import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
@@ -60,8 +61,8 @@ def main() -> int:
             docclass.to_schema_file(args.output)
         return 0
 
-    errors = {}
     for path in args.document:
-        errors.update(senfd.pipeline.process(path, args.output))
+        errors = senfd.pipeline.process(path, args.output)
+        senfd.errors.to_log_file(errors, path.name, args.output)
 
     return 0
