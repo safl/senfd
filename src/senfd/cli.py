@@ -10,9 +10,9 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
 import senfd
+import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
-from senfd.documents.categorized import CategorizedFigureDocument
 
 
 def parse_args() -> Namespace:
@@ -60,8 +60,8 @@ def main() -> int:
             docclass.to_schema_file(args.output)
         return 0
 
+    errors = {}
     for path in args.document:
-        document = CategorizedFigureDocument.from_figure_document_file(path)
-        document.to_json_file(args.output)
+        errors.update(senfd.pipeline.process(path, args.output))
 
     return 0

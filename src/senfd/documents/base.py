@@ -44,15 +44,15 @@ TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
 def to_file(content: str, filename: str, path: Optional[Path] = None):
     """
     Writes 'content' to a file and returns the file path.
-    
+
     Args:
         content (str): The content to write.
         filename (str): The file name.
         path (str, optional): The directory or file path. Defaults to None.
-        
+
     Returns:
         str: The path to the written file.
-    
+
     Behavior:
         - Uses the current working directory if 'path' is not provided.
         - Uses 'filename' within the provided directory if 'path' is a directory.

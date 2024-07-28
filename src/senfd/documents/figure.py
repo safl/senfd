@@ -25,7 +25,7 @@ class FromDocx(Converter):
 
     @staticmethod
     def is_applicable(path: Path) -> bool:
-        return path.suffix.lower() == ".pdf"
+        return path.suffix.lower() == ".docx"
 
     @staticmethod
     def convert(path: Path) -> Tuple[FigureDocument, Dict[str, Any]]:
