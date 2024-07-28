@@ -7,7 +7,7 @@ CONVERTERS = [FromDocx, FromFigureDocument]
 
 
 def process(input: Path, output: Path):
-    all_errors = {}
+    all_errors = []
 
     next_stage = []
     for converter in CONVERTERS:
@@ -17,9 +17,9 @@ def process(input: Path, output: Path):
         document, errors = converter.convert(input)
         next_stage.append(document.to_json_file(output))
 
-        all_errors.update(errors)
+        all_errors += errors
 
     for path in next_stage:
-        all_errors.update(process(path, output))
+        all_errors += process(path, output)
 
     return all_errors

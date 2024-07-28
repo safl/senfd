@@ -11,7 +11,7 @@ import importlib.resources as pkg_resources
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, NamedTuple, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field, ValidationError
@@ -169,5 +169,5 @@ class Converter(ABC):
 
     @staticmethod
     @abstractmethod
-    def convert(path: Path) -> Tuple[Document, Dict[str, Any]]:
+    def convert(path: Path) -> Tuple[Document, List[NamedTuple]]:
         pass

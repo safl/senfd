@@ -1,9 +1,10 @@
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, Tuple
+from typing import ClassVar, List, NamedTuple, Tuple
 
 import docx
 from pydantic import Field
 
+import senfd.errors
 import senfd.schemas
 from senfd.documents.base import Converter, Document, DocumentMeta
 from senfd.figures import Figure
@@ -28,7 +29,7 @@ class FromDocx(Converter):
         return path.suffix.lower() == ".docx"
 
     @staticmethod
-    def convert(path: Path) -> Tuple[FigureDocument, Dict[str, Any]]:
+    def convert(path: Path) -> Tuple[FigureDocument, List[NamedTuple]]:
 
         def docx_table_to_table(docx_table: docx.table.Table) -> Table:
             table = Table()
@@ -50,10 +51,7 @@ class FromDocx(Converter):
             return table
 
         figures = {}
-        errors: Dict[str, List[tuple]] = {
-            "captions": [],
-            "tof_entries": [],
-        }
+        errors: List[NamedTuple] = []
 
         docx_document = docx.Document(path)
 
@@ -63,13 +61,19 @@ class FromDocx(Converter):
 
             figure = Figure.from_regex(Figure.REGEX_TABLE_ROW, caption)
             if not figure:
-                errors["captions"].append(
-                    (table_nr, caption, "Does not match figure caption assumptions")
+                errors.append(
+                    senfd.errors.TableCaptionError(
+                        table_nr, caption, "Does not match figure caption assumptions"
+                    )
                 )
                 continue
 
             if figure.figure_nr in figures:
-                errors["captions"].append((table_nr, caption, "Duplicate"))
+                errors.append(
+                    senfd.errors.TableCaptionError(
+                        table_nr, caption, "Duplicate caption"
+                    )
+                )
                 continue
 
             figure.table = docx_table_to_table(docx_table)
@@ -95,21 +99,25 @@ class FromDocx(Converter):
             caption = paragraph.text.strip()
             figure = Figure.from_regex(Figure.REGEX_TABLE_OF_FIGURES, caption)
             if not figure:
-                errors["tof_entries"].append(
-                    (caption, "Does not match figure assumptions")
+                errors.append(
+                    senfd.errors.TableOfFiguresError(
+                        caption, "Does not match figure assumptions"
+                    )
                 )
                 continue
 
             if not figure.page_nr:
-                errors["tof_entries"].append((caption, "Is missing <page_nr>"))
+                errors.append(
+                    senfd.errors.TableOfFiguresError(caption, "Is missing <page_nr>")
+                )
                 continue
 
             existing = figures.get(figure.figure_nr, None)
             if existing:
                 existing.page_nr = figure.page_nr
                 if figure.description not in existing.description:
-                    errors["tof_entries"].append(
-                        (
+                    errors.append(
+                        senfd.errors.TableOfFiguresError(
                             caption,
                             f"({existing.description}) != {figure.description}",
                         )
