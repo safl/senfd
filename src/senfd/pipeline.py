@@ -16,7 +16,9 @@ def process(input: Path, output: Path):
         document, errors = converter.convert(input)
         all_errors += errors
 
-        all_errors += process(document.to_json_file(output), output)
+        html_path = document.to_html_file(output)
+        json_path = document.to_json_file(output)
+        all_errors += process(json_path, output)
         break
 
     return all_errors
