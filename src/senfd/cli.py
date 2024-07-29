@@ -62,6 +62,6 @@ def main() -> int:
 
     for path in args.document:
         errors = senfd.pipeline.process(path, args.output)
-        senfd.errors.to_log_file(errors, path.name, args.output)
+        senfd.errors.to_log_file(errors, path.stem, args.output)
 
     return 0
