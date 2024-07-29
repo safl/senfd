@@ -5,8 +5,8 @@ from subprocess import run
 
 def test_cli_tool(tmp_path):
 
-    paths = list(Path("example").resolve().glob("*.json"))
-    assert len(paths) > 0, "No documents/*.json available for testing"
+    paths = list(Path("example").resolve().glob("*"))
+    assert len(paths) > 0, "No documents available for testing"
 
     for path in paths:
         result = run(
