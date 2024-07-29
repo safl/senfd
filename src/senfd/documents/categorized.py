@@ -84,7 +84,7 @@ class FromFigureDocument(Converter):
 
     @staticmethod
     def is_applicable(path: Path) -> bool:
-        return path.suffix.lower() == ".figure.document.json"
+        return "".join(path.suffixes).lower() == ".figure.document.json"
 
     @staticmethod
     def convert(path: Path):
