@@ -53,7 +53,7 @@ jobs:
 
     - name: Run -- actual IO
       run: |
-        senfd example/*.json --output output
+        senfd example/example.docx --output output
 
     - uses: actions/upload-artifact@v4
       with:
