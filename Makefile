@@ -40,6 +40,9 @@ format:
 release:
 	twine upload dist/*
 
+kmdo:
+	kmdo docs/src/usage/
+
 bump:
 	./toolbox/project_version_update.py
 	make env uninstall build install

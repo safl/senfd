@@ -17,20 +17,22 @@ Usage
 Example
 ~~~~~~~
 
-Place yourself in the root of the repository and run::
+Place yourself in the root of the repository and run:
 
-  senfd example/example.figure.document.json --output /tmp/foo
+.. literalinclude:: usage_example.cmd
+   :language: bash
 
-This will enrich the given figure(s) with semantic information, by first
-categorizing them, then parse the associated table data into a logical
-form. The enriched figures are stored in the folder
-pointed to by ``--output``, in this case ``/tmp/foo``.
+This will extract table and figure information from the ``.docx`` file,
+storing it as a ``FigureDocument`` with minimal semantic enrichment, then the
+``FigureDocument`` is processed producing a ``CategorizedFigureDocument`` with
+figures categorized by the content they are captioning.
 
-In case you do not want to run it, then you can inspect the
-`JSON <https://github.com/safl/senfd/blob/main/example/output/categorized.figure.document.json>`_
-in the
+For all of the output files then they are stored in the directory pointed to by
+``--output``, in this case ``/tmp/foo``.
+
+In case you do not want to run it, then you can inspect the output files in the
 `repository on GitHUB <https://github.com/safl/senfd/tree/main/example/output>`_
 or locally in the folder ``example/output``.
 
-For details on the structure of the **JSON** document, then have a look at
+For details on the structure of the **JSON** documents, then have a look at
 the :ref:`schema <sec-schema>` section.

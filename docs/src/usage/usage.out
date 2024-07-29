@@ -3,7 +3,7 @@ usage: senfd [-h] [--output OUTPUT] [--dump-schema] [--version] [document ...]
 Semantically organize and enrich figures
 
 positional arguments:
-  document         path to one or more .json document(s)
+  document         path to one or more document(s)
 
 options:
   -h, --help       show this help message and exit
