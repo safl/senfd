@@ -45,4 +45,5 @@ bump:
 	make env uninstall build install
 	$(PROJECT_NAME) --dump-schema --output /tmp/senfd_schemas
 	cp /tmp/senfd_schemas/*.schema.json src/$(PROJECT_NAME)/schemas/
+	senfd example/* --output example/output
 	make
