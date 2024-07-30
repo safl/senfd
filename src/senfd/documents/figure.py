@@ -81,7 +81,7 @@ class FromDocx(Converter):
             figures[figure.figure_nr] = figure
 
         # Update tabular figures with page_nr
-        # Add non-fabular figures
+        # Add non-tabular figures
         # Check table-of-figure description validity
         prev = cur = None
         for paragraph in docx_document.paragraphs:

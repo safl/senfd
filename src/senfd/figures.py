@@ -2,7 +2,7 @@
 Figures
 =======
 
-The following classses model the figures found in documents.
+The following classes model the figures found in documents.
 """
 
 import inspect
