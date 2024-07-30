@@ -497,7 +497,7 @@
         "DocumentMeta": {
             "properties": {
                 "version": {
-                    "default": "0.1.7",
+                    "default": "0.1.8",
                     "title": "Version",
                     "type": "string"
                 },
