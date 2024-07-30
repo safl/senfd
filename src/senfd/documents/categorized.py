@@ -1,9 +1,10 @@
 import re
 from pathlib import Path
-from typing import ClassVar, List, NamedTuple, Tuple
+from typing import ClassVar, List, Tuple
 
 from pydantic import Field
 
+import senfd.errors
 import senfd.figures
 import senfd.schemas
 import senfd.tables
@@ -80,7 +81,7 @@ class FromFigureDocument(Converter):
         return "".join(path.suffixes).lower() == ".figure.document.json"
 
     @staticmethod
-    def convert(path: Path) -> Tuple[Document, List[NamedTuple]]:
+    def convert(path: Path) -> Tuple[Document, List[senfd.errors.TableError]]:
         """Instantiate an 'organized' Document from a 'figure' document"""
 
         errors = []

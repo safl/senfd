@@ -11,7 +11,7 @@ import importlib.resources as pkg_resources
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, NamedTuple, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field, ValidationError
@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field, ValidationError
 import senfd.figures
 import senfd.schemas
 import senfd.tables
+from senfd.errors import TableError
 
 TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
     {
@@ -120,12 +121,12 @@ class Document(BaseModel):
         return f"{self.meta.stem}{self.SUFFIX_JSON}"
 
     def to_json(self) -> str:
-        """Returns the document as a JSON-formated string"""
+        """Returns the document as a JSON-formatted string"""
 
         return self.model_dump_json(indent=4)
 
     def to_json_file(self, path: Optional[Path] = None) -> Path:
-        """Writes the document, formated as JSON, to file at the given 'path'"""
+        """Writes the document, formatted as JSON, to file at the given 'path'"""
 
         return to_file(self.to_json(), self.json_filename(), path)
 
@@ -169,5 +170,5 @@ class Converter(ABC):
 
     @staticmethod
     @abstractmethod
-    def convert(path: Path) -> Tuple[Document, List[NamedTuple]]:
+    def convert(path: Path) -> Tuple[Document, List[TableError]]:
         pass

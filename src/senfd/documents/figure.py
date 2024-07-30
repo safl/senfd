@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import ClassVar, List, NamedTuple, Tuple
+from typing import ClassVar, List, Tuple
 
 import docx
 from pydantic import Field
@@ -29,8 +29,7 @@ class FromDocx(Converter):
         return path.suffix.lower() == ".docx"
 
     @staticmethod
-    def convert(path: Path) -> Tuple[FigureDocument, List[NamedTuple]]:
-
+    def convert(path: Path) -> Tuple[FigureDocument, List[senfd.errors.TableError]]:
         def docx_table_to_table(docx_table: docx.table.Table) -> Table:
             table = Table()
 
@@ -51,7 +50,7 @@ class FromDocx(Converter):
             return table
 
         figures = {}
-        errors: List[NamedTuple] = []
+        errors: List[senfd.errors.TableError] = []
 
         docx_document = docx.Document(path)
 
@@ -82,7 +81,7 @@ class FromDocx(Converter):
             figures[figure.figure_nr] = figure
 
         # Update tabular figures with page_nr
-        # Add non-fabular figures
+        # Add non-tabular figures
         # Check table-of-figure description validity
         prev = cur = None
         for paragraph in docx_document.paragraphs:

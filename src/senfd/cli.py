@@ -5,14 +5,32 @@ Command-Line Interface
 Produces organized and semantically enriched ``.json`` documents from
 """
 
+import json
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
+from typing import List
 
 import senfd
 import senfd.errors
 import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
+from senfd.documents.base import to_file
+
+
+def to_log_file(
+    errors: List[senfd.errors.TableError], filename: str, output: Path
+) -> Path:
+
+    content = json.dumps(
+        [
+            {"type": type(error).__name__, **senfd.errors.error_to_dict(error)}
+            for error in errors
+        ],
+        indent=4,
+    )
+
+    return to_file(content, f"{filename}.error.log", output)
 
 
 def parse_args() -> Namespace:
@@ -62,6 +80,6 @@ def main() -> int:
 
     for path in args.document:
         errors = senfd.pipeline.process(path, args.output)
-        senfd.errors.to_log_file(errors, path.stem, args.output)
+        to_log_file(errors, path.stem, args.output)
 
     return 0

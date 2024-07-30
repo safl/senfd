@@ -2,16 +2,17 @@
 Figures
 =======
 
-The following classses model the figures found in documents.
+The following classes model the figures found in documents.
 """
 
 import inspect
 import re
-from typing import ClassVar, NamedTuple, Optional, Tuple
+from typing import ClassVar, Optional, Tuple
 
 from pydantic import BaseModel
 
 import senfd.tables
+from senfd.errors import TableError
 from senfd.utils import pascal_to_snake
 
 
@@ -64,7 +65,7 @@ class FromFigureDescriptionMatch(Figure):
     @classmethod
     def from_figure_description(
         cls, figure: Figure, match
-    ) -> Tuple[Optional[Figure], Optional[NamedTuple]]:
+    ) -> Tuple[Optional["FromFigureDescriptionMatch"], Optional[TableError]]:
         shared = set(figure.dict().keys()).intersection(set(match.groupdict().keys()))
         if shared:
             # This occurs if child attributes overrides parent, this is an error in the
