@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import ClassVar, List
+from typing import ClassVar, List, NamedTuple, Tuple
 
 from pydantic import Field
 
@@ -11,17 +11,10 @@ from senfd.documents.base import (
     TRANSLATION_TABLE,
     Converter,
     Document,
-    DocumentMeta,
     strip_all_suffixes,
 )
 from senfd.documents.figure import FigureDocument
 from senfd.figures import get_figure_enriching_classes
-
-
-class CategorizedFigureDocumentMeta(DocumentMeta):
-    tabular: List[int] = Field(default_factory=list)
-    nontabular: List[senfd.figures.Figure] = Field(default_factory=list)
-    uncategorized: List[senfd.figures.Figure] = Field(default_factory=list)
 
 
 class CategorizedFigureDocument(Document):
@@ -32,9 +25,9 @@ class CategorizedFigureDocument(Document):
     FILENAME_SCHEMA: ClassVar[str] = "categorized.figure.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "categorized.figure.document.html.jinja2"
 
-    meta: CategorizedFigureDocumentMeta = Field(
-        default_factory=CategorizedFigureDocumentMeta
-    )
+    nontabular: List[senfd.figures.Figure] = Field(default_factory=list)
+    uncategorized: List[senfd.figures.Figure] = Field(default_factory=list)
+
     acronyms: List[senfd.figures.Acronyms] = Field(default_factory=list)
     io_controller_command_set_support: List[
         senfd.figures.IoControllerCommandSetSupport
@@ -87,8 +80,10 @@ class FromFigureDocument(Converter):
         return "".join(path.suffixes).lower() == ".figure.document.json"
 
     @staticmethod
-    def convert(path: Path):
+    def convert(path: Path) -> Tuple[Document, List[NamedTuple]]:
         """Instantiate an 'organized' Document from a 'figure' document"""
+
+        errors = []
 
         figure_document = FigureDocument.parse_file(path)
 
@@ -98,7 +93,7 @@ class FromFigureDocument(Converter):
         figure_organizers = get_figure_enriching_classes()
         for figure in figure_document.figures:
             if not figure.table:
-                document.meta.nontabular.append(figure)
+                document.nontabular.append(figure)
                 continue
 
             match = None
@@ -108,12 +103,13 @@ class FromFigureDocument(Converter):
                     candidate.REGEX_FIGURE_DESCRIPTION, description, flags=re.IGNORECASE
                 )
                 if match:
-                    obj = candidate.from_figure_description(figure, match)
+                    obj, error = candidate.from_figure_description(figure, match)
+                    if error:
+                        errors.append(error)
                     obj.into_document(document)
-                    document.meta.tabular.append(obj.figure_nr)
                     break
 
             if not match:
-                document.meta.uncategorized.append(figure)
+                document.uncategorized.append(figure)
 
-        return document, {}
+        return document, errors

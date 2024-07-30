@@ -46,42 +46,6 @@
             "title": "Acronyms",
             "type": "object"
         },
-        "CategorizedFigureDocumentMeta": {
-            "properties": {
-                "version": {
-                    "default": "0.1.7",
-                    "title": "Version",
-                    "type": "string"
-                },
-                "stem": {
-                    "title": "Stem",
-                    "type": "string"
-                },
-                "tabular": {
-                    "items": {
-                        "type": "integer"
-                    },
-                    "title": "Tabular",
-                    "type": "array"
-                },
-                "nontabular": {
-                    "items": {
-                        "$ref": "#/$defs/Figure"
-                    },
-                    "title": "Nontabular",
-                    "type": "array"
-                },
-                "uncategorized": {
-                    "items": {
-                        "$ref": "#/$defs/Figure"
-                    },
-                    "title": "Uncategorized",
-                    "type": "array"
-                }
-            },
-            "title": "CategorizedFigureDocumentMeta",
-            "type": "object"
-        },
         "Cell": {
             "properties": {
                 "text": {
@@ -530,6 +494,21 @@
             "title": "CommandSupportRequirements",
             "type": "object"
         },
+        "DocumentMeta": {
+            "properties": {
+                "version": {
+                    "default": "0.1.7",
+                    "title": "Version",
+                    "type": "string"
+                },
+                "stem": {
+                    "title": "Stem",
+                    "type": "string"
+                }
+            },
+            "title": "DocumentMeta",
+            "type": "object"
+        },
         "FeatureIdentifiers": {
             "properties": {
                 "figure_nr": {
@@ -934,7 +913,21 @@
     },
     "properties": {
         "meta": {
-            "$ref": "#/$defs/CategorizedFigureDocumentMeta"
+            "$ref": "#/$defs/DocumentMeta"
+        },
+        "nontabular": {
+            "items": {
+                "$ref": "#/$defs/Figure"
+            },
+            "title": "Nontabular",
+            "type": "array"
+        },
+        "uncategorized": {
+            "items": {
+                "$ref": "#/$defs/Figure"
+            },
+            "title": "Uncategorized",
+            "type": "array"
         },
         "acronyms": {
             "items": {
