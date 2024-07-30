@@ -11,11 +11,12 @@ import importlib.resources as pkg_resources
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, NamedTuple, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field, ValidationError
 
+from senfd.errors import TableError
 import senfd.figures
 import senfd.schemas
 import senfd.tables
@@ -169,5 +170,5 @@ class Converter(ABC):
 
     @staticmethod
     @abstractmethod
-    def convert(path: Path) -> Tuple[Document, List[NamedTuple]]:
+    def convert(path: Path) -> Tuple[Document, List[TableError]]:
         pass

@@ -1,4 +1,4 @@
-from typing import ClassVar, List, NamedTuple, Optional, Tuple
+from typing import ClassVar, List, Optional, Tuple
 
 from pydantic import BaseModel, Field
 
@@ -41,7 +41,9 @@ class HeaderTable(Table):
     headers: List[str] = Field(default_factory=list)
 
     @classmethod
-    def from_table(cls, table: Table) -> Tuple[Optional[Table], Optional[NamedTuple]]:
+    def from_table(
+        cls, table: Table
+    ) -> Tuple[Optional["HeaderTable"], Optional[senfd.errors.TableError]]:
 
         lengths = list(set([len(row.cells) for row in table.rows]))
         if len(lengths) != 1:

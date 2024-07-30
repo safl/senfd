@@ -2,11 +2,12 @@ from pathlib import Path
 
 from senfd.documents.categorized import FromFigureDocument
 from senfd.documents.figure import FromDocx
+from senfd.errors import TableError
 
 CONVERTERS = [FromDocx, FromFigureDocument]
 
 
-def process(input: Path, output: Path):
+def process(input: Path, output: Path) -> List[TableError]:
     all_errors = []
 
     for converter in CONVERTERS:
