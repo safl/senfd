@@ -27,10 +27,10 @@ caption {
 <table>
 {% for row in table.rows or []%}
 <tr>
-  {% for col in row.cells %}
+  {% for cell in row.cells %}
   <td>
-    {{ col["text"] }}
-    {% for nested_table in col["tables"] %}
+    {{ cell.text }}
+    {% for nested_table in cell.tables %}
     {{ render_table(nested_table) }}
     {% endfor %}
   </td>
@@ -42,11 +42,14 @@ caption {
 </table>
 {% endmacro %}
 
-{% for figure in document.figures %}
+{% for section, figures in document.items() if section != "meta" %}
+<h1>{{ section }}</h1>
+{% for figure in figures %}
 <figure>
 <figcaption>{{ figure.caption }}</figcaption>
 {{ render_table(figure.table) }}
 </figure>
+{% endfor %}
 {% endfor %}
 
 </body>
