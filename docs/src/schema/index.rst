@@ -5,8 +5,8 @@ Schema
 
 Senfd has the following documents:
 
-* FigureDocument
-* CategorizedFigureDocument
+* PlainFigureDocument
+* EnrichedFigureDocument
 
 Their **JSON** representation is validated against a **JSON** schema. You can
 use the path. For details see below.
@@ -19,17 +19,17 @@ in the sections below.
 Figure Document
 ---------------
 
-* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/figure.document.schema.json
+* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/plain.figure.document.schema.json
 
-.. literalinclude:: ../../../src/senfd/schemas/figure.document.schema.json
+.. literalinclude:: ../../../src/senfd/schemas/plain.figure.document.schema.json
    :language: json
 
-.. _sec-schema-categorized-figure-document:
+.. _sec-schema-enriched-figure-document:
 
-Categorized Figure Document
----------------------------
+Enriched Figure Document
+------------------------
 
-* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/categorized.figure.document.schema.json
+* https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/enriched.figure.document.schema.json
 
-.. literalinclude:: ../../../src/senfd/schemas/categorized.figure.document.schema.json
+.. literalinclude:: ../../../src/senfd/schemas/enriched.figure.document.schema.json
    :language: json

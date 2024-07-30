@@ -1,6 +1,6 @@
-from senfd.documents.categorized import CategorizedFigureDocument
-from senfd.documents.figure import FigureDocument
+from senfd.documents.enriched import EnrichedFigureDocument
+from senfd.documents.plain import FigureDocument
 
 
 def get_document_classes():
-    return [FigureDocument, CategorizedFigureDocument]
+    return [FigureDocument, EnrichedFigureDocument]

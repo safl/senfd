@@ -1,1 +1,5 @@
+html_path(/tmp/foo/example.plain.figure.document.html)
+json_path(/tmp/foo/example.plain.figure.document.json)
+html_path(/tmp/foo/example.enriched.figure.document.html)
+json_path(/tmp/foo/example.enriched.figure.document.json)
 

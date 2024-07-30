@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from senfd.documents.categorized import FromFigureDocument
-from senfd.documents.figure import FromDocx
+from senfd.documents.enriched import FromFigureDocument
+from senfd.documents.plain import FromDocx
 
 CONVERTERS = [FromDocx, FromFigureDocument]
 
@@ -18,6 +18,7 @@ def process(input: Path, output: Path):
 
         document.to_html_file(output)
         json_path = document.to_json_file(output)
+
         all_errors += process(json_path, output)
         break
 
