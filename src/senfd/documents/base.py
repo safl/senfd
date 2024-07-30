@@ -141,7 +141,7 @@ class Document(BaseModel):
         )
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
-        return template.render(document=self)
+        return template.render(document=self.dict())
 
     def to_html_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document to HTML-formatted file"""
