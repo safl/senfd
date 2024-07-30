@@ -63,7 +63,8 @@ class FromDocx(Converter):
             if not figure:
                 errors.append(
                     senfd.errors.TableCaptionError(
-                        table_nr, caption, "Does not match figure caption assumptions"
+                        "Does not match figure caption assumptions",
+                        caption,
                     )
                 )
                 continue
@@ -71,7 +72,8 @@ class FromDocx(Converter):
             if figure.figure_nr in figures:
                 errors.append(
                     senfd.errors.TableCaptionError(
-                        table_nr, caption, "Duplicate caption"
+                        "Duplicate caption",
+                        caption,
                     )
                 )
                 continue
@@ -101,14 +103,15 @@ class FromDocx(Converter):
             if not figure:
                 errors.append(
                     senfd.errors.TableOfFiguresError(
-                        caption, "Does not match figure assumptions"
+                        "Does not match figure assumptions",
+                        caption,
                     )
                 )
                 continue
 
             if not figure.page_nr:
                 errors.append(
-                    senfd.errors.TableOfFiguresError(caption, "Is missing <page_nr>")
+                    senfd.errors.TableOfFiguresError("Is missing <page_nr>", caption)
                 )
                 continue
 
@@ -118,8 +121,8 @@ class FromDocx(Converter):
                 if figure.description not in existing.description:
                     errors.append(
                         senfd.errors.TableOfFiguresError(
-                            caption,
                             f"({existing.description}) != {figure.description}",
+                            caption,
                         )
                     )
             else:
