@@ -52,8 +52,6 @@ class Figure(BaseModel):
             "figure_nr": int(match.group("figure_nr")),
             "caption": match.group("caption").strip(),
             "description": match.group("description").strip(),
-            "table": None,
-            "page_nr": None,
         }
         if "page_nr" in match.groupdict():
             data["page_nr"] = int(match.group("page_nr"))
