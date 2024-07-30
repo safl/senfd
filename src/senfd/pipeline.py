@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import List
 
-from senfd.documents.categorized import FromFigureDocument
-from senfd.documents.figure import FromDocx
+from senfd.documents.enriched import FromFigureDocument
+from senfd.documents.plain import FromDocx
 from senfd.errors import TableError
 
 CONVERTERS = [FromDocx, FromFigureDocument]
@@ -20,6 +20,7 @@ def process(input: Path, output: Path) -> List[TableError]:
 
         document.to_html_file(output)
         json_path = document.to_json_file(output)
+
         all_errors += process(json_path, output)
         break
 

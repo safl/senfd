@@ -1,4 +1,5 @@
 PROJECT_NAME:=senfd
+PROJECT_VERSION:=0.2.0
 
 .PHONY: all clean env build install uninstall test open format release
 
@@ -44,7 +45,7 @@ kmdo:
 	kmdo docs/src/usage/
 
 bump:
-	./toolbox/project_version_update.py
+	./toolbox/project_version_update.py $(PROJECT_VERSION)
 	make env uninstall build install
 	$(PROJECT_NAME) --dump-schema --output /tmp/senfd_schemas
 	cp /tmp/senfd_schemas/*.schema.json src/$(PROJECT_NAME)/schemas/
