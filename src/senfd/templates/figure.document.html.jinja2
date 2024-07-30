@@ -27,10 +27,10 @@ caption {
 <table>
 {% for row in table.rows or []%}
 <tr>
-  {% for col in row.cells %}
+  {% for cell in row.cells %}
   <td>
-    {{ col["text"] }}
-    {% for nested_table in col["tables"] %}
+    {{ cell.text }}
+    {% for nested_table in cell.tables %}
     {{ render_table(nested_table) }}
     {% endfor %}
   </td>
