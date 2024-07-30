@@ -40,7 +40,7 @@ class Figure(BaseModel):
     description: str  # The part of figure caption without the "Fig X:" prefix
 
     page_nr: Optional[int] = None
-    table: Optional[senfd.tables.Table] = None
+    table: Optional[senfd.tables.Table | senfd.tables.HeaderTable] = None
 
     @classmethod
     def from_regex(cls, regex, text):
