@@ -7,7 +7,7 @@ The following classses model the figures found in documents.
 
 import inspect
 import re
-from typing import ClassVar, Optional
+from typing import ClassVar, NamedTuple, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -64,9 +64,13 @@ class Figure(BaseModel):
 class FromFigureDescriptionMatch(Figure):
 
     @classmethod
-    def from_figure_description(cls, figure, match):
+    def from_figure_description(
+        cls, figure: Figure, match
+    ) -> Tuple[Optional[Figure], Optional[NamedTuple]]:
         shared = set(figure.dict().keys()).intersection(set(match.groupdict().keys()))
         if shared:
+            # This occurs if child attributes overrides parent, this is an error in the
+            # implementation of the child-figure
             raise RuntimeError(f"cls({cls.__name__}) has overlap({shared})")
 
         data = figure.dict()
@@ -74,7 +78,15 @@ class FromFigureDescriptionMatch(Figure):
         if mdict:
             data.update(mdict if mdict else {})
 
-        return cls(**data)
+        # if figure.table:
+        #    table, errors = senfd.tables.HeaderTable.from_table(figure.table)
+        #    data["table"] = table.dict() if table else figure.table.dict()
+        enriched_figure = cls(**data)
+        if figure.table:
+            table, errors = senfd.tables.HeaderTable.from_table(figure.table)
+            enriched_figure.table = table if table else figure.table
+
+        return enriched_figure, errors
 
     def into_document(self, document):
         key = pascal_to_snake(self.__class__.__name__)
