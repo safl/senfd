@@ -1,5 +1,5 @@
 PROJECT_NAME:=senfd
-PROJECT_VERSION:=0.2.1
+PROJECT_VERSION:=0.2.2
 
 .PHONY: all clean env build install uninstall test open format release
 
