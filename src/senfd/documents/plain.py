@@ -174,7 +174,8 @@ class FromDocx(Converter):
 
         return (
             FigureDocument(
-                meta=DocumentMeta(stem=path.stem), figures=list(figures.values())
+                meta=DocumentMeta(stem=path.stem.replace(".", "-")),
+                figures=list(figures.values()),
             ),
             errors,
         )
