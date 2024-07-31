@@ -23,10 +23,7 @@ def to_log_file(
 ) -> Path:
 
     content = json.dumps(
-        [
-            {"type": type(error).__name__, **senfd.errors.error_to_dict(error)}
-            for error in errors
-        ],
+        [{"type": type(error).__name__, **error.model_dump()} for error in errors],
         indent=4,
     )
 

@@ -1,30 +1,28 @@
-from collections import namedtuple
-from typing import Any, Dict, List
+from typing import Any, List
 
 from pydantic import BaseModel
 
-TableOfFiguresError = namedtuple("TableOfFiguresError", ["message", "caption"])
 
-TableCaptionError = namedtuple("TableCaptionError", ["message", "caption"])
-
-TableHeaderError = namedtuple("TableHeaderError", ["message", "caption", "cells"])
-
-IrregularTableError = namedtuple("IrregularTableError", ["message", "lengths"])
-
-NonTableHeaderError = namedtuple("NonTableHeaderError", ["message"])
-
-TableError = (
-    TableOfFiguresError
-    | TableCaptionError
-    | TableHeaderError
-    | IrregularTableError
-    | NonTableHeaderError
-)
+class TableError(BaseModel):
+    message: str
 
 
-def error_to_dict(error: TableError) -> Dict[str, List[Any]]:
-    error_dict = error._asdict()
-    for key, value in error_dict.items():
-        if isinstance(value, BaseModel):
-            error_dict[key] = value.dict()
-    return error_dict
+class TableOfFiguresError(TableError):
+    caption: str
+
+
+class TableCaptionError(TableError):
+    caption: str
+
+
+class TableHeaderError(TableError):
+    caption: str
+    cells: List[Any]
+
+
+class IrregularTableError(TableError):
+    lengths: List[int]
+
+
+class NonTableHeaderError(TableError):
+    pass

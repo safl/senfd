@@ -48,11 +48,13 @@ class HeaderTable(Table):
         lengths = list(set([len(row.cells) for row in table.rows]))
         if len(lengths) != 1:
             return None, senfd.errors.IrregularTableError(
-                f"Varying row lengths({lengths})", lengths
+                message=f"Varying row lengths({lengths})", lengths=lengths
             )
 
         if len(table.rows) < 2:
-            return None, senfd.errors.NonTableHeaderError("Insufficent number of rows")
+            return None, senfd.errors.NonTableHeaderError(
+                message="Insufficent number of rows"
+            )
 
         headers = [
             cell.text.strip()
@@ -61,9 +63,9 @@ class HeaderTable(Table):
         ]
         if len(headers) != len(table.rows[1].cells):
             return None, senfd.errors.TableHeaderError(
-                "Unsupported names",
-                table.rows[0].cells[0].text,
-                [cell.text for cell in table.rows[1].cells],
+                message="Unsupported names",
+                caption=table.rows[0].cells[0].text,
+                cells=[cell.text for cell in table.rows[1].cells],
             )
 
         data = table.dict()

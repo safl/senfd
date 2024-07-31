@@ -107,8 +107,8 @@ class FromDocx(Converter):
             if not figure:
                 errors.append(
                     senfd.errors.TableCaptionError(
-                        "Does not match figure caption assumptions",
-                        caption,
+                        message="Does not match figure caption assumptions",
+                        caption=caption,
                     )
                 )
                 continue
@@ -116,8 +116,8 @@ class FromDocx(Converter):
             if figure.figure_nr in figures:
                 errors.append(
                     senfd.errors.TableCaptionError(
-                        "Duplicate caption",
-                        caption,
+                        message="Duplicate caption",
+                        caption=caption,
                     )
                 )
                 continue
@@ -147,15 +147,17 @@ class FromDocx(Converter):
             if not figure:
                 errors.append(
                     senfd.errors.TableOfFiguresError(
-                        "Does not match figure assumptions",
-                        caption,
+                        message="Does not match figure assumptions",
+                        caption=caption,
                     )
                 )
                 continue
 
             if not figure.page_nr:
                 errors.append(
-                    senfd.errors.TableOfFiguresError("Is missing <page_nr>", caption)
+                    senfd.errors.TableOfFiguresError(
+                        message="Is missing <page_nr>", caption=caption
+                    )
                 )
                 continue
 
@@ -165,8 +167,8 @@ class FromDocx(Converter):
                 if figure.description not in existing.description:
                     errors.append(
                         senfd.errors.TableOfFiguresError(
-                            f"({existing.description}) != {figure.description}",
-                            caption,
+                            message=f"({existing.description}) != {figure.description}",
+                            caption=caption,
                         )
                     )
             else:
