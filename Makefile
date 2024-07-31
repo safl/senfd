@@ -44,7 +44,7 @@ release:
 kmdo:
 	kmdo docs/src/usage/
 
-bump:
+version:
 	./toolbox/project_version_update.py $(PROJECT_VERSION)
 	make env uninstall build install
 	$(PROJECT_NAME) --dump-schema --output /tmp/senfd_schemas
