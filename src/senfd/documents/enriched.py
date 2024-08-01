@@ -161,7 +161,9 @@ def get_figure_enriching_classes():
     return [
         cls
         for _, cls in inspect.getmembers(senfd.documents.enriched, inspect.isclass)
-        if issubclass(cls, EnrichedFigure) and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
+        if issubclass(cls, EnrichedFigure)
+        and (cls is not senfd.documents.enriched.EnrichedFigure)
+        and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
     ]
 
 
