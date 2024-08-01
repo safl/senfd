@@ -7,7 +7,6 @@ all: env uninstall build install test open
 
 env:
 	pipx install build || true
-	pipx install coveralls || true
 	pipx install pre-commit || true
 	pipx install twine || true
 
