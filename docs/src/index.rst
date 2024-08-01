@@ -42,3 +42,4 @@ senfd: Semantic Enricher for NVMe Figure Documents
    install/index.rst
    usage/index.rst
    schema/index.rst
+   contributors/index.rst
