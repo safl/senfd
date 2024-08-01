@@ -1,6 +1,8 @@
 PROJECT_NAME:=senfd
 PROJECT_VERSION:=0.2.3
 
+BROWSER:=chromium-browser
+
 .PHONY: all clean env build install uninstall test open format release
 
 all: env uninstall build install test open
@@ -32,7 +34,7 @@ test:
 	pytest --cov=$(PROJECT_NAME) --cov-report=lcov --cov-report=term-missing --cov-report=html -vvs tests
 
 open:
-	firefox /tmp/pytest-of-${USER}/pytest-current/test_cli_tool0/*.{html,json} || true
+	$(BROWSER) /tmp/pytest-of-${USER}/pytest-current/test_cli_tool0/*.{html,json} || true
 
 format:
 	pre-commit run --all-files
