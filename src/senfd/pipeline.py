@@ -1,11 +1,12 @@
 from pathlib import Path
-from typing import List
+from typing import List, Type
 
+from senfd.documents.base import Converter
 from senfd.documents.enriched import FromFigureDocument
 from senfd.documents.plain import FromDocx
 from senfd.errors import TableError
 
-CONVERTERS = [FromDocx, FromFigureDocument]
+CONVERTERS: List[Type[Converter]] = [FromDocx, FromFigureDocument]
 
 
 def process(input: Path, output: Path) -> List[TableError]:
