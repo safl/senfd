@@ -497,7 +497,7 @@
         "DocumentMeta": {
             "properties": {
                 "version": {
-                    "default": "0.2.2",
+                    "default": "0.2.3",
                     "title": "Version",
                     "type": "string"
                 },
@@ -915,20 +915,6 @@
         "meta": {
             "$ref": "#/$defs/DocumentMeta"
         },
-        "nontabular": {
-            "items": {
-                "$ref": "#/$defs/Figure"
-            },
-            "title": "Nontabular",
-            "type": "array"
-        },
-        "uncategorized": {
-            "items": {
-                "$ref": "#/$defs/Figure"
-            },
-            "title": "Uncategorized",
-            "type": "array"
-        },
         "acronyms": {
             "items": {
                 "$ref": "#/$defs/Acronyms"
@@ -1039,6 +1025,20 @@
                 "$ref": "#/$defs/PropertyDefinition"
             },
             "title": "Property Definition",
+            "type": "array"
+        },
+        "nontabular": {
+            "items": {
+                "$ref": "#/$defs/Figure"
+            },
+            "title": "Nontabular",
+            "type": "array"
+        },
+        "uncategorized": {
+            "items": {
+                "$ref": "#/$defs/Figure"
+            },
+            "title": "Uncategorized",
             "type": "array"
         }
     },

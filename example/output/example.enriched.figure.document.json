@@ -1,8 +1,24 @@
 {
     "meta": {
-        "version": "0.2.2",
+        "version": "0.2.3",
         "stem": "example"
     },
+    "acronyms": [],
+    "io_controller_command_set_support": [],
+    "command_set_opcodes": [],
+    "command_support_requirements": [],
+    "command_sqe_dword": [],
+    "command_sqe_dwords": [],
+    "command_sqe_data_pointer": [],
+    "command_cqe_dword": [],
+    "command_specific_status_values": [],
+    "general_command_status_values": [],
+    "cns_values": [],
+    "feature_support": [],
+    "feature_identifiers": [],
+    "log_page_identifiers": [],
+    "offset": [],
+    "property_definition": [],
     "nontabular": [],
     "uncategorized": [
         {
@@ -251,21 +267,5 @@
                 ]
             }
         }
-    ],
-    "acronyms": [],
-    "io_controller_command_set_support": [],
-    "command_set_opcodes": [],
-    "command_support_requirements": [],
-    "command_sqe_dword": [],
-    "command_sqe_dwords": [],
-    "command_sqe_data_pointer": [],
-    "command_cqe_dword": [],
-    "command_specific_status_values": [],
-    "general_command_status_values": [],
-    "cns_values": [],
-    "feature_support": [],
-    "feature_identifiers": [],
-    "log_page_identifiers": [],
-    "offset": [],
-    "property_definition": []
+    ]
 }
