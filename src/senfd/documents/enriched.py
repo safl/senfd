@@ -173,9 +173,6 @@ class EnrichedFigureDocument(Document):
     FILENAME_SCHEMA: ClassVar[str] = "enriched.figure.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "enriched.figure.document.html.jinja2"
 
-    nontabular: List[Figure] = Field(default_factory=list)
-    uncategorized: List[Figure] = Field(default_factory=list)
-
     acronyms: List[Acronyms] = Field(default_factory=list)
     io_controller_command_set_support: List[IoControllerCommandSetSupport] = Field(
         default_factory=list
@@ -200,6 +197,9 @@ class EnrichedFigureDocument(Document):
     log_page_identifiers: List[LogPageIdentifiers] = Field(default_factory=list)
     offset: List[Offset] = Field(default_factory=list)
     property_definition: List[PropertyDefinition] = Field(default_factory=list)
+
+    nontabular: List[Figure] = Field(default_factory=list)
+    uncategorized: List[Figure] = Field(default_factory=list)
 
     @classmethod
     def from_figure_document_file(cls, path: Path):
