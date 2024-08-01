@@ -24,13 +24,15 @@ class EnrichedFigure(Figure):
     def from_figure_description(
         cls, figure: Figure, match
     ) -> Tuple[Optional[Figure], Optional[NamedTuple]]:
-        shared = set(figure.dict().keys()).intersection(set(match.groupdict().keys()))
+        shared = set(figure.model_dump().keys()).intersection(
+            set(match.groupdict().keys())
+        )
         if shared:
             # This occurs if child attributes overrides parent, this is an error in the
             # implementation of the child-figure
             raise RuntimeError(f"cls({cls.__name__}) has overlap({shared})")
 
-        data = figure.dict()
+        data = figure.model_dump()
         mdict = match.groupdict()
         if mdict:
             data.update(mdict if mdict else {})
@@ -39,6 +41,7 @@ class EnrichedFigure(Figure):
         #    table, errors = senfd.tables.HeaderTable.from_table(figure.table)
         #    data["table"] = table.dict() if table else figure.table.dict()
         enriched_figure = cls(**data)
+        errors = None
         if figure.table:
             table, errors = senfd.tables.HeaderTable.from_table(figure.table)
             enriched_figure.table = table if table else figure.table

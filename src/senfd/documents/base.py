@@ -104,7 +104,7 @@ class Document(BaseModel):
         """Writes the document JSON schema to file at the given 'path'"""
 
         return to_file(
-            json.dumps(cls.schema(), indent=4),
+            json.dumps(cls.model_json_schema(), indent=4),
             cls.schema_filename(),
             path,
         )
@@ -141,7 +141,7 @@ class Document(BaseModel):
         )
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
-        return template.render(document=self.dict())
+        return template.render(document=self.model_dump())
 
     def to_html_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document to HTML-formatted file"""
@@ -152,7 +152,7 @@ class Document(BaseModel):
         """Returns True when validator raises no exceptions, False otherwise"""
 
         try:
-            self.validate(self.dict())
+            self.model_validate(self.model_dump())
         except ValidationError as e:
             print(e)
             return False
