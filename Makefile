@@ -25,7 +25,7 @@ build:
 	pyproject-build
 
 install:
-	pipx install . --include-deps --force
+	pipx install --include-deps --force .[dev]
 
 uninstall:
 	pipx uninstall $(PROJECT_NAME) || true

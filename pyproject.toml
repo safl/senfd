@@ -9,11 +9,16 @@ license = { text = "LGPL-2.1-only" }
 dependencies = [
     "jinja2",
     "pydantic",
-    "pytest",
-    "pytest-cov",
     "python-docx",
 ]
 readme = { file = "README.rst", content-type = "text/x-rst" }
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+]
+all = ["senfd[dev]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
