@@ -26,3 +26,7 @@ class IrregularTableError(TableError):
 
 class NonTableHeaderError(TableError):
     pass
+
+
+class FigureError(TableError):
+    pass

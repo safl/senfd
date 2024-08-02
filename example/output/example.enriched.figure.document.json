@@ -4,7 +4,7 @@
         "stem": "example"
     },
     "acronyms": [],
-    "io_controller_command_set_support": [],
+    "io_controller_command_set_support_requirements": [],
     "command_set_opcodes": [],
     "command_support_requirements": [],
     "command_sqe_dword": [],

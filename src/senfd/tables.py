@@ -1,4 +1,5 @@
-from typing import ClassVar, List, Optional, Tuple
+import re
+from typing import List, Optional, Tuple
 
 from pydantic import BaseModel, Field
 
@@ -23,55 +24,70 @@ class Table(BaseModel):
     rows: List[Row] = Field(default_factory=list)
 
 
-class HeaderTable(Table):
+class Grid(BaseModel):
     """
-    Header tables are regular, that is, each row has the same amount of cells and cells
-    are named. What the actual content is needs further processing.
+    Grids are regular, that is, each row has the same amount of cells and cells are
+    named. Also, their content match
     """
-
-    VALID_NAMES: ClassVar[List[str]] = [
-        "Bits",
-        "Bytes",
-        "Description",
-        "Definition",
-        "Value",
-    ]
 
     ncells: int = Field(default_factory=int)
     headers: List[str] = Field(default_factory=list)
+    values: List[List[str]] = Field(default_factory=list)
 
     @classmethod
-    def from_table(
-        cls, table: Table
-    ) -> Tuple[Optional["HeaderTable"], Optional[senfd.errors.TableError]]:
-
-        lengths = list(set([len(row.cells) for row in table.rows]))
+    def from_enriched_figure(
+        cls, figure
+    ) -> Tuple[Optional["Grid"], Optional[senfd.errors.TableError]]:
+        if figure.table is None:
+            return None, senfd.errors.NonTableHeaderError(message="No table")
+        if len(figure.table.rows) < 2:
+            return None, senfd.errors.NonTableHeaderError(
+                message="Insufficent number of rows"
+            )
+        lengths = list(set([len(row.cells) for row in figure.table.rows]))
         if len(lengths) != 1:
             return None, senfd.errors.IrregularTableError(
                 message=f"Varying row lengths({lengths})", lengths=lengths
             )
 
-        if len(table.rows) < 2:
-            return None, senfd.errors.NonTableHeaderError(
-                message="Insufficent number of rows"
-            )
+        if not hasattr(figure, "REGEX_GRID"):
+            return None, senfd.errors.FigureError(message="Has not REGEX_GRID")
 
-        headers = [
-            cell.text.strip()
-            for cell in table.rows[1].cells
-            if cell.text.strip() in cls.VALID_NAMES
-        ]
-        if len(headers) != len(table.rows[1].cells):
-            return None, senfd.errors.TableHeaderError(
-                message="Unsupported names",
-                caption=table.rows[0].cells[0].text,
-                cells=[cell.text for cell in table.rows[1].cells],
-            )
-
-        data = table.dict()
+        data = figure.table.dict()
         data["ncells"] = lengths[0]
-        data["headers"] = headers
 
-        enriched = cls(**data)
+        regex_hdr, regex_val = zip(*figure.REGEX_GRID)
 
-        return enriched, None
+        header_names: List[str] = []
+        values = []
+        for idx, row in enumerate(figure.table.rows):
+            if not header_names:
+                header_matches = [
+                    match.group(1)
+                    for match in (
+                        re.match(regex, cell.text.strip())
+                        for cell, regex in zip(row.cells, regex_hdr)
+                    )
+                    if match
+                ]
+                if len(header_matches) == len(regex_hdr):
+                    header_names = header_matches
+                continue
+
+            value_matches = [
+                match.group(1)
+                for match in (
+                    re.match(regex, cell.text.strip())
+                    for cell, regex in zip(row.cells, regex_val)
+                )
+                if match
+            ]
+            if len(value_matches) == len(regex_val):
+                values.append(value_matches)
+
+        data["headers"] = header_names
+        data["values"] = values
+
+        grid_table = cls(**data)
+
+        return grid_table, None
