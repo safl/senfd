@@ -33,7 +33,7 @@
             "type": "object"
         },
         "Figure": {
-            "description": "A figure as captioned in a table of figures in the NVMe Specification Documents.\n\nThis is a minimally enriched figure representation. The intent is that via regular\nexpressions, it should be possible to construct instances when feeding it with\nthe text from a table of figures or a table that conventionally contains a figure\ncaption in the first row.\n\nThe page number is only retrievable from table of figure captions and thus optional.\nThe table data is similarly represented in a form with minimal enrichment.",
+            "description": "A figure as captioned in a table-of-figures in the Specification Documents.\n\nThis is a minimally enriched figure representation. The intent is that via regular\nexpressions, it should be possible to construct instances when feeding it with\nthe text from a table of figures or a table that conventionally contains a figure\ncaption in the first row.\n\nThe page number is only retrievable from table of figure captions and thus optional.\nThe table data is similarly represented in a form with minimal enrichment.",
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",

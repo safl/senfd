@@ -2,9 +2,8 @@
 Documents
 =========
 
-The following classes model documents at different stages of parsing / processing an
-NVMe specification document from a raw extract into something semantically rich.
-
+The following classes model documents at different stages of parsing / processing a
+specification document from a raw extract into something semantically rich.
 """
 
 import importlib.resources as pkg_resources
