@@ -1,7 +1,7 @@
 import inspect
 import re
 from pathlib import Path
-from typing import ClassVar, List, NamedTuple, Optional, Tuple
+from typing import ClassVar, List, Optional, Tuple
 
 from pydantic import Field
 
@@ -29,7 +29,7 @@ class EnrichedFigure(Figure):
     @classmethod
     def from_figure_description(
         cls, figure: Figure, match
-    ) -> Tuple[Optional[Figure], Optional[NamedTuple]]:
+    ) -> Tuple[Optional[Figure], Optional[senfd.errors.TableError]]:
         shared = set(figure.model_dump().keys()).intersection(
             set(match.groupdict().keys())
         )
@@ -43,16 +43,9 @@ class EnrichedFigure(Figure):
         if mdict:
             data.update(mdict if mdict else {})
 
-        # if figure.table:
-        #    table, errors = senfd.tables.HeaderTable.from_table(figure.table)
-        #    data["table"] = table.dict() if table else figure.table.dict()
         enriched_figure = cls(**data)
-        errors = None
-        if figure.table:
-            table, errors = senfd.tables.HeaderTable.from_table(figure.table)
-            enriched_figure.table = table if table else figure.table
 
-        return enriched_figure, errors
+        return enriched_figure, None
 
     def into_document(self, document):
         key = pascal_to_snake(self.__class__.__name__)
