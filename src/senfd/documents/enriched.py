@@ -72,8 +72,6 @@ class IoControllerCommandSetSupport(EnrichedFigure):
 
 
 class CnsValues(EnrichedFigure):
-    """Enrichment of a: 'Command Dword N' table"""
-
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*CNS\s+Values.*"
 
 

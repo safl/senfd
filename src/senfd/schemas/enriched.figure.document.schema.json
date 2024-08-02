@@ -75,7 +75,6 @@
             "type": "object"
         },
         "CnsValues": {
-            "description": "Enrichment of a: 'Command Dword N' table",
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
