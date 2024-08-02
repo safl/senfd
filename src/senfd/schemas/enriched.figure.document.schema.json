@@ -38,15 +38,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -112,15 +104,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -169,15 +153,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_name": {
                     "title": "Command Name",
@@ -236,15 +212,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_set_name": {
                     "title": "Command Set Name",
@@ -298,15 +266,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_name": {
                     "title": "Command Name",
@@ -360,15 +320,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_name": {
                     "title": "Command Name",
@@ -422,15 +374,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_name": {
                     "title": "Command Name",
@@ -489,15 +433,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_name": {
                     "title": "Command Name",
@@ -568,15 +504,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_span": {
                     "title": "Command Span",
@@ -645,15 +573,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -702,15 +622,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -806,15 +718,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -825,7 +729,35 @@
             "title": "GeneralCommandStatusValues",
             "type": "object"
         },
-        "IoControllerCommandSetSupport": {
+        "Grid": {
+            "description": "Grids are regular, that is, each row has the same amount of cells and cells are\nnamed. Also, their content match",
+            "properties": {
+                "ncells": {
+                    "title": "Ncells",
+                    "type": "integer"
+                },
+                "headers": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Headers",
+                    "type": "array"
+                },
+                "values": {
+                    "items": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "title": "Values",
+                    "type": "array"
+                }
+            },
+            "title": "Grid",
+            "type": "object"
+        },
+        "IoControllerCommandSetSupportRequirements": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -863,15 +795,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 },
                 "command_set_name": {
                     "title": "Command Set Name",
@@ -884,7 +808,7 @@
                 "description",
                 "command_set_name"
             ],
-            "title": "IoControllerCommandSetSupport",
+            "title": "IoControllerCommandSetSupportRequirements",
             "type": "object"
         },
         "LogPageIdentifiers": {
@@ -925,15 +849,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -982,15 +898,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -1039,15 +947,7 @@
                     "default": null
                 },
                 "grid": {
-                    "items": {
-                        "items": {
-                            "items": {},
-                            "type": "array"
-                        },
-                        "type": "array"
-                    },
-                    "title": "Grid",
-                    "type": "array"
+                    "$ref": "#/$defs/Grid"
                 }
             },
             "required": [
@@ -1097,11 +997,11 @@
             "title": "Acronyms",
             "type": "array"
         },
-        "io_controller_command_set_support": {
+        "io_controller_command_set_support_requirements": {
             "items": {
-                "$ref": "#/$defs/IoControllerCommandSetSupport"
+                "$ref": "#/$defs/IoControllerCommandSetSupportRequirements"
             },
-            "title": "Io Controller Command Set Support",
+            "title": "Io Controller Command Set Support Requirements",
             "type": "array"
         },
         "command_set_opcodes": {

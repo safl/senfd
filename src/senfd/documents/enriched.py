@@ -17,14 +17,30 @@ from senfd.documents.base import (
 from senfd.documents.plain import Figure, FigureDocument
 from senfd.utils import pascal_to_snake
 
-REGEX_BITSTR_6BITS = r"(\d{4}\s\d{2}b)"
 REGEX_BITSTR_2BITS = r"(\d{2}b)"
+REGEX_BITSTR_6BITS = r"(\d{4}\s\d{2}b)"
+REGEX_EVERYTHING = r"(.*)"
 REGEX_HEXSTR_2BYTS = r"([a-zA-Z0-9]{2}h)"
+
+REGEX_HDR_ACRONYM = r"(Term|Acronym).*"
+REGEX_HDR_BITS = r"(Bits).*"
+REGEX_HDR_COMBINED_OPCODE = r"(Combined.Opcode).*"
+REGEX_HDR_COMMAND = r"(Command).*"
+REGEX_HDR_COMMANDS_AFFECTED = r"(Commands.Affected).*"
+REGEX_HDR_DATA_TRANSFER = r"(Data.Transfer).*"
+REGEX_HDR_DEFINITION = r"(Definition).*"
+REGEX_HDR_DESCRIPTION = r"(Description).*"
+REGEX_HDR_FUNCTION = r"(Function).*"
+REGEX_HDR_REFERENCE = r"(Reference).*"
+REGEX_HDR_RESET = r"(Reset).*"
+REGEX_HDR_SCOPE = r"(Scope).*"
+REGEX_HDR_TYPE = r"(Type).*"
+REGEX_HDR_VALUE = r"(Value).*"
 
 
 class EnrichedFigure(Figure):
 
-    grid: List[List[Tuple]] = Field(default_factory=list)
+    grid: senfd.tables.Grid = Field(default_factory=senfd.tables.Grid)
 
     @classmethod
     def from_figure_description(
@@ -45,7 +61,11 @@ class EnrichedFigure(Figure):
 
         enriched_figure = cls(**data)
 
-        return enriched_figure, None
+        grid, error = senfd.tables.Grid.from_enriched_figure(enriched_figure)
+        if grid:
+            enriched_figure.grid = grid
+
+        return enriched_figure, error
 
     def into_document(self, document):
         key = pascal_to_snake(self.__class__.__name__)
@@ -55,37 +75,56 @@ class EnrichedFigure(Figure):
 class Acronyms(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Acronym\s+(definitions|Descriptions)"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Term)", r".*"),
-        (r"(Definition)", r".*"),
+        (REGEX_HDR_ACRONYM, REGEX_EVERYTHING),
+        (REGEX_HDR_DEFINITION, REGEX_EVERYTHING),
     ]
 
 
-class IoControllerCommandSetSupport(EnrichedFigure):
+class IoControllerCommandSetSupportRequirements(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r".*-\s+(?P<command_set_name>.*)Command\s+Set\s+Support"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Command)", REGEX_BITSTR_6BITS),
-        (r"(Command\sSupport\sRequirements\s\d)", REGEX_BITSTR_2BITS),
+        (REGEX_HDR_COMMAND, "([a-zA-Z]+)"),
+        (r"(Command\sSupport\sRequirements)\s\d", "(O|M|P)"),
     ]
     command_set_name: str
-
-
-class CnsValues(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*CNS\s+Values.*"
 
 
 class CommandSupportRequirements(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"\s*(?P<command_span>.*)\s+Command\s*Support\s*Requirements.*"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_COMMAND, "([a-zA-Z]+)"),
+        (r"(Command\sSupport\sRequirements)\s\d", "(O|M|P)"),
+    ]
+
     command_span: str
+
+
+class CnsValues(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*CNS\s+Values.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(CNS.Value)", REGEX_HEXSTR_2BYTS),
+        (r"(O\/M).*", r"(O|M).*"),
+        (REGEX_HDR_DEFINITION, REGEX_EVERYTHING),
+        (r"(NSID).*", r"(Y|N).*"),
+        (r"(CNTID).*", r"(Y|N).*"),
+        (r"(CSI).*", r"(Y|N).*"),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
+    ]
 
 
 class CommandSqeDataPointer(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s+-\s+Data\s+Pointer"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_BITS, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+    ]
+
     command_name: str
 
 
@@ -95,6 +134,11 @@ class CommandSqeDwords(EnrichedFigure):
         r"(?P<command_dword_lower>\d+)"
         r".*and.*?\s(?P<command_dword_upper>\d+)"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_BITS, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+    ]
+
     command_name: str
     command_dword_lower: str
     command_dword_upper: Optional[str]
@@ -104,6 +148,11 @@ class CommandSqeDword(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*(?P<command_dword>\d+).*?"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_BITS, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+    ]
+
     command_name: str
     command_dword: str
 
@@ -113,6 +162,11 @@ class CommandCqeDword(EnrichedFigure):
         r"(?P<command_name>[\w\s]+)\s+-\s+"
         r"Completion\sQueue\sEntry\sDword\s(?P<command_dword>\d+)"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_BITS, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+    ]
+
     command_name: str
     command_dword: str
 
@@ -122,11 +176,11 @@ class CommandSetOpcodes(EnrichedFigure):
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Function)", REGEX_BITSTR_6BITS),
-        (r"(Data Transfer)\s\d", REGEX_BITSTR_2BITS),
-        (r"(Combined Opcode)\s\d", REGEX_HEXSTR_2BYTS),
-        (r"(Command)\s\d", r"[\w\s]+\d"),
-        (r"(Reference Section)", r".*"),
+        (REGEX_HDR_FUNCTION, REGEX_BITSTR_6BITS),
+        (REGEX_HDR_DATA_TRANSFER, REGEX_BITSTR_2BITS),
+        (REGEX_HDR_COMBINED_OPCODE, REGEX_EVERYTHING),
+        (REGEX_HDR_COMMAND, REGEX_EVERYTHING),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
     ]
 
     command_set_name: str
@@ -136,33 +190,75 @@ class GeneralCommandStatusValues(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r".*(Generic|General)\s+Command\s+Status\s+Values.*"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_VALUE, REGEX_EVERYTHING),
+        (REGEX_HDR_DEFINITION, REGEX_EVERYTHING),
+        (r"(Commands.Affected)", REGEX_EVERYTHING),
+    ]
 
 
 class CommandSpecificStatusValues(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s+-\s+Command\s+Specific\s+Status\s+Values"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_VALUE, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+        (REGEX_HDR_COMMANDS_AFFECTED, REGEX_EVERYTHING),
+    ]
     command_name: str
 
 
 class FeatureIdentifiers(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Identifiers.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Feature.Identifier)", REGEX_EVERYTHING),
+        (r"(Persistent.Across.Power.Cycle.and.Reset).*", REGEX_EVERYTHING),
+        (r"(Uses.Memory.Buffer.for.Attributes)", REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+        (REGEX_HDR_SCOPE, REGEX_EVERYTHING),
+    ]
 
 
 class FeatureSupport(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Support.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Feature.Name).*", REGEX_EVERYTHING),
+        (r"(Feature.Support.Requirements).*", REGEX_EVERYTHING),
+        (r"(Logged.in.Persistent.Event.Log).*", REGEX_EVERYTHING),
+    ]
 
 
 class LogPageIdentifiers(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Log\s+Page\s+Identifiers.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Log.Page.Identifier).*", REGEX_EVERYTHING),
+        (r"(Scope.and.Support).*", REGEX_EVERYTHING),
+        (r"(Log.Page.Name).*", REGEX_EVERYTHING),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
+    ]
 
 
 class Offset(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*offset"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_BITS, REGEX_EVERYTHING),
+        (REGEX_HDR_TYPE, REGEX_EVERYTHING),
+        (REGEX_HDR_RESET, REGEX_EVERYTHING),
+        (REGEX_HDR_DESCRIPTION, REGEX_EVERYTHING),
+    ]
 
 
 class PropertyDefinition(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Property Definition.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Offset.\(OFST\)).*", REGEX_EVERYTHING),
+        (r"(Size.\(in.bytes\)).*", REGEX_EVERYTHING),
+        (r"(I/O Controller).*", REGEX_EVERYTHING),
+        (r"(Administrative.Controller).*", REGEX_EVERYTHING),
+        (r"(Discovery.Controller).*", REGEX_EVERYTHING),
+        (r"(Name).*", REGEX_EVERYTHING),
+    ]
 
 
 def get_figure_enriching_classes():
@@ -189,9 +285,9 @@ class EnrichedFigureDocument(Document):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "enriched.figure.document.html.jinja2"
 
     acronyms: List[Acronyms] = Field(default_factory=list)
-    io_controller_command_set_support: List[IoControllerCommandSetSupport] = Field(
-        default_factory=list
-    )
+    io_controller_command_set_support_requirements: List[
+        IoControllerCommandSetSupportRequirements
+    ] = Field(default_factory=list)
     command_set_opcodes: List[CommandSetOpcodes] = Field(default_factory=list)
     command_support_requirements: List[CommandSupportRequirements] = Field(
         default_factory=list
