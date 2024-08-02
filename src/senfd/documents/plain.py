@@ -14,7 +14,7 @@ from senfd.tables import Cell, Row, Table
 
 class Figure(BaseModel):
     """
-    A figure as captioned in a table of figures in the NVMe Specification Documents.
+    A figure as captioned in a table-of-figures in the Specification Documents.
 
     This is a minimally enriched figure representation. The intent is that via regular
     expressions, it should be possible to construct instances when feeding it with

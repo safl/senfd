@@ -1,5 +1,5 @@
-senfd: Semantic Enricher for NVMe Figure Documents
-==================================================
+senfd: Semantic Enricher for Non-mentioned-Trademark Figure Documents
+=====================================================================
 
 
 .. image:: ../_static/input-document.png
