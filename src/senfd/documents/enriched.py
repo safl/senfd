@@ -17,8 +17,14 @@ from senfd.documents.base import (
 from senfd.documents.plain import Figure, FigureDocument
 from senfd.utils import pascal_to_snake
 
+REGEX_BITSTR_6BITS = r"(\d{4}\s\d{2}b)"
+REGEX_BITSTR_2BITS = r"(\d{2}b)"
+REGEX_HEXSTR_2BYTS = r"([a-zA-Z0-9]{2}h)"
+
 
 class EnrichedFigure(Figure):
+
+    grid: List[List[Tuple]] = Field(default_factory=list)
 
     @classmethod
     def from_figure_description(
@@ -55,12 +61,20 @@ class EnrichedFigure(Figure):
 
 class Acronyms(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Acronym\s+(definitions|Descriptions)"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Term)", r".*"),
+        (r"(Definition)", r".*"),
+    ]
 
 
 class IoControllerCommandSetSupport(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r".*-\s+(?P<command_set_name>.*)Command\s+Set\s+Support"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Command)", REGEX_BITSTR_6BITS),
+        (r"(Command\sSupport\sRequirements\s\d)", REGEX_BITSTR_2BITS),
+    ]
     command_set_name: str
 
 
@@ -116,6 +130,14 @@ class CommandSetOpcodes(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (r"(Function)", REGEX_BITSTR_6BITS),
+        (r"(Data Transfer)\s\d", REGEX_BITSTR_2BITS),
+        (r"(Combined Opcode)\s\d", REGEX_HEXSTR_2BYTS),
+        (r"(Command)\s\d", r"[\w\s]+\d"),
+        (r"(Reference Section)", r".*"),
+    ]
+
     command_set_name: str
 
 
