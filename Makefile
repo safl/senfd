@@ -3,9 +3,9 @@ PROJECT_VERSION:=0.2.3
 
 BROWSER:=chromium-browser
 
-.PHONY: all clean env build install uninstall test open format release
+.PHONY: dev all clean env build install uninstall test open format release
 
-all: env uninstall build install test open
+dev: env uninstall install-dev test open
 
 env:
 	pipx install build || true
@@ -21,26 +21,26 @@ clean:
 	@rm -r .mypy_cache || true
 	@rm -r .pytest_cache || true
 
-build:
-	pyproject-build
-
-install:
-	pipx install --include-deps --force .[dev]
-
 uninstall:
 	pipx uninstall $(PROJECT_NAME) || true
+
+install-dev:
+	pipx install --include-deps --force --editable .[dev]
+
+install:
+	pipx install --include-deps --force dist/*.tar.gz
+
+build:
+	pyproject-build
 
 test:
 	pytest --cov=$(PROJECT_NAME) --cov-report=lcov --cov-report=term-missing --cov-report=html -vvs tests
 
-open:
-	$(BROWSER) /tmp/pytest-of-${USER}/pytest-current/test_cli_tool0/*.{html,json} || true
+release:
+	twine upload dist/*
 
 format:
 	pre-commit run --all-files
-
-release:
-	twine upload dist/*
 
 kmdo:
 	kmdo docs/src/usage/
