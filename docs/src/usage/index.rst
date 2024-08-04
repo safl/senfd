@@ -27,12 +27,13 @@ storing it as a ``FigureDocument`` with minimal semantic enrichment, then the
 ``FigureDocument`` is processed producing a ``CategorizedFigureDocument`` with
 figures categorized by the content they are captioning.
 
-For all of the output files then they are stored in the directory pointed to by
-``--output``, in this case ``/tmp/foo``.
+For all of the output files then they are stored in the directory pointed to
+by ``--output``, in this case ``/tmp/foo``. Each input-document gets a folder
+dedicated to the output files related to it.
 
 In case you do not want to run it, then you can inspect the output files in the
-`repository on GitHUB <https://github.com/safl/senfd/tree/main/example/output>`_
-or locally in the folder ``example/output``.
+`repository on GitHUB <https://github.com/safl/senfd/tree/main/example/output/document1>`_
+or locally in the folder ``example/output/document1``.
 
 For details on the structure of the **JSON** documents, then have a look at
 the :ref:`schema <sec-schema>` section.
