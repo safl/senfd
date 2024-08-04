@@ -45,7 +45,7 @@ class EnrichedFigure(Figure):
     @classmethod
     def from_figure_description(
         cls, figure: Figure, match
-    ) -> Tuple[Optional[Figure], Optional[senfd.errors.TableError]]:
+    ) -> Tuple[Optional[Figure], List[senfd.errors.TableError]]:
         shared = set(figure.model_dump().keys()).intersection(
             set(match.groupdict().keys())
         )
@@ -61,11 +61,11 @@ class EnrichedFigure(Figure):
 
         enriched_figure = cls(**data)
 
-        grid, error = senfd.tables.Grid.from_enriched_figure(enriched_figure)
+        grid, errors = senfd.tables.Grid.from_enriched_figure(enriched_figure)
         if grid:
             enriched_figure.grid = grid
 
-        return enriched_figure, error
+        return enriched_figure, errors
 
     def into_document(self, document):
         key = pascal_to_snake(self.__class__.__name__)
@@ -350,9 +350,8 @@ class FromFigureDocument(Converter):
                     candidate.REGEX_FIGURE_DESCRIPTION, description, flags=re.IGNORECASE
                 )
                 if match:
-                    obj, error = candidate.from_figure_description(figure, match)
-                    if error:
-                        errors.append(error)
+                    obj, conv_errors = candidate.from_figure_description(figure, match)
+                    errors += conv_errors
                     obj.into_document(document)
                     break
 
