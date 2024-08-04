@@ -68,7 +68,7 @@ class Grid(BaseModel):
                 header_matches = [
                     match.group(1)
                     for match in (
-                        re.match(regex, cell.text.strip())
+                        re.match(regex, cell.text.strip().replace("\n", " "))
                         for cell, regex in zip(row.cells, regex_hdr)
                     )
                     if match
