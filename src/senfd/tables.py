@@ -37,24 +37,27 @@ class Grid(BaseModel):
     @classmethod
     def from_enriched_figure(
         cls, figure
-    ) -> Tuple[Optional["Grid"], Optional[senfd.errors.TableError]]:
+    ) -> Tuple[Optional["Grid"], List[senfd.errors.TableError]]:
         if figure.table is None:
-            return None, senfd.errors.NonTableHeaderError(message="No table")
+            return None, [senfd.errors.NonTableHeaderError(message="No table")]
         if len(figure.table.rows) < 2:
-            return None, senfd.errors.NonTableHeaderError(
-                message="Insufficent number of rows"
-            )
+            return None, [
+                senfd.errors.NonTableHeaderError(message="Insufficent number of rows")
+            ]
+        if not hasattr(figure, "REGEX_GRID"):
+            return None, [senfd.errors.FigureError(message="Missing REGEX_GRID")]
+
+        errors = []
         lengths = list(set([len(row.cells) for row in figure.table.rows]))
         if len(lengths) != 1:
-            return None, senfd.errors.IrregularTableError(
-                message=f"Varying row lengths({lengths})", lengths=lengths
+            errors.append(
+                senfd.errors.IrregularTableError(
+                    message=f"Varying row lengths({lengths})", lengths=lengths
+                )
             )
 
-        if not hasattr(figure, "REGEX_GRID"):
-            return None, senfd.errors.FigureError(message="Has not REGEX_GRID")
-
         data = figure.table.dict()
-        data["ncells"] = lengths[0]
+        data["ncells"] = max(lengths)
 
         regex_hdr, regex_val = zip(*figure.REGEX_GRID)
 
@@ -90,4 +93,4 @@ class Grid(BaseModel):
 
         grid_table = cls(**data)
 
-        return grid_table, None
+        return grid_table, errors
