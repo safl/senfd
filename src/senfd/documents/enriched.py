@@ -171,13 +171,37 @@ class CommandCqeDword(EnrichedFigure):
     command_dword: str
 
 
+class CommandAdminOpcodes(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.Admin.Commands"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_FUNCTION, REGEX_EVERYTHING),
+        (REGEX_HDR_DATA_TRANSFER, REGEX_EVERYTHING),
+        (REGEX_HDR_COMBINED_OPCODE, REGEX_EVERYTHING),
+        (r"(Namespace.Identifier.Used).*", REGEX_EVERYTHING),
+        (REGEX_HDR_COMMAND, REGEX_EVERYTHING),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
+    ]
+
+
+class CommandIoOpcodes(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.I.O.Commands"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_FUNCTION, REGEX_EVERYTHING),
+        (REGEX_HDR_DATA_TRANSFER, REGEX_EVERYTHING),
+        (REGEX_HDR_COMBINED_OPCODE, REGEX_EVERYTHING),
+        (REGEX_HDR_COMMAND, REGEX_EVERYTHING),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
+        (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
+    ]
+
+
 class CommandSetOpcodes(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_BITSTR_6BITS),
-        (REGEX_HDR_DATA_TRANSFER, REGEX_BITSTR_2BITS),
+        (REGEX_HDR_FUNCTION, REGEX_EVERYTHING),
+        (REGEX_HDR_DATA_TRANSFER, REGEX_EVERYTHING),
         (REGEX_HDR_COMBINED_OPCODE, REGEX_EVERYTHING),
         (REGEX_HDR_COMMAND, REGEX_EVERYTHING),
         (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
@@ -288,6 +312,8 @@ class EnrichedFigureDocument(Document):
     io_controller_command_set_support_requirements: List[
         IoControllerCommandSetSupportRequirements
     ] = Field(default_factory=list)
+    command_admin_opcodes: List[CommandAdminOpcodes] = Field(default_factory=list)
+    command_io_opcodes: List[CommandIoOpcodes] = Field(default_factory=list)
     command_set_opcodes: List[CommandSetOpcodes] = Field(default_factory=list)
     command_support_requirements: List[CommandSupportRequirements] = Field(
         default_factory=list

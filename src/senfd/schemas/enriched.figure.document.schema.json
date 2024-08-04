@@ -115,6 +115,55 @@
             "title": "CnsValues",
             "type": "object"
         },
+        "CommandAdminOpcodes": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "CommandAdminOpcodes",
+            "type": "object"
+        },
         "CommandCqeDword": {
             "properties": {
                 "figure_nr": {
@@ -172,6 +221,55 @@
                 "command_dword"
             ],
             "title": "CommandCqeDword",
+            "type": "object"
+        },
+        "CommandIoOpcodes": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "CommandIoOpcodes",
             "type": "object"
         },
         "CommandSetOpcodes": {
@@ -1002,6 +1100,20 @@
                 "$ref": "#/$defs/IoControllerCommandSetSupportRequirements"
             },
             "title": "Io Controller Command Set Support Requirements",
+            "type": "array"
+        },
+        "command_admin_opcodes": {
+            "items": {
+                "$ref": "#/$defs/CommandAdminOpcodes"
+            },
+            "title": "Command Admin Opcodes",
+            "type": "array"
+        },
+        "command_io_opcodes": {
+            "items": {
+                "$ref": "#/$defs/CommandIoOpcodes"
+            },
+            "title": "Command Io Opcodes",
             "type": "array"
         },
         "command_set_opcodes": {
