@@ -140,7 +140,16 @@ class Document(BaseModel):
         )
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
-        return template.render(document=self.model_dump(), errors=errors)
+        figure_errors: Dict[int, List[Error]] = {}
+        for error in errors:
+            if not hasattr(error, "figure_nr"):
+                continue
+
+            if error.figure_nr not in figure_errors:
+                figure_errors[error.figure_nr] = []
+            figure_errors[error.figure_nr].append(error)
+
+        return template.render(document=self.model_dump(), figure_errors=figure_errors)
 
     def to_html_file(
         self, path: Optional[Path] = None, errors: List[Error] = []
