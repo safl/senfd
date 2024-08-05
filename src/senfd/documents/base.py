@@ -131,7 +131,7 @@ class Document(BaseModel):
     def html_filename(self) -> str:
         return f"{self.meta.stem}{self.SUFFIX_HTML}"
 
-    def to_html(self) -> str:
+    def to_html(self, errors: List[Error] = []) -> str:
         """Returns the document as a HTML-formatted string"""
 
         env = Environment(
@@ -140,12 +140,14 @@ class Document(BaseModel):
         )
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
-        return template.render(document=self.model_dump())
+        return template.render(document=self.model_dump(), errors=errors)
 
-    def to_html_file(self, path: Optional[Path] = None) -> Path:
+    def to_html_file(
+        self, path: Optional[Path] = None, errors: List[Error] = []
+    ) -> Path:
         """Writes the document to HTML-formatted file"""
 
-        return to_file(self.to_html(), self.html_filename(), path)
+        return to_file(self.to_html(errors), self.html_filename(), path)
 
     def is_valid(self) -> bool:
         """Returns True when validator raises no exceptions, False otherwise"""
