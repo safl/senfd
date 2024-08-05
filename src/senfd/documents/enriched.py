@@ -5,7 +5,6 @@ from typing import ClassVar, List, Optional, Tuple
 
 from pydantic import Field
 
-import senfd.errors
 import senfd.schemas
 import senfd.tables
 from senfd.documents.base import (
@@ -15,6 +14,7 @@ from senfd.documents.base import (
     strip_all_suffixes,
 )
 from senfd.documents.plain import Figure, FigureDocument
+from senfd.errors import Error
 from senfd.utils import pascal_to_snake
 
 REGEX_BITSTR_2BITS = r"(\d{2}b)"
@@ -45,7 +45,7 @@ class EnrichedFigure(Figure):
     @classmethod
     def from_figure_description(
         cls, figure: Figure, match
-    ) -> Tuple[Optional[Figure], List[senfd.errors.TableError]]:
+    ) -> Tuple[Optional[Figure], List[Error]]:
         shared = set(figure.model_dump().keys()).intersection(
             set(match.groupdict().keys())
         )
@@ -353,7 +353,7 @@ class FromFigureDocument(Converter):
         return "".join(path.suffixes).lower() == ".plain.figure.document.json"
 
     @staticmethod
-    def convert(path: Path) -> Tuple[Document, List[senfd.errors.TableError]]:
+    def convert(path: Path) -> Tuple[Document, List[Error]]:
         """Instantiate an 'organized' Document from a 'figure' document"""
 
         errors = []

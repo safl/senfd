@@ -11,16 +11,14 @@ from pathlib import Path
 from typing import List
 
 import senfd
-import senfd.errors
 import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
+from senfd.errors import Error
 
 
-def to_log_file(
-    errors: List[senfd.errors.TableError], filename: str, output: Path
-) -> Path:
+def to_log_file(errors: List[Error], filename: str, output: Path) -> Path:
 
     content = json.dumps(
         [{"type": type(error).__name__, **error.model_dump()} for error in errors],

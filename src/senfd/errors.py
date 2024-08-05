@@ -3,30 +3,30 @@ from typing import Any, List
 from pydantic import BaseModel
 
 
-class TableError(BaseModel):
+class Error(BaseModel):
     message: str
 
 
-class TableOfFiguresError(TableError):
+class TableOfFiguresError(Error):
     caption: str
 
 
-class TableCaptionError(TableError):
+class TableCaptionError(Error):
     caption: str
 
 
-class TableHeaderError(TableError):
+class TableHeaderError(Error):
     caption: str
     cells: List[Any]
 
 
-class IrregularTableError(TableError):
+class IrregularTableError(Error):
     lengths: List[int]
 
 
-class NonTableHeaderError(TableError):
+class NonTableHeaderError(Error):
     pass
 
 
-class FigureError(TableError):
+class FigureError(Error):
     pass

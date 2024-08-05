@@ -5,10 +5,10 @@ from typing import ClassVar, List, Optional, Tuple
 import docx
 from pydantic import BaseModel, Field
 
-import senfd.errors
 import senfd.schemas
 import senfd.tables
 from senfd.documents.base import Converter, Document, DocumentMeta
+from senfd.errors import Error
 from senfd.tables import Cell, Row, Table
 
 
@@ -74,7 +74,7 @@ class FromDocx(Converter):
         return path.suffix.lower() == ".docx"
 
     @staticmethod
-    def convert(path: Path) -> Tuple[FigureDocument, List[senfd.errors.TableError]]:
+    def convert(path: Path) -> Tuple[FigureDocument, List[Error]]:
         def docx_table_to_table(docx_table: docx.table.Table) -> Table:
             table = Table()
 
@@ -95,7 +95,7 @@ class FromDocx(Converter):
             return table
 
         figures = {}
-        errors: List[senfd.errors.TableError] = []
+        errors: List[Error] = []
 
         docx_document = docx.Document(path)
 
