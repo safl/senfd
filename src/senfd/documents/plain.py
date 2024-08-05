@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import ClassVar, List, Optional, Tuple
+from typing import ClassVar, Dict, List, Optional, Tuple
 
 import docx
 from pydantic import BaseModel, Field
@@ -94,7 +94,7 @@ class FromDocx(Converter):
 
             return table
 
-        figures = {}
+        figures: Dict[int, Figure] = {}
         errors: List[Error] = []
 
         docx_document = docx.Document(path)
@@ -107,17 +107,20 @@ class FromDocx(Converter):
             if not figure:
                 errors.append(
                     senfd.errors.TableCaptionError(
-                        message="Does not match figure caption assumptions",
+                        message="Caption not on the form; 'Figure X: lorem ipsum'",
                         caption=caption,
                     )
                 )
                 continue
 
-            if figure.figure_nr in figures:
+            existing_figure = figures.get(figure.figure_nr, None)
+            if existing_figure:
                 errors.append(
-                    senfd.errors.TableCaptionError(
-                        message="Duplicate caption",
-                        caption=caption,
+                    senfd.errors.FigureDuplicateNumberError(
+                        figure_nr=figure.figure_nr,
+                        message=f"Duplicate figure_nr({figure.figure_nr})",
+                        caption_toinsert=figure.caption,
+                        caption_existing=existing_figure.caption,
                     )
                 )
                 continue
@@ -166,9 +169,11 @@ class FromDocx(Converter):
                 existing.page_nr = figure.page_nr
                 if figure.description not in existing.description:
                     errors.append(
-                        senfd.errors.TableOfFiguresError(
-                            message=f"({existing.description}) != {figure.description}",
-                            caption=caption,
+                        senfd.errors.TableOfFiguresDescriptionMismatchError(
+                            figure_nr=figure.figure_nr,
+                            message="Table-of-figures entry does not match table row",
+                            caption_tof_entry=existing.description,
+                            caption_table_row=figure.description,
                         )
                     )
             else:
