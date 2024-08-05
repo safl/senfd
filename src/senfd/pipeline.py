@@ -19,7 +19,7 @@ def process(input: Path, output: Path) -> List[Error]:
         document, errors = converter.convert(input)
         all_errors += errors
 
-        document.to_html_file(output)
+        document.to_html_file(output, all_errors)
         json_path = document.to_json_file(output)
 
         all_errors += process(json_path, output)
