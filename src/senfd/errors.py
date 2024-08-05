@@ -7,11 +7,13 @@ class Error(BaseModel):
     message: str
 
 
-class TableCaptionError(Error):
+class TableOfFiguresError(Error):
+    tof_entry_nr: int
     caption: str
 
 
-class TableOfFiguresError(Error):
+class TableError(Error):
+    table_nr: int
     caption: str
 
 
@@ -32,6 +34,7 @@ class FigureRegexGridMissingError(FigureError):
 
 
 class TableOfFiguresDescriptionMismatchError(FigureError):
+    tof_entry_nr: int
     caption_tof_entry: str
     caption_table_row: str
 

@@ -22,6 +22,7 @@ class Table(BaseModel):
     cells in each row.
     """
 
+    table_nr: int = Field(default_factory=int)
     rows: List[Row] = Field(default_factory=list)
 
 

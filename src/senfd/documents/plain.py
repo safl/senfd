@@ -106,7 +106,8 @@ class FromDocx(Converter):
             figure = Figure.from_regex(Figure.REGEX_TABLE_ROW, caption)
             if not figure:
                 errors.append(
-                    senfd.errors.TableCaptionError(
+                    senfd.errors.TableError(
+                        table_nr=table_nr,
                         message="Caption not on the form; 'Figure X: lorem ipsum'",
                         caption=caption,
                     )
@@ -126,12 +127,14 @@ class FromDocx(Converter):
                 continue
 
             figure.table = docx_table_to_table(docx_table)
+            figure.table.table_nr = table_nr
             figures[figure.figure_nr] = figure
 
         # Update tabular figures with page_nr
         # Add non-tabular figures
         # Check table-of-figure description validity
         prev = cur = None
+        tof_entry = 0
         for paragraph in docx_document.paragraphs:
             cur = paragraph.style.name
 
@@ -144,12 +147,15 @@ class FromDocx(Converter):
             if paragraph.style.name != "table of figures":
                 continue
 
+            tof_entry += 1
+
             # Check whether the paragraph is a reference to a figure
             caption = paragraph.text.strip()
             figure = Figure.from_regex(Figure.REGEX_TABLE_OF_FIGURES, caption)
             if not figure:
                 errors.append(
                     senfd.errors.TableOfFiguresError(
+                        tof_entry_nr=tof_entry,
                         message="Does not match figure assumptions",
                         caption=caption,
                     )
@@ -159,7 +165,9 @@ class FromDocx(Converter):
             if not figure.page_nr:
                 errors.append(
                     senfd.errors.TableOfFiguresError(
-                        message="Is missing <page_nr>", caption=caption
+                        entry_nr=tof_entry,
+                        message="Is missing <page_nr>",
+                        caption=caption,
                     )
                 )
                 continue
@@ -170,6 +178,7 @@ class FromDocx(Converter):
                 if figure.description not in existing.description:
                     errors.append(
                         senfd.errors.TableOfFiguresDescriptionMismatchError(
+                            tof_entry_nr=tof_entry,
                             figure_nr=figure.figure_nr,
                             message="Table-of-figures entry does not match table row",
                             caption_tof_entry=existing.description,

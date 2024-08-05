@@ -10,6 +10,7 @@
             "description": "A byte-table with an embedded bit-table",
             "page_nr": 2,
             "table": {
+                "table_nr": 1,
                 "rows": [
                     {
                         "cells": [
@@ -81,6 +82,7 @@
                                 "text": "Name with spaces (ACRONYM): The definition of this field is described in the table below.\n",
                                 "tables": [
                                     {
+                                        "table_nr": 0,
                                         "rows": [
                                             {
                                                 "cells": [
@@ -133,6 +135,7 @@
             "description": "Another byte-table with an embedded bit-table",
             "page_nr": 2,
             "table": {
+                "table_nr": 2,
                 "rows": [
                     {
                         "cells": [
@@ -204,6 +207,7 @@
                                 "text": "Name with spaces (ACRONYM): The definition of this field is described in the table below.\n",
                                 "tables": [
                                     {
+                                        "table_nr": 0,
                                         "rows": [
                                             {
                                                 "cells": [

@@ -95,6 +95,10 @@
         "Table": {
             "description": "Tabular data in the most raw form, can be irregular, that is, varying amount of\ncells in each row.",
             "properties": {
+                "table_nr": {
+                    "title": "Table Nr",
+                    "type": "integer"
+                },
                 "rows": {
                     "items": {
                         "$ref": "#/$defs/Row"
