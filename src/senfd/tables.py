@@ -38,20 +38,32 @@ class Grid(BaseModel):
     @classmethod
     def from_enriched_figure(cls, figure) -> Tuple[Optional["Grid"], List[Error]]:
         if figure.table is None:
-            return None, [senfd.errors.NonTableHeaderError(message="No table")]
+            return None, [
+                senfd.errors.FigureTableMissingError(
+                    figure_nr=figure.figure_nr, message="No table"
+                )
+            ]
         if len(figure.table.rows) < 2:
             return None, [
-                senfd.errors.NonTableHeaderError(message="Insufficent number of rows")
+                senfd.errors.FigureTableMissingRowsError(
+                    figure_nr=figure.figure_nr, message=r"Number of rows < 2"
+                )
             ]
         if not hasattr(figure, "REGEX_GRID"):
-            return None, [senfd.errors.FigureError(message="Missing REGEX_GRID")]
+            return None, [
+                senfd.errors.FigureRegexGridMissingError(
+                    figure_nr=figure.figure_nr, message="Missing REGEX_GRID"
+                )
+            ]
 
         errors = []
         lengths = list(set([len(row.cells) for row in figure.table.rows]))
         if len(lengths) != 1:
             errors.append(
                 senfd.errors.IrregularTableError(
-                    message=f"Varying row lengths({lengths})", lengths=lengths
+                    figure_nr=figure.figure_nr,
+                    message=f"Varying row lengths({lengths})",
+                    lengths=lengths,
                 )
             )
 
