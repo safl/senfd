@@ -105,4 +105,25 @@ class Grid(BaseModel):
 
         grid_table = cls(**data)
 
+        if not grid_table.headers:
+            errors.append(
+                senfd.errors.FigureNoGridHeaders(
+                    figure_nr=figure.figure_nr,
+                    message=(
+                        "Grid is missing headers;"
+                        f" check {figure.__class__.__name__}.REGEX_GRID"
+                    ),
+                )
+            )
+        if not grid_table.values:
+            errors.append(
+                senfd.errors.FigureNoGridValues(
+                    figure_nr=figure.figure_nr,
+                    message=(
+                        "Grid is missing values;"
+                        f" check {figure.__class__.__name__}.REGEX_GRID"
+                    ),
+                )
+            )
+
         return grid_table, errors

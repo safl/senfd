@@ -33,6 +33,14 @@ class FigureRegexGridMissingError(FigureError):
     pass
 
 
+class FigureNoGridHeaders(FigureError):
+    pass
+
+
+class FigureNoGridValues(FigureError):
+    pass
+
+
 class TableOfFiguresDescriptionMismatchError(FigureError):
     tof_entry_nr: int
     caption_tof_entry: str
