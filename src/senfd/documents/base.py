@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field, ValidationError
 
 import senfd.schemas
 import senfd.tables
-from senfd.errors import TableError
+from senfd.errors import Error
 
 TRANSLATION_TABLE: Dict[int, str] = str.maketrans(
     {
@@ -168,5 +168,5 @@ class Converter(ABC):
 
     @staticmethod
     @abstractmethod
-    def convert(path: Path) -> Tuple[Document, List[TableError]]:
+    def convert(path: Path) -> Tuple[Document, List[Error]]:
         pass

@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field
 
 import senfd.errors
+from senfd.errors import Error
 
 
 class Cell(BaseModel):
@@ -35,9 +36,7 @@ class Grid(BaseModel):
     values: List[List[str]] = Field(default_factory=list)
 
     @classmethod
-    def from_enriched_figure(
-        cls, figure
-    ) -> Tuple[Optional["Grid"], List[senfd.errors.TableError]]:
+    def from_enriched_figure(cls, figure) -> Tuple[Optional["Grid"], List[Error]]:
         if figure.table is None:
             return None, [senfd.errors.NonTableHeaderError(message="No table")]
         if len(figure.table.rows) < 2:
