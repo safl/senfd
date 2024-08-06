@@ -542,15 +542,8 @@
                     "type": "string"
                 },
                 "command_dword_upper": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "title": "Command Dword Upper"
+                    "title": "Command Dword Upper",
+                    "type": "string"
                 }
             },
             "required": [
