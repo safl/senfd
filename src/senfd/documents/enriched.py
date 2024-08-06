@@ -358,7 +358,7 @@ class FromFigureDocument(Converter):
 
         errors = []
 
-        figure_document = FigureDocument.parse_file(path)
+        figure_document = FigureDocument.model_validate_json(path.read_text())
 
         document = EnrichedFigureDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
