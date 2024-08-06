@@ -45,7 +45,7 @@ jobs:
 
     - name: Build
       run: |
-        make build install
+        make build install-dev
 
     - name: Run -- show help
       run: |
