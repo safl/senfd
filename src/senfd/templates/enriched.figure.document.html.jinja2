@@ -8,7 +8,6 @@
   </head>
   <body>
 
-  <!-- RENDERING FOR RAW TABLE DATA -->
   {% macro render_table(table) %}
   <table class="table">
   {% for row in table.rows or []%}
@@ -28,7 +27,6 @@
   </table>
   {% endmacro %}
 
-  <!-- MACRO RENDERING GRID TABLE DATA -->
   {% macro render_grid(grid) %}
   <table class="table">
   <thead class="table-dark">
