@@ -1,109 +1,106 @@
-<html>
-<head>
-<title>enriched {{ document.meta.stem }}</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>enriched {{ document.meta.stem }}</title>
+  </head>
+  <body>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body>
-
-<!-- RENDERING FOR RAW TABLE DATA -->
-{% macro render_table(table) %}
-<table class="table table-bordered">
-{% for row in table.rows or []%}
-<tr>
-  {% for cell in row.cells %}
-  <td>
-    {{ cell.text }}
-    {% for nested_table in cell.tables %}
-    {{ render_table(nested_table) }}
+  <!-- RENDERING FOR RAW TABLE DATA -->
+  {% macro render_table(table) %}
+  <table class="table">
+  {% for row in table.rows or []%}
+  <tr>
+    {% for cell in row.cells %}
+    <td>
+      {{ cell.text }}
+      {% for nested_table in cell.tables %}
+      {{ render_table(nested_table) }}
+      {% endfor %}
+    </td>
     {% endfor %}
-  </td>
+  </tr>
+  {% else %}
+  <tr><td>Non-tabular figure.</td></tr>
   {% endfor %}
-</tr>
-{% else %}
-<tr><td>Non-tabular figure.</td></tr>
-{% endfor %}
-</table>
-{% endmacro %}
+  </table>
+  {% endmacro %}
 
-<!-- MACRO RENDERING GRID TABLE DATA -->
-{% macro render_grid(grid) %}
-<table class="table table-bordered">
-<thead class="table-dark">
-<tr>
-  {% for header in grid["headers"] or []%}
-  <th>{{ header }}</th>
+  <!-- MACRO RENDERING GRID TABLE DATA -->
+  {% macro render_grid(grid) %}
+  <table class="table">
+  <thead class="table-dark">
+  <tr>
+    {% for header in grid["headers"] or []%}
+    <th>{{ header }}</th>
+    {% endfor %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for row in grid["values"] or [] %}
+  <tr>
+    {% for value in row or [] %}
+    <td>{{ value }}</td>
+    {% endfor %}
+  </tr>
   {% endfor %}
-</tr>
-</thead>
-<tbody>
-{% for row in grid["values"] or [] %}
-<tr>
-  {% for value in row or [] %}
-  <td>{{ value }}</td>
-  {% endfor %}
-</tr>
-{% endfor %}
-</tbody>
-</table>
-{% endmacro %}
+  </tbody>
+  </table>
+  {% endmacro %}
 
-<!-- Sections and figures under those sections -->
-<div class="container mt-5">
-{% for section, figures in document.items() if section != "meta" %}
-{% for figure in figures %}
-{% set figure_error_count = figure_errors.get(figure.figure_nr, []) | count %}
-<div class="card mb-4">
+  <!-- Sections and figures under those sections -->
+  <div class="container mt-5">
+  {% for section, figures in document.items() if section != "meta" %}
+  {% for figure in figures %}
+  {% set figure_error_count = figure_errors.get(figure.figure_nr, []) | count %}
+  <div class="card mb-4">
 
-  <div class="card-header">
-    {{ figure.caption }}
-  </div>
+    <div class="card-header">
+      {{ figure.caption }}
+    </div>
 
-  <div class="card-header">
-    <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_{{figure.figure_nr}}" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" id="grid_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#grid_{{figure.figure_nr}}" role="tab" aria-controls="grid_{{figure.figure_nr}}" aria-selected="true">Grid</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="table_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#table_{{figure.figure_nr}}" role="tab" aria-controls="table_{{figure.figure_nr}}" aria-selected="false">Table</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {% if figure_error_count %}text-danger{% endif %}" id="errors_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#errors_{{figure.figure_nr}}" role="tab" aria-controls="errors_{{figure.figure_nr}}" aria-selected="false">Errors ({{ figure_error_count }})</a>
-      </li>
-    </ul>
-  </div>
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_{{figure.figure_nr}}" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#grid_{{figure.figure_nr}}" role="tab" aria-controls="grid_{{figure.figure_nr}}" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#table_{{figure.figure_nr}}" role="tab" aria-controls="table_{{figure.figure_nr}}" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if figure_error_count %}text-danger{% endif %}" id="errors_tab_{{figure.figure_nr}}" data-bs-toggle="tab" href="#errors_{{figure.figure_nr}}" role="tab" aria-controls="errors_{{figure.figure_nr}}" aria-selected="false">Errors ({{ figure_error_count }})</a>
+        </li>
+      </ul>
+    </div>
   
-  <div class="card-body">
-    <div class="tab-content" id="tabcontent">
-      <div class="tab-pane fade show active" id="grid_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="grid_tab_{{figure.figure_nr}}">
-        <!-- GRID TABLE rendered -->
-        {{ render_grid(figure.get('grid', None)) }}
-      </div>
-      <div class="tab-pane fade" id="table_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="table_tab_{{figure.figure_nr}}">
-        <!-- RAW TABLE rendered here -->
-        {{ render_table(figure.table) }}
-      </div>
-      <div class="tab-pane fade" id="errors_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="errors_tab_{{figure.figure_nr}}">
-        {% for error in figure_errors.get(figure.figure_nr, []) %}
-        <pre>{{ error }}</pre>
-        {% else %}
-        <p>No errors logged for this figure.</p>
-        {% endfor %}
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="grid_tab_{{figure.figure_nr}}">
+          <!-- GRID TABLE rendered -->
+          {{ render_grid(figure.get('grid', None)) }}
+        </div>
+        <div class="tab-pane fade" id="table_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="table_tab_{{figure.figure_nr}}">
+          <!-- RAW TABLE rendered here -->
+          {{ render_table(figure.table) }}
+        </div>
+        <div class="tab-pane fade" id="errors_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="errors_tab_{{figure.figure_nr}}">
+          {% for error in figure_errors.get(figure.figure_nr, []) %}
+          <pre>{{ error }}</pre>
+          {% else %}
+          <p>No errors logged for this figure.</p>
+          {% endfor %}
+        </div>
       </div>
     </div>
-  </div>
   
-</div>
-{% endfor %}
-{% endfor %}
-</div>
+  </div>
+  {% endfor %}
+  {% endfor %}
+  </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
-</body>
+  </body>
 </html>
