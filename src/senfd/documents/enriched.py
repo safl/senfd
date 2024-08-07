@@ -145,8 +145,8 @@ class CommandSqeDwords(EnrichedFigure):
     ]
 
     command_name: str
-    command_dword_lower: str
-    command_dword_upper: str
+    command_dword_lower: int
+    command_dword_upper: int
 
 
 class CommandSqeDword(EnrichedFigure):
@@ -159,7 +159,7 @@ class CommandSqeDword(EnrichedFigure):
     ]
 
     command_name: str
-    command_dword: str
+    command_dword: int
 
 
 class CommandCqeDword(EnrichedFigure):
