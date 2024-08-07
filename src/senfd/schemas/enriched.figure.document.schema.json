@@ -480,7 +480,7 @@
                 },
                 "command_dword": {
                     "title": "Command Dword",
-                    "type": "string"
+                    "type": "integer"
                 }
             },
             "required": [
@@ -539,11 +539,11 @@
                 },
                 "command_dword_lower": {
                     "title": "Command Dword Lower",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "command_dword_upper": {
                     "title": "Command Dword Upper",
-                    "type": "string"
+                    "type": "integer"
                 }
             },
             "required": [
@@ -834,10 +834,27 @@
                     "title": "Headers",
                     "type": "array"
                 },
+                "fields": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                },
                 "values": {
                     "items": {
                         "items": {
-                            "type": "string"
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
                         },
                         "type": "array"
                     },

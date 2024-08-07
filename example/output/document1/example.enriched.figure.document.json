@@ -117,28 +117,8 @@
                     "Command",
                     "Command Support Requirements"
                 ],
-                "values": [
-                    [
-                        "Ring",
-                        "M"
-                    ],
-                    [
-                        "Ding",
-                        "M"
-                    ],
-                    [
-                        "Dong",
-                        "M"
-                    ],
-                    [
-                        "Keep",
-                        "M"
-                    ],
-                    [
-                        "Ringing",
-                        "M"
-                    ]
-                ]
+                "fields": [],
+                "values": []
             },
             "command_set_name": "Foobar "
         }
@@ -549,43 +529,8 @@
                     "Command",
                     "Reference"
                 ],
-                "values": [
-                    [
-                        "0000 00b",
-                        "01b",
-                        "01h",
-                        "Ring",
-                        "3.2.5"
-                    ],
-                    [
-                        "0000 00b",
-                        "10b",
-                        "02h",
-                        "Ding",
-                        "3.2.3"
-                    ],
-                    [
-                        "0001 00b",
-                        "00b",
-                        "10h",
-                        "Dong",
-                        "3.2.1"
-                    ],
-                    [
-                        "0001 01b",
-                        "00b",
-                        "14h",
-                        "Keep",
-                        "3.2.4"
-                    ],
-                    [
-                        "0000 01b",
-                        "10b",
-                        "06h",
-                        "Ringing",
-                        "3.2.2"
-                    ]
-                ]
+                "fields": [],
+                "values": []
             },
             "command_set_name": "Foobar Command Set"
         }
@@ -656,19 +601,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:8",
-                        "Reserved"
-                    ],
-                    [
-                        "7:0",
-                        "Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes."
+                        "31",
+                        null,
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Dong ",
-            "command_dword": "11"
+            "command_name": "Dong",
+            "command_dword": 11
         },
         {
             "figure_nr": 10,
@@ -722,15 +673,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:00",
-                        "Host Buffer Size (HBS): This field indicates the host buffer size in bytes."
+                        "31",
+                        "00",
+                        "Host Buffer Size ",
+                        "HBS",
+                        "This field indicates the host buffer size in bytes."
                     ]
                 ]
             },
-            "command_name": "Ringing ",
-            "command_dword": "10"
+            "command_name": "Ringing",
+            "command_dword": 10
         },
         {
             "figure_nr": 11,
@@ -796,19 +757,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:8",
-                        "Reserved"
-                    ],
-                    [
-                        "7:0",
-                        "Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes."
+                        "31",
+                        null,
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Ringing ",
-            "command_dword": "11"
+            "command_name": "Ringing",
+            "command_dword": 11
         },
         {
             "figure_nr": 18,
@@ -862,15 +829,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:00",
-                        "Host Buffer Size (HBS): This field indicates the host buffer size in bytes."
+                        "31",
+                        "00",
+                        "Host Buffer Size ",
+                        "HBS",
+                        "This field indicates the host buffer size in bytes."
                     ]
                 ]
             },
-            "command_name": "Ding ",
-            "command_dword": "10"
+            "command_name": "Ding",
+            "command_dword": 10
         },
         {
             "figure_nr": 19,
@@ -990,23 +967,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:16",
-                        "Reserved"
-                    ],
-                    [
-                        "15:8",
-                        "Ding Option (RO): This field specifies the Ding option."
-                    ],
-                    [
-                        "7:0",
-                        "Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes."
+                        "31",
+                        "16",
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Ding ",
-            "command_dword": "11"
+            "command_name": "Ding",
+            "command_dword": 11
         },
         {
             "figure_nr": 20,
@@ -1084,23 +1063,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:20",
-                        "Reserved"
-                    ],
-                    [
-                        "19:16",
-                        "Command Extension Type (CETYPE): Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
-                    ],
-                    [
-                        "15:00",
-                        "Command Extension Value (CEV): The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
+                        "31",
+                        "20",
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Ding ",
-            "command_dword": "13"
+            "command_name": "Ding",
+            "command_dword": 13
         },
         {
             "figure_nr": 24,
@@ -1166,19 +1147,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:8",
-                        "Reserved"
-                    ],
-                    [
-                        "7:0",
-                        "Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes."
+                        "31",
+                        null,
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Keep ",
-            "command_dword": "11"
+            "command_name": "Keep",
+            "command_dword": 11
         },
         {
             "figure_nr": 29,
@@ -1232,15 +1219,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:00",
-                        "Value Size (VS): This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps."
+                        "31",
+                        "00",
+                        "Value Size ",
+                        "VS",
+                        "This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps."
                     ]
                 ]
             },
-            "command_name": "Ring ",
-            "command_dword": "10"
+            "command_name": "Ring",
+            "command_dword": 10
         },
         {
             "figure_nr": 30,
@@ -1384,23 +1381,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:16",
-                        "Reserved"
-                    ],
-                    [
-                        "15:8",
-                        "Ring Option (RO): Specifies the Ring option."
-                    ],
-                    [
-                        "7:0",
-                        "Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes."
+                        "31",
+                        "16",
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Ring ",
-            "command_dword": "11"
+            "command_name": "Ring",
+            "command_dword": 11
         },
         {
             "figure_nr": 31,
@@ -1478,23 +1477,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:20",
-                        "Reserved"
-                    ],
-                    [
-                        "19:16",
-                        "Command Extension Type (CETYPE): Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
-                    ],
-                    [
-                        "15:00",
-                        "Command Extension Value (CEV): The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
+                        "31",
+                        "20",
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Ring ",
-            "command_dword": "13"
+            "command_name": "Ring",
+            "command_dword": 13
         },
         {
             "figure_nr": 36,
@@ -1560,19 +1561,25 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "31:01",
-                        "Reserved"
-                    ],
-                    [
-                        "00",
-                        "Error on Dong of Non-Keepent Foobar Baz (EDNEK): This bit defines the response of the controller to a Dong command processed for a Foobar Baz that does not Keep."
+                        "31",
+                        "01",
+                        "Reserved",
+                        null,
+                        null
                     ]
                 ]
             },
-            "command_name": "Foobar Config ",
-            "command_dword": "11"
+            "command_name": "Foobar Config",
+            "command_dword": 11
         }
     ],
     "command_sqe_dwords": [
@@ -1628,16 +1635,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Dong ",
-            "command_dword_lower": "2",
-            "command_dword_upper": "3"
+            "command_dword_lower": 2,
+            "command_dword_upper": 3
         },
         {
             "figure_nr": 8,
@@ -1691,16 +1708,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127: 96."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Dong ",
-            "command_dword_lower": "14",
-            "command_dword_upper": "15"
+            "command_dword_lower": 14,
+            "command_dword_upper": 15
         },
         {
             "figure_nr": 12,
@@ -1754,16 +1781,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[63:00]: This field specifies least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ringing ",
-            "command_dword_lower": "2",
-            "command_dword_upper": "3"
+            "command_dword_lower": 2,
+            "command_dword_upper": 3
         },
         {
             "figure_nr": 13,
@@ -1817,16 +1854,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ringing ",
-            "command_dword_lower": "14",
-            "command_dword_upper": "15"
+            "command_dword_lower": 14,
+            "command_dword_upper": 15
         },
         {
             "figure_nr": 21,
@@ -1880,16 +1927,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ding ",
-            "command_dword_lower": "2",
-            "command_dword_upper": "3"
+            "command_dword_lower": 2,
+            "command_dword_upper": 3
         },
         {
             "figure_nr": 22,
@@ -1943,16 +2000,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ding ",
-            "command_dword_lower": "14",
-            "command_dword_upper": "15"
+            "command_dword_lower": 14,
+            "command_dword_upper": 15
         },
         {
             "figure_nr": 25,
@@ -2006,16 +2073,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Keep ",
-            "command_dword_lower": "2",
-            "command_dword_upper": "3"
+            "command_dword_lower": 2,
+            "command_dword_upper": 3
         },
         {
             "figure_nr": 26,
@@ -2069,16 +2146,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[127:64]: This field specifies most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Keep ",
-            "command_dword_lower": "14",
-            "command_dword_upper": "15"
+            "command_dword_lower": 14,
+            "command_dword_upper": 15
         },
         {
             "figure_nr": 32,
@@ -2132,16 +2219,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ring ",
-            "command_dword_lower": "2",
-            "command_dword_upper": "3"
+            "command_dword_lower": 2,
+            "command_dword_upper": 3
         },
         {
             "figure_nr": 33,
@@ -2195,16 +2292,26 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
                 "values": [
                     [
-                        "63:0",
-                        "Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96."
+                        "63",
+                        null,
+                        "Foobar Baz",
+                        null,
+                        null
                     ]
                 ]
             },
             "command_name": "Ring ",
-            "command_dword_lower": "14",
-            "command_dword_upper": "15"
+            "command_dword_lower": 14,
+            "command_dword_upper": 15
         }
     ],
     "command_sqe_data_pointer": [
@@ -2260,9 +2367,15 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "wildcard"
+                ],
                 "values": [
                     [
-                        "127:00",
+                        "12",
+                        null,
                         "Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -2321,9 +2434,15 @@
                     "Bits",
                     "Description"
                 ],
+                "fields": [
+                    "upper",
+                    "lower",
+                    "wildcard"
+                ],
                 "values": [
                     [
-                        "127:00",
+                        "12",
+                        null,
                         "Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -2527,50 +2646,11 @@
                     "Definition",
                     "Commands Affected"
                 ],
+                "fields": [
+                    "wildcard"
+                ],
                 "values": [
                     [
-                        "81h",
-                        "Capacity Exceeded",
-                        "Ring"
-                    ],
-                    [
-                        "82h",
-                        "Namespace Not Ready",
-                        "Dong, Keep, Ding, Ring"
-                    ],
-                    [
-                        "83h",
-                        "Reservation Conflict",
-                        "Dong, Ring, Ding"
-                    ],
-                    [
-                        "84h",
-                        "Format In Progress",
-                        "Dong, Keep, Ringing, Ding, Ring"
-                    ],
-                    [
-                        "85h",
-                        "Invalid Value Size",
-                        "Ring"
-                    ],
-                    [
-                        "86h",
-                        "Invalid Foobar Size",
-                        "Ringing, Ding, Ring"
-                    ],
-                    [
-                        "87h",
-                        "Foobar Baz Does Not Keep",
-                        "Dong, Keep, Ding, Ring"
-                    ],
-                    [
-                        "88h",
-                        "Unrecovered Error",
-                        "Ding"
-                    ],
-                    [
-                        "89h",
-                        "Foobar Keeps",
                         "Ring"
                     ]
                 ]
@@ -2637,6 +2717,7 @@
             "grid": {
                 "ncells": 2,
                 "headers": [],
+                "fields": [],
                 "values": []
             }
         },
@@ -2700,8 +2781,18 @@
             },
             "grid": {
                 "ncells": 2,
-                "headers": [],
-                "values": []
+                "headers": [
+                    "Value",
+                    "Definition"
+                ],
+                "fields": [
+                    "wildcard"
+                ],
+                "values": [
+                    [
+                        "Invalid Foobar Size: The Foobar Baz size is not valid."
+                    ]
+                ]
             }
         },
         {
@@ -2788,8 +2879,18 @@
             },
             "grid": {
                 "ncells": 2,
-                "headers": [],
-                "values": []
+                "headers": [
+                    "Value",
+                    "Definition"
+                ],
+                "fields": [
+                    "wildcard"
+                ],
+                "values": [
+                    [
+                        "Invalid Foobar Size: The Foobar Baz size is not valid."
+                    ]
+                ]
             }
         },
         {
@@ -2840,8 +2941,18 @@
             },
             "grid": {
                 "ncells": 2,
-                "headers": [],
-                "values": []
+                "headers": [
+                    "Value",
+                    "Definition"
+                ],
+                "fields": [
+                    "wildcard"
+                ],
+                "values": [
+                    [
+                        "Foobar Baz Does Not Keep:The Foobar Baz does not Keep."
+                    ]
+                ]
             }
         },
         {
@@ -2952,8 +3063,18 @@
             },
             "grid": {
                 "ncells": 2,
-                "headers": [],
-                "values": []
+                "headers": [
+                    "Value",
+                    "Definition"
+                ],
+                "fields": [
+                    "wildcard"
+                ],
+                "values": [
+                    [
+                        "Invalid Value Size: The value size is not valid."
+                    ]
+                ]
             }
         }
     ],
@@ -3203,35 +3324,8 @@
                     "CSI",
                     "Reference"
                 ],
-                "values": [
-                    [
-                        "05h",
-                        "M",
-                        "Identify I/O Command Set specific Namespace data structure for the specified NSID for the I/O Command Set specified in the CSI field.",
-                        "Y",
-                        "N",
-                        "Y",
-                        "4.1.5.1"
-                    ],
-                    [
-                        "06h",
-                        "M",
-                        "Identify I/O Command Set Specific Controller data structure for the controller processing the command.",
-                        "Y",
-                        "N",
-                        "Y",
-                        "4.1.5.2"
-                    ],
-                    [
-                        "0Ah",
-                        "O",
-                        "I/O Command Set specific Identify Namespace data structure for the specified Format Index for the I/O Command Set specified in the CSI field.6",
-                        "N",
-                        "N",
-                        "Y",
-                        "4.1.5.3"
-                    ]
-                ]
+                "fields": [],
+                "values": []
             }
         }
     ],
@@ -3313,6 +3407,7 @@
             "grid": {
                 "ncells": 3,
                 "headers": [],
+                "fields": [],
                 "values": []
             }
         }
@@ -3437,20 +3532,12 @@
                     "Description",
                     "Scope"
                 ],
+                "fields": [
+                    "wildcard"
+                ],
                 "values": [
                     [
-                        "20h",
-                        "Yes",
-                        "No",
-                        "Foobar Configuration",
                         "Namespace"
-                    ],
-                    [
-                        "Notes:",
-                        "Notes:",
-                        "Notes:",
-                        "Notes:",
-                        "Notes:"
                     ]
                 ]
             }
@@ -3555,18 +3642,12 @@
                     "Log Page Name",
                     "Reference"
                 ],
+                "fields": [
+                    "wildcard"
+                ],
                 "values": [
                     [
-                        "01h",
-                        "Refer to the Specifcation",
-                        "Error Information",
                         "4.1.4.1"
-                    ],
-                    [
-                        "06h",
-                        "Refer to the Specifcation",
-                        "Device Self-test",
-                        "4.1.4.2"
                     ]
                 ]
             }

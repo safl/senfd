@@ -17,9 +17,10 @@ class Bits(BaseModel):
     nbits: int
     lower: int
     upper: int
-    acronym: str
+
     name: str
-    description: str
+    acronym: Optional[str]
+    description: Optional[str]
 
 
 class CommandDwords(BaseModel):
@@ -35,10 +36,6 @@ class CommandDwords(BaseModel):
     nbytes: int
     lower: int
     upper: int
-    acronym: str
-    name: str
-    description: str
-
     bits: List[Bits] = Field(default_factory=list)
 
 

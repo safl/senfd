@@ -34,7 +34,7 @@
           <a class="nav-link" id="table_tab_2" data-bs-toggle="tab" href="#table_2" role="tab" aria-controls="table_2" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_2" data-bs-toggle="tab" href="#errors_2" role="tab" aria-controls="errors_2" aria-selected="false">Errors (0)</a>
+          <a class="nav-link text-danger" id="errors_tab_2" data-bs-toggle="tab" href="#errors_2" role="tab" aria-controls="errors_2" aria-selected="false">Errors (1)</a>
         </li>
       </ul>
     </div>
@@ -48,53 +48,9 @@
   <thead class="table-dark">
   <tr>
     
-    <th>Command</th>
-    
-    <th>Command Support Requirements</th>
-    
   </tr>
   </thead>
   <tbody>
-  
-  <tr>
-    
-    <td>Ring</td>
-    
-    <td>M</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Ding</td>
-    
-    <td>M</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Dong</td>
-    
-    <td>M</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Keep</td>
-    
-    <td>M</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Ringing</td>
-    
-    <td>M</td>
-    
-  </tr>
   
   </tbody>
   </table>
@@ -224,7 +180,7 @@ O = Optional, M = Mandatory, P = Prohibited
         </div>
         <div class="tab-pane fade" id="errors_2" role="tabpanel" aria-labelledby="errors_tab_2">
           
-          <p>No errors logged for this figure.</p>
+          <pre>message='Grid is missing values; check IoControllerCommandSetSupportRequirements.REGEX_GRID' figure_nr=2</pre>
           
         </div>
       </div>
@@ -254,7 +210,7 @@ O = Optional, M = Mandatory, P = Prohibited
           <a class="nav-link" id="table_tab_5" data-bs-toggle="tab" href="#table_5" role="tab" aria-controls="table_5" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_5" data-bs-toggle="tab" href="#errors_5" role="tab" aria-controls="errors_5" aria-selected="false">Errors (0)</a>
+          <a class="nav-link text-danger" id="errors_tab_5" data-bs-toggle="tab" href="#errors_5" role="tab" aria-controls="errors_5" aria-selected="false">Errors (1)</a>
         </li>
       </ul>
     </div>
@@ -268,89 +224,9 @@ O = Optional, M = Mandatory, P = Prohibited
   <thead class="table-dark">
   <tr>
     
-    <th>Function</th>
-    
-    <th>Data Transfer</th>
-    
-    <th>Combined Opcode</th>
-    
-    <th>Command</th>
-    
-    <th>Reference</th>
-    
   </tr>
   </thead>
   <tbody>
-  
-  <tr>
-    
-    <td>0000 00b</td>
-    
-    <td>01b</td>
-    
-    <td>01h</td>
-    
-    <td>Ring</td>
-    
-    <td>3.2.5</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0000 00b</td>
-    
-    <td>10b</td>
-    
-    <td>02h</td>
-    
-    <td>Ding</td>
-    
-    <td>3.2.3</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0001 00b</td>
-    
-    <td>00b</td>
-    
-    <td>10h</td>
-    
-    <td>Dong</td>
-    
-    <td>3.2.1</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0001 01b</td>
-    
-    <td>00b</td>
-    
-    <td>14h</td>
-    
-    <td>Keep</td>
-    
-    <td>3.2.4</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0000 01b</td>
-    
-    <td>10b</td>
-    
-    <td>06h</td>
-    
-    <td>Ringing</td>
-    
-    <td>3.2.2</td>
-    
-  </tr>
   
   </tbody>
   </table>
@@ -851,7 +727,7 @@ This command may support the use of the Namespace Identifier (NSID) field set to
         </div>
         <div class="tab-pane fade" id="errors_5" role="tabpanel" aria-labelledby="errors_tab_5">
           
-          <p>No errors logged for this figure.</p>
+          <pre>message='Grid is missing values; check CommandSetOpcodes.REGEX_GRID' figure_nr=5</pre>
           
         </div>
       </div>
@@ -893,7 +769,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -903,17 +785,15 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
   <tr>
     
-    <td>31:8</td>
+    <td>31</td>
+    
+    <td>None</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>7:0</td>
-    
-    <td>Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes.</td>
+    <td>None</td>
     
   </tr>
   
@@ -1025,7 +905,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1035,9 +921,15 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
   <tr>
     
-    <td>31:00</td>
+    <td>31</td>
     
-    <td>Host Buffer Size (HBS): This field indicates the host buffer size in bytes.</td>
+    <td>00</td>
+    
+    <td>Host Buffer Size </td>
+    
+    <td>HBS</td>
+    
+    <td>This field indicates the host buffer size in bytes.</td>
     
   </tr>
   
@@ -1135,7 +1027,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1145,17 +1043,15 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
   <tr>
     
-    <td>31:8</td>
+    <td>31</td>
+    
+    <td>None</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>7:0</td>
-    
-    <td>Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes.</td>
+    <td>None</td>
     
   </tr>
   
@@ -1267,7 +1163,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1277,9 +1179,15 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
   <tr>
     
-    <td>31:00</td>
+    <td>31</td>
     
-    <td>Host Buffer Size (HBS): This field indicates the host buffer size in bytes.</td>
+    <td>00</td>
+    
+    <td>Host Buffer Size </td>
+    
+    <td>HBS</td>
+    
+    <td>This field indicates the host buffer size in bytes.</td>
     
   </tr>
   
@@ -1377,7 +1285,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1387,25 +1301,15 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
   <tr>
     
-    <td>31:16</td>
+    <td>31</td>
+    
+    <td>16</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>15:8</td>
-    
-    <td>Ding Option (RO): This field specifies the Ding option.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>7:0</td>
-    
-    <td>Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes.</td>
+    <td>None</td>
     
   </tr>
   
@@ -1581,7 +1485,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1591,25 +1501,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:20</td>
+    <td>31</td>
+    
+    <td>20</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>19:16</td>
-    
-    <td>Command Extension Type (CETYPE): Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation).</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>15:00</td>
-    
-    <td>Command Extension Value (CEV): The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification</td>
+    <td>None</td>
     
   </tr>
   
@@ -1735,7 +1635,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1745,17 +1651,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:8</td>
+    <td>31</td>
+    
+    <td>None</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>7:0</td>
-    
-    <td>Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes.</td>
+    <td>None</td>
     
   </tr>
   
@@ -1867,7 +1771,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1877,9 +1787,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:00</td>
+    <td>31</td>
     
-    <td>Value Size (VS): This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps.</td>
+    <td>00</td>
+    
+    <td>Value Size </td>
+    
+    <td>VS</td>
+    
+    <td>This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps.</td>
     
   </tr>
   
@@ -1977,7 +1893,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -1987,25 +1909,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:16</td>
+    <td>31</td>
+    
+    <td>16</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>15:8</td>
-    
-    <td>Ring Option (RO): Specifies the Ring option.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>7:0</td>
-    
-    <td>Foobar Baz (FB): Specifies the length of the Foobar Baz in bytes.</td>
+    <td>None</td>
     
   </tr>
   
@@ -2208,7 +2120,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2218,25 +2136,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:20</td>
+    <td>31</td>
+    
+    <td>20</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>19:16</td>
-    
-    <td>Command Extension Type (CETYPE): Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation).</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>15:00</td>
-    
-    <td>Command Extension Value (CEV): The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification</td>
+    <td>None</td>
     
   </tr>
   
@@ -2362,7 +2270,13 @@ If the controller does not compress data then this bit is ignored.
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2372,17 +2286,15 @@ If the controller does not compress data then this bit is ignored.
   
   <tr>
     
-    <td>31:01</td>
+    <td>31</td>
+    
+    <td>01</td>
     
     <td>Reserved</td>
     
-  </tr>
-  
-  <tr>
+    <td>None</td>
     
-    <td>00</td>
-    
-    <td>Error on Dong of Non-Keepent Foobar Baz (EDNEK): This bit defines the response of the controller to a Dong command processed for a Foobar Baz that does not Keep.</td>
+    <td>None</td>
     
   </tr>
   
@@ -2498,7 +2410,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2508,9 +2426,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -2608,7 +2532,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2618,9 +2548,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127: 96.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -2718,7 +2654,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2728,9 +2670,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[63:00]: This field specifies least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -2828,7 +2776,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2838,9 +2792,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -2938,7 +2898,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -2948,9 +2914,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3048,7 +3020,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -3058,9 +3036,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3158,7 +3142,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -3168,9 +3158,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3268,7 +3264,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -3278,9 +3280,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[127:64]: This field specifies most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3378,7 +3386,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -3388,9 +3402,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[63:00]: This field specifies the least-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 2 contains bits 31:00; Command Dword 3 contains bits 63:32.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3488,7 +3508,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
     
     <th>Description</th>
     
@@ -3498,9 +3524,15 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>63:0</td>
+    <td>63</td>
     
-    <td>Foobar Baz[127:64]: This field specifies the most-significant 64-bits of the Foobar Baz to be used for the command. Command Dword 14 contains bits 95:64; Command Dword 15 contains bits 127:96.</td>
+    <td>None</td>
+    
+    <td>Foobar Baz</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -3600,9 +3632,11 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
     
-    <th>Description</th>
+    <th>Lower</th>
+    
+    <th>Wildcard</th>
     
   </tr>
   </thead>
@@ -3610,7 +3644,9 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>127:00</td>
+    <td>12</td>
+    
+    <td>None</td>
     
     <td>Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field.</td>
     
@@ -3710,9 +3746,11 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Bits</th>
+    <th>Upper</th>
     
-    <th>Description</th>
+    <th>Lower</th>
+    
+    <th>Wildcard</th>
     
   </tr>
   </thead>
@@ -3720,7 +3758,9 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>127:00</td>
+    <td>12</td>
+    
+    <td>None</td>
     
     <td>Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field.</td>
     
@@ -3826,101 +3866,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Value</th>
-    
-    <th>Definition</th>
-    
-    <th>Commands Affected</th>
+    <th>Wildcard</th>
     
   </tr>
   </thead>
   <tbody>
   
   <tr>
-    
-    <td>81h</td>
-    
-    <td>Capacity Exceeded</td>
-    
-    <td>Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>82h</td>
-    
-    <td>Namespace Not Ready</td>
-    
-    <td>Dong, Keep, Ding, Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>83h</td>
-    
-    <td>Reservation Conflict</td>
-    
-    <td>Dong, Ring, Ding</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>84h</td>
-    
-    <td>Format In Progress</td>
-    
-    <td>Dong, Keep, Ringing, Ding, Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>85h</td>
-    
-    <td>Invalid Value Size</td>
-    
-    <td>Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>86h</td>
-    
-    <td>Invalid Foobar Size</td>
-    
-    <td>Ringing, Ding, Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>Dong, Keep, Ding, Ring</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>88h</td>
-    
-    <td>Unrecovered Error</td>
-    
-    <td>Ding</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>89h</td>
-    
-    <td>Foobar Keeps</td>
     
     <td>Ring</td>
     
@@ -4287,7 +4239,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_14" data-bs-toggle="tab" href="#table_14" role="tab" aria-controls="table_14" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_14" data-bs-toggle="tab" href="#errors_14" role="tab" aria-controls="errors_14" aria-selected="false">Errors (2)</a>
+          <a class="nav-link " id="errors_tab_14" data-bs-toggle="tab" href="#errors_14" role="tab" aria-controls="errors_14" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -4301,9 +4253,17 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Wildcard</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>Invalid Foobar Size: The Foobar Baz size is not valid.</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -4375,9 +4335,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
         </div>
         <div class="tab-pane fade" id="errors_14" role="tabpanel" aria-labelledby="errors_tab_14">
           
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=14</pre>
-          
-          <pre>message='Grid is missing values; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=14</pre>
+          <p>No errors logged for this figure.</p>
           
         </div>
       </div>
@@ -4401,7 +4359,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_23" data-bs-toggle="tab" href="#table_23" role="tab" aria-controls="table_23" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_23" data-bs-toggle="tab" href="#errors_23" role="tab" aria-controls="errors_23" aria-selected="false">Errors (2)</a>
+          <a class="nav-link " id="errors_tab_23" data-bs-toggle="tab" href="#errors_23" role="tab" aria-controls="errors_23" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -4415,9 +4373,17 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Wildcard</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>Invalid Foobar Size: The Foobar Baz size is not valid.</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -4517,9 +4483,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
         </div>
         <div class="tab-pane fade" id="errors_23" role="tabpanel" aria-labelledby="errors_tab_23">
           
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=23</pre>
-          
-          <pre>message='Grid is missing values; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=23</pre>
+          <p>No errors logged for this figure.</p>
           
         </div>
       </div>
@@ -4543,7 +4507,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_27" data-bs-toggle="tab" href="#table_27" role="tab" aria-controls="table_27" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_27" data-bs-toggle="tab" href="#errors_27" role="tab" aria-controls="errors_27" aria-selected="false">Errors (2)</a>
+          <a class="nav-link " id="errors_tab_27" data-bs-toggle="tab" href="#errors_27" role="tab" aria-controls="errors_27" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -4557,9 +4521,17 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Wildcard</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>Foobar Baz Does Not Keep:The Foobar Baz does not Keep.</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -4617,9 +4589,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
         </div>
         <div class="tab-pane fade" id="errors_27" role="tabpanel" aria-labelledby="errors_tab_27">
           
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=27</pre>
-          
-          <pre>message='Grid is missing values; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=27</pre>
+          <p>No errors logged for this figure.</p>
           
         </div>
       </div>
@@ -4643,7 +4613,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_34" data-bs-toggle="tab" href="#table_34" role="tab" aria-controls="table_34" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_34" data-bs-toggle="tab" href="#errors_34" role="tab" aria-controls="errors_34" aria-selected="false">Errors (2)</a>
+          <a class="nav-link " id="errors_tab_34" data-bs-toggle="tab" href="#errors_34" role="tab" aria-controls="errors_34" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -4657,9 +4627,17 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Wildcard</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>Invalid Value Size: The value size is not valid.</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -4787,9 +4765,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
         </div>
         <div class="tab-pane fade" id="errors_34" role="tabpanel" aria-labelledby="errors_tab_34">
           
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=34</pre>
-          
-          <pre>message='Grid is missing values; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=34</pre>
+          <p>No errors logged for this figure.</p>
           
         </div>
       </div>
@@ -4815,7 +4791,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_40" data-bs-toggle="tab" href="#table_40" role="tab" aria-controls="table_40" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_40" data-bs-toggle="tab" href="#errors_40" role="tab" aria-controls="errors_40" aria-selected="false">Errors (0)</a>
+          <a class="nav-link text-danger" id="errors_tab_40" data-bs-toggle="tab" href="#errors_40" role="tab" aria-controls="errors_40" aria-selected="false">Errors (1)</a>
         </li>
       </ul>
     </div>
@@ -4829,77 +4805,9 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>CNS Value</th>
-    
-    <th>O/M</th>
-    
-    <th>Definition</th>
-    
-    <th>NSID</th>
-    
-    <th>CNTID</th>
-    
-    <th>CSI</th>
-    
-    <th>Reference</th>
-    
   </tr>
   </thead>
   <tbody>
-  
-  <tr>
-    
-    <td>05h</td>
-    
-    <td>M</td>
-    
-    <td>Identify I/O Command Set specific Namespace data structure for the specified NSID for the I/O Command Set specified in the CSI field.</td>
-    
-    <td>Y</td>
-    
-    <td>N</td>
-    
-    <td>Y</td>
-    
-    <td>4.1.5.1</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>06h</td>
-    
-    <td>M</td>
-    
-    <td>Identify I/O Command Set Specific Controller data structure for the controller processing the command.</td>
-    
-    <td>Y</td>
-    
-    <td>N</td>
-    
-    <td>Y</td>
-    
-    <td>4.1.5.2</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0Ah</td>
-    
-    <td>O</td>
-    
-    <td>I/O Command Set specific Identify Namespace data structure for the specified Format Index for the I/O Command Set specified in the CSI field.6</td>
-    
-    <td>N</td>
-    
-    <td>N</td>
-    
-    <td>Y</td>
-    
-    <td>4.1.5.3</td>
-    
-  </tr>
   
   </tbody>
   </table>
@@ -5230,7 +5138,7 @@ Selection of a UUID may be supported. Refer to the Universally Unique Identifier
         </div>
         <div class="tab-pane fade" id="errors_40" role="tabpanel" aria-labelledby="errors_tab_40">
           
-          <p>No errors logged for this figure.</p>
+          <pre>message='Grid is missing values; check CnsValues.REGEX_GRID' figure_nr=40</pre>
           
         </div>
       </div>
@@ -5411,15 +5319,7 @@ O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
   <thead class="table-dark">
   <tr>
     
-    <th>Feature Identifier</th>
-    
-    <th>Persistent Across Power Cycle and Reset</th>
-    
-    <th>Uses Memory Buffer for Attributes</th>
-    
-    <th>Description</th>
-    
-    <th>Scope</th>
+    <th>Wildcard</th>
     
   </tr>
   </thead>
@@ -5427,29 +5327,7 @@ O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
   
   <tr>
     
-    <td>20h</td>
-    
-    <td>Yes</td>
-    
-    <td>No</td>
-    
-    <td>Foobar Configuration</td>
-    
     <td>Namespace</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Notes:</td>
-    
-    <td>Notes:</td>
-    
-    <td>Notes:</td>
-    
-    <td>Notes:</td>
-    
-    <td>Notes:</td>
     
   </tr>
   
@@ -5633,13 +5511,7 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   <thead class="table-dark">
   <tr>
     
-    <th>Log Page Identifier</th>
-    
-    <th>Scope and Support</th>
-    
-    <th>Log Page Name</th>
-    
-    <th>Reference</th>
+    <th>Wildcard</th>
     
   </tr>
   </thead>
@@ -5647,25 +5519,7 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
   <tr>
     
-    <td>01h</td>
-    
-    <td>Refer to the Specifcation</td>
-    
-    <td>Error Information</td>
-    
     <td>4.1.4.1</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>06h</td>
-    
-    <td>Refer to the Specifcation</td>
-    
-    <td>Device Self-test</td>
-    
-    <td>4.1.4.2</td>
     
   </tr>
   

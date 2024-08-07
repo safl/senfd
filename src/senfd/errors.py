@@ -17,6 +17,11 @@ class TableError(Error):
     caption: str
 
 
+class TableRowError(Error):
+    table_nr: int
+    table_idx: int
+
+
 class FigureError(Error):
     figure_nr: int
 
@@ -57,4 +62,8 @@ class IrregularTableError(FigureError):
 
 
 class CannotDetermineCommandRequirement(FigureError):
+    pass
+
+
+class InvalidBitTableEntry(FigureError):
     pass

@@ -34,7 +34,9 @@ class Grid(BaseModel):
 
     ncells: int = Field(default_factory=int)
     headers: List[str] = Field(default_factory=list)
-    values: List[List[str]] = Field(default_factory=list)
+
+    fields: List[str] = Field(default_factory=list)
+    values: List[List[str | int | None]] = Field(default_factory=list)
 
     @classmethod
     def from_enriched_figure(cls, figure) -> Tuple[Optional["Grid"], List[Error]]:
@@ -74,33 +76,67 @@ class Grid(BaseModel):
         regex_hdr, regex_val = zip(*figure.REGEX_GRID)
 
         header_names: List[str] = []
-        values = []
+
+        fields: List[str] = []
+        values: List[List[str | int]] = []
         for idx, row in enumerate(figure.table.rows):
             if not header_names:
                 header_matches = [
-                    match.group(1)
+                    match.group(1) if match else match
                     for match in (
                         re.match(regex, cell.text.strip().replace("\n", " "))
                         for cell, regex in zip(row.cells, regex_hdr)
                     )
-                    if match
                 ]
-                if len(header_matches) == len(regex_hdr):
+                if all(header_matches):
                     header_names = header_matches
+                else:
+                    errors.append(
+                        senfd.errors.TableRowError(
+                            table_nr=figure.table.table_nr,
+                            table_idx=idx,
+                            message="Did not match REGEX_GRID/Headers",
+                        )
+                    )
                 continue
 
             value_matches = [
-                match.group(1)
+                match.groupdict() if match else match
                 for match in (
                     re.match(regex, cell.text.strip())
                     for cell, regex in zip(row.cells, regex_val)
                 )
-                if match
             ]
-            if len(value_matches) == len(regex_val):
-                values.append(value_matches)
+            if not all(value_matches):
+                errors.append(
+                    senfd.errors.TableRowError(
+                        table_nr=figure.table.table_nr,
+                        table_idx=idx,
+                        message="Did not match REGEX_GRID/Values",
+                    )
+                )
+                continue
+
+            combined = {k: v for d in value_matches if d for k, v in d.items()}
+            cur_fields = list(combined.keys())
+            if not fields:
+                fields = cur_fields
+            else:
+                diff = list(set(cur_fields) | set(fields))
+                if diff:
+                    errors.append(
+                        senfd.errors.TableRowError(
+                            table_nr=figure.table.table_nr,
+                            table_idx=idx,
+                            message=f"Unexpected fields ({fields}) != ({cur_fields})",
+                        )
+                    )
+                    continue
+
+            values.append(list(combined.values()))
 
         data["headers"] = header_names
+        data["fields"] = fields
         data["values"] = values
 
         grid_table = cls(**data)

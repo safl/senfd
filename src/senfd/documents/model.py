@@ -40,11 +40,15 @@ class FromEnrichedDocument(Converter):
 
         errors: List[Error] = []
 
-        enriched = EnrichedFigureDocument.model_validate_json(path.read_text())
+        # enriched = EnrichedFigureDocument.model_validate_json(path.read_text())
 
         document = ModelDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
 
+        return document, errors
+
+
+"""
         command_requirements = {
             name.strip().replace(" ", "_").replace("/", "").lower(): req.upper()
             for requirements in enriched.io_controller_command_set_support_requirements
@@ -73,6 +77,25 @@ class FromEnrichedDocument(Converter):
                         )
                     )
 
+                sqe_dwords = []
+                for dword in enriched.command_sqe_dword:
+                    alias = (
+                        dword.command_name.strip()
+                        .replace(" ", "_")
+                        .replace("/", "")
+                        .lower()
+                    )
+                    if alias != data["alias"]:
+                        continue
+
+                    dword = dword.command_dword
+                    lower = dword
+                    upper = lower
+                    nbytes = upper - lower + 1
+
+                    cmd_dwords = CommandDwords()
+                    sqe_dwords.append((dword, dword.bits))
+
                 cmd = senfd.models.Command(**data)
 
                 document.commands.append(cmd)
@@ -80,3 +103,4 @@ class FromEnrichedDocument(Converter):
                 # TODO: Find dwords (sqe + cqe) and associate these with the command
 
         return document, errors
+"""

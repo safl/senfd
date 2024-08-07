@@ -31,8 +31,8 @@
   <table class="table">
   <thead class="table-dark">
   <tr>
-    {% for header in grid["headers"] or []%}
-    <th>{{ header }}</th>
+    {% for field in grid["fields"] or []%}
+    <th>{{ field | capitalize }}</th>
     {% endfor %}
   </tr>
   </thead>
