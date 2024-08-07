@@ -3,10 +3,11 @@ from typing import List, Type
 
 from senfd.documents.base import Converter
 from senfd.documents.enriched import FromFigureDocument
+from senfd.documents.model import FromEnrichedDocument
 from senfd.documents.plain import FromDocx
 from senfd.errors import Error
 
-CONVERTERS: List[Type[Converter]] = [FromDocx, FromFigureDocument]
+CONVERTERS: List[Type[Converter]] = [FromDocx, FromFigureDocument, FromEnrichedDocument]
 
 
 def process(input: Path, output: Path) -> List[Error]:

@@ -1,0 +1,48 @@
+{
+    "meta": {
+        "version": "0.2.3",
+        "stem": "example"
+    },
+    "commands": [
+        {
+            "opcode": 1,
+            "alias": "ring",
+            "name": "Ring",
+            "req": "M",
+            "sqe": [],
+            "cqe": []
+        },
+        {
+            "opcode": 2,
+            "alias": "ding",
+            "name": "Ding",
+            "req": "M",
+            "sqe": [],
+            "cqe": []
+        },
+        {
+            "opcode": 16,
+            "alias": "dong",
+            "name": "Dong",
+            "req": "M",
+            "sqe": [],
+            "cqe": []
+        },
+        {
+            "opcode": 20,
+            "alias": "keep",
+            "name": "Keep",
+            "req": "M",
+            "sqe": [],
+            "cqe": []
+        },
+        {
+            "opcode": 6,
+            "alias": "ringing",
+            "name": "Ringing",
+            "req": "M",
+            "sqe": [],
+            "cqe": []
+        }
+    ]
+}

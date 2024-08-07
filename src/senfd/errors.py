@@ -54,3 +54,7 @@ class FigureDuplicateNumberError(FigureError):
 
 class IrregularTableError(FigureError):
     lengths: List[int]
+
+
+class CannotDetermineCommandRequirement(FigureError):
+    pass
