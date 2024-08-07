@@ -141,7 +141,7 @@ class CommandSqeDwords(EnrichedFigure):
 
     command_name: str
     command_dword_lower: str
-    command_dword_upper: Optional[str]
+    command_dword_upper: str
 
 
 class CommandSqeDword(EnrichedFigure):
