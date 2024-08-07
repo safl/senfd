@@ -137,7 +137,7 @@ class CommandSqeDwords(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*"
         r"(?P<command_dword_lower>\d+)"
-        r".*and.*?\s(?P<command_dword_upper>\d+)"
+        r".*and.*?\s(?P<command_dword_upper>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (REGEX_HDR_BITS, REGEX_EVERYTHING),
@@ -151,7 +151,7 @@ class CommandSqeDwords(EnrichedFigure):
 
 class CommandSqeDword(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*(?P<command_dword>\d+)$"
+        r"^(?P<command_name>[\w\s]+)\s+-\s+Command\s*Dword\s*(?P<command_dword>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (REGEX_HDR_BITS, REGEX_EVERYTHING),
