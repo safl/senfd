@@ -90,8 +90,9 @@ class IoControllerCommandSetSupportRequirements(EnrichedFigure):
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (REGEX_HDR_COMMAND, "([a-zA-Z]+)"),
-        (r"(Command\sSupport\sRequirements)\s\d", "(O|M|P)"),
+        (r"^(Command\sSupport\sRequirements)[ \d]*?$", "(O|M|P)"),
     ]
+
     command_set_name: str
 
 
@@ -150,7 +151,7 @@ class CommandSqeDwords(EnrichedFigure):
 
 class CommandSqeDword(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*(?P<command_dword>\d+).*?"
+        r"^(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*(?P<command_dword>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (REGEX_HDR_BITS, REGEX_EVERYTHING),
