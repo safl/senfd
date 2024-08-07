@@ -17,10 +17,14 @@ from senfd.documents.plain import Figure, FigureDocument
 from senfd.errors import Error
 from senfd.utils import pascal_to_snake
 
-REGEX_BITSTR_2BITS = r"(\d{2}b)"
-REGEX_BITSTR_6BITS = r"(\d{4}\s\d{2}b)"
 REGEX_EVERYTHING = r"(.*)"
-REGEX_HEXSTR_2BYTS = r"([a-zA-Z0-9]{2}h)"
+REGEX_VAL_BITSTR_2BITS = r"(\d{2}b)"
+REGEX_VAL_BITSTR_6BITS = r"(\d{4}\s\d{2}b)"
+REGEX_VAL_HEXSTR_2BYTS = r"([a-zA-Z0-9]{2}h)"
+
+REGEX_VAL_COMMAND_NAME = r"^([a-zA-Z -/]*)[ \d]?$"
+
+REGEX_VAL_REFER_TO_BASESPEC = r"(Refer.to.the.NVM.Express.Base.Specification).*"
 
 REGEX_HDR_ACRONYM = r"(Term|Acronym).*"
 REGEX_HDR_BITS = r"(Bits).*"
@@ -106,7 +110,7 @@ class CommandSupportRequirements(EnrichedFigure):
 class CnsValues(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*CNS\s+Values.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(CNS.Value)", REGEX_HEXSTR_2BYTS),
+        (r"(CNS.Value)", REGEX_VAL_HEXSTR_2BYTS),
         (r"(O\/M).*", r"(O|M).*"),
         (REGEX_HDR_DEFINITION, REGEX_EVERYTHING),
         (r"(NSID).*", r"(Y|N).*"),
@@ -200,10 +204,10 @@ class CommandSetOpcodes(EnrichedFigure):
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_EVERYTHING),
-        (REGEX_HDR_DATA_TRANSFER, REGEX_EVERYTHING),
-        (REGEX_HDR_COMBINED_OPCODE, REGEX_EVERYTHING),
-        (REGEX_HDR_COMMAND, REGEX_EVERYTHING),
+        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
+        (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
+        (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_HEXSTR_2BYTS),
+        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
         (REGEX_HDR_REFERENCE, REGEX_EVERYTHING),
     ]
 
