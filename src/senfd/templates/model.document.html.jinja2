@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>{{ document.meta.stem }}</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+caption {
+    caption-side: top;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+{% macro render_table(table) %}
+<table>
+{% for row in table.rows or []%}
+<tr>
+  {% for cell in row.cells %}
+  <td>
+    {{ cell.text }}
+    {% for nested_table in cell.tables %}
+    {{ render_table(nested_table) }}
+    {% endfor %}
+  </td>
+  {% endfor %}
+</tr>
+{% else %}
+<tr><td>Non-tabular figure.</td></tr>
+{% endfor %}
+</table>
+{% endmacro %}
+
+{% for figure in document.figures %}
+<figure>
+<figcaption>{{ figure.caption }}</figcaption>
+{{ render_table(figure.table) }}
+</figure>
+{% endfor %}
+
+</body>
+</html>
