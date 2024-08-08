@@ -27,7 +27,13 @@ class FigureError(Error):
 
 class FigureTableRowError(FigureError):
     table_nr: int
-    table_idx: int
+    row_idx: int
+
+
+class FigureTableRowCellError(FigureError):
+    table_nr: int
+    row_idx: int
+    cell_idx: int
 
 
 class FigureTableMissingError(FigureError):

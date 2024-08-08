@@ -84,11 +84,15 @@
           {{ render_table(figure.table) }}
         </div>
         <div class="tab-pane fade" id="errors_{{figure.figure_nr}}" role="tabpanel" aria-labelledby="errors_tab_{{figure.figure_nr}}">
-          {% for error in figure_errors.get(figure.figure_nr, []) %}
-          <pre>{{ error }}</pre>
-          {% else %}
-          <p>No errors logged for this figure.</p>
-          {% endfor %}
+
+<pre>
+{% for error in figure_errors.get(figure.figure_nr, []) %}
+{{ error }}
+{% else %}
+No errors logged for this figure.
+{% endfor %}
+</pre>
+
         </div>
       </div>
     </div>

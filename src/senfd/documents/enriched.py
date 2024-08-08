@@ -20,11 +20,14 @@ from senfd.utils import pascal_to_snake
 
 REGEX_WILDCARD = r"(?P<wildcard>.*)"
 
-REGEX_VAL_BITSTR_2BITS = r"(?P<bitstr>\d{2}b)"
-REGEX_VAL_BITSTR_4BITS_2BITS = r"(?P<bitstr>\d{4}\s\d{2}b)"
-REGEX_VAL_BITRANGE = r"(?P<upper>\d{2})" r"(?::" r"(?P<lower>\d{2})" r")?"
+REGEX_VAL_BITRANGE = r"(?P<upper>\d{1-2})" r"(?::" r"(?P<lower>\d{1-2})" r")?"
+REGEX_VAL_BITSTR_2BITS = r"(?P<bitstr_2bits>\d{2}b)"
+REGEX_VAL_BITSTR_6BITS = r"(?P<bitstr_6bits>\d{4}\s\d{2}b)"
 REGEX_VAL_BYTES_HEX = r"(?P<hex>[a-zA-Z0-9]{2}h)"
-REGEX_VAL_COMMAND_NAME = r"^([a-zA-Z -/]*)[ \d]?$"
+REGEX_VAL_COMMAND_NAME = r"^(?P<command_name>[a-zA-Z -/]*)[ \d]*$"
+REGEX_VAL_COMMANDS_AFFECTED = r"(?P<commands_affected>.*)"
+REGEX_VAL_DEFINIITON = r"(?P<definition>.*)"
+REGEX_VAL_DESCRIPTION = r"(?P<description>.*)"
 REGEX_VAL_FIELD = (
     r"(?P<name>[ \w]+)"
     r"("
@@ -35,10 +38,10 @@ REGEX_VAL_FIELD = (
 REGEX_VAL_REFER_TO_BASESPEC = (
     r"(?P<reference>Refer.to.the.NVM.Express.Base.Specification).*"
 )
-REGEX_VAL_TERM = r"(?P<term>.*)"
-REGEX_VAL_SUPPORT_REQUIREMENT = r"(?P<requirement>O|M|P)"
-REGEX_VAL_YN = r"(Y|N).*"
 REGEX_VAL_REFERENCE = r"(?P<section>.*)"
+REGEX_VAL_SUPPORT_REQUIREMENT = r"(?P<requirement>O|M|P)"
+REGEX_VAL_TERM = r"(?P<term>.*)"
+REGEX_VAL_YESNO = r"(?P<yn>NOTE|Note|Yes|No|Y|N)[ \d]*?"
 
 REGEX_HDR_ACRONYM = r"(Term|Acronym).*"
 REGEX_HDR_BITS = r"(Bits).*"
@@ -103,10 +106,10 @@ class CnsValues(EnrichedFigure):
         (r"(CNS.Value)", REGEX_VAL_BYTES_HEX),
         (r"(O\/M).*", REGEX_VAL_SUPPORT_REQUIREMENT),
         (REGEX_HDR_DEFINITION, REGEX_WILDCARD),
-        (r"(NSID).*", REGEX_VAL_YN),
-        (r"(CNTID).*", REGEX_VAL_YN),
-        (r"(CSI).*", REGEX_VAL_YN),
-        (REGEX_HDR_REFERENCE, REGEX_WILDCARD),
+        (r"(NSID).*", REGEX_VAL_YESNO.replace("yn", "nsid")),
+        (r"(CNTID).*", REGEX_VAL_YESNO.replace("yn", "cntid")),
+        (r"(CSI).*", REGEX_VAL_YESNO.replace("yn", "csi")),
+        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
     ]
 
 
@@ -168,10 +171,10 @@ class CommandCqeDword(EnrichedFigure):
 class CommandAdminOpcodes(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.Admin.Commands"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_4BITS_2BITS),
+        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
         (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
         (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
-        (r"(Namespace.Identifier.Used).*", REGEX_VAL_YN),
+        (r"(Namespace.Identifier.Used).*", REGEX_VAL_YESNO.replace("yn", "nsid_used")),
         (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
         (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
     ]
@@ -180,7 +183,7 @@ class CommandAdminOpcodes(EnrichedFigure):
 class CommandIoOpcodes(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.I.O.Commands"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_4BITS_2BITS),
+        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
         (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
         (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
         (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
@@ -194,7 +197,7 @@ class CommandSetOpcodes(EnrichedFigure):
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_4BITS_2BITS),
+        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
         (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
         (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
         (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
@@ -220,9 +223,9 @@ class CommandSpecificStatusValues(EnrichedFigure):
         r"(?P<command_name>[\w\s]+)\s+-\s+Command\s+Specific\s+Status\s+Values"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_VALUE, REGEX_WILDCARD),
-        (REGEX_HDR_DESCRIPTION, REGEX_WILDCARD),
-        (REGEX_HDR_COMMANDS_AFFECTED, REGEX_WILDCARD),
+        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
+        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
+        (REGEX_HDR_COMMANDS_AFFECTED, REGEX_VAL_COMMANDS_AFFECTED),
     ]
     command_name: str
 
@@ -411,7 +414,7 @@ class FromFigureDocument(Converter):
                 senfd.errors.FigureNoGridHeaders(
                     figure_nr=figure.figure_nr,
                     message=(
-                        "Grid is missing headers;"
+                        "Grid is missing fields;"
                         f" check {figure.__class__.__name__}.REGEX_GRID"
                     ),
                 )
@@ -457,7 +460,7 @@ class FromFigureDocument(Converter):
 
         fields: List[str] = []
         values: List[List[str | int]] = []
-        for idx, row in enumerate(enriched.table.rows[1:]):
+        for row_idx, row in enumerate(enriched.table.rows[1:], 1):
             if not header_names:
                 header_matches = [
                     match.group(1) if match else match
@@ -473,46 +476,51 @@ class FromFigureDocument(Converter):
                         senfd.errors.FigureTableRowError(
                             figure_nr=enriched.figure_nr,
                             table_nr=enriched.table.table_nr,
-                            table_idx=idx,
+                            row_idx=row_idx,
                             message="Did not match REGEX_GRID/Headers",
                         )
                     )
                 continue
 
-            value_matches = [
-                match.groupdict() if match else match
-                for match in (
-                    re.match(regex, cell.text.strip())
-                    for cell, regex in zip(row.cells, regex_val)
+            combined = {}
+            value_errors = []
+            for cell_idx, (cell, regex) in enumerate(zip(row.cells, regex_val)):
+
+                text = cell.text.strip()
+                match = re.match(regex, text)
+                if match:
+                    combined.update(match.groupdict())
+                    continue
+
+                value_errors.append(
+                    senfd.errors.FigureTableRowCellError(
+                        figure_nr=enriched.figure_nr,
+                        table_nr=enriched.table.table_nr,
+                        row_idx=row_idx,
+                        cell_idx=cell_idx,
+                        message=f"cell.text({text})",
+                    )
                 )
-            ]
-            if not all(value_matches):
+
+            if value_errors:
+                errors += value_errors
+                continue
+
+            cur_fields = list(combined.keys())
+            if not fields:
+                fields = cur_fields
+
+            diff = list(set(cur_fields).difference(set(fields)))
+            if diff:
                 errors.append(
                     senfd.errors.FigureTableRowError(
                         figure_nr=enriched.figure_nr,
                         table_nr=enriched.table.table_nr,
-                        table_idx=idx,
-                        message="Did not match REGEX_GRID/Values",
+                        row_idx=row_idx,
+                        message=f"Unexpected fields ({fields}) != ({cur_fields})",
                     )
                 )
                 continue
-
-            combined = {k: v for d in value_matches if d for k, v in d.items()}
-            cur_fields = list(combined.keys())
-            if not fields:
-                fields = cur_fields
-            else:
-                diff = list(set(cur_fields).difference(set(fields)))
-                if diff:
-                    errors.append(
-                        senfd.errors.FigureTableRowError(
-                            figure_nr=enriched.figure_nr,
-                            table_nr=enriched.table.table_nr,
-                            table_idx=idx,
-                            message=f"Unexpected fields ({fields}) != ({cur_fields})",
-                        )
-                    )
-                    continue
 
             values.append(list(combined.values()))
 
