@@ -20,7 +20,7 @@ from senfd.utils import pascal_to_snake
 
 REGEX_WILDCARD = r"(?P<wildcard>.*)"
 
-REGEX_VAL_BITRANGE = r"(?P<upper>\d{1-2})" r"(?::" r"(?P<lower>\d{1-2})" r")?"
+REGEX_VAL_BITRANGE = r"(?P<upper>\d{1,2})(?::(?P<lower>\d{1,2}))?"
 REGEX_VAL_BITSTR_2BITS = r"(?P<bitstr_2bits>\d{2}b)"
 REGEX_VAL_BITSTR_6BITS = r"(?P<bitstr_6bits>\d{4}\s\d{2}b)"
 REGEX_VAL_BYTES_HEX = r"(?P<hex>[a-zA-Z0-9]{2}h)"
