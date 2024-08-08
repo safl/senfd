@@ -116,8 +116,32 @@
                     "Command",
                     "Command Support Requirements"
                 ],
-                "fields": [],
-                "values": []
+                "fields": [
+                    "command_name",
+                    "requirement"
+                ],
+                "values": [
+                    [
+                        "Ring",
+                        "M"
+                    ],
+                    [
+                        "Ding",
+                        "M"
+                    ],
+                    [
+                        "Dong",
+                        "M"
+                    ],
+                    [
+                        "Keep",
+                        "M"
+                    ],
+                    [
+                        "Ringing",
+                        "M"
+                    ]
+                ]
             },
             "command_set_name": "Foobar "
         }
@@ -527,8 +551,50 @@
                     "Command",
                     "Reference"
                 ],
-                "fields": [],
-                "values": []
+                "fields": [
+                    "bitstr_6bits",
+                    "bitstr_2bits",
+                    "hex",
+                    "command_name",
+                    "wildcard"
+                ],
+                "values": [
+                    [
+                        "0000 00b",
+                        "01b",
+                        "01h",
+                        "Ring",
+                        "3.2.5"
+                    ],
+                    [
+                        "0000 00b",
+                        "10b",
+                        "02h",
+                        "Ding",
+                        "3.2.3"
+                    ],
+                    [
+                        "0001 00b",
+                        "00b",
+                        "10h",
+                        "Dong",
+                        "3.2.1"
+                    ],
+                    [
+                        "0001 01b",
+                        "00b",
+                        "14h",
+                        "Keep",
+                        "3.2.4"
+                    ],
+                    [
+                        "0000 01b",
+                        "10b",
+                        "06h",
+                        "Ringing",
+                        "3.2.2"
+                    ]
+                ]
             },
             "command_set_name": "Foobar Command Set"
         }
@@ -608,10 +674,17 @@
                 "values": [
                     [
                         "31",
-                        null,
+                        "8",
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "7",
+                        "0",
+                        "Foobar Baz ",
+                        "FB",
+                        "Specifies the length of the Foobar Baz in bytes."
                     ]
                 ]
             },
@@ -762,10 +835,17 @@
                 "values": [
                     [
                         "31",
-                        null,
+                        "8",
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "7",
+                        "0",
+                        "Foobar Baz ",
+                        "FB",
+                        "Specifies the length of the Foobar Baz in bytes."
                     ]
                 ]
             },
@@ -974,6 +1054,20 @@
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "15",
+                        "8",
+                        "Ding Option ",
+                        "RO",
+                        "This field specifies the Ding option."
+                    ],
+                    [
+                        "7",
+                        "0",
+                        "Foobar Baz ",
+                        "FB",
+                        "Specifies the length of the Foobar Baz in bytes."
                     ]
                 ]
             },
@@ -1069,6 +1163,20 @@
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "19",
+                        "16",
+                        "Command Extension Type ",
+                        "CETYPE",
+                        "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
+                    ],
+                    [
+                        "15",
+                        "00",
+                        "Command Extension Value ",
+                        "CEV",
+                        "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
                     ]
                 ]
             },
@@ -1148,10 +1256,17 @@
                 "values": [
                     [
                         "31",
-                        null,
+                        "8",
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "7",
+                        "0",
+                        "Foobar Baz ",
+                        "FB",
+                        "Specifies the length of the Foobar Baz in bytes."
                     ]
                 ]
             },
@@ -1384,6 +1499,20 @@
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "15",
+                        "8",
+                        "Ring Option ",
+                        "RO",
+                        "Specifies the Ring option."
+                    ],
+                    [
+                        "7",
+                        "0",
+                        "Foobar Baz ",
+                        "FB",
+                        "Specifies the length of the Foobar Baz in bytes."
                     ]
                 ]
             },
@@ -1479,6 +1608,20 @@
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        "19",
+                        "16",
+                        "Command Extension Type ",
+                        "CETYPE",
+                        "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
+                    ],
+                    [
+                        "15",
+                        "00",
+                        "Command Extension Value ",
+                        "CEV",
+                        "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
                     ]
                 ]
             },
@@ -1562,6 +1705,13 @@
                         "Reserved",
                         null,
                         null
+                    ],
+                    [
+                        null,
+                        "00",
+                        "Error on Dong of Non",
+                        null,
+                        null
                     ]
                 ]
             },
@@ -1631,7 +1781,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -1703,7 +1853,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -1775,7 +1925,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -1847,7 +1997,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -1919,7 +2069,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -1991,7 +2141,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -2063,7 +2213,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -2135,7 +2285,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -2207,7 +2357,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -2279,7 +2429,7 @@
                 "values": [
                     [
                         "63",
-                        null,
+                        "0",
                         "Foobar Baz",
                         null,
                         null
@@ -2350,8 +2500,8 @@
                 ],
                 "values": [
                     [
-                        "12",
                         null,
+                        "12",
                         "Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -2416,8 +2566,8 @@
                 ],
                 "values": [
                     [
-                        "12",
                         null,
+                        "12",
                         "Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -2427,7 +2577,8 @@
     ],
     "command_cqe_dword": [],
     "command_specific_status_values": [],
-    "general_command_status_values": [
+    "general_command_status_values": [],
+    "generic_command_status_values": [
         {
             "figure_nr": 4,
             "caption": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
@@ -2617,15 +2768,68 @@
             "grid": {
                 "headers": [
                     "Value",
-                    "Definition",
-                    "Commands Affected"
+                    "Definition"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
                 ],
                 "values": [
                     [
-                        "Ring"
+                        "81h",
+                        "Capacity Exceeded",
+                        null,
+                        null
+                    ],
+                    [
+                        "82h",
+                        "Namespace Not Ready",
+                        null,
+                        null
+                    ],
+                    [
+                        "83h",
+                        "Reservation Conflict",
+                        null,
+                        null
+                    ],
+                    [
+                        "84h",
+                        "Format In Progress",
+                        null,
+                        null
+                    ],
+                    [
+                        "85h",
+                        "Invalid Value Size",
+                        null,
+                        null
+                    ],
+                    [
+                        "86h",
+                        "Invalid Foobar Size",
+                        null,
+                        null
+                    ],
+                    [
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        null
+                    ],
+                    [
+                        "88h",
+                        "Unrecovered Error",
+                        null,
+                        null
+                    ],
+                    [
+                        "89h",
+                        "Foobar Keeps",
+                        null,
+                        null
                     ]
                 ]
             }
@@ -2689,9 +2893,30 @@
                 ]
             },
             "grid": {
-                "headers": [],
-                "fields": [],
-                "values": []
+                "headers": [
+                    "Value",
+                    "Description"
+                ],
+                "fields": [
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
+                "values": [
+                    [
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        "The Foobar Baz does not Keep."
+                    ],
+                    [
+                        "0Bh",
+                        "Invalid Namespace or Format",
+                        null,
+                        "The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set."
+                    ]
+                ]
             }
         },
         {
@@ -2758,11 +2983,23 @@
                     "Definition"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
                 ],
                 "values": [
                     [
-                        "Invalid Foobar Size: The Foobar Baz size is not valid."
+                        "86h",
+                        "Invalid Foobar Size",
+                        null,
+                        "The Foobar Baz size is not valid."
+                    ],
+                    [
+                        "0Bh",
+                        "Invalid Namespace or Format",
+                        null,
+                        "The namespace or the format of that namespace is invalid."
                     ]
                 ]
             }
@@ -2855,11 +3092,35 @@
                     "Definition"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
                 ],
                 "values": [
                     [
-                        "Invalid Foobar Size: The Foobar Baz size is not valid."
+                        "86h",
+                        "Invalid Foobar Size",
+                        null,
+                        "The Foobar Baz size is not valid."
+                    ],
+                    [
+                        "0Bh",
+                        "Invalid Namespace or Format",
+                        null,
+                        "The namespace or the format of that namespace is invalid."
+                    ],
+                    [
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        "The Foobar Baz does not Keep."
+                    ],
+                    [
+                        "88h",
+                        "Unrecovered Error",
+                        null,
+                        "There was an unrecovered error when reading from the medium."
                     ]
                 ]
             }
@@ -2916,11 +3177,17 @@
                     "Definition"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
                 ],
                 "values": [
                     [
-                        "Foobar Baz Does Not Keep:The Foobar Baz does not Keep."
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        "The Foobar Baz does not Keep."
                     ]
                 ]
             }
@@ -3037,11 +3304,47 @@
                     "Definition"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
                 ],
                 "values": [
                     [
-                        "Invalid Value Size: The value size is not valid."
+                        "85h",
+                        "Invalid Value Size",
+                        null,
+                        "The value size is not valid."
+                    ],
+                    [
+                        "86h",
+                        "Invalid Foobar Size",
+                        null,
+                        "The Foobar Baz size is not valid."
+                    ],
+                    [
+                        "0Bh",
+                        "Invalid Namespace or Format",
+                        null,
+                        "The namespace or the format of that namespace is invalid."
+                    ],
+                    [
+                        "81h",
+                        "Capacity Exceeded",
+                        null,
+                        "The capacity of the device was exceeded."
+                    ],
+                    [
+                        "89h",
+                        "Foobar Keeps",
+                        null,
+                        "The Ring If No Foobar Keeps (SINKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz Keeps."
+                    ],
+                    [
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        "The Ring If Foobar Keeps (SIKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz does not Keep."
                     ]
                 ]
             }
@@ -3292,8 +3595,44 @@
                     "CSI",
                     "Reference"
                 ],
-                "fields": [],
-                "values": []
+                "fields": [
+                    "hex",
+                    "requirement",
+                    "description",
+                    "nsid",
+                    "cntid",
+                    "csi",
+                    "section"
+                ],
+                "values": [
+                    [
+                        "05h",
+                        "M",
+                        "Identify I/O Command Set specific Namespace data structure for the specified NSID for the I/O Command Set specified in the CSI field.",
+                        "Y",
+                        "N",
+                        "Y",
+                        "4.1.5.1"
+                    ],
+                    [
+                        "06h",
+                        "M",
+                        "Identify I/O Command Set Specific Controller data structure for the controller processing the command.",
+                        "Y",
+                        "N",
+                        "Y",
+                        "4.1.5.2"
+                    ],
+                    [
+                        "0Ah",
+                        "O",
+                        "I/O Command Set specific Identify Namespace data structure for the specified Format Index for the I/O Command Set specified in the CSI field.6",
+                        "N",
+                        "N",
+                        "Y",
+                        "4.1.5.3"
+                    ]
+                ]
             }
         }
     ],
@@ -3504,6 +3843,9 @@
                 "values": [
                     [
                         "Namespace"
+                    ],
+                    [
+                        "Notes:"
                     ]
                 ]
             }
@@ -3613,6 +3955,9 @@
                 "values": [
                     [
                         "4.1.4.1"
+                    ],
+                    [
+                        "4.1.4.2"
                     ]
                 ]
             }

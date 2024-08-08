@@ -106,7 +106,7 @@ class CnsValues(EnrichedFigure):
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (r"(CNS.Value)", REGEX_VAL_BYTES_HEX),
         (r"(O\/M).*", REGEX_VAL_SUPPORT_REQUIREMENT),
-        (REGEX_HDR_DEFINITION, REGEX_WILDCARD),
+        (REGEX_HDR_DEFINITION, REGEX_VAL_DESCRIPTION),
         (r"(NSID).*", REGEX_VAL_YESNO.replace("yn", "nsid")),
         (r"(CNTID).*", REGEX_VAL_YESNO.replace("yn", "cntid")),
         (r"(CSI).*", REGEX_VAL_YESNO.replace("yn", "csi")),

@@ -820,6 +820,55 @@
             "title": "GeneralCommandStatusValues",
             "type": "object"
         },
+        "GenericCommandStatusValues": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "GenericCommandStatusValues",
+            "type": "object"
+        },
         "Grid": {
             "description": "Grids are regular, that is, each row has the same amount of cells and cells are\nnamed. Also, their content match",
             "properties": {
@@ -1180,6 +1229,13 @@
                 "$ref": "#/$defs/GeneralCommandStatusValues"
             },
             "title": "General Command Status Values",
+            "type": "array"
+        },
+        "generic_command_status_values": {
+            "items": {
+                "$ref": "#/$defs/GenericCommandStatusValues"
+            },
+            "title": "Generic Command Status Values",
             "type": "array"
         },
         "cns_values": {

@@ -48,9 +48,53 @@
   <thead class="table-dark">
   <tr>
     
+    <th>Command_name</th>
+    
+    <th>Requirement</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>Ring</td>
+    
+    <td>M</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Ding</td>
+    
+    <td>M</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Dong</td>
+    
+    <td>M</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Keep</td>
+    
+    <td>M</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Ringing</td>
+    
+    <td>M</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -179,11 +223,15 @@ O = Optional, M = Mandatory, P = Prohibited
   
         </div>
         <div class="tab-pane fade" id="errors_2" role="tabpanel" aria-labelledby="errors_tab_2">
-          
-          <pre>message='Grid is missing headers; check IoControllerCommandSetSupportRequirements.REGEX_GRID' figure_nr=2</pre>
-          
-          <pre>message='Grid is missing values; check IoControllerCommandSetSupportRequirements.REGEX_GRID' figure_nr=2</pre>
-          
+
+<pre>
+
+message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited) no match(^(?P<command_name>[a-zA-Z -/]*)[ \\d]*$)' figure_nr=2 table_nr=2 row_idx=7 cell_idx=0
+
+message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited) no match((?P<requirement>O|M|P))' figure_nr=2 table_nr=2 row_idx=7 cell_idx=1
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -212,7 +260,7 @@ O = Optional, M = Mandatory, P = Prohibited
           <a class="nav-link" id="table_tab_5" data-bs-toggle="tab" href="#table_5" role="tab" aria-controls="table_5" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_5" data-bs-toggle="tab" href="#errors_5" role="tab" aria-controls="errors_5" aria-selected="false">Errors (2)</a>
+          <a class="nav-link text-danger" id="errors_tab_5" data-bs-toggle="tab" href="#errors_5" role="tab" aria-controls="errors_5" aria-selected="false">Errors (24)</a>
         </li>
       </ul>
     </div>
@@ -226,9 +274,89 @@ O = Optional, M = Mandatory, P = Prohibited
   <thead class="table-dark">
   <tr>
     
+    <th>Bitstr_6bits</th>
+    
+    <th>Bitstr_2bits</th>
+    
+    <th>Hex</th>
+    
+    <th>Command_name</th>
+    
+    <th>Wildcard</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>0000 00b</td>
+    
+    <td>01b</td>
+    
+    <td>01h</td>
+    
+    <td>Ring</td>
+    
+    <td>3.2.5</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0000 00b</td>
+    
+    <td>10b</td>
+    
+    <td>02h</td>
+    
+    <td>Ding</td>
+    
+    <td>3.2.3</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0001 00b</td>
+    
+    <td>00b</td>
+    
+    <td>10h</td>
+    
+    <td>Dong</td>
+    
+    <td>3.2.1</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0001 01b</td>
+    
+    <td>00b</td>
+    
+    <td>14h</td>
+    
+    <td>Keep</td>
+    
+    <td>3.2.4</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0000 01b</td>
+    
+    <td>10b</td>
+    
+    <td>06h</td>
+    
+    <td>Ringing</td>
+    
+    <td>3.2.2</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -728,11 +856,59 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
         </div>
         <div class="tab-pane fade" id="errors_5" role="tabpanel" aria-labelledby="errors_tab_5">
-          
-          <pre>message='Grid is missing headers; check CommandSetOpcodes.REGEX_GRID' figure_nr=5</pre>
-          
-          <pre>message='Grid is missing values; check CommandSetOpcodes.REGEX_GRID' figure_nr=5</pre>
-          
+
+<pre>
+
+message="No match REGEX_GRID/Headers on idx([(0, '(Function).*', 'Opcode by Field'), (1, '(Data.Transfer).*', 'Opcode by Field')])" figure_nr=5 table_nr=5 row_idx=1
+
+message="No match REGEX_GRID/Headers on idx([(0, '(Function).*', '(07:02)'), (1, '(Data.Transfer).*', '(01:00)')])" figure_nr=5 table_nr=5 row_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=4 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=4 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=4 cell_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=5 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=5 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=5 cell_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=6 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=6 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=6 cell_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=7 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=7 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=7 cell_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=8 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=8 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=8 cell_idx=2
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=9 cell_idx=0
+
+message='cell.text(Refer to the Specifcation) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=9 cell_idx=1
+
+message='cell.text(Refer to the Specifcation) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=9 cell_idx=2
+
+message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specification\nAll Foobar Command Set Commands use the Namespace Identifier (NSID) field. The value FFFFFFFFh is not supported in this field unless footnote 4 in this figure indicates that a specific command does support that value.\nIndicates the data transfer direction of the command. All options to the command shall transfer data as specified or transfer no data. All commands, including vendor specific commands, shall follow this convention: 00b = no data transfer; 01b = host to controller; 10b = controller to host; 11b = bidirectional.\nThis command may support the use of the Namespace Identifier (NSID) field set to FFFFFFFFh.) no match((?P<bitstr_6bits>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=15 cell_idx=0
+
+message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specification\nAll Foobar Command Set Commands use the Namespace Identifier (NSID) field. The value FFFFFFFFh is not supported in this field unless footnote 4 in this figure indicates that a specific command does support that value.\nIndicates the data transfer direction of the command. All options to the command shall transfer data as specified or transfer no data. All commands, including vendor specific commands, shall follow this convention: 00b = no data transfer; 01b = host to controller; 10b = controller to host; 11b = bidirectional.\nThis command may support the use of the Namespace Identifier (NSID) field set to FFFFFFFFh.) no match((?P<bitstr_2bits>\\d{2}b))' figure_nr=5 table_nr=5 row_idx=15 cell_idx=1
+
+message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specification\nAll Foobar Command Set Commands use the Namespace Identifier (NSID) field. The value FFFFFFFFh is not supported in this field unless footnote 4 in this figure indicates that a specific command does support that value.\nIndicates the data transfer direction of the command. All options to the command shall transfer data as specified or transfer no data. All commands, including vendor specific commands, shall follow this convention: 00b = no data transfer; 01b = host to controller; 10b = controller to host; 11b = bidirectional.\nThis command may support the use of the Namespace Identifier (NSID) field set to FFFFFFFFh.) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=5 table_nr=5 row_idx=15 cell_idx=2
+
+message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specification\nAll Foobar Command Set Commands use the Namespace Identifier (NSID) field. The value FFFFFFFFh is not supported in this field unless footnote 4 in this figure indicates that a specific command does support that value.\nIndicates the data transfer direction of the command. All options to the command shall transfer data as specified or transfer no data. All commands, including vendor specific commands, shall follow this convention: 00b = no data transfer; 01b = host to controller; 10b = controller to host; 11b = bidirectional.\nThis command may support the use of the Namespace Identifier (NSID) field set to FFFFFFFFh.) no match(^(?P<command_name>[a-zA-Z -/]*)[ \\d]*$)' figure_nr=5 table_nr=5 row_idx=15 cell_idx=3
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -791,13 +967,27 @@ This command may support the use of the Namespace Identifier (NSID) field set to
     
     <td>31</td>
     
-    <td>None</td>
+    <td>8</td>
     
     <td>Reserved</td>
     
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>7</td>
+    
+    <td>0</td>
+    
+    <td>Foobar Baz </td>
+    
+    <td>FB</td>
+    
+    <td>Specifies the length of the Foobar Baz in bytes.</td>
     
   </tr>
   
@@ -870,9 +1060,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
         </div>
         <div class="tab-pane fade" id="errors_6" role="tabpanel" aria-labelledby="errors_tab_6">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -992,9 +1186,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
         </div>
         <div class="tab-pane fade" id="errors_10" role="tabpanel" aria-labelledby="errors_tab_10">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1049,13 +1247,27 @@ This command may support the use of the Namespace Identifier (NSID) field set to
     
     <td>31</td>
     
-    <td>None</td>
+    <td>8</td>
     
     <td>Reserved</td>
     
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>7</td>
+    
+    <td>0</td>
+    
+    <td>Foobar Baz </td>
+    
+    <td>FB</td>
+    
+    <td>Specifies the length of the Foobar Baz in bytes.</td>
     
   </tr>
   
@@ -1128,9 +1340,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
         </div>
         <div class="tab-pane fade" id="errors_11" role="tabpanel" aria-labelledby="errors_tab_11">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1250,9 +1466,13 @@ This command may support the use of the Namespace Identifier (NSID) field set to
   
         </div>
         <div class="tab-pane fade" id="errors_18" role="tabpanel" aria-labelledby="errors_tab_18">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1314,6 +1534,34 @@ This command may support the use of the Namespace Identifier (NSID) field set to
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>8</td>
+    
+    <td>Ding Option </td>
+    
+    <td>RO</td>
+    
+    <td>This field specifies the Ding option.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>7</td>
+    
+    <td>0</td>
+    
+    <td>Foobar Baz </td>
+    
+    <td>FB</td>
+    
+    <td>Specifies the length of the Foobar Baz in bytes.</td>
     
   </tr>
   
@@ -1450,9 +1698,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_19" role="tabpanel" aria-labelledby="errors_tab_19">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1514,6 +1766,34 @@ If the controller does not compress data then this bit is ignored.
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>19</td>
+    
+    <td>16</td>
+    
+    <td>Command Extension Type </td>
+    
+    <td>CETYPE</td>
+    
+    <td>Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation).</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>00</td>
+    
+    <td>Command Extension Value </td>
+    
+    <td>CEV</td>
+    
+    <td>The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification</td>
     
   </tr>
   
@@ -1600,9 +1880,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_20" role="tabpanel" aria-labelledby="errors_tab_20">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1657,13 +1941,27 @@ If the controller does not compress data then this bit is ignored.
     
     <td>31</td>
     
-    <td>None</td>
+    <td>8</td>
     
     <td>Reserved</td>
     
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>7</td>
+    
+    <td>0</td>
+    
+    <td>Foobar Baz </td>
+    
+    <td>FB</td>
+    
+    <td>Specifies the length of the Foobar Baz in bytes.</td>
     
   </tr>
   
@@ -1736,9 +2034,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_24" role="tabpanel" aria-labelledby="errors_tab_24">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1858,9 +2160,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_29" role="tabpanel" aria-labelledby="errors_tab_29">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -1922,6 +2228,34 @@ If the controller does not compress data then this bit is ignored.
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>8</td>
+    
+    <td>Ring Option </td>
+    
+    <td>RO</td>
+    
+    <td>Specifies the Ring option.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>7</td>
+    
+    <td>0</td>
+    
+    <td>Foobar Baz </td>
+    
+    <td>FB</td>
+    
+    <td>Specifies the length of the Foobar Baz in bytes.</td>
     
   </tr>
   
@@ -2085,9 +2419,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_30" role="tabpanel" aria-labelledby="errors_tab_30">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2149,6 +2487,34 @@ If the controller does not compress data then this bit is ignored.
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>19</td>
+    
+    <td>16</td>
+    
+    <td>Command Extension Type </td>
+    
+    <td>CETYPE</td>
+    
+    <td>Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation).</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>00</td>
+    
+    <td>Command Extension Value </td>
+    
+    <td>CEV</td>
+    
+    <td>The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification</td>
     
   </tr>
   
@@ -2235,9 +2601,13 @@ If the controller does not compress data then this bit is ignored.
   
         </div>
         <div class="tab-pane fade" id="errors_31" role="tabpanel" aria-labelledby="errors_tab_31">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2295,6 +2665,20 @@ If the controller does not compress data then this bit is ignored.
     <td>01</td>
     
     <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>00</td>
+    
+    <td>Error on Dong of Non</td>
     
     <td>None</td>
     
@@ -2373,9 +2757,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_36" role="tabpanel" aria-labelledby="errors_tab_36">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2432,7 +2820,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -2497,9 +2885,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_7" role="tabpanel" aria-labelledby="errors_tab_7">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2554,7 +2946,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -2619,9 +3011,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_8" role="tabpanel" aria-labelledby="errors_tab_8">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2676,7 +3072,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -2741,9 +3137,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_12" role="tabpanel" aria-labelledby="errors_tab_12">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2798,7 +3198,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -2863,9 +3263,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_13" role="tabpanel" aria-labelledby="errors_tab_13">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -2920,7 +3324,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -2985,9 +3389,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_21" role="tabpanel" aria-labelledby="errors_tab_21">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3042,7 +3450,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -3107,9 +3515,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_22" role="tabpanel" aria-labelledby="errors_tab_22">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3164,7 +3576,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -3229,9 +3641,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_25" role="tabpanel" aria-labelledby="errors_tab_25">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3286,7 +3702,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -3351,9 +3767,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_26" role="tabpanel" aria-labelledby="errors_tab_26">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3408,7 +3828,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -3473,9 +3893,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_32" role="tabpanel" aria-labelledby="errors_tab_32">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3530,7 +3954,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
     
     <td>63</td>
     
-    <td>None</td>
+    <td>0</td>
     
     <td>Foobar Baz</td>
     
@@ -3595,9 +4019,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_33" role="tabpanel" aria-labelledby="errors_tab_33">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3648,9 +4076,9 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>12</td>
-    
     <td>None</td>
+    
+    <td>12</td>
     
     <td>Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field.</td>
     
@@ -3711,9 +4139,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_17" role="tabpanel" aria-labelledby="errors_tab_17">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -3762,9 +4194,9 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>12</td>
-    
     <td>None</td>
+    
+    <td>12</td>
     
     <td>Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field.</td>
     
@@ -3825,14 +4257,20 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_28" role="tabpanel" aria-labelledby="errors_tab_28">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
   
   </div>
+  
+  
   
   
   
@@ -3870,7 +4308,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
@@ -3878,7 +4322,109 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>Ring</td>
+    <td>81h</td>
+    
+    <td>Capacity Exceeded</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>82h</td>
+    
+    <td>Namespace Not Ready</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>83h</td>
+    
+    <td>Reservation Conflict</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>84h</td>
+    
+    <td>Format In Progress</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>85h</td>
+    
+    <td>Invalid Value Size</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>88h</td>
+    
+    <td>Unrecovered Error</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>89h</td>
+    
+    <td>Foobar Keeps</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
     
   </tr>
   
@@ -4104,9 +4650,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_4" role="tabpanel" aria-labelledby="errors_tab_4">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4129,7 +4679,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_9" data-bs-toggle="tab" href="#table_9" role="tab" aria-controls="table_9" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_9" data-bs-toggle="tab" href="#errors_9" role="tab" aria-controls="errors_9" aria-selected="false">Errors (3)</a>
+          <a class="nav-link " id="errors_tab_9" data-bs-toggle="tab" href="#errors_9" role="tab" aria-controls="errors_9" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -4143,9 +4693,41 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>None</td>
+    
+    <td>The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set.</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -4216,13 +4798,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_9" role="tabpanel" aria-labelledby="errors_tab_9">
-          
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=9</pre>
-          
-          <pre>message='Grid is missing headers; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=9</pre>
-          
-          <pre>message='Grid is missing values; check GeneralCommandStatusValues.REGEX_GRID' figure_nr=9</pre>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4259,7 +4841,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
@@ -4267,7 +4855,25 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>Invalid Foobar Size: The Foobar Baz size is not valid.</td>
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>None</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
     
   </tr>
   
@@ -4340,9 +4946,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_14" role="tabpanel" aria-labelledby="errors_tab_14">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4379,7 +4989,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
@@ -4387,7 +5003,49 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>Invalid Foobar Size: The Foobar Baz size is not valid.</td>
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>None</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>88h</td>
+    
+    <td>Unrecovered Error</td>
+    
+    <td>None</td>
+    
+    <td>There was an unrecovered error when reading from the medium.</td>
     
   </tr>
   
@@ -4488,9 +5146,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_23" role="tabpanel" aria-labelledby="errors_tab_23">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4527,7 +5189,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
@@ -4535,7 +5203,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>Foobar Baz Does Not Keep:The Foobar Baz does not Keep.</td>
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
     
   </tr>
   
@@ -4594,9 +5268,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_27" role="tabpanel" aria-labelledby="errors_tab_27">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4633,7 +5311,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
@@ -4641,7 +5325,73 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
   <tr>
     
-    <td>Invalid Value Size: The value size is not valid.</td>
+    <td>85h</td>
+    
+    <td>Invalid Value Size</td>
+    
+    <td>None</td>
+    
+    <td>The value size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>None</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>None</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>81h</td>
+    
+    <td>Capacity Exceeded</td>
+    
+    <td>None</td>
+    
+    <td>The capacity of the device was exceeded.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>89h</td>
+    
+    <td>Foobar Keeps</td>
+    
+    <td>None</td>
+    
+    <td>The Ring If No Foobar Keeps (SINKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz Keeps.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+    <td>The Ring If Foobar Keeps (SIKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz does not Keep.</td>
     
   </tr>
   
@@ -4770,9 +5520,13 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   
         </div>
         <div class="tab-pane fade" id="errors_34" role="tabpanel" aria-labelledby="errors_tab_34">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -4797,7 +5551,7 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
           <a class="nav-link" id="table_tab_40" data-bs-toggle="tab" href="#table_40" role="tab" aria-controls="table_40" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_40" data-bs-toggle="tab" href="#errors_40" role="tab" aria-controls="errors_40" aria-selected="false">Errors (2)</a>
+          <a class="nav-link text-danger" id="errors_tab_40" data-bs-toggle="tab" href="#errors_40" role="tab" aria-controls="errors_40" aria-selected="false">Errors (7)</a>
         </li>
       </ul>
     </div>
@@ -4811,9 +5565,77 @@ If this bit is cleared to ‘0’ and the controller processes a Dong command th
   <thead class="table-dark">
   <tr>
     
+    <th>Hex</th>
+    
+    <th>Requirement</th>
+    
+    <th>Description</th>
+    
+    <th>Nsid</th>
+    
+    <th>Cntid</th>
+    
+    <th>Csi</th>
+    
+    <th>Section</th>
+    
   </tr>
   </thead>
   <tbody>
+  
+  <tr>
+    
+    <td>05h</td>
+    
+    <td>M</td>
+    
+    <td>Identify I/O Command Set specific Namespace data structure for the specified NSID for the I/O Command Set specified in the CSI field.</td>
+    
+    <td>Y</td>
+    
+    <td>N</td>
+    
+    <td>Y</td>
+    
+    <td>4.1.5.1</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>06h</td>
+    
+    <td>M</td>
+    
+    <td>Identify I/O Command Set Specific Controller data structure for the controller processing the command.</td>
+    
+    <td>Y</td>
+    
+    <td>N</td>
+    
+    <td>Y</td>
+    
+    <td>4.1.5.2</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Ah</td>
+    
+    <td>O</td>
+    
+    <td>I/O Command Set specific Identify Namespace data structure for the specified Format Index for the I/O Command Set specified in the CSI field.6</td>
+    
+    <td>N</td>
+    
+    <td>N</td>
+    
+    <td>Y</td>
+    
+    <td>4.1.5.3</td>
+    
+  </tr>
   
   </tbody>
   </table>
@@ -5143,11 +5965,25 @@ Selection of a UUID may be supported. Refer to the Universally Unique Identifier
   
         </div>
         <div class="tab-pane fade" id="errors_40" role="tabpanel" aria-labelledby="errors_tab_40">
-          
-          <pre>message='Grid is missing headers; check CnsValues.REGEX_GRID' figure_nr=40</pre>
-          
-          <pre>message='Grid is missing values; check CnsValues.REGEX_GRID' figure_nr=40</pre>
-          
+
+<pre>
+
+message='cell.text(Active Namespace Management) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=40 table_nr=40 row_idx=2 cell_idx=0
+
+message='cell.text(Active Namespace Management) no match((?P<requirement>O|M|P))' figure_nr=40 table_nr=40 row_idx=2 cell_idx=1
+
+message='cell.text(Active Namespace Management) no match((?P<nsid>NOTE|Note|Yes|No|Y|N)[ \\d]*?)' figure_nr=40 table_nr=40 row_idx=2 cell_idx=3
+
+message='cell.text(Active Namespace Management) no match((?P<cntid>NOTE|Note|Yes|No|Y|N)[ \\d]*?)' figure_nr=40 table_nr=40 row_idx=2 cell_idx=4
+
+message='cell.text(Active Namespace Management) no match((?P<csi>NOTE|Note|Yes|No|Y|N)[ \\d]*?)' figure_nr=40 table_nr=40 row_idx=2 cell_idx=5
+
+message='cell.text(Notes:\nO/M definition: O = Optional, M = Mandatory.\nThe NSID field is used: Y = Yes, N = No.\nThe CDW10.CNTID field is used: Y = Yes, N = No.\nThe CDW11.CSI field is used: Y = Yes, N = No.\nMandatory for controllers that support the Namespace Management capability (refer to the Specifcation).\nSelection of a UUID may be supported. Refer to the Universally Unique Identifiers (UUIDs) for Vendor Specific Information section in the Specification) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=40 table_nr=40 row_idx=6 cell_idx=0
+
+message='cell.text(Notes:\nO/M definition: O = Optional, M = Mandatory.\nThe NSID field is used: Y = Yes, N = No.\nThe CDW10.CNTID field is used: Y = Yes, N = No.\nThe CDW11.CSI field is used: Y = Yes, N = No.\nMandatory for controllers that support the Namespace Management capability (refer to the Specifcation).\nSelection of a UUID may be supported. Refer to the Universally Unique Identifiers (UUIDs) for Vendor Specific Information section in the Specification) no match((?P<requirement>O|M|P))' figure_nr=40 table_nr=40 row_idx=6 cell_idx=1
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -5172,7 +6008,7 @@ Selection of a UUID may be supported. Refer to the Universally Unique Identifier
           <a class="nav-link" id="table_tab_3" data-bs-toggle="tab" href="#table_3" role="tab" aria-controls="table_3" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_3" data-bs-toggle="tab" href="#errors_3" role="tab" aria-controls="errors_3" aria-selected="false">Errors (3)</a>
+          <a class="nav-link text-danger" id="errors_tab_3" data-bs-toggle="tab" href="#errors_3" role="tab" aria-controls="errors_3" aria-selected="false">Errors (6)</a>
         </li>
       </ul>
     </div>
@@ -5284,13 +6120,23 @@ O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
   
         </div>
         <div class="tab-pane fade" id="errors_3" role="tabpanel" aria-labelledby="errors_tab_3">
-          
-          <pre>message='Grid is missing headers; check FeatureSupport.REGEX_GRID' figure_nr=3</pre>
-          
-          <pre>message='Grid is missing headers; check FeatureSupport.REGEX_GRID' figure_nr=3</pre>
-          
-          <pre>message='Grid is missing values; check FeatureSupport.REGEX_GRID' figure_nr=3</pre>
-          
+
+<pre>
+
+message="No match REGEX_GRID/Headers on idx([(1, '(Feature.Support.Requirements).*', 'Feature Support  Requirements 1'), (2, '(Logged.in.Persistent.Event.Log).*', 'Logged in  Persistent Event Log')])" figure_nr=3 table_nr=3 row_idx=1
+
+message="No match REGEX_GRID/Headers on idx([(0, '(Feature.Name).*', 'Foobar Configuration'), (1, '(Feature.Support.Requirements).*', 'M'), (2, '(Logged.in.Persistent.Event.Log).*', 'Yes')])" figure_nr=3 table_nr=3 row_idx=2
+
+message="No match REGEX_GRID/Headers on idx([(0, '(Feature.Name).*', 'Notes: O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended'), (1, '(Feature.Support.Requirements).*', 'Notes: O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended'), (2, '(Logged.in.Persistent.Event.Log).*', 'Notes: O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended')])" figure_nr=3 table_nr=3 row_idx=3
+
+message='Grid is missing headers; check FeatureSupport.REGEX_GRID' figure_nr=3
+
+message='Grid is missing fields; check FeatureSupport.REGEX_GRID' figure_nr=3
+
+message='Grid is missing values; check FeatureSupport.REGEX_GRID' figure_nr=3
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -5338,6 +6184,12 @@ O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
   <tr>
     
     <td>Namespace</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Notes:</td>
     
   </tr>
   
@@ -5480,9 +6332,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_35" role="tabpanel" aria-labelledby="errors_tab_35">
-          
-          <pre>message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]</pre>
-          
+
+<pre>
+
+message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -5530,6 +6386,12 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   <tr>
     
     <td>4.1.4.1</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>4.1.4.2</td>
     
   </tr>
   
@@ -5642,9 +6504,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_37" role="tabpanel" aria-labelledby="errors_tab_37">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -5706,9 +6572,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_43" role="tabpanel" aria-labelledby="errors_tab_43">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -5897,9 +6767,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_1" role="tabpanel" aria-labelledby="errors_tab_1">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -6065,9 +6939,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_15" role="tabpanel" aria-labelledby="errors_tab_15">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -6191,9 +7069,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_16" role="tabpanel" aria-labelledby="errors_tab_16">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -6289,9 +7171,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_38" role="tabpanel" aria-labelledby="errors_tab_38">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -6387,9 +7273,13 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
   
         </div>
         <div class="tab-pane fade" id="errors_39" role="tabpanel" aria-labelledby="errors_tab_39">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -7241,9 +8131,13 @@ Identifies fields that report information for the Identify command when querying
   
         </div>
         <div class="tab-pane fade" id="errors_41" role="tabpanel" aria-labelledby="errors_tab_41">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -7865,9 +8759,13 @@ O/M definition: O = Optional, M = Mandatory.
   
         </div>
         <div class="tab-pane fade" id="errors_42" role="tabpanel" aria-labelledby="errors_tab_42">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -8045,9 +8943,13 @@ The specification version Ringinged includes lettered versions (e.g., 1.0 includ
   
         </div>
         <div class="tab-pane fade" id="errors_44" role="tabpanel" aria-labelledby="errors_tab_44">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -8143,9 +9045,13 @@ The specification version Ringinged includes lettered versions (e.g., 1.0 includ
   
         </div>
         <div class="tab-pane fade" id="errors_45" role="tabpanel" aria-labelledby="errors_tab_45">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
@@ -8468,9 +9374,13 @@ A value of 0h specifies that the controller determines the value to use (refer t
   
         </div>
         <div class="tab-pane fade" id="errors_46" role="tabpanel" aria-labelledby="errors_tab_46">
-          
-          <p>No errors logged for this figure.</p>
-          
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
         </div>
       </div>
     </div>
