@@ -498,7 +498,7 @@ class FromFigureDocument(Converter):
                         table_nr=enriched.table.table_nr,
                         row_idx=row_idx,
                         cell_idx=cell_idx,
-                        message=f"cell.text({text})",
+                        message=f"cell.text({text}) no match({regex})",
                     )
                 )
 
