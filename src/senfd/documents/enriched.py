@@ -20,7 +20,8 @@ from senfd.utils import pascal_to_snake
 
 REGEX_WILDCARD = r"(?P<wildcard>.*)"
 
-REGEX_VAL_BITRANGE = r"(?:(?P<upper>\d{1,2}):)?(?P<lower>\d{1,2})"
+REGEX_VAL_NUMBER_OPTIONAL = r"(?P<number>\d+)?.*"
+REGEX_VAL_BITRANGE = r"(?:(?P<upper>\d{1,3}):)?(?P<lower>\d{1,3})"
 REGEX_VAL_BITSTR_2BITS = r"(?P<bitstr_2bits>\d{2}b)"
 REGEX_VAL_BITSTR_6BITS = r"(?P<bitstr_6bits>\d{4}\s\d{2}b)"
 REGEX_VAL_BYTES_HEX = r"(?P<hex>[a-zA-Z0-9]{2}h)"
@@ -40,8 +41,10 @@ REGEX_VAL_REFER_TO_BASESPEC = (
 )
 REGEX_VAL_REFERENCE = r"(?P<section>.*)"
 REGEX_VAL_SUPPORT_REQUIREMENT = r"(?P<requirement>O|M|P)"
+REGEX_VAL_SCOPE = r"(?P<scope>.*)"
 REGEX_VAL_TERM = r"(?P<term>.*)"
 REGEX_VAL_YESNO = r"(?P<yn>NOTE|Note|Yes|No|Y|N)[ \d]*?"
+REGEX_VAL_ACRONYM_DESCRIPTION = r"(?P<acronym>\w):(?P<description>.*)"
 
 REGEX_HDR_ACRONYM = r"(Term|Acronym).*"
 REGEX_HDR_BITS = r"(Bits).*"
@@ -211,8 +214,8 @@ class CommandSetOpcodes(EnrichedFigure):
 class GeneralCommandStatusValues(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*General.Command.Status.Values.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_VALUE, REGEX_WILDCARD),
-        (REGEX_HDR_DEFINITION, REGEX_WILDCARD),
+        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
+        (REGEX_HDR_EXPLANATION, REGEX_VAL_FIELD),
         (r"(Commands.Affected)", REGEX_WILDCARD),
     ]
 
@@ -242,52 +245,67 @@ class CommandSpecificStatusValues(EnrichedFigure):
 class FeatureIdentifiers(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Identifiers.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Feature.Identifier)", REGEX_WILDCARD),
-        (r"(Persistent.Across.Power.Cycle.and.Reset).*", REGEX_WILDCARD),
-        (r"(Uses.Memory.Buffer.for.Attributes)", REGEX_WILDCARD),
-        (REGEX_HDR_DESCRIPTION, REGEX_WILDCARD),
-        (REGEX_HDR_SCOPE, REGEX_WILDCARD),
+        (r"(Feature.Identifier)", REGEX_VAL_BYTES_HEX),
+        (
+            r"(Persistent.Across.Power.Cycle.and.Reset).*",
+            REGEX_VAL_YESNO.replace("<yn>", "<persist>"),
+        ),
+        (
+            r"(Uses.Memory.Buffer.for.Attributes)",
+            REGEX_VAL_YESNO.replace("<yn>", "<membuf>"),
+        ),
+        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
+        (REGEX_HDR_SCOPE, REGEX_VAL_SCOPE),
     ]
 
 
 class FeatureSupport(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Support.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Feature.Name).*", REGEX_WILDCARD),
-        (r"(Feature.Support.Requirements).*", REGEX_WILDCARD),
-        (r"(Logged.in.Persistent.Event.Log).*", REGEX_WILDCARD),
+        (r"(Feature.Name).*", REGEX_VAL_DESCRIPTION),
+        (r"(Feature.Support.Requirements).*", REGEX_VAL_SUPPORT_REQUIREMENT),
+        (r"(Logged.in.Persistent.Event.Log).*", REGEX_VAL_YESNO),
     ]
 
 
 class LogPageIdentifiers(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Log\s+Page\s+Identifiers.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Log.Page.Identifier).*", REGEX_WILDCARD),
-        (r"(Scope.and.Support).*", REGEX_WILDCARD),
-        (r"(Log.Page.Name).*", REGEX_WILDCARD),
-        (REGEX_HDR_REFERENCE, REGEX_WILDCARD),
+        (r"(Log.Page.Identifier).*", REGEX_VAL_BYTES_HEX),
+        (r"(Scope.and.Support).*", REGEX_VAL_SCOPE),
+        (r"(Log.Page.Name).*", REGEX_VAL_DESCRIPTION),
+        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
     ]
 
 
 class Offset(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*offset"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_WILDCARD),
+        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
         (REGEX_HDR_TYPE, REGEX_WILDCARD),
-        (REGEX_HDR_RESET, REGEX_WILDCARD),
-        (REGEX_HDR_DESCRIPTION, REGEX_WILDCARD),
+        (REGEX_HDR_RESET, REGEX_VAL_BYTES_HEX),
+        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
     ]
 
 
 class PropertyDefinition(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Property Definition.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Offset.\(OFST\)).*", REGEX_WILDCARD),
-        (r"(Size.\(in.bytes\)).*", REGEX_WILDCARD),
-        (r"(I/O Controller).*", REGEX_WILDCARD),
-        (r"(Administrative.Controller).*", REGEX_WILDCARD),
-        (r"(Discovery.Controller).*", REGEX_WILDCARD),
-        (r"(Name).*", REGEX_WILDCARD),
+        (r"(Offset.\(OFST\)).*", REGEX_VAL_BYTES_HEX),
+        (r"(Size.\(in.bytes\)).*", REGEX_VAL_NUMBER_OPTIONAL),
+        (
+            r"(I/O Controller).*",
+            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_ioc"),
+        ),
+        (
+            r"(Administrative.Controller).*",
+            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_ac"),
+        ),
+        (
+            r"(Discovery.Controller).*",
+            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_dc"),
+        ),
+        (r"(Name).*", REGEX_VAL_ACRONYM_DESCRIPTION),
     ]
 
 
