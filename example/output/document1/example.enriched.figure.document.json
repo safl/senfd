@@ -112,7 +112,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Command",
                     "Command Support Requirements"
@@ -521,7 +520,6 @@
                 ]
             },
             "grid": {
-                "ncells": 5,
                 "headers": [
                     "Function",
                     "Data Transfer",
@@ -596,7 +594,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -668,7 +665,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -752,7 +748,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -824,7 +819,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -962,7 +956,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1058,7 +1051,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1142,7 +1134,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1214,7 +1205,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1376,7 +1366,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1472,7 +1461,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1556,7 +1544,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1630,7 +1617,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1703,7 +1689,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1776,7 +1761,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1849,7 +1833,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1922,7 +1905,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -1995,7 +1977,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2068,7 +2049,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2141,7 +2121,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2214,7 +2193,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2287,7 +2265,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2362,7 +2339,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2429,7 +2405,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Bits",
                     "Description"
@@ -2640,7 +2615,6 @@
                 ]
             },
             "grid": {
-                "ncells": 3,
                 "headers": [
                     "Value",
                     "Definition",
@@ -2715,7 +2689,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [],
                 "fields": [],
                 "values": []
@@ -2780,7 +2753,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Value",
                     "Definition"
@@ -2878,7 +2850,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Value",
                     "Definition"
@@ -2940,7 +2911,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Value",
                     "Definition"
@@ -3062,7 +3032,6 @@
                 ]
             },
             "grid": {
-                "ncells": 2,
                 "headers": [
                     "Value",
                     "Definition"
@@ -3314,7 +3283,6 @@
                 ]
             },
             "grid": {
-                "ncells": 7,
                 "headers": [
                     "CNS Value",
                     "O/M",
@@ -3405,7 +3373,6 @@
                 ]
             },
             "grid": {
-                "ncells": 3,
                 "headers": [],
                 "fields": [],
                 "values": []
@@ -3524,7 +3491,6 @@
                 ]
             },
             "grid": {
-                "ncells": 6,
                 "headers": [
                     "Feature Identifier",
                     "Persistent Across Power Cycle and Reset",
@@ -3635,7 +3601,6 @@
                 ]
             },
             "grid": {
-                "ncells": 4,
                 "headers": [
                     "Log Page Identifier",
                     "Scope and Support",

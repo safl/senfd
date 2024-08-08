@@ -7,6 +7,10 @@ class Error(BaseModel):
     message: str
 
 
+class ImplementationError(Error):
+    pass
+
+
 class TableOfFiguresError(Error):
     tof_entry_nr: int
     caption: str

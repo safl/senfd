@@ -823,10 +823,6 @@
         "Grid": {
             "description": "Grids are regular, that is, each row has the same amount of cells and cells are\nnamed. Also, their content match",
             "properties": {
-                "ncells": {
-                    "title": "Ncells",
-                    "type": "integer"
-                },
                 "headers": {
                     "items": {
                         "type": "string"

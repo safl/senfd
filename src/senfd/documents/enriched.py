@@ -60,34 +60,6 @@ class EnrichedFigure(Figure):
 
     grid: senfd.tables.Grid = Field(default_factory=senfd.tables.Grid)
 
-    @classmethod
-    def from_figure_description(
-        cls, figure: Figure, match
-    ) -> Tuple[Optional[Figure], List[Error]]:
-        shared = set(figure.model_dump().keys()).intersection(
-            set(match.groupdict().keys())
-        )
-        if shared:
-            # This occurs if child attributes overrides parent, this is an error in the
-            # implementation of the child-figure
-            raise RuntimeError(f"cls({cls.__name__}) has overlap({shared})")
-
-        data = figure.model_dump()
-        mdict = match.groupdict()
-        if mdict:
-            data.update(mdict if mdict else {})
-
-        enriched_figure = cls(**data)
-
-        grid, errors = senfd.tables.Grid.from_enriched_figure(enriched_figure)
-        if grid:
-            enriched_figure.grid = grid
-
-        return enriched_figure, errors
-
-    def refine(self) -> List[senfd.errors.Error]:
-        return []
-
     def into_document(self, document):
         key = pascal_to_snake(self.__class__.__name__)
         getattr(document, key).append(self)
@@ -307,21 +279,6 @@ class PropertyDefinition(EnrichedFigure):
     ]
 
 
-def get_figure_enriching_classes():
-    """
-    To avoid manually crafting a list of classes, this function
-    introspectively examines this module for applicable
-    classes with "REGEX_FIGURE_DESCRIPTION" class attribute.
-    """
-    return [
-        cls
-        for _, cls in inspect.getmembers(senfd.documents.enriched, inspect.isclass)
-        if issubclass(cls, EnrichedFigure)
-        and (cls is not senfd.documents.enriched.EnrichedFigure)
-        and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
-    ]
-
-
 class EnrichedFigureDocument(Document):
 
     SUFFIX_JSON: ClassVar[str] = ".enriched.figure.document.json"
@@ -360,19 +317,227 @@ class EnrichedFigureDocument(Document):
     nontabular: List[Figure] = Field(default_factory=list)
     uncategorized: List[Figure] = Field(default_factory=list)
 
-    @classmethod
-    def from_figure_document_file(cls, path: Path):
-        """Instantiate an 'organized' Document from a 'figure' document"""
-
-        document, errors = FromFigureDocument.convert(path)
-        return document
-
 
 class FromFigureDocument(Converter):
+    """
+    Constructs an EnrichedDocument from a given PlainDocument
+
+    Figures are enriched by extraction, type coercion, and conversion of using data from
+    the figure description and table content.
+    """
 
     @staticmethod
     def is_applicable(path: Path) -> bool:
         return "".join(path.suffixes).lower() == ".plain.figure.document.json"
+
+    @staticmethod
+    def check_regex(figure, match) -> List[senfd.errors.Error]:
+
+        shared = set(figure.model_dump().keys()).intersection(
+            set(match.groupdict().keys())
+        )
+        if shared:
+            return [
+                senfd.errors.ImplementationError(
+                    message=f"cls({figure.__class__.__name__}) has overlap({shared})"
+                )
+            ]
+
+        return []
+
+    @staticmethod
+    def check_table_data(
+        figure: EnrichedFigure,
+    ) -> Tuple[Optional[senfd.errors.Error], List[senfd.errors.Error]]:
+        """Check for blocking errors, for which enrichment cannot continue"""
+
+        if figure.table is None:
+            return (
+                senfd.errors.FigureTableMissingError(
+                    figure_nr=figure.figure_nr, message="Missing table"
+                ),
+                [],
+            )
+        if len(figure.table.rows) < 2:
+            return (
+                senfd.errors.FigureTableMissingRowsError(
+                    figure_nr=figure.figure_nr, message=r"Number of rows < 2"
+                ),
+                [],
+            )
+        if not hasattr(figure, "REGEX_GRID"):
+            return (
+                senfd.errors.FigureRegexGridMissingError(
+                    figure_nr=figure.figure_nr, message="Missing REGEX_GRID"
+                ),
+                [],
+            )
+
+        lengths = list(set([len(row.cells) for row in figure.table.rows]))
+        if len(lengths) != 1:
+            return None, [
+                senfd.errors.IrregularTableError(
+                    figure_nr=figure.figure_nr,
+                    message=f"Varying row lengths({lengths})",
+                    lengths=lengths,
+                )
+            ]
+
+        return None, []
+
+    @staticmethod
+    def check_grid(figure: EnrichedFigure) -> List[senfd.errors.Error]:
+        """
+        Checks the state of the grid, assuming state after enrichment, thus expecting
+        the grid to contain headers, fields, and value. Returning error(s) if it does
+        not.
+        """
+
+        errors: List[senfd.errors.Error] = []
+
+        if not figure.grid.headers:
+            errors.append(
+                senfd.errors.FigureNoGridHeaders(
+                    figure_nr=figure.figure_nr,
+                    message=(
+                        "Grid is missing headers;"
+                        f" check {figure.__class__.__name__}.REGEX_GRID"
+                    ),
+                )
+            )
+
+        if not figure.grid.fields:
+            errors.append(
+                senfd.errors.FigureNoGridHeaders(
+                    figure_nr=figure.figure_nr,
+                    message=(
+                        "Grid is missing headers;"
+                        f" check {figure.__class__.__name__}.REGEX_GRID"
+                    ),
+                )
+            )
+
+        if not figure.grid.values:
+            errors.append(
+                senfd.errors.FigureNoGridValues(
+                    figure_nr=figure.figure_nr,
+                    message=(
+                        "Grid is missing values;"
+                        f" check {figure.__class__.__name__}.REGEX_GRID"
+                    ),
+                )
+            )
+
+        return errors
+
+    @staticmethod
+    def enrich(cls, figure: Figure, match) -> Tuple[Optional[Figure], List[Error]]:
+        """Returns an EnrichedFigure from the givven Figure"""
+
+        errors: List[senfd.errors.Error] = []
+
+        # Merge figure data with fields from regex
+        data = figure.model_dump()
+        mdict = match.groupdict()
+        if mdict:
+            data.update(mdict if mdict else {})
+        enriched = cls(**data)
+
+        # Check for non-blocking error-conditions
+        errors += FromFigureDocument.check_regex(enriched, match)
+        error, non_blocking = FromFigureDocument.check_table_data(enriched)
+        errors += non_blocking
+        if error:
+            errors.append(error)
+            return None, errors
+
+        regex_hdr, regex_val = zip(*enriched.REGEX_GRID)
+
+        header_names: List[str] = []
+
+        fields: List[str] = []
+        values: List[List[str | int]] = []
+        for idx, row in enumerate(enriched.table.rows):
+            if not header_names:
+                header_matches = [
+                    match.group(1) if match else match
+                    for match in (
+                        re.match(regex, cell.text.strip().replace("\n", " "))
+                        for cell, regex in zip(row.cells, regex_hdr)
+                    )
+                ]
+                if all(header_matches):
+                    header_names = [str(hdr) for hdr in header_matches]
+                else:
+                    errors.append(
+                        senfd.errors.TableRowError(
+                            table_nr=enriched.table.table_nr,
+                            table_idx=idx,
+                            message="Did not match REGEX_GRID/Headers",
+                        )
+                    )
+                continue
+
+            value_matches = [
+                match.groupdict() if match else match
+                for match in (
+                    re.match(regex, cell.text.strip())
+                    for cell, regex in zip(row.cells, regex_val)
+                )
+            ]
+            if not all(value_matches):
+                errors.append(
+                    senfd.errors.TableRowError(
+                        table_nr=enriched.table.table_nr,
+                        table_idx=idx,
+                        message="Did not match REGEX_GRID/Values",
+                    )
+                )
+                continue
+
+            combined = {k: v for d in value_matches if d for k, v in d.items()}
+            cur_fields = list(combined.keys())
+            if not fields:
+                fields = cur_fields
+            else:
+                diff = list(set(cur_fields) | set(fields))
+                if diff:
+                    errors.append(
+                        senfd.errors.TableRowError(
+                            table_nr=enriched.table.table_nr,
+                            table_idx=idx,
+                            message=f"Unexpected fields ({fields}) != ({cur_fields})",
+                        )
+                    )
+                    continue
+
+            values.append(list(combined.values()))
+
+        data = enriched.table.dict()
+        data["headers"] = header_names
+        data["fields"] = fields
+        data["values"] = values
+
+        enriched.grid = senfd.tables.Grid(**data)
+
+        errors += FromFigureDocument.check_grid(enriched)
+
+        return enriched, errors
+
+    @staticmethod
+    def get_figure_enriching_classes():
+        """
+        To avoid manually crafting a list of classes, this function
+        introspectively examines this module for applicable
+        classes with "REGEX_FIGURE_DESCRIPTION" class attribute.
+        """
+        return [
+            cls
+            for _, cls in inspect.getmembers(senfd.documents.enriched, inspect.isclass)
+            if issubclass(cls, EnrichedFigure)
+            and (cls is not senfd.documents.enriched.EnrichedFigure)
+            and hasattr(cls, "REGEX_FIGURE_DESCRIPTION")
+        ]
 
     @staticmethod
     def convert(path: Path) -> Tuple[Document, List[Error]]:
@@ -385,7 +550,7 @@ class FromFigureDocument(Converter):
         document = EnrichedFigureDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
 
-        figure_organizers = get_figure_enriching_classes()
+        figure_organizers = FromFigureDocument.get_figure_enriching_classes()
         for figure in figure_document.figures:
             if not figure.table:
                 document.nontabular.append(figure)
@@ -398,10 +563,13 @@ class FromFigureDocument(Converter):
                     candidate.REGEX_FIGURE_DESCRIPTION, description, flags=re.IGNORECASE
                 )
                 if match:
-                    obj, conv_errors = candidate.from_figure_description(figure, match)
+                    enriched, conv_errors = FromFigureDocument.enrich(
+                        candidate, figure, match
+                    )
                     errors += conv_errors
-                    errors += obj.refine()
-                    obj.into_document(document)
+                    if not enriched:
+                        break
+                    enriched.into_document(document)
                     break
 
             if not match:
