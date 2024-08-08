@@ -37,3 +37,16 @@ or locally in the folder ``example/output/document1``.
 
 For details on the structure of the **JSON** documents, then have a look at
 the :ref:`schema <sec-schema>` section.
+
+.. _sec-usage-auxiliary:
+
+Auxiliary
+~~~~~~~~~
+
+The following tools are also convenient to have available when inspecting the
+JSON files:
+
+* bar - https://github.com/sharkdp/bat
+* jless - https://jless.io/
+* jq - https://jqlang.github.io/jq/
+
