@@ -209,13 +209,21 @@ class CommandSetOpcodes(EnrichedFigure):
 
 
 class GeneralCommandStatusValues(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r".*(Generic|General)\s+Command\s+Status\s+Values.*"
-    )
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*General.Command.Status.Values.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
         (REGEX_HDR_VALUE, REGEX_WILDCARD),
         (REGEX_HDR_DEFINITION, REGEX_WILDCARD),
         (r"(Commands.Affected)", REGEX_WILDCARD),
+    ]
+
+
+class GenericCommandStatusValues(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"(?P<command_name>[a-zA-Z -/]*).-.Generic.Command.Status.Values.*"
+    )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
+        (REGEX_HDR_EXPLANATION, REGEX_VAL_FIELD),
     ]
 
 
@@ -309,6 +317,9 @@ class EnrichedFigureDocument(Document):
         default_factory=list
     )
     general_command_status_values: List[GeneralCommandStatusValues] = Field(
+        default_factory=list
+    )
+    generic_command_status_values: List[GenericCommandStatusValues] = Field(
         default_factory=list
     )
     cns_values: List[CnsValues] = Field(default_factory=list)
