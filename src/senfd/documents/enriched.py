@@ -457,7 +457,7 @@ class FromFigureDocument(Converter):
 
         fields: List[str] = []
         values: List[List[str | int]] = []
-        for idx, row in enumerate(enriched.table.rows):
+        for idx, row in enumerate(enriched.table.rows[1:]):
             if not header_names:
                 header_matches = [
                     match.group(1) if match else match
@@ -470,7 +470,8 @@ class FromFigureDocument(Converter):
                     header_names = [str(hdr) for hdr in header_matches]
                 else:
                     errors.append(
-                        senfd.errors.TableRowError(
+                        senfd.errors.FigureTableRowError(
+                            figure_nr=enriched.figure_nr,
                             table_nr=enriched.table.table_nr,
                             table_idx=idx,
                             message="Did not match REGEX_GRID/Headers",
@@ -487,7 +488,8 @@ class FromFigureDocument(Converter):
             ]
             if not all(value_matches):
                 errors.append(
-                    senfd.errors.TableRowError(
+                    senfd.errors.FigureTableRowError(
+                        figure_nr=enriched.figure_nr,
                         table_nr=enriched.table.table_nr,
                         table_idx=idx,
                         message="Did not match REGEX_GRID/Values",
@@ -500,10 +502,11 @@ class FromFigureDocument(Converter):
             if not fields:
                 fields = cur_fields
             else:
-                diff = list(set(cur_fields) | set(fields))
+                diff = list(set(cur_fields).difference(set(fields)))
                 if diff:
                     errors.append(
-                        senfd.errors.TableRowError(
+                        senfd.errors.FigureTableRowError(
+                            figure_nr=enriched.figure_nr,
                             table_nr=enriched.table.table_nr,
                             table_idx=idx,
                             message=f"Unexpected fields ({fields}) != ({cur_fields})",

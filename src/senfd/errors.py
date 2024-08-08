@@ -21,13 +21,13 @@ class TableError(Error):
     caption: str
 
 
-class TableRowError(Error):
-    table_nr: int
-    table_idx: int
-
-
 class FigureError(Error):
     figure_nr: int
+
+
+class FigureTableRowError(FigureError):
+    table_nr: int
+    table_idx: int
 
 
 class FigureTableMissingError(FigureError):
