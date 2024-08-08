@@ -484,12 +484,21 @@ class FromFigureDocument(Converter):
                 if all(header_matches):
                     header_names = [str(hdr) for hdr in header_matches]
                 else:
+                    mismatches = [
+                        (
+                            idx,
+                            regex_hdr[idx],
+                            row.cells[idx].text.strip().replace("\n", " "),
+                        )
+                        for idx, hdr in enumerate(header_matches)
+                        if not hdr
+                    ]
                     errors.append(
                         senfd.errors.FigureTableRowError(
                             figure_nr=enriched.figure_nr,
                             table_nr=enriched.table.table_nr,
                             row_idx=row_idx,
-                            message="Did not match REGEX_GRID/Headers",
+                            message=f"No match REGEX_GRID/Headers on idx({mismatches})",
                         )
                     )
                 continue
