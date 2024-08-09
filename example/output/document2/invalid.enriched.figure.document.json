@@ -1,0 +1,454 @@
+{
+    "meta": {
+        "version": "0.2.3",
+        "stem": "invalid"
+    },
+    "acronyms": [],
+    "io_controller_command_set_support_requirements": [
+        {
+            "figure_nr": 2,
+            "caption": "Figure 2: I/O Controller – Foobar Command Set Support",
+            "description": "I/O Controller – Foobar Command Set Support",
+            "page_nr": null,
+            "table": {
+                "table_nr": 2,
+                "rows": [
+                    {
+                        "cells": [
+                            {
+                                "text": "Figure 2: I/O Controller – Foobar Command Set Support",
+                                "tables": []
+                            },
+                            {
+                                "text": "Figure 2: I/O Controller – Foobar Command Set Support",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "Command",
+                                "tables": []
+                            },
+                            {
+                                "text": "Command Support Requirements 1",
+                                "tables": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            "grid": {
+                "headers": [
+                    "Command",
+                    "Command Support Requirements"
+                ],
+                "fields": [],
+                "values": []
+            },
+            "command_set_name": "Foobar "
+        }
+    ],
+    "command_admin_opcodes": [],
+    "command_io_opcodes": [],
+    "command_set_opcodes": [],
+    "command_support_requirements": [],
+    "command_sqe_dword": [],
+    "command_sqe_dwords": [],
+    "command_sqe_data_pointer": [],
+    "command_cqe_dword": [],
+    "command_specific_status_values": [],
+    "general_command_status_values": [],
+    "generic_command_status_values": [
+        {
+            "figure_nr": 4,
+            "caption": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+            "description": "Status Code – Generic Command Status Values, Foobar Command Set",
+            "page_nr": null,
+            "table": {
+                "table_nr": 3,
+                "rows": [
+                    {
+                        "cells": [
+                            {
+                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+                                "tables": []
+                            },
+                            {
+                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+                                "tables": []
+                            },
+                            {
+                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "Value",
+                                "tables": []
+                            },
+                            {
+                                "text": "Definition",
+                                "tables": []
+                            },
+                            {
+                                "text": "Commands Affected",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "81h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Capacity Exceeded",
+                                "tables": []
+                            },
+                            {
+                                "text": "Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "82h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Namespace Not Ready",
+                                "tables": []
+                            },
+                            {
+                                "text": "Dong, Keep, Ding, Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "83h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Reservation Conflict",
+                                "tables": []
+                            },
+                            {
+                                "text": "Dong, Ring, Ding",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "84h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Format In Progress",
+                                "tables": []
+                            },
+                            {
+                                "text": "Dong, Keep, Ringing, Ding, Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "85h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Invalid Value Size",
+                                "tables": []
+                            },
+                            {
+                                "text": "Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "86h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Invalid Foobar Size",
+                                "tables": []
+                            },
+                            {
+                                "text": "Ringing, Ding, Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "87h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Foobar Baz Does Not Keep",
+                                "tables": []
+                            },
+                            {
+                                "text": "Dong, Keep, Ding, Ring",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "88h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Unrecovered Error",
+                                "tables": []
+                            },
+                            {
+                                "text": "Ding",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "89h",
+                                "tables": []
+                            },
+                            {
+                                "text": "Foobar Keeps",
+                                "tables": []
+                            },
+                            {
+                                "text": "Ring",
+                                "tables": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            "grid": {
+                "headers": [
+                    "Value",
+                    "Definition"
+                ],
+                "fields": [
+                    "hex",
+                    "name",
+                    "acronym",
+                    "description"
+                ],
+                "values": [
+                    [
+                        "81h",
+                        "Capacity Exceeded",
+                        null,
+                        null
+                    ],
+                    [
+                        "82h",
+                        "Namespace Not Ready",
+                        null,
+                        null
+                    ],
+                    [
+                        "83h",
+                        "Reservation Conflict",
+                        null,
+                        null
+                    ],
+                    [
+                        "84h",
+                        "Format In Progress",
+                        null,
+                        null
+                    ],
+                    [
+                        "85h",
+                        "Invalid Value Size",
+                        null,
+                        null
+                    ],
+                    [
+                        "86h",
+                        "Invalid Foobar Size",
+                        null,
+                        null
+                    ],
+                    [
+                        "87h",
+                        "Foobar Baz Does Not Keep",
+                        null,
+                        null
+                    ],
+                    [
+                        "88h",
+                        "Unrecovered Error",
+                        null,
+                        null
+                    ],
+                    [
+                        "89h",
+                        "Foobar Keeps",
+                        null,
+                        null
+                    ]
+                ]
+            }
+        }
+    ],
+    "cns_values": [],
+    "feature_support": [],
+    "feature_identifiers": [],
+    "log_page_identifiers": [],
+    "offset": [],
+    "property_definition": [],
+    "nontabular": [],
+    "uncategorized": [
+        {
+            "figure_nr": 1,
+            "caption": "Figure 1: A byte-table with an embedded bit-table",
+            "description": "A byte-table with an embedded bit-table",
+            "page_nr": 1,
+            "table": {
+                "table_nr": 1,
+                "rows": [
+                    {
+                        "cells": [
+                            {
+                                "text": "Figure 1: A byte-table with an embedded bit-table",
+                                "tables": []
+                            },
+                            {
+                                "text": "Figure 1: A byte-table with an embedded bit-table",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "Bytes",
+                                "tables": []
+                            },
+                            {
+                                "text": "Description",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "07:00",
+                                "tables": []
+                            },
+                            {
+                                "text": "Reserved",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "11:08",
+                                "tables": []
+                            },
+                            {
+                                "text": "Name (ACRONYM1): This is where a description would go",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "14:12",
+                                "tables": []
+                            },
+                            {
+                                "text": "Reserved",
+                                "tables": []
+                            }
+                        ]
+                    },
+                    {
+                        "cells": [
+                            {
+                                "text": "15",
+                                "tables": []
+                            },
+                            {
+                                "text": "Name with spaces (ACRONYM): The definition of this field is described in the table below.\n",
+                                "tables": [
+                                    {
+                                        "table_nr": 0,
+                                        "rows": [
+                                            {
+                                                "cells": [
+                                                    {
+                                                        "text": "Bits",
+                                                        "tables": []
+                                                    },
+                                                    {
+                                                        "text": "Description",
+                                                        "tables": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "cells": [
+                                                    {
+                                                        "text": "07:04",
+                                                        "tables": []
+                                                    },
+                                                    {
+                                                        "text": "Name with spaces (ACRONYM3): 5h as specified in some other figure",
+                                                        "tables": []
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "cells": [
+                                                    {
+                                                        "text": "03:00",
+                                                        "tables": []
+                                                    },
+                                                    {
+                                                        "text": "Name with spaces (ACRONYM4): Valid values are specified in some other figure",
+                                                        "tables": []
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

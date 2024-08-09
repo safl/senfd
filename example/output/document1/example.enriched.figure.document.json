@@ -2500,8 +2500,8 @@
                 ],
                 "values": [
                     [
-                        null,
-                        "12",
+                        "127",
+                        "00",
                         "Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -2566,8 +2566,8 @@
                 ],
                 "values": [
                     [
-                        null,
-                        "12",
+                        "127",
+                        "00",
                         "Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field."
                     ]
                 ]
@@ -3838,14 +3838,19 @@
                     "Scope"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "persist",
+                    "membuf",
+                    "description",
+                    "scope"
                 ],
                 "values": [
                     [
+                        "20h",
+                        "Yes",
+                        "No",
+                        "Foobar Configuration",
                         "Namespace"
-                    ],
-                    [
-                        "Notes:"
                     ]
                 ]
             }
@@ -3950,13 +3955,22 @@
                     "Reference"
                 ],
                 "fields": [
-                    "wildcard"
+                    "hex",
+                    "scope",
+                    "description",
+                    "section"
                 ],
                 "values": [
                     [
+                        "01h",
+                        "Refer to the Specifcation",
+                        "Error Information",
                         "4.1.4.1"
                     ],
                     [
+                        "06h",
+                        "Refer to the Specifcation",
+                        "Device Self-test",
                         "4.1.4.2"
                     ]
                 ]
