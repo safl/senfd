@@ -398,13 +398,6 @@ class FromFigureDocument(Converter):
                 ),
                 [],
             )
-        if not hasattr(figure, "REGEX_GRID"):
-            return (
-                senfd.errors.FigureRegexGridMissingError(
-                    figure_nr=figure.figure_nr, message="Missing REGEX_GRID"
-                ),
-                [],
-            )
 
         lengths = list(set([len(row.cells) for row in figure.table.rows]))
         if len(lengths) != 1:
