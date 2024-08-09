@@ -50,12 +50,3 @@ class Command(BaseModel):
 
     sqe: List[CommandDwords] = Field(default_factory=list)
     cqe: List[CommandDwords] = Field(default_factory=list)
-
-    def is_optional(self):
-        return self.requirement == "O"
-
-    def is_mandatory(self):
-        return self.requirement == "M"
-
-    def is_prohibited(self):
-        return self.requirement == "P"
