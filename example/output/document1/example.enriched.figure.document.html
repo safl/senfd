@@ -4076,9 +4076,9 @@ No errors logged for this figure.
   
   <tr>
     
-    <td>None</td>
+    <td>127</td>
     
-    <td>12</td>
+    <td>00</td>
     
     <td>Data Pointer (DPTR): This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field.</td>
     
@@ -4194,9 +4194,9 @@ No errors logged for this figure.
   
   <tr>
     
-    <td>None</td>
+    <td>127</td>
     
-    <td>12</td>
+    <td>00</td>
     
     <td>Data Pointer (DPTR): This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field.</td>
     
@@ -6161,7 +6161,7 @@ message='Grid is missing values; check FeatureSupport.REGEX_GRID' figure_nr=3
           <a class="nav-link" id="table_tab_35" data-bs-toggle="tab" href="#table_35" role="tab" aria-controls="table_35" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_35" data-bs-toggle="tab" href="#errors_35" role="tab" aria-controls="errors_35" aria-selected="false">Errors (1)</a>
+          <a class="nav-link text-danger" id="errors_tab_35" data-bs-toggle="tab" href="#errors_35" role="tab" aria-controls="errors_35" aria-selected="false">Errors (2)</a>
         </li>
       </ul>
     </div>
@@ -6175,7 +6175,15 @@ message='Grid is missing values; check FeatureSupport.REGEX_GRID' figure_nr=3
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Persist</th>
+    
+    <th>Membuf</th>
+    
+    <th>Description</th>
+    
+    <th>Scope</th>
     
   </tr>
   </thead>
@@ -6183,13 +6191,15 @@ message='Grid is missing values; check FeatureSupport.REGEX_GRID' figure_nr=3
   
   <tr>
     
+    <td>20h</td>
+    
+    <td>Yes</td>
+    
+    <td>No</td>
+    
+    <td>Foobar Configuration</td>
+    
     <td>Namespace</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>Notes:</td>
     
   </tr>
   
@@ -6337,6 +6347,8 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
 
 message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]
 
+message='cell.text(Notes:\nThis column is only valid if the feature is not saveable (refer to the Specifcation). If the feature is saveable, then this column is not used and any feature may be configured to be saved across power cycles and reset.) no match((?P<hex>[a-zA-Z0-9]{2}h))' figure_nr=35 table_nr=35 row_idx=3 cell_idx=0
+
 </pre>
 
         </div>
@@ -6377,7 +6389,13 @@ message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]
   <thead class="table-dark">
   <tr>
     
-    <th>Wildcard</th>
+    <th>Hex</th>
+    
+    <th>Scope</th>
+    
+    <th>Description</th>
+    
+    <th>Section</th>
     
   </tr>
   </thead>
@@ -6385,11 +6403,23 @@ message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]
   
   <tr>
     
+    <td>01h</td>
+    
+    <td>Refer to the Specifcation</td>
+    
+    <td>Error Information</td>
+    
     <td>4.1.4.1</td>
     
   </tr>
   
   <tr>
+    
+    <td>06h</td>
+    
+    <td>Refer to the Specifcation</td>
+    
+    <td>Device Self-test</td>
     
     <td>4.1.4.2</td>
     
