@@ -175,9 +175,9 @@ class Converter(ABC):
     @staticmethod
     @abstractmethod
     def is_applicable(path: Path) -> bool:
-        pass
+        """Check whether the converter is applicable to the given 'path'"""
 
     @staticmethod
     @abstractmethod
     def convert(path: Path) -> Tuple[Document, List[Error]]:
-        pass
+        """Convert the given 'path' into a 'Document'"""
