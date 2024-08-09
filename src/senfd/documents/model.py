@@ -20,13 +20,6 @@ class ModelDocument(Document):
 
     commands: List[senfd.models.Command] = Field(default_factory=list)
 
-    @classmethod
-    def from_enriched_figure_document_file(cls, path: Path):
-        """Instantiate an 'organized' Document from a 'figure' document"""
-
-        document, errors = FromEnrichedDocument.convert(path)
-        return document
-
 
 class FromEnrichedDocument(Converter):
 
