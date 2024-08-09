@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader, select_autoescape
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
 import senfd.schemas
 import senfd.tables
@@ -157,17 +157,6 @@ class Document(BaseModel):
         """Writes the document to HTML-formatted file"""
 
         return to_file(self.to_html(errors), self.html_filename(), path)
-
-    def is_valid(self) -> bool:
-        """Returns True when validator raises no exceptions, False otherwise"""
-
-        try:
-            self.model_validate(self.model_dump())
-        except ValidationError as e:
-            print(e)
-            return False
-
-        return True
 
 
 class Converter(ABC):
