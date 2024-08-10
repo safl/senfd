@@ -15,6 +15,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Tuple
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, Field
 
+import senfd.utils
 import senfd.schemas
 import senfd.tables
 from senfd.errors import Error
@@ -138,6 +139,8 @@ class Document(BaseModel):
             loader=PackageLoader("senfd", "templates"),
             autoescape=select_autoescape(["html", "xml"]),
         )
+        env.filters["snake_to_pascal"] = senfd.utils.snake_to_pascal 
+        env.filters["pascal_to_snake"] = senfd.utils.pascal_to_snake 
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
         figure_errors: Dict[int, List[Error]] = {}

@@ -32,7 +32,7 @@
   <thead class="table-dark">
   <tr>
     {% for field in grid["fields"] or []%}
-    <th>{{ field | capitalize }}</th>
+    <th>{{ field | snake_to_pascal }}</th>
     {% endfor %}
   </tr>
   </thead>
