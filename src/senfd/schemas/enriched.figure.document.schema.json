@@ -1,6 +1,6 @@
 {
     "$defs": {
-        "Acronyms": {
+        "AcronymsFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -46,7 +46,7 @@
                 "caption",
                 "description"
             ],
-            "title": "Acronyms",
+            "title": "AcronymsFigure",
             "type": "object"
         },
         "Cell": {
@@ -66,7 +66,7 @@
             "title": "Cell",
             "type": "object"
         },
-        "CnsValues": {
+        "CnsValueFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -112,10 +112,10 @@
                 "caption",
                 "description"
             ],
-            "title": "CnsValues",
+            "title": "CnsValueFigure",
             "type": "object"
         },
-        "CommandAdminOpcodes": {
+        "CommandAdminOpcodeFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -161,10 +161,10 @@
                 "caption",
                 "description"
             ],
-            "title": "CommandAdminOpcodes",
+            "title": "CommandAdminOpcodeFigure",
             "type": "object"
         },
-        "CommandCqeDword": {
+        "CommandCqeDwordFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -220,59 +220,10 @@
                 "command_name",
                 "command_dword"
             ],
-            "title": "CommandCqeDword",
+            "title": "CommandCqeDwordFigure",
             "type": "object"
         },
-        "CommandIoOpcodes": {
-            "properties": {
-                "figure_nr": {
-                    "title": "Figure Nr",
-                    "type": "integer"
-                },
-                "caption": {
-                    "title": "Caption",
-                    "type": "string"
-                },
-                "description": {
-                    "title": "Description",
-                    "type": "string"
-                },
-                "page_nr": {
-                    "anyOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "title": "Page Nr"
-                },
-                "table": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/$defs/Table"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null
-                },
-                "grid": {
-                    "$ref": "#/$defs/Grid"
-                }
-            },
-            "required": [
-                "figure_nr",
-                "caption",
-                "description"
-            ],
-            "title": "CommandIoOpcodes",
-            "type": "object"
-        },
-        "CommandSetOpcodes": {
+        "CommandIoOpcodeFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -323,10 +274,10 @@
                 "description",
                 "command_set_name"
             ],
-            "title": "CommandSetOpcodes",
+            "title": "CommandIoOpcodeFigure",
             "type": "object"
         },
-        "CommandSpecificStatusValues": {
+        "CommandSpecificStatusValueFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -377,10 +328,10 @@
                 "description",
                 "command_name"
             ],
-            "title": "CommandSpecificStatusValues",
+            "title": "CommandSpecificStatusValueFigure",
             "type": "object"
         },
-        "CommandSqeDataPointer": {
+        "CommandSqeDataPointerFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -431,10 +382,10 @@
                 "description",
                 "command_name"
             ],
-            "title": "CommandSqeDataPointer",
+            "title": "CommandSqeDataPointerFigure",
             "type": "object"
         },
-        "CommandSqeDword": {
+        "CommandSqeDwordFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -490,10 +441,10 @@
                 "command_name",
                 "command_dword"
             ],
-            "title": "CommandSqeDword",
+            "title": "CommandSqeDwordFigure",
             "type": "object"
         },
-        "CommandSqeDwords": {
+        "CommandSqeDwordLowerUpperFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -554,10 +505,64 @@
                 "command_dword_lower",
                 "command_dword_upper"
             ],
-            "title": "CommandSqeDwords",
+            "title": "CommandSqeDwordLowerUpperFigure",
             "type": "object"
         },
-        "CommandSupportRequirements": {
+        "CommandSqeMetadataPointer": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                },
+                "command_name": {
+                    "title": "Command Name",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description",
+                "command_name"
+            ],
+            "title": "CommandSqeMetadataPointer",
+            "type": "object"
+        },
+        "CommandSupportRequirementFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -608,7 +613,56 @@
                 "description",
                 "command_span"
             ],
-            "title": "CommandSupportRequirements",
+            "title": "CommandSupportRequirementFigure",
+            "type": "object"
+        },
+        "DataStructureFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "DataStructureFigure",
             "type": "object"
         },
         "DocumentMeta": {
@@ -626,7 +680,7 @@
             "title": "DocumentMeta",
             "type": "object"
         },
-        "FeatureIdentifiers": {
+        "ExampleFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -672,10 +726,10 @@
                 "caption",
                 "description"
             ],
-            "title": "FeatureIdentifiers",
+            "title": "ExampleFigure",
             "type": "object"
         },
-        "FeatureSupport": {
+        "FeatureIdentifierFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -721,7 +775,56 @@
                 "caption",
                 "description"
             ],
-            "title": "FeatureSupport",
+            "title": "FeatureIdentifierFigure",
+            "type": "object"
+        },
+        "FeatureSupportFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "FeatureSupportFigure",
             "type": "object"
         },
         "Figure": {
@@ -771,7 +874,7 @@
             "title": "Figure",
             "type": "object"
         },
-        "GeneralCommandStatusValues": {
+        "GeneralCommandStatusValueFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -817,10 +920,10 @@
                 "caption",
                 "description"
             ],
-            "title": "GeneralCommandStatusValues",
+            "title": "GeneralCommandStatusValueFigure",
             "type": "object"
         },
-        "GenericCommandStatusValues": {
+        "GenericCommandStatusValueFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -866,7 +969,7 @@
                 "caption",
                 "description"
             ],
-            "title": "GenericCommandStatusValues",
+            "title": "GenericCommandStatusValueFigure",
             "type": "object"
         },
         "Grid": {
@@ -910,7 +1013,164 @@
             "title": "Grid",
             "type": "object"
         },
-        "IoControllerCommandSetSupportRequirements": {
+        "HostSoftwareSpecifiedFieldFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "HostSoftwareSpecifiedFieldFigure",
+            "type": "object"
+        },
+        "IdentifyCommandSqeDwordFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                },
+                "command_name": {
+                    "default": "Identify",
+                    "title": "Command Name",
+                    "type": "string"
+                },
+                "command_dword": {
+                    "title": "Command Dword",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description",
+                "command_dword"
+            ],
+            "title": "IdentifyCommandSqeDwordFigure",
+            "type": "object"
+        },
+        "IdentifyDataStructureFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "IdentifyDataStructureFigure",
+            "type": "object"
+        },
+        "IoControllerCommandSetSupportRequirementFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -961,10 +1221,10 @@
                 "description",
                 "command_set_name"
             ],
-            "title": "IoControllerCommandSetSupportRequirements",
+            "title": "IoControllerCommandSetSupportRequirementFigure",
             "type": "object"
         },
-        "LogPageIdentifiers": {
+        "LogPageIdentifierFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -1010,10 +1270,10 @@
                 "caption",
                 "description"
             ],
-            "title": "LogPageIdentifiers",
+            "title": "LogPageIdentifierFigure",
             "type": "object"
         },
-        "Offset": {
+        "OffsetFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -1059,10 +1319,10 @@
                 "caption",
                 "description"
             ],
-            "title": "Offset",
+            "title": "OffsetFigure",
             "type": "object"
         },
-        "PropertyDefinition": {
+        "PropertyDefinitionFigure": {
             "properties": {
                 "figure_nr": {
                     "title": "Figure Nr",
@@ -1108,7 +1368,7 @@
                 "caption",
                 "description"
             ],
-            "title": "PropertyDefinition",
+            "title": "PropertyDefinitionFigure",
             "type": "object"
         },
         "Row": {
@@ -1141,6 +1401,55 @@
             },
             "title": "Table",
             "type": "object"
+        },
+        "VersionDescriptorFieldValueFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "Description",
+                    "type": "string"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Table"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "grid": {
+                    "$ref": "#/$defs/Grid"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "description"
+            ],
+            "title": "VersionDescriptorFieldValueFigure",
+            "type": "object"
         }
     },
     "properties": {
@@ -1149,135 +1458,177 @@
         },
         "acronyms": {
             "items": {
-                "$ref": "#/$defs/Acronyms"
+                "$ref": "#/$defs/AcronymsFigure"
             },
             "title": "Acronyms",
             "type": "array"
         },
-        "io_controller_command_set_support_requirements": {
+        "data_structure": {
             "items": {
-                "$ref": "#/$defs/IoControllerCommandSetSupportRequirements"
+                "$ref": "#/$defs/DataStructureFigure"
             },
-            "title": "Io Controller Command Set Support Requirements",
+            "title": "Data Structure",
             "type": "array"
         },
-        "command_admin_opcodes": {
+        "example_figure": {
             "items": {
-                "$ref": "#/$defs/CommandAdminOpcodes"
+                "$ref": "#/$defs/ExampleFigure"
             },
-            "title": "Command Admin Opcodes",
+            "title": "Example Figure",
             "type": "array"
         },
-        "command_io_opcodes": {
+        "io_controller_command_set_support_requirement": {
             "items": {
-                "$ref": "#/$defs/CommandIoOpcodes"
+                "$ref": "#/$defs/IoControllerCommandSetSupportRequirementFigure"
             },
-            "title": "Command Io Opcodes",
+            "title": "Io Controller Command Set Support Requirement",
             "type": "array"
         },
-        "command_set_opcodes": {
+        "command_admin_opcode": {
             "items": {
-                "$ref": "#/$defs/CommandSetOpcodes"
+                "$ref": "#/$defs/CommandAdminOpcodeFigure"
             },
-            "title": "Command Set Opcodes",
+            "title": "Command Admin Opcode",
             "type": "array"
         },
-        "command_support_requirements": {
+        "command_io_opcode": {
             "items": {
-                "$ref": "#/$defs/CommandSupportRequirements"
+                "$ref": "#/$defs/CommandIoOpcodeFigure"
             },
-            "title": "Command Support Requirements",
+            "title": "Command Io Opcode",
+            "type": "array"
+        },
+        "command_support_requirement": {
+            "items": {
+                "$ref": "#/$defs/CommandSupportRequirementFigure"
+            },
+            "title": "Command Support Requirement",
+            "type": "array"
+        },
+        "identify_data_structure": {
+            "items": {
+                "$ref": "#/$defs/IdentifyDataStructureFigure"
+            },
+            "title": "Identify Data Structure",
+            "type": "array"
+        },
+        "identify_command_sqe_dword": {
+            "items": {
+                "$ref": "#/$defs/IdentifyCommandSqeDwordFigure"
+            },
+            "title": "Identify Command Sqe Dword",
             "type": "array"
         },
         "command_sqe_dword": {
             "items": {
-                "$ref": "#/$defs/CommandSqeDword"
+                "$ref": "#/$defs/CommandSqeDwordFigure"
             },
             "title": "Command Sqe Dword",
             "type": "array"
         },
-        "command_sqe_dwords": {
+        "command_sqe_dword_lower_upper": {
             "items": {
-                "$ref": "#/$defs/CommandSqeDwords"
+                "$ref": "#/$defs/CommandSqeDwordLowerUpperFigure"
             },
-            "title": "Command Sqe Dwords",
+            "title": "Command Sqe Dword Lower Upper",
             "type": "array"
         },
         "command_sqe_data_pointer": {
             "items": {
-                "$ref": "#/$defs/CommandSqeDataPointer"
+                "$ref": "#/$defs/CommandSqeDataPointerFigure"
             },
             "title": "Command Sqe Data Pointer",
             "type": "array"
         },
+        "command_sqe_metadata_pointer": {
+            "items": {
+                "$ref": "#/$defs/CommandSqeMetadataPointer"
+            },
+            "title": "Command Sqe Metadata Pointer",
+            "type": "array"
+        },
         "command_cqe_dword": {
             "items": {
-                "$ref": "#/$defs/CommandCqeDword"
+                "$ref": "#/$defs/CommandCqeDwordFigure"
             },
             "title": "Command Cqe Dword",
             "type": "array"
         },
-        "command_specific_status_values": {
+        "command_specific_status_value": {
             "items": {
-                "$ref": "#/$defs/CommandSpecificStatusValues"
+                "$ref": "#/$defs/CommandSpecificStatusValueFigure"
             },
-            "title": "Command Specific Status Values",
+            "title": "Command Specific Status Value",
             "type": "array"
         },
-        "general_command_status_values": {
+        "general_command_status_value": {
             "items": {
-                "$ref": "#/$defs/GeneralCommandStatusValues"
+                "$ref": "#/$defs/GeneralCommandStatusValueFigure"
             },
-            "title": "General Command Status Values",
+            "title": "General Command Status Value",
             "type": "array"
         },
-        "generic_command_status_values": {
+        "generic_command_status_value": {
             "items": {
-                "$ref": "#/$defs/GenericCommandStatusValues"
+                "$ref": "#/$defs/GenericCommandStatusValueFigure"
             },
-            "title": "Generic Command Status Values",
+            "title": "Generic Command Status Value",
             "type": "array"
         },
-        "cns_values": {
+        "cns_value": {
             "items": {
-                "$ref": "#/$defs/CnsValues"
+                "$ref": "#/$defs/CnsValueFigure"
             },
-            "title": "Cns Values",
+            "title": "Cns Value",
             "type": "array"
         },
         "feature_support": {
             "items": {
-                "$ref": "#/$defs/FeatureSupport"
+                "$ref": "#/$defs/FeatureSupportFigure"
             },
             "title": "Feature Support",
             "type": "array"
         },
-        "feature_identifiers": {
+        "feature_identifier": {
             "items": {
-                "$ref": "#/$defs/FeatureIdentifiers"
+                "$ref": "#/$defs/FeatureIdentifierFigure"
             },
-            "title": "Feature Identifiers",
+            "title": "Feature Identifier",
             "type": "array"
         },
-        "log_page_identifiers": {
+        "log_page_identifier": {
             "items": {
-                "$ref": "#/$defs/LogPageIdentifiers"
+                "$ref": "#/$defs/LogPageIdentifierFigure"
             },
-            "title": "Log Page Identifiers",
+            "title": "Log Page Identifier",
             "type": "array"
         },
         "offset": {
             "items": {
-                "$ref": "#/$defs/Offset"
+                "$ref": "#/$defs/OffsetFigure"
             },
             "title": "Offset",
             "type": "array"
         },
         "property_definition": {
             "items": {
-                "$ref": "#/$defs/PropertyDefinition"
+                "$ref": "#/$defs/PropertyDefinitionFigure"
             },
             "title": "Property Definition",
+            "type": "array"
+        },
+        "version_descriptor_field_value": {
+            "items": {
+                "$ref": "#/$defs/VersionDescriptorFieldValueFigure"
+            },
+            "title": "Version Descriptor Field Value",
+            "type": "array"
+        },
+        "host_software_specified_field": {
+            "items": {
+                "$ref": "#/$defs/HostSoftwareSpecifiedFieldFigure"
+            },
+            "title": "Host Software Specified Field",
             "type": "array"
         },
         "nontabular": {

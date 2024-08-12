@@ -8,8 +8,50 @@
   </head>
   <body>
 
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Document figure stats.</h3>
+    </div>
+    <div class="card-body">
+
+      <table class="table">
+      <tr>
+        <td>Uncategorized</td>
+        <td>{{ document.uncategorized | length }}</td>
+      <tr>
+      </tr>
+        <td>Non-tabular</td>
+        <td>{{ document.nontabular | length }}</td>
+      </table>
+
+    </div>
+  </div>
+  
+
+  {% macro render_fields(figure, section) %}
+  {% set discard_fields = ["table", "grid", "caption", "figure_nr", "description", "page_nr"] %}
+  {% set fields = [] %}
+  {% for field, value in figure.items() %}
+      {% if field not in discard_fields %}
+          {% set _ = fields.append((field, value)) %}
+      {% endif %}
+  {% endfor %}
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>{{ section | snake_to_pascal }}</td>
+  </tr>
+  {% for field, value in fields %}
+  <tr>
+    <td><strong>{{ field | snake_to_pascal }}</strong>:</td><td>{{ value }}</td>
+  </tr>
+  {% endfor %}
+  </table>
+
+  {% endmacro %}
+
   {% macro render_table(table) %}
-  <table class="table">
+  <table class="table mb-0">
   {% for row in table.rows or []%}
   <tr>
     {% for cell in row.cells %}
@@ -28,7 +70,7 @@
   {% endmacro %}
 
   {% macro render_grid(grid) %}
-  <table class="table">
+  <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
     {% for field in grid["fields"] or []%}
@@ -56,9 +98,12 @@
   <div class="card mb-4">
 
     <div class="card-header">
-      {{ figure.caption }}
+      <h3 class="card-title mb-0"><strong>Figure {{ figure.figure_nr }}</strong>: {{ figure.description }}</h5>
     </div>
-
+    <div class="card-header">
+      {{ render_fields(figure, section) }}
+    </div>
+    
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_{{figure.figure_nr}}" role="tablist">
         <li class="nav-item">
@@ -96,7 +141,6 @@ No errors logged for this figure.
         </div>
       </div>
     </div>
-  
   </div>
   {% endfor %}
   {% endfor %}

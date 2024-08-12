@@ -18,49 +18,85 @@ from senfd.documents.plain import Figure, FigureDocument
 from senfd.errors import Error
 from senfd.utils import pascal_to_snake
 
-REGEX_WILDCARD = r"(?P<wildcard>.*)"
+REGEX_ALL = r"(?P<all>.*)"
 
 REGEX_VAL_NUMBER_OPTIONAL = r"(?P<number>\d+)?.*"
-REGEX_VAL_BITRANGE = r"(?:(?P<upper>\d{1,3}):)?(?P<lower>\d{1,3})"
-REGEX_VAL_BITSTR_2BITS = r"(?P<bitstr_2bits>\d{2}b)"
-REGEX_VAL_BITSTR_6BITS = r"(?P<bitstr_6bits>\d{4}\s\d{2}b)"
-REGEX_VAL_BYTES_HEX = r"(?P<hex>[a-zA-Z0-9]{2}h)"
-REGEX_VAL_COMMAND_NAME = r"^(?P<command_name>[a-zA-Z -/]*)[ \d]*$"
-REGEX_VAL_COMMANDS_AFFECTED = r"(?P<commands_affected>.*)"
-REGEX_VAL_DEFINIITON = r"(?P<definition>.*)"
-REGEX_VAL_DESCRIPTION = r"(?P<description>.*)"
-REGEX_VAL_FIELD = (
-    r"(?P<name>[ \w]+)"
-    r"("
-    r"\((?P<acronym>[^\)]+)\)"
-    r")?"
-    r"(:\s*(?P<description>.*))?"
+REGEX_VAL_HEXSTR = r"^(?P<hex>[a-zA-Z0-9]{1,2}h)$"
+REGEX_VAL_NAME = r"^(?P<name>[a-zA-Z -/]*)[ \d]*$"
+REGEX_VAL_FIELD_DESCRIPTION = (
+    r"(?P<name>[ \/\-\w]+)" r"(\((?P<acronym>[^\)]+)\))?" r"(:\s*(?P<description>.*))?"
 )
-REGEX_VAL_REFER_TO_BASESPEC = (
-    r"(?P<reference>Refer.to.the.NVM.Express.Base.Specification).*"
-)
-REGEX_VAL_REFERENCE = r"(?P<section>.*)"
-REGEX_VAL_SUPPORT_REQUIREMENT = r"(?P<requirement>O|M|P)"
-REGEX_VAL_SCOPE = r"(?P<scope>.*)"
-REGEX_VAL_TERM = r"(?P<term>.*)"
+REGEX_VAL_VALUE_DESCRIPTION = r"(?P<name>[ \w]+)" r"(:\s*(?P<description>.*))?"
+REGEX_VAL_REQUIREMENT = r"^(?:(?P<requirement>O|M|P|NR)(?:[ \d]*))?$"
 REGEX_VAL_YESNO = r"(?P<yn>NOTE|Note|Yes|No|Y|N)[ \d]*?"
-REGEX_VAL_ACRONYM_DESCRIPTION = r"(?P<acronym>\w):(?P<description>.*)"
 
-REGEX_HDR_ACRONYM = r"(Term|Acronym).*"
-REGEX_HDR_BITS = r"(Bits).*"
-REGEX_HDR_COMBINED_OPCODE = r"(Combined.Opcode).*"
-REGEX_HDR_COMMAND = r"(Command).*"
-REGEX_HDR_COMMANDS_AFFECTED = r"(Commands.Affected).*"
-REGEX_HDR_DATA_TRANSFER = r"(Data.Transfer).*"
-REGEX_HDR_DEFINITION = r"(Definition).*"
-REGEX_HDR_DESCRIPTION = r"(Description).*"
-REGEX_HDR_EXPLANATION = r"(?P<explanation>Definition|Description).*"
-REGEX_HDR_FUNCTION = r"(Function).*"
-REGEX_HDR_REFERENCE = r"(Reference).*"
-REGEX_HDR_RESET = r"(Reset).*"
-REGEX_HDR_SCOPE = r"(Scope).*"
-REGEX_HDR_TYPE = r"(Type).*"
-REGEX_HDR_VALUE = r"(Value).*"
+REGEX_HDR_EXPLANATION = r"(Definition|Description).*"
+
+REGEX_GRID_RANGE = (
+    r"(Bits|Bytes).*",
+    r"(?:(?P<upper>[0-9 \w\+\*]+):)?(?P<lower>[0-9 \w\+\*]+)",
+)
+REGEX_GRID_ACRONYM = (r"(Term|Acronym).*", REGEX_ALL.replace("all", "term"))
+REGEX_GRID_SCOPE = (
+    r"(Scope|Scope.and.Support).*",
+    REGEX_ALL.replace("all", "scope"),
+)
+REGEX_GRID_FIELD_DESCRIPTION = (REGEX_HDR_EXPLANATION, REGEX_VAL_FIELD_DESCRIPTION)
+REGEX_GRID_VALUE_DESCRIPTION = (REGEX_HDR_EXPLANATION, REGEX_VAL_VALUE_DESCRIPTION)
+REGEX_GRID_EXPLANATION = (
+    REGEX_HDR_EXPLANATION,
+    REGEX_ALL.replace("all", "description"),
+)
+REGEX_GRID_FEATURE_NAME = (
+    r"(Feature.Name).*",
+    REGEX_VAL_NAME.replace("name", "feature_name"),
+)
+REGEX_GRID_FEATURE_IDENTIFIER = (
+    r"(Feature.Identifier).*",
+    REGEX_VAL_HEXSTR.replace("hex", "feature_identifier"),
+)
+REGEX_GRID_FEATURE_PAPCR = (
+    r"(Persistent.Across.Power.Cycle.and.Reset)",
+    REGEX_VAL_YESNO.replace("<yn>", "<persist>"),
+)
+REGEX_GRID_FEATURE_UMBFA = (
+    r"(Uses.Memory.Buffer.for.Attributes)",
+    REGEX_VAL_YESNO.replace("<yn>", "<membuf>"),
+)
+REGEX_GRID_REQUIREMENTS = (
+    r"^(((:?Command|Feature).+Support.+Requirements)|(:?O\/M)).*$",
+    REGEX_VAL_REQUIREMENT,
+)
+REGEX_GRID_BITS_FUNCTION = (
+    r"(Bits|Function).*",
+    r"(?P<bitstr>\d{4}\s\d{2}b)",
+)
+REGEX_GRID_COMMAND_OPCODE = (
+    r"(Combined.Opcode).*",
+    REGEX_VAL_HEXSTR.replace("hex", "opcode"),
+)
+REGEX_GRID_COMMAND_NAME = (
+    r"(Command).*",
+    REGEX_VAL_NAME.replace("name", "command_name"),
+)
+REGEX_GRID_BITS_TRANSFER = (r"(Data.Transfer).*", r"(?P<function>\d{2}b)")
+REGEX_GRID_REFERENCE = (
+    r"(Reference).*",
+    REGEX_ALL.replace("all", "reference"),
+)
+REGEX_GRID_USES_NSID = (r"(NSID).*", REGEX_VAL_YESNO.replace("yn", "uses_nsid"))
+REGEX_GRID_USES_CNTID = (r"(CNTID).*", REGEX_VAL_YESNO.replace("yn", "uses_cntid"))
+REGEX_GRID_USES_CSI = (r"(CSI).*", REGEX_VAL_YESNO.replace("yn", "uses_csi"))
+REGEX_GRID_VALUE = (r"(Value).*", REGEX_VAL_HEXSTR.replace("hex", "value"))
+REGEX_GRID_LPI = (
+    r"(Log.Page.Identifier).*",
+    REGEX_VAL_HEXSTR.replace("hex", "log_page_identifier"),
+)
+REGEX_GRID_LPN = (r"(Log.Page.Name).*", REGEX_ALL.replace("all", "log_page_name"))
+REGEX_GRID_COMMANDS_AFFECTED = (
+    r"(Commands.Affected).*",
+    REGEX_ALL.replace("all", "comma"),
+)
 
 
 class EnrichedFigure(Figure):
@@ -68,76 +104,113 @@ class EnrichedFigure(Figure):
     grid: senfd.tables.Grid = Field(default_factory=senfd.tables.Grid)
 
     def into_document(self, document):
-        key = pascal_to_snake(self.__class__.__name__)
+        key = pascal_to_snake(self.__class__.__name__).replace("_figure", "")
         getattr(document, key).append(self)
 
 
-class Acronyms(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Acronym\s+(definitions|Descriptions)"
+class DataStructureFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^.*(Data.Structure|Log.Page)$"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_ACRONYM, REGEX_VAL_TERM),
-        (REGEX_HDR_DEFINITION, REGEX_WILDCARD),
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
     ]
 
 
-class IoControllerCommandSetSupportRequirements(EnrichedFigure):
+class IdentifyDataStructureFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Identify.*Data.Structure.*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_RANGE,
+        REGEX_GRID_REQUIREMENTS,
+        REGEX_GRID_FIELD_DESCRIPTION,
+    ]
+
+
+class AcronymsFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Acronym\s+(definitions|Descriptions)"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_ACRONYM,
+        REGEX_GRID_EXPLANATION,
+    ]
+
+
+class IoControllerCommandSetSupportRequirementFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r".*-\s+(?P<command_set_name>.*)Command\s+Set\s+Support"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
-        (r"^(Command\sSupport\sRequirements)[ \d]*?$", REGEX_VAL_SUPPORT_REQUIREMENT),
+        REGEX_GRID_COMMAND_NAME,
+        REGEX_GRID_REQUIREMENTS,
     ]
 
     command_set_name: str
 
 
-class CommandSupportRequirements(EnrichedFigure):
+class CommandSupportRequirementFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"\s*(?P<command_span>.*)\s+Command\s*Support\s*Requirements.*"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
-        (r"(Command\sSupport\sRequirements)\s\d", REGEX_VAL_SUPPORT_REQUIREMENT),
+        REGEX_GRID_COMMAND_NAME,
+        REGEX_GRID_REQUIREMENTS,
     ]
 
     command_span: str
 
 
-class CnsValues(EnrichedFigure):
+class CnsValueFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*CNS\s+Values.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(CNS.Value)", REGEX_VAL_BYTES_HEX),
-        (r"(O\/M).*", REGEX_VAL_SUPPORT_REQUIREMENT),
-        (REGEX_HDR_DEFINITION, REGEX_VAL_DESCRIPTION),
-        (r"(NSID).*", REGEX_VAL_YESNO.replace("yn", "nsid")),
-        (r"(CNTID).*", REGEX_VAL_YESNO.replace("yn", "cntid")),
-        (r"(CSI).*", REGEX_VAL_YESNO.replace("yn", "csi")),
-        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
+        (r"(CNS.Value).*", REGEX_VAL_HEXSTR.replace("hex", "cns_value")),
+        (r"(O\/M).*", REGEX_VAL_REQUIREMENT),
+        REGEX_GRID_EXPLANATION,
+        REGEX_GRID_USES_NSID,
+        REGEX_GRID_USES_CNTID,
+        REGEX_GRID_USES_CSI,
+        REGEX_GRID_REFERENCE,
     ]
 
 
-class CommandSqeDataPointer(EnrichedFigure):
+class CommandSqeDataPointerFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s+-\s+Data\s+Pointer"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
-        (REGEX_HDR_DESCRIPTION, REGEX_WILDCARD),
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
     ]
 
     command_name: str
 
 
-class CommandSqeDwords(EnrichedFigure):
+class ExampleFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*(Example|example).*"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
+    ]
+
+
+class CommandSqeMetadataPointer(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"(?P<command_name>[\w\s]+)\s+-\s+Metadata\s+Pointer"
+    )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
+    ]
+
+    command_name: str
+
+
+class CommandSqeDwordLowerUpperFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s*-\s*Command\s*Dword\s*"
         r"(?P<command_dword_lower>\d+)"
         r".*and.*?\s(?P<command_dword_upper>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_FIELD),
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
     ]
 
     command_name: str
@@ -145,167 +218,179 @@ class CommandSqeDwords(EnrichedFigure):
     command_dword_upper: int
 
 
-class CommandSqeDword(EnrichedFigure):
+class CommandSqeDwordFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^(?P<command_name>[\w\s]+)\s+-\s+Command\s*Dword\s*(?P<command_dword>\d+)$"
+        r"^(?P<command_name>[a-zA-Z\w\s\/]+(?:\(\w\))?)\s+-\s+Command\s*Dword\s*(?P<command_dword>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_FIELD),
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
     ]
 
     command_name: str
     command_dword: int
 
 
-class CommandCqeDword(EnrichedFigure):
+class IdentifyCommandSqeDwordFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"^Command\s*Dword\s*(?P<command_dword>\d+).-.CNS.Specific.Identifier$"
+    )
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
+    ]
+
+    command_name: str = "Identify"
+    command_dword: int
+
+
+class CommandCqeDwordFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s+-\s+"
         r"Completion\sQueue\sEntry\sDword\s(?P<command_dword>\d+)"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_FIELD),
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
     ]
 
     command_name: str
     command_dword: str
 
 
-class CommandAdminOpcodes(EnrichedFigure):
+class CommandAdminOpcodeFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.Admin.Commands"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
-        (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
-        (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
-        (r"(Namespace.Identifier.Used).*", REGEX_VAL_YESNO.replace("yn", "nsid_used")),
-        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
-        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
+        REGEX_GRID_BITS_FUNCTION,
+        REGEX_GRID_BITS_TRANSFER,
+        REGEX_GRID_COMMAND_OPCODE,
+        REGEX_GRID_USES_NSID,
+        REGEX_GRID_COMMAND_NAME,
+        REGEX_GRID_REFERENCE,
     ]
 
 
-class CommandIoOpcodes(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.I.O.Commands"
-    REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
-        (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
-        (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
-        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
-        (REGEX_HDR_REFERENCE, REGEX_WILDCARD),
-    ]
-
-
-class CommandSetOpcodes(EnrichedFigure):
+class CommandIoOpcodeFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_FUNCTION, REGEX_VAL_BITSTR_6BITS),
-        (REGEX_HDR_DATA_TRANSFER, REGEX_VAL_BITSTR_2BITS),
-        (REGEX_HDR_COMBINED_OPCODE, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_COMMAND, REGEX_VAL_COMMAND_NAME),
-        (REGEX_HDR_REFERENCE, REGEX_WILDCARD),
+        REGEX_GRID_BITS_FUNCTION,
+        REGEX_GRID_BITS_TRANSFER,
+        REGEX_GRID_COMMAND_OPCODE,
+        REGEX_GRID_COMMAND_NAME,
+        REGEX_GRID_REFERENCE,
     ]
 
     command_set_name: str
 
 
-class GeneralCommandStatusValues(EnrichedFigure):
+class GeneralCommandStatusValueFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*General.Command.Status.Values.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_EXPLANATION, REGEX_VAL_FIELD),
-        (r"(Commands.Affected)", REGEX_WILDCARD),
+        REGEX_GRID_VALUE,
+        REGEX_GRID_VALUE_DESCRIPTION,
+        REGEX_GRID_COMMANDS_AFFECTED,
     ]
 
 
-class GenericCommandStatusValues(EnrichedFigure):
+class GenericCommandStatusValueFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[a-zA-Z -/]*).-.Generic.Command.Status.Values.*"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_EXPLANATION, REGEX_VAL_FIELD),
+        REGEX_GRID_VALUE,
+        REGEX_GRID_VALUE_DESCRIPTION,
     ]
 
 
-class CommandSpecificStatusValues(EnrichedFigure):
+class CommandSpecificStatusValueFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
         r"(?P<command_name>[\w\s]+)\s+-\s+Command\s+Specific\s+Status\s+Values"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_VALUE, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
-        (REGEX_HDR_COMMANDS_AFFECTED, REGEX_VAL_COMMANDS_AFFECTED),
+        REGEX_GRID_VALUE,
+        REGEX_GRID_VALUE_DESCRIPTION,
+        REGEX_GRID_COMMANDS_AFFECTED,
     ]
     command_name: str
 
 
-class FeatureIdentifiers(EnrichedFigure):
+class FeatureIdentifierFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Identifiers.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Feature.Identifier)", REGEX_VAL_BYTES_HEX),
-        (
-            r"(Persistent.Across.Power.Cycle.and.Reset).*",
-            REGEX_VAL_YESNO.replace("<yn>", "<persist>"),
-        ),
-        (
-            r"(Uses.Memory.Buffer.for.Attributes)",
-            REGEX_VAL_YESNO.replace("<yn>", "<membuf>"),
-        ),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
-        (REGEX_HDR_SCOPE, REGEX_VAL_SCOPE),
+        REGEX_GRID_FEATURE_IDENTIFIER,
+        REGEX_GRID_FEATURE_PAPCR,
+        REGEX_GRID_FEATURE_UMBFA,
+        REGEX_GRID_EXPLANATION,
+        REGEX_GRID_SCOPE,
     ]
 
 
-class FeatureSupport(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Feature\s*Support.*"
+class VersionDescriptorFieldValueFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^.*Version Descriptor Field Values$"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Feature.Name).*", REGEX_VAL_DESCRIPTION),
-        (r"(Feature.Support.Requirements).*", REGEX_VAL_SUPPORT_REQUIREMENT),
-        (r"(Logged.in.Persistent.Event.Log).*", REGEX_VAL_YESNO),
+        (r"(Specification.Version.).*", r"^(?P<version>\d\.\d)$"),
+        (r"(MJR.Field).*", REGEX_VAL_HEXSTR.replace("hex", "version_major")),
+        (r"(MNR.Field).*", REGEX_VAL_HEXSTR.replace("hex", "version_minor")),
+        (r"(TER.Field).*", REGEX_VAL_HEXSTR.replace("hex", "version_tertiary")),
     ]
 
 
-class LogPageIdentifiers(EnrichedFigure):
+class HostSoftwareSpecifiedFieldFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^.*-.Host Software Specified Fields$"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_RANGE,
+        REGEX_GRID_FIELD_DESCRIPTION,
+    ]
+
+
+class FeatureSupportFigure(EnrichedFigure):
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^I.O.Controller.-.Feature.Support$"
+    REGEX_GRID: ClassVar[List[Tuple]] = [
+        REGEX_GRID_FEATURE_NAME,
+        REGEX_GRID_REQUIREMENTS,
+    ]
+
+
+class LogPageIdentifierFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Log\s+Page\s+Identifiers.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Log.Page.Identifier).*", REGEX_VAL_BYTES_HEX),
-        (r"(Scope.and.Support).*", REGEX_VAL_SCOPE),
-        (r"(Log.Page.Name).*", REGEX_VAL_DESCRIPTION),
-        (REGEX_HDR_REFERENCE, REGEX_VAL_REFERENCE),
+        REGEX_GRID_LPI,
+        REGEX_GRID_SCOPE,
+        REGEX_GRID_LPN,
+        REGEX_GRID_REFERENCE,
     ]
 
 
-class Offset(EnrichedFigure):
+class OffsetFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*offset"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (REGEX_HDR_BITS, REGEX_VAL_BITRANGE),
-        (REGEX_HDR_TYPE, REGEX_WILDCARD),
-        (REGEX_HDR_RESET, REGEX_VAL_BYTES_HEX),
-        (REGEX_HDR_DESCRIPTION, REGEX_VAL_DESCRIPTION),
+        REGEX_GRID_RANGE,
+        (r"(Type).*", REGEX_ALL),
+        (r"(Reset).*", REGEX_VAL_HEXSTR.replace("hex", "reset")),
+        REGEX_GRID_EXPLANATION,
     ]
 
 
-class PropertyDefinition(EnrichedFigure):
+class PropertyDefinitionFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*Property Definition.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
-        (r"(Offset.\(OFST\)).*", REGEX_VAL_BYTES_HEX),
+        (r"(Offset.\(OFST\)).*", REGEX_VAL_HEXSTR),
         (r"(Size.\(in.bytes\)).*", REGEX_VAL_NUMBER_OPTIONAL),
         (
             r"(I/O Controller).*",
-            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_ioc"),
+            REGEX_VAL_REQUIREMENT.replace("requirement", "req_ioc"),
         ),
         (
             r"(Administrative.Controller).*",
-            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_ac"),
+            REGEX_VAL_REQUIREMENT.replace("requirement", "req_ac"),
         ),
         (
             r"(Discovery.Controller).*",
-            REGEX_VAL_SUPPORT_REQUIREMENT.replace("requirement", "req_dc"),
+            REGEX_VAL_REQUIREMENT.replace("requirement", "req_dc"),
         ),
-        (r"(Name).*", REGEX_VAL_ACRONYM_DESCRIPTION),
+        (r"(Name).*", REGEX_VAL_FIELD_DESCRIPTION),
     ]
 
 
@@ -317,35 +402,57 @@ class EnrichedFigureDocument(Document):
     FILENAME_SCHEMA: ClassVar[str] = "enriched.figure.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "enriched.figure.document.html.jinja2"
 
-    acronyms: List[Acronyms] = Field(default_factory=list)
-    io_controller_command_set_support_requirements: List[
-        IoControllerCommandSetSupportRequirements
+    acronyms: List[AcronymsFigure] = Field(default_factory=list)
+    data_structure: List[DataStructureFigure] = Field(default_factory=list)
+    example: List[ExampleFigure] = Field(default_factory=list)
+    io_controller_command_set_support_requirement: List[
+        IoControllerCommandSetSupportRequirementFigure
     ] = Field(default_factory=list)
-    command_admin_opcodes: List[CommandAdminOpcodes] = Field(default_factory=list)
-    command_io_opcodes: List[CommandIoOpcodes] = Field(default_factory=list)
-    command_set_opcodes: List[CommandSetOpcodes] = Field(default_factory=list)
-    command_support_requirements: List[CommandSupportRequirements] = Field(
+    command_admin_opcode: List[CommandAdminOpcodeFigure] = Field(default_factory=list)
+    command_io_opcode: List[CommandIoOpcodeFigure] = Field(default_factory=list)
+    command_support_requirement: List[CommandSupportRequirementFigure] = Field(
         default_factory=list
     )
-    command_sqe_dword: List[CommandSqeDword] = Field(default_factory=list)
-    command_sqe_dwords: List[CommandSqeDwords] = Field(default_factory=list)
-    command_sqe_data_pointer: List[CommandSqeDataPointer] = Field(default_factory=list)
-    command_cqe_dword: List[CommandCqeDword] = Field(default_factory=list)
-    command_specific_status_values: List[CommandSpecificStatusValues] = Field(
+    identify_data_structure: List[IdentifyDataStructureFigure] = Field(
         default_factory=list
     )
-    general_command_status_values: List[GeneralCommandStatusValues] = Field(
+    identify_command_sqe_dword: List[IdentifyCommandSqeDwordFigure] = Field(
         default_factory=list
     )
-    generic_command_status_values: List[GenericCommandStatusValues] = Field(
+    command_sqe_dword: List[CommandSqeDwordFigure] = Field(default_factory=list)
+    command_sqe_dword_lower_upper: List[CommandSqeDwordLowerUpperFigure] = Field(
         default_factory=list
     )
-    cns_values: List[CnsValues] = Field(default_factory=list)
-    feature_support: List[FeatureSupport] = Field(default_factory=list)
-    feature_identifiers: List[FeatureIdentifiers] = Field(default_factory=list)
-    log_page_identifiers: List[LogPageIdentifiers] = Field(default_factory=list)
-    offset: List[Offset] = Field(default_factory=list)
-    property_definition: List[PropertyDefinition] = Field(default_factory=list)
+    command_sqe_data_pointer: List[CommandSqeDataPointerFigure] = Field(
+        default_factory=list
+    )
+    command_sqe_metadata_pointer: List[CommandSqeMetadataPointer] = Field(
+        default_factory=list
+    )
+    command_cqe_dword: List[CommandCqeDwordFigure] = Field(default_factory=list)
+    command_specific_status_value: List[CommandSpecificStatusValueFigure] = Field(
+        default_factory=list
+    )
+    general_command_status_value: List[GeneralCommandStatusValueFigure] = Field(
+        default_factory=list
+    )
+    generic_command_status_value: List[GenericCommandStatusValueFigure] = Field(
+        default_factory=list
+    )
+    cns_value: List[CnsValueFigure] = Field(default_factory=list)
+    feature_support: List[FeatureSupportFigure] = Field(default_factory=list)
+    feature_identifier: List[FeatureIdentifierFigure] = Field(default_factory=list)
+    log_page_identifier: List[LogPageIdentifierFigure] = Field(default_factory=list)
+    offset: List[OffsetFigure] = Field(default_factory=list)
+    property_definition: List[PropertyDefinitionFigure] = Field(default_factory=list)
+
+    version_descriptor_field_value: List[VersionDescriptorFieldValueFigure] = Field(
+        default_factory=list
+    )
+
+    host_software_specified_field: List[HostSoftwareSpecifiedFieldFigure] = Field(
+        default_factory=list
+    )
 
     nontabular: List[Figure] = Field(default_factory=list)
     uncategorized: List[Figure] = Field(default_factory=list)
@@ -518,7 +625,7 @@ class FromFigureDocument(Converter):
             value_errors = []
             for cell_idx, (cell, regex) in enumerate(zip(row.cells, regex_val)):
 
-                text = cell.text.strip()
+                text = cell.text.strip().translate(TRANSLATION_TABLE)
                 match = re.match(regex, text)
                 if match:
                     combined.update(match.groupdict())

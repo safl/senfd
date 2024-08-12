@@ -4,12 +4,14 @@
         "stem": "invalid"
     },
     "acronyms": [],
-    "io_controller_command_set_support_requirements": [
+    "data_structure": [],
+    "example_figure": [],
+    "io_controller_command_set_support_requirement": [
         {
             "figure_nr": 2,
             "caption": "Figure 2: I/O Controller – Foobar Command Set Support",
             "description": "I/O Controller – Foobar Command Set Support",
-            "page_nr": null,
+            "page_nr": 2,
             "table": {
                 "table_nr": 2,
                 "rows": [
@@ -50,37 +52,28 @@
             "command_set_name": "Foobar "
         }
     ],
-    "command_admin_opcodes": [],
-    "command_io_opcodes": [],
-    "command_set_opcodes": [],
-    "command_support_requirements": [],
-    "command_sqe_dword": [],
-    "command_sqe_dwords": [],
-    "command_sqe_data_pointer": [],
-    "command_cqe_dword": [],
-    "command_specific_status_values": [],
-    "general_command_status_values": [],
-    "generic_command_status_values": [
+    "command_admin_opcode": [],
+    "command_io_opcode": [],
+    "command_support_requirement": [],
+    "identify_data_structure": [],
+    "identify_command_sqe_dword": [],
+    "command_sqe_dword": [
         {
-            "figure_nr": 4,
-            "caption": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
-            "description": "Status Code – Generic Command Status Values, Foobar Command Set",
-            "page_nr": null,
+            "figure_nr": 3,
+            "caption": "Figure 3: Ringing – Command Dword 10",
+            "description": "Ringing – Command Dword 10",
+            "page_nr": 3,
             "table": {
                 "table_nr": 3,
                 "rows": [
                     {
                         "cells": [
                             {
-                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+                                "text": "Figure 3: Ringing – Command Dword 10",
                                 "tables": []
                             },
                             {
-                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
-                                "tables": []
-                            },
-                            {
-                                "text": "Figure 4: Status Code – Generic Command Status Values, Foobar Command Set",
+                                "text": "Figure 3: Ringing – Command Dword 10",
                                 "tables": []
                             }
                         ]
@@ -88,15 +81,11 @@
                     {
                         "cells": [
                             {
-                                "text": "Value",
+                                "text": "Bits",
                                 "tables": []
                             },
                             {
-                                "text": "Definition",
-                                "tables": []
-                            },
-                            {
-                                "text": "Commands Affected",
+                                "text": "Description",
                                 "tables": []
                             }
                         ]
@@ -104,143 +93,11 @@
                     {
                         "cells": [
                             {
-                                "text": "81h",
+                                "text": "31:00",
                                 "tables": []
                             },
                             {
-                                "text": "Capacity Exceeded",
-                                "tables": []
-                            },
-                            {
-                                "text": "Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "82h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Namespace Not Ready",
-                                "tables": []
-                            },
-                            {
-                                "text": "Dong, Keep, Ding, Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "83h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Reservation Conflict",
-                                "tables": []
-                            },
-                            {
-                                "text": "Dong, Ring, Ding",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "84h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Format In Progress",
-                                "tables": []
-                            },
-                            {
-                                "text": "Dong, Keep, Ringing, Ding, Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "85h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Invalid Value Size",
-                                "tables": []
-                            },
-                            {
-                                "text": "Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "86h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Invalid Foobar Size",
-                                "tables": []
-                            },
-                            {
-                                "text": "Ringing, Ding, Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "87h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Foobar Baz Does Not Keep",
-                                "tables": []
-                            },
-                            {
-                                "text": "Dong, Keep, Ding, Ring",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "88h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Unrecovered Error",
-                                "tables": []
-                            },
-                            {
-                                "text": "Ding",
-                                "tables": []
-                            }
-                        ]
-                    },
-                    {
-                        "cells": [
-                            {
-                                "text": "89h",
-                                "tables": []
-                            },
-                            {
-                                "text": "Foobar Keeps",
-                                "tables": []
-                            },
-                            {
-                                "text": "Ring",
+                                "text": "Host Buffer Size (HBS): This field indicates the host buffer size in bytes.",
                                 "tables": []
                             }
                         ]
@@ -249,81 +106,58 @@
             },
             "grid": {
                 "headers": [
-                    "Value",
-                    "Definition"
+                    "Bits",
+                    "Description"
                 ],
                 "fields": [
-                    "hex",
+                    "upper",
+                    "lower",
+                    "upper_expr",
+                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
                 ],
                 "values": [
                     [
-                        "81h",
-                        "Capacity Exceeded",
+                        "31",
+                        "00",
                         null,
-                        null
-                    ],
-                    [
-                        "82h",
-                        "Namespace Not Ready",
                         null,
-                        null
-                    ],
-                    [
-                        "83h",
-                        "Reservation Conflict",
-                        null,
-                        null
-                    ],
-                    [
-                        "84h",
-                        "Format In Progress",
-                        null,
-                        null
-                    ],
-                    [
-                        "85h",
-                        "Invalid Value Size",
-                        null,
-                        null
-                    ],
-                    [
-                        "86h",
-                        "Invalid Foobar Size",
-                        null,
-                        null
-                    ],
-                    [
-                        "87h",
-                        "Foobar Baz Does Not Keep",
-                        null,
-                        null
-                    ],
-                    [
-                        "88h",
-                        "Unrecovered Error",
-                        null,
-                        null
-                    ],
-                    [
-                        "89h",
-                        "Foobar Keeps",
-                        null,
-                        null
+                        "Host Buffer Size ",
+                        "HBS",
+                        "This field indicates the host buffer size in bytes."
                     ]
                 ]
-            }
+            },
+            "command_name": "Ringing",
+            "command_dword": 10
         }
     ],
-    "cns_values": [],
+    "command_sqe_dword_lower_upper": [],
+    "command_sqe_data_pointer": [],
+    "command_sqe_metadata_pointer": [],
+    "command_cqe_dword": [],
+    "command_specific_status_value": [],
+    "general_command_status_value": [],
+    "generic_command_status_value": [],
+    "cns_value": [],
     "feature_support": [],
-    "feature_identifiers": [],
-    "log_page_identifiers": [],
+    "feature_identifier": [],
+    "log_page_identifier": [],
     "offset": [],
     "property_definition": [],
-    "nontabular": [],
+    "version_descriptor_field_value": [],
+    "host_software_specified_field": [],
+    "nontabular": [
+        {
+            "figure_nr": 6,
+            "caption": "Figure 6: Family of Specifications",
+            "description": "Family of Specifications",
+            "page_nr": 4,
+            "table": null
+        }
+    ],
     "uncategorized": [
         {
             "figure_nr": 1,
