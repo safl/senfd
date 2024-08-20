@@ -73,12 +73,10 @@ def main() -> int:
             docclass.to_schema_file(args.output)
         return 0
 
-    npaths = len(args.document)
-    for count, path in enumerate(sorted(args.document), 1):
-        output_dir = args.output / f"document{count:0{npaths // 10 + 1}}"
-        output_dir.mkdir(parents=True, exist_ok=True)
+    for path in sorted(args.document):
+        args.output.mkdir(parents=True, exist_ok=True)
 
-        errors = senfd.pipeline.process(path, output_dir)
-        to_log_file(errors, path.stem, output_dir)
+        errors = senfd.pipeline.process(path, args.output)
+        to_log_file(errors, path.stem, args.output)
 
     return 0
