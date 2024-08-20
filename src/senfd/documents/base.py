@@ -122,7 +122,7 @@ class Document(BaseModel):
     def to_json(self) -> str:
         """Returns the document as a JSON-formatted string"""
 
-        return self.model_dump_json(indent=4)
+        return self.model_dump_json()
 
     def to_json_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document, formatted as JSON, to file at the given 'path'"""
