@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import ClassVar, List, Tuple
+from typing import ClassVar, Dict, List, Tuple
 
 from pydantic import Field
 
@@ -7,7 +7,6 @@ import senfd.errors
 import senfd.models
 from senfd.documents.base import Converter, Document, strip_all_suffixes
 from senfd.documents.enriched import EnrichedFigureDocument
-from senfd.errors import Error
 
 
 class ModelDocument(Document):
@@ -18,7 +17,7 @@ class ModelDocument(Document):
     FILENAME_SCHEMA: ClassVar[str] = "model.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "model.document.html.jinja2"
 
-    commands: List[senfd.models.Command] = Field(default_factory=list)
+    command_sets: Dict[str, senfd.models.CommandSet] = Field(default_factory=dict)
 
 
 class FromEnrichedDocument(Converter):
@@ -28,72 +27,70 @@ class FromEnrichedDocument(Converter):
         return "".join(path.suffixes).lower() == EnrichedFigureDocument.SUFFIX_JSON
 
     @staticmethod
-    def convert(path: Path) -> Tuple[Document, List[Error]]:
+    def extract_command_set(
+        document: ModelDocument, enriched: EnrichedFigureDocument
+    ) -> List[senfd.errors.Error]:
+
+        errors: List[senfd.errors.Error] = []
+
+        if not enriched.command_io_opcode:
+            return errors
+
+        # Convert I/O Opcodes and CommandSetName from the "Opcodes for ..." figure
+        for item in (
+            cio for cio in enriched.command_io_opcode + enriched.command_admin_opcode
+        ):
+            cmdset_alias = senfd.models.Command.alias_from_name(item.command_set_name)
+            if not (command_set := document.command_sets.get(cmdset_alias, None)):
+                command_set = senfd.models.CommandSet(
+                    alias=cmdset_alias,
+                    name=item.command_set_name,
+                )
+                document.command_sets[cmdset_alias] = command_set
+
+            for entry in item.grid.items():
+                cmd_alias = senfd.models.Command.alias_from_name(entry["command_name"])
+                command_set.commands[cmd_alias] = senfd.models.Command(
+                    opcode=senfd.models.Command.opcode_from_hexstr(entry["opcode"]),
+                    alias=cmd_alias,
+                    name=entry["command_name"],
+                )
+
+        # Process SQE figures
+        for item in (sqe for sqe in enriched.command_sqe_dword):
+            for command_set in document.command_sets.values():
+                cmd_alias = senfd.models.Command.alias_from_name(item.command_name)
+                if not (command := command_set.commands.get(cmd_alias, None)):
+                    continue
+
+                command.sqe.append(
+                    senfd.models.CommandDwordLowerUpper(
+                        command_alias=cmd_alias,
+                        lower=item.command_dword,
+                        upper=item.command_dword,
+                        nbytes=4,
+                        fields=[
+                            senfd.models.Bits(**entry) for entry in item.grid.items()
+                        ],
+                    )
+                )
+
+        # Process CQE figures
+
+        # Process data structures
+
+        return errors
+
+    @staticmethod
+    def convert(path: Path) -> Tuple[Document, List[senfd.errors.Error]]:
         """Instantiate an 'organized' Document from a 'figure' document"""
 
-        errors: List[Error] = []
-
-        # enriched = EnrichedFigureDocument.model_validate_json(path.read_text())
-
+        errors: List[senfd.errors.Error] = []
         document = ModelDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
 
-        return document, errors
+        enriched = EnrichedFigureDocument.model_validate_json(path.read_text())
 
+        errors += FromEnrichedDocument.extract_command_set(document, enriched)
 
-"""
-        command_requirements = {
-            name.strip().replace(" ", "_").replace("/", "").lower(): req.upper()
-            for requirements in enriched.io_controller_command_set_support_requirements
-            for name, req in requirements.grid.values
-        }
-
-        # Grab opcodes from command-set opcode definitions
-        for cso in enriched.command_set_opcodes:
-            for _, _, opcode, name, reference in cso.grid.values:
-                data = {}
-                data["opcode"] = int(opcode.replace("h", ""), 16)
-                data["alias"] = name.strip().replace(" ", "_").replace("/", "").lower()
-                data["name"] = name.strip()
-                data["req"] = command_requirements.get(data["alias"], None)
-
-                if not data["req"]:
-                    errors.append(
-                        senfd.errors.CannotDetermineCommandRequirement(
-                            figure_nr=cso.figure_nr, message=f"Command name({name})"
-                        )
-                    )
-                elif data["req"] not in ["O", "M", "P"]:
-                    errors.append(
-                        senfd.errors.CannotDetermineCommandRequirement(
-                            message=f"Command name({name}); invalid req({data['req']})"
-                        )
-                    )
-
-                sqe_dwords = []
-                for dword in enriched.command_sqe_dword:
-                    alias = (
-                        dword.command_name.strip()
-                        .replace(" ", "_")
-                        .replace("/", "")
-                        .lower()
-                    )
-                    if alias != data["alias"]:
-                        continue
-
-                    dword = dword.command_dword
-                    lower = dword
-                    upper = lower
-                    nbytes = upper - lower + 1
-
-                    cmd_dwords = CommandDwords()
-                    sqe_dwords.append((dword, dword.bits))
-
-                cmd = senfd.models.Command(**data)
-
-                document.commands.append(cmd)
-
-                # TODO: Find dwords (sqe + cqe) and associate these with the command
-
-        return document, errors
-"""
+        return document, []

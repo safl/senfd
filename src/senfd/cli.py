@@ -15,6 +15,7 @@ import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
+from senfd.documents.merged import FromFolder
 from senfd.errors import Error
 
 
@@ -73,10 +74,14 @@ def main() -> int:
             docclass.to_schema_file(args.output)
         return 0
 
-    for path in sorted(args.document):
+    for count, path in enumerate(sorted(args.document), 1):
         args.output.mkdir(parents=True, exist_ok=True)
 
         errors = senfd.pipeline.process(path, args.output)
         to_log_file(errors, path.stem, args.output)
+
+    if FromFolder.is_applicable(args.output):  # Merge ModelDocuments
+        merged, errors = FromFolder.convert(args.output)
+        merged.to_json_file(args.output / merged.json_filename())
 
     return 0

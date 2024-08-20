@@ -34,7 +34,7 @@ REGEX_HDR_EXPLANATION = r"(Definition|Description).*"
 
 REGEX_GRID_RANGE = (
     r"(Bits|Bytes).*",
-    r"(?:(?P<upper>[0-9 \w\+\*]+):)?(?P<lower>[0-9 \w\+\*]+)",
+    r"(?!Note|specficiation)(?:(?P<upper>[0-9 \w\+\*]+):)?(?P<lower>[0-9 \w\+\*]+)",
 )
 REGEX_GRID_ACRONYM = (r"(Term|Acronym).*", REGEX_ALL.replace("all", "term"))
 REGEX_GRID_SCOPE = (
@@ -84,7 +84,10 @@ REGEX_GRID_REFERENCE = (
     r"(Reference).*",
     REGEX_ALL.replace("all", "reference"),
 )
-REGEX_GRID_USES_NSID = (r"(NSID).*", REGEX_VAL_YESNO.replace("yn", "uses_nsid"))
+REGEX_GRID_USES_NSID = (
+    r"(Namespace.Identifier.Used|NSID).*",
+    REGEX_VAL_YESNO.replace("yn", "uses_nsid"),
+)
 REGEX_GRID_USES_CNTID = (r"(CNTID).*", REGEX_VAL_YESNO.replace("yn", "uses_cntid"))
 REGEX_GRID_USES_CSI = (r"(CSI).*", REGEX_VAL_YESNO.replace("yn", "uses_csi"))
 REGEX_GRID_VALUE = (r"(Value).*", REGEX_VAL_HEXSTR.replace("hex", "value"))
@@ -220,7 +223,8 @@ class CommandSqeDwordLowerUpperFigure(EnrichedFigure):
 
 class CommandSqeDwordFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^(?P<command_name>[a-zA-Z\w\s\/]+(?:\(\w\))?)\s+-\s+Command\s*Dword\s*(?P<command_dword>\d+)$"
+        r"^(?P<command_name>[a-zA-Z\w\s\/]+(?:\(\w\))?)\s+-\s+"
+        r"Command\s*Dword\s*(?P<command_dword>\d+)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_RANGE,
@@ -259,7 +263,9 @@ class CommandCqeDwordFigure(EnrichedFigure):
 
 
 class CommandAdminOpcodeFigure(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Opcodes.for.Admin.Commands"
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"Opcodes.for.(?P<command_set_name>Admin).Commands"
+    )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_BITS_FUNCTION,
         REGEX_GRID_BITS_TRANSFER,
@@ -269,10 +275,13 @@ class CommandAdminOpcodeFigure(EnrichedFigure):
         REGEX_GRID_REFERENCE,
     ]
 
+    command_set_name: str
+
 
 class CommandIoOpcodeFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"Opcodes\sfor\s(?P<command_set_name>.*)\sCommands"
+        r"Opcodes\sfor\s(?P<command_set_name>.*?)"
+        r"\s(Commands|Command Set|Command Set Commands)"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_BITS_FUNCTION,

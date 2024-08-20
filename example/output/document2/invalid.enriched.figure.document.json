@@ -5,7 +5,7 @@
     },
     "acronyms": [],
     "data_structure": [],
-    "example_figure": [],
+    "example": [],
     "io_controller_command_set_support_requirement": [
         {
             "figure_nr": 2,
@@ -112,8 +112,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -122,8 +120,6 @@
                     [
                         "31",
                         "00",
-                        null,
-                        null,
                         "Host Buffer Size ",
                         "HBS",
                         "This field indicates the host buffer size in bytes."

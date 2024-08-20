@@ -6,9 +6,9 @@ requirements to document formating and figure policies. The intent here is to pr
 rich and validated data model directly usable for implementers.
 """
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, root_validator
 
 
 class Bits(BaseModel):
@@ -22,8 +22,22 @@ class Bits(BaseModel):
     acronym: Optional[str]
     description: Optional[str]
 
+    @root_validator(pre=True)
+    def transform_input(cls, values):
+        values["lower"] = int(values["lower"])
+        values["upper"] = int(values["upper"] if values["upper"] else values["lower"])
+        values["nbits"] = values["upper"] - values["lower"] + 1
+        values["name"] = values["name"].strip()
 
-class CommandDwords(BaseModel):
+        if values.get("acronym", None):
+            values["acronym"] = values["acronym"].strip().lower()
+        if values.get("description", None):
+            values["description"] = values["description"].strip()
+
+        return values
+
+
+class CommandDwordLowerUpper(BaseModel):
     """
     Command DWORDS; the DWORD or DWORDS forming a "field" within a command
 
@@ -33,10 +47,11 @@ class CommandDwords(BaseModel):
     verifying at that level.
     """
 
+    command_alias: str
     nbytes: int
     lower: int
     upper: int
-    bits: List[Bits] = Field(default_factory=list)
+    fields: List[Bits] = Field(default_factory=list)
 
 
 class Command(BaseModel):
@@ -46,7 +61,34 @@ class Command(BaseModel):
     alias: str
     name: str
 
-    req: Optional[str]  # I/O Controller Requirement
+    req: Optional[str] = None
 
-    sqe: List[CommandDwords] = Field(default_factory=list)
-    cqe: List[CommandDwords] = Field(default_factory=list)
+    sqe: List[CommandDwordLowerUpper] = Field(default_factory=list)
+    cqe: List[CommandDwordLowerUpper] = Field(default_factory=list)
+
+    @staticmethod
+    def opcode_from_hexstr(hexstr):
+        return int(hexstr.lower().replace("h", ""), 16)
+
+    @staticmethod
+    def alias_from_name(text):
+        return text.strip().lower().replace("/", "").replace(" ", "_")
+
+
+class CommandSet(BaseModel):
+    """Collection of entities encompassing a command-set"""
+
+    alias: str
+    name: str
+
+    commands: Dict[str, Command] = Field(default_factory=dict)
+
+
+class LogPage(BaseModel):
+    """..."""
+
+    alias: str
+    name: str
+
+    lpi: int
+    fields: List[int] = Field(default_factory=list)

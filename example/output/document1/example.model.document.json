@@ -3,5 +3,305 @@
         "version": "0.2.3",
         "stem": "example"
     },
-    "commands": []
+    "command_sets": {
+        "foobar": {
+            "alias": "foobar",
+            "name": "Foobar",
+            "commands": {
+                "ring": {
+                    "opcode": 1,
+                    "alias": "ring",
+                    "name": "Ring",
+                    "req": null,
+                    "sqe": [
+                        {
+                            "command_alias": "ring",
+                            "nbytes": 4,
+                            "lower": 10,
+                            "upper": 10,
+                            "fields": [
+                                {
+                                    "nbits": 32,
+                                    "lower": 0,
+                                    "upper": 31,
+                                    "name": "Value Size",
+                                    "acronym": "vs",
+                                    "description": "This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps."
+                                }
+                            ]
+                        },
+                        {
+                            "command_alias": "ring",
+                            "nbytes": 4,
+                            "lower": 11,
+                            "upper": 11,
+                            "fields": [
+                                {
+                                    "nbits": 16,
+                                    "lower": 16,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 8,
+                                    "upper": 15,
+                                    "name": "Ring Option",
+                                    "acronym": "ro",
+                                    "description": "Specifies the Ring option."
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 0,
+                                    "upper": 7,
+                                    "name": "Foobar Baz",
+                                    "acronym": "fb",
+                                    "description": "Specifies the length of the Foobar Baz in bytes."
+                                }
+                            ]
+                        },
+                        {
+                            "command_alias": "ring",
+                            "nbytes": 4,
+                            "lower": 13,
+                            "upper": 13,
+                            "fields": [
+                                {
+                                    "nbits": 12,
+                                    "lower": 20,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 4,
+                                    "lower": 16,
+                                    "upper": 19,
+                                    "name": "Command Extension Type",
+                                    "acronym": "cetype",
+                                    "description": "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
+                                },
+                                {
+                                    "nbits": 16,
+                                    "lower": 0,
+                                    "upper": 15,
+                                    "name": "Command Extension Value",
+                                    "acronym": "cev",
+                                    "description": "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
+                                }
+                            ]
+                        }
+                    ],
+                    "cqe": []
+                },
+                "ding": {
+                    "opcode": 2,
+                    "alias": "ding",
+                    "name": "Ding",
+                    "req": null,
+                    "sqe": [
+                        {
+                            "command_alias": "ding",
+                            "nbytes": 4,
+                            "lower": 10,
+                            "upper": 10,
+                            "fields": [
+                                {
+                                    "nbits": 32,
+                                    "lower": 0,
+                                    "upper": 31,
+                                    "name": "Host Buffer Size",
+                                    "acronym": "hbs",
+                                    "description": "This field indicates the host buffer size in bytes."
+                                }
+                            ]
+                        },
+                        {
+                            "command_alias": "ding",
+                            "nbytes": 4,
+                            "lower": 11,
+                            "upper": 11,
+                            "fields": [
+                                {
+                                    "nbits": 16,
+                                    "lower": 16,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 8,
+                                    "upper": 15,
+                                    "name": "Ding Option",
+                                    "acronym": "ro",
+                                    "description": "This field specifies the Ding option."
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 0,
+                                    "upper": 7,
+                                    "name": "Foobar Baz",
+                                    "acronym": "fb",
+                                    "description": "Specifies the length of the Foobar Baz in bytes."
+                                }
+                            ]
+                        },
+                        {
+                            "command_alias": "ding",
+                            "nbytes": 4,
+                            "lower": 13,
+                            "upper": 13,
+                            "fields": [
+                                {
+                                    "nbits": 12,
+                                    "lower": 20,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 4,
+                                    "lower": 16,
+                                    "upper": 19,
+                                    "name": "Command Extension Type",
+                                    "acronym": "cetype",
+                                    "description": "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
+                                },
+                                {
+                                    "nbits": 16,
+                                    "lower": 0,
+                                    "upper": 15,
+                                    "name": "Command Extension Value",
+                                    "acronym": "cev",
+                                    "description": "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
+                                }
+                            ]
+                        }
+                    ],
+                    "cqe": []
+                },
+                "dong": {
+                    "opcode": 16,
+                    "alias": "dong",
+                    "name": "Dong",
+                    "req": null,
+                    "sqe": [
+                        {
+                            "command_alias": "dong",
+                            "nbytes": 4,
+                            "lower": 11,
+                            "upper": 11,
+                            "fields": [
+                                {
+                                    "nbits": 24,
+                                    "lower": 8,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 0,
+                                    "upper": 7,
+                                    "name": "Foobar Baz",
+                                    "acronym": "fb",
+                                    "description": "Specifies the length of the Foobar Baz in bytes."
+                                }
+                            ]
+                        }
+                    ],
+                    "cqe": []
+                },
+                "keep": {
+                    "opcode": 20,
+                    "alias": "keep",
+                    "name": "Keep",
+                    "req": null,
+                    "sqe": [
+                        {
+                            "command_alias": "keep",
+                            "nbytes": 4,
+                            "lower": 11,
+                            "upper": 11,
+                            "fields": [
+                                {
+                                    "nbits": 24,
+                                    "lower": 8,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 0,
+                                    "upper": 7,
+                                    "name": "Foobar Baz",
+                                    "acronym": "fb",
+                                    "description": "Specifies the length of the Foobar Baz in bytes."
+                                }
+                            ]
+                        }
+                    ],
+                    "cqe": []
+                },
+                "ringing": {
+                    "opcode": 6,
+                    "alias": "ringing",
+                    "name": "Ringing",
+                    "req": null,
+                    "sqe": [
+                        {
+                            "command_alias": "ringing",
+                            "nbytes": 4,
+                            "lower": 10,
+                            "upper": 10,
+                            "fields": [
+                                {
+                                    "nbits": 32,
+                                    "lower": 0,
+                                    "upper": 31,
+                                    "name": "Host Buffer Size",
+                                    "acronym": "hbs",
+                                    "description": "This field indicates the host buffer size in bytes."
+                                }
+                            ]
+                        },
+                        {
+                            "command_alias": "ringing",
+                            "nbytes": 4,
+                            "lower": 11,
+                            "upper": 11,
+                            "fields": [
+                                {
+                                    "nbits": 24,
+                                    "lower": 8,
+                                    "upper": 31,
+                                    "name": "Reserved",
+                                    "acronym": null,
+                                    "description": null
+                                },
+                                {
+                                    "nbits": 8,
+                                    "lower": 0,
+                                    "upper": 7,
+                                    "name": "Foobar Baz",
+                                    "acronym": "fb",
+                                    "description": "Specifies the length of the Foobar Baz in bytes."
+                                }
+                            ]
+                        }
+                    ],
+                    "cqe": []
+                }
+            }
+        }
+    }
 }

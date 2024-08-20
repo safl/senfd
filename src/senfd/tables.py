@@ -31,3 +31,6 @@ class Grid(BaseModel):
     headers: List[str] = Field(default_factory=list)
     fields: List[str] = Field(default_factory=list)
     values: List[List[str | int | None]] = Field(default_factory=list)
+
+    def items(self):
+        return (dict(zip(self.fields, row)) for row in self.values)

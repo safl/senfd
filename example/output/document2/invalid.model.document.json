@@ -3,5 +3,5 @@
         "version": "0.2.3",
         "stem": "invalid"
     },
-    "commands": []
+    "command_sets": {}
 }

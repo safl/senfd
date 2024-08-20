@@ -154,12 +154,17 @@
                 },
                 "grid": {
                     "$ref": "#/$defs/Grid"
+                },
+                "command_set_name": {
+                    "title": "Command Set Name",
+                    "type": "string"
                 }
             },
             "required": [
                 "figure_nr",
                 "caption",
-                "description"
+                "description",
+                "command_set_name"
             ],
             "title": "CommandAdminOpcodeFigure",
             "type": "object"
@@ -1470,11 +1475,11 @@
             "title": "Data Structure",
             "type": "array"
         },
-        "example_figure": {
+        "example": {
             "items": {
                 "$ref": "#/$defs/ExampleFigure"
             },
-            "title": "Example Figure",
+            "title": "Example",
             "type": "array"
         },
         "io_controller_command_set_support_requirement": {

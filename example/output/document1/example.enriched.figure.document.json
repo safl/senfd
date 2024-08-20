@@ -119,8 +119,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -129,11 +127,16 @@
                     [
                         "03",
                         "00",
-                        null,
-                        null,
                         "Number of Returned Foobars ",
                         "NRK",
                         "This value reflects how many Foobar Bazs are returned in this data structure."
+                    ],
+                    [
+                        null,
+                        "Foobar Baz Data Structure Ringing",
+                        "Foobar Baz Data Structure Ringing",
+                        null,
+                        null
                     ]
                 ]
             }
@@ -216,8 +219,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -226,15 +227,11 @@
                     [
                         "01",
                         "00",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "indicates the length of the Foobar Baz in bytes that this data structure represents."
                     ],
                     [
-                        null,
-                        null,
                         "n",
                         "02",
                         "Foobar Baz ",
@@ -242,8 +239,6 @@
                         "Foobar Baz that this entry describes."
                     ],
                     [
-                        null,
-                        null,
                         "m",
                         "n",
                         "Pad",
@@ -307,8 +302,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -317,8 +310,6 @@
                     [
                         "23",
                         "16",
-                        null,
-                        null,
                         "LBA",
                         null,
                         "This field is reserved."
@@ -380,8 +371,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -390,8 +379,6 @@
                     [
                         "23",
                         "16",
-                        null,
-                        null,
                         "Failing LBA",
                         null,
                         "This field is reserved."
@@ -892,7 +879,7 @@
             }
         }
     ],
-    "example_figure": [],
+    "example": [],
     "io_controller_command_set_support_requirement": [
         {
             "figure_nr": 2,
@@ -1484,7 +1471,7 @@
                     ]
                 ]
             },
-            "command_set_name": "Foobar Command Set"
+            "command_set_name": "Foobar"
         }
     ],
     "command_support_requirement": [],
@@ -2164,8 +2151,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "requirement",
                     "name",
                     "acronym",
@@ -2175,8 +2160,6 @@
                     [
                         "07",
                         "00",
-                        null,
-                        null,
                         "M",
                         "Namespace Size ",
                         "NSZE",
@@ -2186,8 +2169,6 @@
                         "15",
                         "08",
                         null,
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2195,8 +2176,6 @@
                     [
                         "23",
                         "16",
-                        null,
-                        null,
                         "M",
                         "Namespace Utilization ",
                         "NUSE",
@@ -2205,8 +2184,6 @@
                     [
                         null,
                         "24",
-                        null,
-                        null,
                         "M",
                         "Namespace Features ",
                         "NSFEAT",
@@ -2215,8 +2192,6 @@
                     [
                         null,
                         "25",
-                        null,
-                        null,
                         "M",
                         "Number of FB Formats ",
                         "NFBF",
@@ -2225,8 +2200,6 @@
                     [
                         null,
                         "26",
-                        null,
-                        null,
                         "O",
                         "Namespace Multi-path I/O and Namespace Sharing Capabilities ",
                         "NMIC",
@@ -2235,8 +2208,6 @@
                     [
                         null,
                         "27",
-                        null,
-                        null,
                         "O",
                         "Reservation Capabilities ",
                         "RESCAP",
@@ -2245,8 +2216,6 @@
                     [
                         null,
                         "28",
-                        null,
-                        null,
                         "O",
                         "Format Progress Indicator ",
                         "FPI",
@@ -2255,8 +2224,6 @@
                     [
                         null,
                         "29",
-                        null,
-                        null,
                         "M",
                         "FB Format Capabilities ",
                         "FBFC",
@@ -2266,8 +2233,6 @@
                         "31",
                         "30",
                         null,
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2275,8 +2240,6 @@
                     [
                         "35",
                         "32",
-                        null,
-                        null,
                         "O",
                         "Namespace Optimal Value Granularity ",
                         "NOVG",
@@ -2285,8 +2248,6 @@
                     [
                         "39",
                         "36",
-                        null,
-                        null,
                         "O",
                         "ANA Group Identifier ",
                         "ANAGRPID",
@@ -2296,8 +2257,6 @@
                         "42",
                         "40",
                         null,
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2305,8 +2264,6 @@
                     [
                         null,
                         "43",
-                        null,
-                        null,
                         "O",
                         "Namespace Attributes ",
                         "NSATTR",
@@ -2315,8 +2272,6 @@
                     [
                         "45",
                         "44",
-                        null,
-                        null,
                         "O",
                         "NVM Set Identifier ",
                         "NVMSETID",
@@ -2325,8 +2280,6 @@
                     [
                         "47",
                         "46",
-                        null,
-                        null,
                         "O",
                         "Endurance Group Identifier ",
                         "ENDGID",
@@ -2335,8 +2288,6 @@
                     [
                         "63",
                         "48",
-                        null,
-                        null,
                         "O",
                         "Namespace Globally Unique Identifier ",
                         "NGUID",
@@ -2345,8 +2296,6 @@
                     [
                         "71",
                         "64",
-                        null,
-                        null,
                         "O",
                         "IEEE Extended Unique Identifier ",
                         "EUI64",
@@ -2355,8 +2304,6 @@
                     [
                         "87",
                         "72",
-                        null,
-                        null,
                         "M",
                         "FB Format 0 Support ",
                         "FBF0",
@@ -2365,8 +2312,6 @@
                     [
                         "103",
                         "88",
-                        null,
-                        null,
                         "O",
                         "FB Format 1 Support ",
                         "FBF1",
@@ -2375,8 +2320,6 @@
                     [
                         "327",
                         "312",
-                        null,
-                        null,
                         "O",
                         "FB Format 15 Support ",
                         "FBF15",
@@ -2386,8 +2329,6 @@
                         "3839",
                         "328",
                         null,
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2395,8 +2336,6 @@
                     [
                         "4095",
                         "3840",
-                        null,
-                        null,
                         "O",
                         "Vendor Specific",
                         null,
@@ -2461,8 +2400,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2471,8 +2408,6 @@
                     [
                         "15",
                         "0",
-                        null,
-                        null,
                         "Format Index Identifier ",
                         "FIDXI",
                         "This field specifies the Format Index (refer to Figure 41) identifying the FB Format capabilities that are to be returned."
@@ -2550,8 +2485,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2560,8 +2493,6 @@
                     [
                         "31",
                         "8",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2569,8 +2500,6 @@
                     [
                         "7",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "Specifies the length of the Foobar Baz in bytes."
@@ -2634,8 +2563,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2644,8 +2571,6 @@
                     [
                         "31",
                         "00",
-                        null,
-                        null,
                         "Host Buffer Size ",
                         "HBS",
                         "This field indicates the host buffer size in bytes."
@@ -2721,8 +2646,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2731,8 +2654,6 @@
                     [
                         "31",
                         "8",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2740,8 +2661,6 @@
                     [
                         "7",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "Specifies the length of the Foobar Baz in bytes."
@@ -2805,8 +2724,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2815,8 +2732,6 @@
                     [
                         "31",
                         "00",
-                        null,
-                        null,
                         "Host Buffer Size ",
                         "HBS",
                         "This field indicates the host buffer size in bytes."
@@ -2946,8 +2861,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -2956,8 +2869,6 @@
                     [
                         "31",
                         "16",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -2965,8 +2876,6 @@
                     [
                         "15",
                         "8",
-                        null,
-                        null,
                         "Ding Option ",
                         "RO",
                         "This field specifies the Ding option."
@@ -2974,8 +2883,6 @@
                     [
                         "7",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "Specifies the length of the Foobar Baz in bytes."
@@ -3063,8 +2970,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3073,8 +2978,6 @@
                     [
                         "31",
                         "20",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -3082,8 +2985,6 @@
                     [
                         "19",
                         "16",
-                        null,
-                        null,
                         "Command Extension Type ",
                         "CETYPE",
                         "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
@@ -3091,8 +2992,6 @@
                     [
                         "15",
                         "00",
-                        null,
-                        null,
                         "Command Extension Value ",
                         "CEV",
                         "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
@@ -3168,8 +3067,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3178,8 +3075,6 @@
                     [
                         "31",
                         "8",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -3187,8 +3082,6 @@
                     [
                         "7",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "Specifies the length of the Foobar Baz in bytes."
@@ -3252,8 +3145,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3262,8 +3153,6 @@
                     [
                         "31",
                         "00",
-                        null,
-                        null,
                         "Value Size ",
                         "VS",
                         "This field indicates the FB value size in bytes. A FB value of 0h specifies that there is no value associated with this Foobar Baz but that the Foobar Baz Keeps."
@@ -3417,8 +3306,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3427,8 +3314,6 @@
                     [
                         "31",
                         "16",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -3436,8 +3321,6 @@
                     [
                         "15",
                         "8",
-                        null,
-                        null,
                         "Ring Option ",
                         "RO",
                         "Specifies the Ring option."
@@ -3445,8 +3328,6 @@
                     [
                         "7",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz ",
                         "FB",
                         "Specifies the length of the Foobar Baz in bytes."
@@ -3534,8 +3415,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3544,8 +3423,6 @@
                     [
                         "31",
                         "20",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -3553,8 +3430,6 @@
                     [
                         "19",
                         "16",
-                        null,
-                        null,
                         "Command Extension Type ",
                         "CETYPE",
                         "Specifies the Command Extension Type that applies to the command (refer to the Foobar Per I/O section in the Specifcation)."
@@ -3562,8 +3437,6 @@
                     [
                         "15",
                         "00",
-                        null,
-                        null,
                         "Command Extension Value ",
                         "CEV",
                         "The definition of this field is dependent on the value of the CETYPE field. Refer to the Foobar Per I/O section in the Specification"
@@ -3639,8 +3512,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3649,8 +3520,6 @@
                     [
                         "31",
                         "01",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -3658,8 +3527,6 @@
                     [
                         null,
                         "00",
-                        null,
-                        null,
                         "Error on Dong of Non-Keepent Foobar Baz ",
                         "EDNEK",
                         "This bit defines the response of the controller to a Dong command processed for a Foobar Baz that does not Keep."
@@ -3725,8 +3592,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3735,8 +3600,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -3801,8 +3664,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3811,8 +3672,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -3877,8 +3736,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3887,8 +3744,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -3953,8 +3808,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -3963,8 +3816,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4029,8 +3880,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4039,8 +3888,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4105,8 +3952,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4115,8 +3960,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4181,8 +4024,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4191,8 +4032,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4257,8 +4096,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4267,8 +4104,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4333,8 +4168,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4343,8 +4176,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4409,8 +4240,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4419,8 +4248,6 @@
                     [
                         "63",
                         "0",
-                        null,
-                        null,
                         "Foobar Baz",
                         null,
                         null
@@ -4487,8 +4314,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4497,8 +4322,6 @@
                     [
                         "127",
                         "00",
-                        null,
-                        null,
                         "Data Pointer ",
                         "DPTR",
                         "This field specifies where data is transferred to. Refer to the Specifcation for the definition of this field."
@@ -4561,8 +4384,6 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
@@ -4571,8 +4392,6 @@
                     [
                         "127",
                         "00",
-                        null,
-                        null,
                         "Data Pointer ",
                         "DPTR",
                         "This field specifies the location of a data buffer from which data is transferred. Refer to the Specifcation for the definition of this field."
@@ -6352,18 +6171,21 @@
                 "fields": [
                     "upper",
                     "lower",
-                    "upper_expr",
-                    "lower_expr",
                     "name",
                     "acronym",
                     "description"
                 ],
                 "values": [
                     [
+                        null,
+                        "These fields are the same fields as defined in the I",
+                        "These fields are the same fields as defined in the I/O Command Set specific Identify Namespace data structure ",
+                        "refer to Figure 41",
+                        null
+                    ],
+                    [
                         "07",
                         "00",
-                        null,
-                        null,
                         "Namespace Size ",
                         "NSZE",
                         null
@@ -6371,8 +6193,6 @@
                     [
                         "29",
                         "08",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -6380,8 +6200,6 @@
                     [
                         null,
                         "30",
-                        null,
-                        null,
                         "Namespace Multi-path I/O and Namespace Sharing Capabilities ",
                         "NMIC",
                         null
@@ -6389,8 +6207,6 @@
                     [
                         null,
                         "31",
-                        null,
-                        null,
                         "FB Format Capabilities ",
                         "FBFC",
                         null
@@ -6398,8 +6214,6 @@
                     [
                         "91",
                         "32",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -6407,8 +6221,6 @@
                     [
                         "95",
                         "92",
-                        null,
-                        null,
                         "ANA Group Identifier ",
                         "ANAGRPID",
                         null
@@ -6416,8 +6228,6 @@
                     [
                         "99",
                         "96",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
@@ -6425,8 +6235,6 @@
                     [
                         "101",
                         "100",
-                        null,
-                        null,
                         "NVM Set Identifier ",
                         "NVMSETID",
                         null
@@ -6434,8 +6242,6 @@
                     [
                         "103",
                         "102",
-                        null,
-                        null,
                         "Endurance Group Identifier ",
                         "ENDGID",
                         null
@@ -6443,8 +6249,6 @@
                     [
                         "511",
                         "104",
-                        null,
-                        null,
                         "Reserved",
                         null,
                         null
