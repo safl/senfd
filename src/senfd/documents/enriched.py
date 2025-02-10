@@ -16,7 +16,7 @@ from senfd.documents.base import (
     strip_all_suffixes,
 )
 from senfd.documents.plain import Figure, FigureDocument
-from senfd.errors import Error
+from senfd.errors import Error, MutipleFigureMatchException
 from senfd.skiplist import SkipPatterns
 from senfd.utils import pascal_to_snake
 
@@ -141,7 +141,9 @@ class EnrichedFigure(Figure):
 
 class DataStructureFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^(?!.*Status Code|.*Vendor|.*Log.Page.Identifiers|.*Types).*(Log.Page|Data.Structure|Data).*$"
+        r"^(?!.*Vendor|.*Log.Page.Identifiers|.*Values|.*Type|.*Format|.*Specified Fields|"
+        r".*Get.Log.Page|.*Types|.*Data.Pointer|.*Dword|.*Example|.*Requirements|.*Completion)"
+        r".*(Data.Structure|Field|Log.Page|Descriptor|Management.Operation.Specific|Vector).*$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_RANGE,
@@ -494,7 +496,10 @@ class PropertyDefinitionFigure(EnrichedFigure):
 
 
 class StatusCodeFigure(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^(Status.Code.-).*$"
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"^(?!.*Command.Specific.*|.*Generic.Command.Status.Value.*)"
+        r"(Status.Code.-).*$"
+    )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_VALUE,
         REGEX_GRID_VALUE_DESCRIPTION,
@@ -502,7 +507,10 @@ class StatusCodeFigure(EnrichedFigure):
 
 
 class StatusValueFigure(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^.*(Status.Value).*$"
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
+        r"^(?!.*Command.Specific.*|.*Generic.Command.Status.Value.*)"
+        r".*(Status.Value).*$"
+    )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_VALUE,
         REGEX_GRID_VALUE_DESCRIPTION,
@@ -866,23 +874,38 @@ class FromFigureDocument(Converter):
                 document.skipped.append(figure)
                 continue
 
-            match = None
             description = figure.description.translate(TRANSLATION_TABLE)
-            for candidate in figure_organizers:
-                match = re.match(
-                    candidate.REGEX_FIGURE_DESCRIPTION, description, flags=re.IGNORECASE
-                )
-                if match:
-                    enriched, conv_errors = FromFigureDocument.enrich(
-                        candidate, figure, match
+            candidates = [
+                (match, candidate)
+                for candidate in figure_organizers
+                if (
+                    match := re.match(
+                        candidate.REGEX_FIGURE_DESCRIPTION,
+                        description,
+                        flags=re.IGNORECASE,
                     )
-                    errors += conv_errors
-                    if not enriched:
-                        break
-                    enriched.into_document(document)
-                    break
+                )
+            ]
+            if len(candidates) > 1:
+                raise MutipleFigureMatchException(
+                    f"{len(candidates)} figures classifiers matches "
+                    f'the same figure "{figure.description}({figure.figure_nr})" : '
+                    f"{', '.join([str(c) for _, c in candidates])}"
+                )
 
-            if not match:
+            for match, candidate in candidates:
+                enriched, conv_errors = FromFigureDocument.enrich(
+                    candidate,
+                    figure,
+                    match,
+                )
+                errors += conv_errors
+                if not enriched:
+                    break
+                enriched.into_document(document)
+                break
+
+            if not len(candidates):
                 document.uncategorized.append(figure)
 
         return document, errors
