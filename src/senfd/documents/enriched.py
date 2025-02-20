@@ -16,7 +16,7 @@ from senfd.documents.base import (
     strip_all_suffixes,
 )
 from senfd.documents.plain import Figure, FigureDocument
-from senfd.errors import Error, MutipleFigureMatchException
+from senfd.errors import Error, MutipleFigureMatchException, NoExactHeaderMatchException
 from senfd.skiplist import SkipPatterns
 from senfd.utils import pascal_to_snake
 
@@ -725,6 +725,63 @@ class FromFigureDocument(Converter):
         return errors
 
     @staticmethod
+    def compute_header(enriched: EnrichedFigure) -> Tuple[int, List[Tuple[int, str]]]:
+        """Compute the header of a table figure.
+
+        The method will go through the rows of the figure, each rows columns
+        will be compared with the known header composition defined by
+        REGEX_GRID.
+
+        If a column does not match the expected header name the column will be
+        skipped, and one of the next columns is expected to match the column
+        definition.
+
+        The row that matches all headers will be assumed to be the correct
+        header row and is returned.
+
+
+        Args:
+            enriched (EnrichedFigure): enriched figure to locate headers off
+
+        Returns:
+            Tuple[int, List[Tuple[int, str]]]: Returns a tuple where the first
+            element is the row index of the found header, the second element is
+            a List of tuples of column index together with the found header name.
+
+        Raises:
+            NoExactHeaderMatch: If no exact header match could be found the
+            method raises this exception.
+
+        """
+        regex_hdr, _ = zip(*enriched.REGEX_GRID)
+        num_headers = len(enriched.REGEX_GRID)
+        assert enriched.table
+        # Skip first row, we can with confidence say that it is
+        # the figure header that containing figure number and title
+        # and not the headers denoting the columns.
+        for row_idx, row in enumerate(enriched.table.rows[1:], 1):
+            header_idx = 0
+            headers: List[Tuple[int, str]] = []
+
+            for cell_idx, cell in enumerate(row.cells):
+                text = cell.text.strip().replace("\n", " ")
+                regex = regex_hdr[header_idx]
+                match = re.match(regex, text)
+                if match:
+                    # A cell in the row matched the expected header
+                    header_idx += 1
+                    headers.append((cell_idx, match.group(1)))
+
+                if len(headers) == num_headers:
+                    # All headers where found
+                    return row_idx, headers
+
+        raise NoExactHeaderMatchException(
+            "Could not resolve exact header match for figure"
+            f'"{enriched.description}({enriched.figure_nr})"'
+        )
+
+    @staticmethod
     def enrich(
         cls: Type[EnrichedFigureType], figure: Figure, match: re.Match
     ) -> Tuple[Optional[EnrichedFigure], List[Error]]:
@@ -755,77 +812,90 @@ class FromFigureDocument(Converter):
         fields: List[str] = []
         values: List[List[str | int]] = []
         assert enriched.table
-        for row_idx, row in enumerate(enriched.table.rows[1:], 1):
-            if not header_names:
-                header_matches = [
-                    header_match.group(1) if header_match else header_match
-                    for header_match in (
-                        re.match(regex, cell.text.strip().replace("\n", " "))
-                        for cell, regex in zip(row.cells, regex_hdr)
+        header_row_idx, header_cols = FromFigureDocument.compute_header(
+            enriched=enriched
+        )
+        if len(header_cols):
+            _, header_names = zip(*header_cols)  # type: ignore
+            if len(header_cols) != len(regex_hdr):
+                mismatches = [
+                    (
+                        idx,
+                        regex_hdr[idx],
+                        enriched.table.rows[header_row_idx]
+                        .cells[idx]
+                        .text.strip()
+                        .replace("\n", " "),
                     )
+                    for idx, hdr in enumerate(header_cols)
+                    if not hdr
                 ]
-                if all(header_matches):
-                    header_names = [str(hdr) for hdr in header_matches]
-                else:
-                    mismatches = [
-                        (
-                            idx,
-                            regex_hdr[idx],
-                            row.cells[idx].text.strip().replace("\n", " "),
+                errors.append(
+                    senfd.errors.FigureTableRowError(
+                        figure_nr=enriched.figure_nr,
+                        table_nr=enriched.table.table_nr,
+                        row_idx=header_row_idx,
+                        message=f"No match REGEX_GRID/Headers on idx({mismatches})",
+                    )
+                )
+            for row_idx, row in enumerate(
+                enriched.table.rows[header_row_idx + 1 :], header_row_idx
+            ):
+                combined = {}
+                value_errors: List[Error] = []
+
+                if len(row.cells) < len(header_cols):
+                    value_errors.append(
+                        senfd.errors.TableError(
+                            table_nr=enriched.table.table_nr,
+                            message="Could not apply all headers, missing: "
+                            f"{header_cols[len(row.cells) :]}",
+                            caption=enriched.caption,
                         )
-                        for idx, hdr in enumerate(header_matches)
-                        if not hdr
-                    ]
+                    )
+
+                for (cell_idx, header), regex in zip(
+                    header_cols[: len(row.cells)],  # Limit headers to cell count
+                    regex_val,
+                ):
+                    cell = row.cells[cell_idx]
+                    text = cell.text.strip().translate(TRANSLATION_TABLE)
+                    header_match = re.match(regex, text)
+                    if header_match:
+                        combined.update(header_match.groupdict())
+                        continue
+
+                    value_errors.append(
+                        senfd.errors.FigureTableRowCellError(
+                            figure_nr=enriched.figure_nr,
+                            table_nr=enriched.table.table_nr,
+                            row_idx=row_idx,
+                            cell_idx=cell_idx,
+                            message=f"cell.text({text}) no match({regex})",
+                        )
+                    )
+
+                if value_errors:
+                    errors += value_errors
+                    continue
+
+                cur_fields = list(combined.keys())
+                if not fields:
+                    fields = cur_fields
+
+                diff = list(set(cur_fields).difference(set(fields)))
+                if diff:
                     errors.append(
                         senfd.errors.FigureTableRowError(
                             figure_nr=enriched.figure_nr,
                             table_nr=enriched.table.table_nr,
                             row_idx=row_idx,
-                            message=f"No match REGEX_GRID/Headers on idx({mismatches})",
+                            message=f"Unexpected fields ({fields}) != ({cur_fields})",
                         )
                     )
-                continue
-
-            combined = {}
-            value_errors: List[Error] = []
-            for cell_idx, (cell, regex) in enumerate(zip(row.cells, regex_val)):
-                text = cell.text.strip().translate(TRANSLATION_TABLE)
-                match = re.match(regex, text)  # type: ignore
-                if match:
-                    combined.update(match.groupdict())
                     continue
 
-                value_errors.append(
-                    senfd.errors.FigureTableRowCellError(
-                        figure_nr=enriched.figure_nr,
-                        table_nr=enriched.table.table_nr,
-                        row_idx=row_idx,
-                        cell_idx=cell_idx,
-                        message=f"cell.text({text}) no match({regex})",
-                    )
-                )
-
-            if value_errors:
-                errors += value_errors
-                continue
-
-            cur_fields = list(combined.keys())
-            if not fields:
-                fields = cur_fields
-
-            diff = list(set(cur_fields).difference(set(fields)))
-            if diff:
-                errors.append(
-                    senfd.errors.FigureTableRowError(
-                        figure_nr=enriched.figure_nr,
-                        table_nr=enriched.table.table_nr,
-                        row_idx=row_idx,
-                        message=f"Unexpected fields ({fields}) != ({cur_fields})",
-                    )
-                )
-                continue
-
-            values.append(list(combined.values()))
+                values.append(list(combined.values()))
 
         data = enriched.table.dict()
         data["headers"] = header_names

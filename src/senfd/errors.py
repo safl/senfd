@@ -85,3 +85,7 @@ class MultipleClassifierMatchException(Exception):
 
 class MutipleFigureMatchException(Exception):
     pass
+
+
+class NoExactHeaderMatchException(Exception):
+    pass
