@@ -1362,55 +1362,6 @@
             "title": "FormatFigure",
             "type": "object"
         },
-        "GeneralCommandStatusValueFigure": {
-            "properties": {
-                "figure_nr": {
-                    "title": "Figure Nr",
-                    "type": "integer"
-                },
-                "caption": {
-                    "title": "Caption",
-                    "type": "string"
-                },
-                "description": {
-                    "title": "Description",
-                    "type": "string"
-                },
-                "page_nr": {
-                    "anyOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "title": "Page Nr"
-                },
-                "table": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/$defs/Table"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null
-                },
-                "grid": {
-                    "$ref": "#/$defs/Grid"
-                }
-            },
-            "required": [
-                "figure_nr",
-                "caption",
-                "description"
-            ],
-            "title": "GeneralCommandStatusValueFigure",
-            "type": "object"
-        },
         "Grid": {
             "description": "Grids are regular, that is, each row has the same amount of cells and cells are\nnamed. Also, their content match",
             "properties": {
@@ -3027,13 +2978,6 @@
                 "$ref": "#/$defs/CommandCqeDwordFigure"
             },
             "title": "Command Cqe Dword",
-            "type": "array"
-        },
-        "general_command_status_value": {
-            "items": {
-                "$ref": "#/$defs/GeneralCommandStatusValueFigure"
-            },
-            "title": "General Command Status Value",
             "type": "array"
         },
         "cns_value": {

@@ -500,15 +500,6 @@ class StatusValueFigure(EnrichedFigure):
     commands: str | None
 
 
-class GeneralCommandStatusValueFigure(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r".*General.Command.Status.Values.*"
-    REGEX_GRID: ClassVar[List[Tuple]] = [
-        REGEX_GRID_VALUE,
-        REGEX_GRID_VALUE_DESCRIPTION,
-        REGEX_GRID_COMMANDS_AFFECTED,
-    ]
-
-
 class FeatureIdentifierFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"Feature\s*Identifiers.*"
     REGEX_GRID: ClassVar[List[Tuple]] = [
@@ -790,9 +781,6 @@ class EnrichedFigureDocument(Document):
         default_factory=list
     )
     command_cqe_dword: List[CommandCqeDwordFigure] = Field(default_factory=list)
-    general_command_status_value: List[GeneralCommandStatusValueFigure] = Field(
-        default_factory=list
-    )
     cns_value: List[CnsValueFigure] = Field(default_factory=list)
     feature_identifier: List[FeatureIdentifierFigure] = Field(default_factory=list)
     log_page_identifier: List[LogPageIdentifierFigure] = Field(default_factory=list)
