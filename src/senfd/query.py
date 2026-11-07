@@ -38,22 +38,29 @@ def load(path: Optional[Path] = None) -> SpecDocument:
     return SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
 
 
-def cite(source: Source) -> str:
-    """The document and figure of 'source', the document by a short name, as
-    "Base 2.2, Figure 12" """
+def document_name(document: str) -> str:
+    """A document by a short name, as "Base 2.2" """
 
     match = re.match(
         r"NVM Express (?P<name>.+?) Specification,? Revision (?P<revision>[\d\-.]+)",
-        source.document,
+        document,
     )
-    name = (
-        re.sub(r" Command Set$", "", match["name"])
-        + " "
-        + match["revision"].replace("-", ".")
-        if match
-        else source.document
-    )
-    return f"{name}, Figure {source.figure_nr}"
+    if not match:
+        return document
+    name = re.sub(r" Command Set$", "", match["name"])
+    return f"{name} {match['revision'].replace('-', '.')}"
+
+
+def cite(source: Source) -> str:
+    """Where 'source' is, as "Base 2.2, 5.1.10, Figure 190, page 195" """
+
+    parts = [document_name(source.document)]
+    if source.section:
+        parts.append(source.section)
+    parts.append(f"Figure {source.figure_nr}")
+    if source.page_nr:
+        parts.append(f"page {source.page_nr}")
+    return ", ".join(parts)
 
 
 def bits(field: Bits) -> str:
@@ -266,6 +273,60 @@ def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
     return unique or [f"Nothing named '{text}'"]
 
 
+def section(spec: SpecDocument, key: str) -> List[str]:
+    """What the figures of a section describe, the section by its number, with
+    its subsections, or by a word of its title"""
+
+    key = key.strip()
+    if not key:
+        return ["Give the number or title of a section"]
+    by_number = re.fullmatch(r"[A-Z]?[\d.]*\d|[A-Z]", key) is not None
+
+    def within(source: Source) -> bool:
+        if not source.section:
+            return False
+        if by_number:
+            return source.section == key or source.section.startswith(key + ".")
+        return key.lower() in (source.section_title or "").lower()
+
+    found = []
+    for command_set in spec.command_sets.values():
+        for cmd in command_set.commands.values():
+            for d in cmd.sqe:
+                found.append((d.source, f"{cmd.name} {dword_label(d, 'cdw')}"))
+            for d in cmd.cqe:
+                found.append((d.source, f"{cmd.name} {dword_label(d, 'cqe dw')}"))
+            for operation in cmd.operations:
+                found.append(
+                    (operation.source, f"{cmd.name} operation {operation.name}")
+                )
+    for f in spec.features.values():
+        for d in f.sqe:
+            found.append((d.source, f"feature {f.name} {dword_label(d, 'cdw')}"))
+        for d in f.cqe:
+            found.append((d.source, f"feature {f.name} {dword_label(d, 'cqe dw')}"))
+    for s in spec.structures:
+        found.append((s.source, f"structure {s.name} [{cite(s.source)}]"))
+    for v in spec.values:
+        found.append((v.source, f"table of {v.kind} {v.name or ''} [{cite(v.source)}]"))
+
+    lines = []
+    for source, line in sorted(
+        (f for f in found if within(f[0])),
+        key=lambda f: (f[0].document, f[0].figure_nr),
+    ):
+        lines.append(line)
+    titles = sorted(
+        {
+            (f[0].document, f[0].section or "", f[0].section_title or "")
+            for f in found
+            if within(f[0])
+        }
+    )
+    head = [f"{document_name(d)} {n} {t}" for d, n, t in titles[:12]]
+    return head + lines if lines else [f"No section '{key}'"]
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Answer questions about the specification from its model"
@@ -292,6 +353,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     sub.add_parser("structure", help="A data structure or register").add_argument(
         "name"
     )
+    sub.add_parser(
+        "section", help="What a section describes, by number or title"
+    ).add_argument("key")
     sub.add_parser("search", help="Fields and things by acronym or name").add_argument(
         "text"
     )
@@ -306,6 +370,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         lines = log_page(spec, args.key, args.verbose)
     elif args.what == "structure":
         lines = structure(spec, args.name, args.verbose)
+    elif args.what == "section":
+        lines = section(spec, args.key)
     else:
         lines = search(spec, args.text)
     print("\n".join(lines))

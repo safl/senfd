@@ -33,11 +33,11 @@ def test_the_queries_are_tools_of_the_server_over_stdio():
                 return [t.name for t in tools.tools], result
 
     names, result = asyncio.run(ask())
-    assert names == ["command", "feature", "log_page", "structure", "search"]
+    assert names == ["command", "feature", "log_page", "structure", "search", "section"]
     (content,) = result.content
     assert content.text.splitlines() == [
-        "Ding: Foobar command, opcode 01h [example, Figure 1]",
-        "cdw10 [example, Figure 2]",
+        "Ding: Foobar command, opcode 01h [example, 1.1, Figure 1, page 1]",
+        "cdw10 [example, 1.2, Figure 2, page 2]",
         "  31:16 Reserved",
         "  15:00 Foo Count (FCNT)",
     ]
@@ -62,4 +62,5 @@ def test_every_tool_answers_from_the_model(monkeypatch):
     assert senfd.mcp_server.log_page("C0h").startswith("C0h Foo Statistics")
     assert senfd.mcp_server.structure("FOOCAP").startswith("FOOCAP")
     assert "Ding cdw10" in senfd.mcp_server.search("FCNT")
+    assert senfd.mcp_server.section("1.2").startswith("example 1.2 Ding command")
     senfd.mcp_server.spec.cache_clear()

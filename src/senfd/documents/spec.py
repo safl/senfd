@@ -26,10 +26,14 @@ from senfd.normalize import Diagnostic, note, warning
 
 
 class Source(BaseModel):
-    """The document and the figure something came from"""
+    """Where something came from: the document, the figure, the page the
+    figure is on, and the section it is in, by number and title"""
 
     document: str
     figure_nr: int
+    page_nr: Optional[int] = None
+    section: Optional[str] = None
+    section_title: Optional[str] = None
 
 
 class Bits(BaseModel):
@@ -224,7 +228,13 @@ POINTERS = {"metadata_pointer": (4, 5), "data_pointer": (6, 9)}
 
 
 def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
-    source = Source(document=stem, figure_nr=figure.figure_nr)
+    source = Source(
+        document=stem,
+        figure_nr=figure.figure_nr,
+        page_nr=figure.page_nr,
+        section=figure.section,
+        section_title=figure.section_title,
+    )
     subject = figure.subject
 
     if figure.shape == "opcode" and subject.kind == "opcodes" and subject.name:

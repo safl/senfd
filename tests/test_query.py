@@ -18,8 +18,10 @@ def spec(spec_path):
 
 def test_a_command_is_its_opcode_and_dwords_with_where_they_are(spec):
     lines = senfd.query.command(spec, "ding", 10)
-    assert lines[0].startswith("Ding: Foobar command, opcode 01h [example, Figure 1]")
-    assert lines[1] == "cdw10 [example, Figure 2]"
+    assert (
+        lines[0] == "Ding: Foobar command, opcode 01h [example, 1.1, Figure 1, page 1]"
+    )
+    assert lines[1] == "cdw10 [example, 1.2, Figure 2, page 2]"
     assert lines[2:] == ["  31:16 Reserved", "  15:00 Foo Count (FCNT)"]
 
 
@@ -53,6 +55,9 @@ def test_a_source_is_cited_by_the_short_name_of_its_document():
         figure_nr=12,
     )
     assert senfd.query.cite(source) == "Base 2.2, Figure 12"
+    source.section, source.page_nr = "5.1.10", 195
+    assert senfd.query.cite(source) == "Base 2.2, 5.1.10, Figure 12, page 195"
+    source.section, source.page_nr = None, None
     source.document = (
         "NVM Express NVM Command Set Specification, Revision 1-1 2024-08-05 Ratified"
     )
@@ -66,7 +71,7 @@ def test_the_command_line_prints_the_answer(spec_path, capsys):
 
 def test_a_command_has_its_operations_with_their_selectors(spec):
     lines = senfd.query.command(spec, "foo directive send")
-    assert "operation Bar Reset, DTYPE=01h DOPER=01h [example, Figure" in "\n".join(
+    assert "operation Bar Reset, DTYPE=01h DOPER=01h [example, 4, Figure" in "\n".join(
         lines
     )
     assert "  15:00 Bar Reset Count (BRC)" in lines
@@ -153,3 +158,12 @@ def test_the_model_is_found_by_the_environment_or_in_the_cache(monkeypatch, tmp_
         senfd.query.default_spec_path()
         == tmp_path / "senfd" / "merged.spec.document.json"
     )
+
+
+def test_a_section_lists_what_its_figures_describe(spec):
+    lines = senfd.query.section(spec, "1.2")
+    assert lines[0] == "example 1.2 Ding command"
+    assert "Ding cdw10 [example, 1.2, Figure 2, page 2]" in lines
+    assert senfd.query.section(spec, "ding")[0] == "example 1.2 Ding command"
+    assert senfd.query.section(spec, "9") == ["No section '9'"]
+    assert senfd.query.section(spec, "") == ["Give the number or title of a section"]
