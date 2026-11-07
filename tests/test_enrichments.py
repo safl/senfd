@@ -46,3 +46,15 @@ def test_the_admin_opcodes_are_not_an_io_command_set():
     regex = CommandIoOpcodeFigure.REGEX_FIGURE_DESCRIPTION
     assert not re.match(regex, "Opcodes for Admin Commands", flags=re.IGNORECASE)
     assert re.match(regex, "Opcodes for NVM Commands", flags=re.IGNORECASE)
+
+
+def test_an_example_of_a_log_page_is_an_example():
+    """A figure showing what a log page returns is an example, not the
+    definition of a log page"""
+
+    from senfd.documents.enriched import ExampleFigure, LogPageFigure
+
+    caption = "Example Foo Element returned by Foo Information Log Page"
+    assert not re.match(LogPageFigure.REGEX_FIGURE_DESCRIPTION, caption, re.I)
+    assert re.match(ExampleFigure.REGEX_FIGURE_DESCRIPTION, caption, re.I)
+    assert re.match(LogPageFigure.REGEX_FIGURE_DESCRIPTION, "Foo Log Page", re.I)

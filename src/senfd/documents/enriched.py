@@ -165,7 +165,7 @@ class CreateQueueSpecificFigure(EnrichedFigure):
 
 class LogPageFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^(?P<command>.*?)( -)? (Log.Page(.Entry|.for.*)?)$"
+        r"^(?!Example\s)(?P<command>.*?)( -)? (Log.Page(.Entry|.for.*)?)$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_RANGE,
