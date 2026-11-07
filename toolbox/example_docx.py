@@ -49,7 +49,7 @@ FIGURES = [
             "rows": [
                 ("0000 00b", "01b", "01h", "Ding", "3.1"),
                 ("0000 01b", "10b", "02h", "Dong", "3.2"),
-                ("0000 10b", "00b", "04h", "Ring", "3.3"),
+                ("0000 10b", "00b", "04h", "Ring1", "3.3"),
             ],
         },
     ),
@@ -199,6 +199,10 @@ FIGURES = [
             ),
             "rows": [("C0h", "No", "No", "Foo Config", "Controller")],
         },
+    ),
+    (
+        f"Foo Config {DASH} Command Dword 11",
+        dword(("31:08", "Reserved"), ("07:00", "Foo Level (FLVL): How much foo.")),
     ),
     (
         "Foo Feature Requirements",

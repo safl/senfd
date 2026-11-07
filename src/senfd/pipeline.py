@@ -7,6 +7,7 @@ from senfd.documents.enriched import FromFigureDocument
 from senfd.documents.model import FromEnrichedDocument
 from senfd.documents.normalized import FromFigureDocument as FromPlainDocument
 from senfd.documents.plain import FromDocx
+from senfd.documents.spec import FromNormalizedDocument
 from senfd.errors import Error
 
 CONVERTERS: List[Type[Converter]] = [
@@ -14,6 +15,7 @@ CONVERTERS: List[Type[Converter]] = [
     FromFigureDocument,
     FromPlainDocument,
     FromEnrichedDocument,
+    FromNormalizedDocument,
 ]
 
 
