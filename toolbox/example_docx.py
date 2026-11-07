@@ -516,6 +516,29 @@ FIGURES = [
             ],
         },
     ),
+    # Tables the documents write oddly: the figure's number a field of Word,
+    # the caption after an empty cell, the table wrapped in a table of one
+    # cell, and the rows of the next figure in the table of this one
+    (
+        "Foo Numbered Layout",
+        {"header": FIELD, "rows": [("03:00", "Foo Number (FNUM)")]},
+    ),
+    (
+        "Foo Indented Layout",
+        {"header": FIELD, "rows": [("03:00", "Foo Indent (FIND)")]},
+    ),
+    (
+        "Foo Wrapped Layout",
+        {"header": FIELD, "rows": [("03:00", "Foo Wrap (FWRP)")]},
+    ),
+    (
+        "Foo Joined Layout",
+        {"header": FIELD, "rows": [("03:00", "Foo First (FFST)")]},
+    ),
+    (
+        "Foo Joining Layout",
+        {"header": FIELD, "rows": [("03:00", "Foo Second (FSND)")]},
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",
@@ -525,17 +548,18 @@ FIGURES = [
 ]
 
 
-def add_table(container, table, caption=None):
+def add_table(container, table, caption=None, indented=False):
     """Add 'table' to 'container', the document or a cell, with the caption in a
-    first row spanning the table, as the specification documents do; a cell of
-    LEFT or UP is merged with the cell to its left or above it"""
+    first row spanning the table, as the specification documents do, or all of
+    it but an empty first cell when 'indented'; a cell of LEFT or UP is merged
+    with the cell to its left or above it"""
 
     columns = len(table["header"])
     rows = [table["header"], *table["rows"]]
     docx_table = container.add_table(rows=len(rows) + bool(caption), cols=columns)
     if caption:
         first = docx_table.rows[0].cells
-        first[0].merge(first[-1]).text = caption
+        first[int(indented)].merge(first[-1]).text = caption
     offset = bool(caption)
     merges = []
     for ridx, row in enumerate(rows, offset):
@@ -570,6 +594,40 @@ def number_headings(figures):
 # A section that the table of contents numbers otherwise than counting the
 # headings does, as when Word numbers a heading that does not show
 TOC_NUMBERS = {"Data Structures": "4"}
+
+
+def numbered_by_field(cell, number, caption):
+    """Write the caption in 'cell' with the figure's number a field of Word,
+    as the documents number their figures"""
+
+    from docx.oxml import OxmlElement
+    from docx.oxml.ns import qn
+
+    paragraph = cell.paragraphs[0]
+    paragraph.text = ""
+    paragraph.add_run("Figure ")
+    field = OxmlElement("w:fldSimple")
+    field.set(qn("w:instr"), " SEQ Figure \\* ARABIC ")
+    run = OxmlElement("w:r")
+    text = OxmlElement("w:t")
+    text.text = str(number)
+    run.append(text)
+    field.append(run)
+    paragraph._p.append(field)
+    paragraph.add_run(f": {caption}")
+
+
+def with_hyphen(cell, before, after):
+    """Write 'before' and 'after' in 'cell', joined by a hyphen that does not
+    break, which Word writes as an element of its own"""
+
+    from docx.oxml import OxmlElement
+
+    paragraph = cell.paragraphs[0]
+    paragraph.text = ""
+    run = paragraph.add_run(before)
+    run._r.append(OxmlElement("w:noBreakHyphen"))
+    paragraph.add_run(after)
 
 
 def write(path, figures):
@@ -607,7 +665,30 @@ def write(path, figures):
         if table is None:
             document.add_paragraph(f"Figure {number}: {caption}")
             continue
-        add_table(document, table, caption=f"Figure {number}: {caption}")
+        if caption == "Foo Wrapped Layout":
+            wrapper = document.add_table(rows=1, cols=1)
+            add_table(wrapper.cell(0, 0), table, caption=f"Figure {number}: {caption}")
+        elif caption == "Foo Joining Layout":
+            # In the table of the figure before it, caption and rows
+            joined = document.tables[-1]
+            joined.add_row().cells[0].merge(
+                joined.rows[-1].cells[-1]
+            ).text = f"Figure {number}: {caption}"
+            for row in [table["header"], *table["rows"]]:
+                cells = joined.add_row().cells
+                for cell, text in zip(cells, row):
+                    cell.text = text
+            continue
+        else:
+            add_table(
+                document,
+                table,
+                caption=f"Figure {number}: {caption}",
+                indented=caption == "Foo Indented Layout",
+            )
+        if caption == "Foo Numbered Layout":
+            numbered_by_field(document.tables[-1].cell(0, 0), number, caption)
+            with_hyphen(document.tables[-1].cell(2, 1), "Foo", "Bar Number (FNUM)")
         document.add_paragraph()
 
     document.save(path)
