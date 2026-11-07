@@ -71,3 +71,26 @@ def test_the_version_and_the_schemas_are_printed_in_process(
     assert sorted(p.name for p in tmp_path.glob("*.schema.json")) == sorted(
         p.name for p in Path("src/senfd/schemas").glob("*.schema.json")
     )
+
+
+def test_a_merged_model_already_in_the_output_is_not_merged_again(
+    tmp_path, monkeypatch
+):
+    """A rerun into the same folder makes the merged model anew, rather than
+    keeping the commands of the merged model it finds there"""
+
+    import json
+
+    docs = sorted(Path("example").glob("*.docx"))
+    assert senfd_main(monkeypatch, *docs, "--output", tmp_path) == 0
+    merged = tmp_path / "merged.model.document.json"
+    first = json.loads(merged.read_text(encoding="utf-8"))
+
+    stale = dict(first, command_sets={"stale": {"alias": "stale", "name": "Stale"}})
+    stale["command_sets"]["stale"]["commands"] = {
+        "gone": {"opcode": 1, "alias": "gone", "name": "Gone"}
+    }
+    merged.write_text(json.dumps(stale), encoding="utf-8")
+
+    assert senfd_main(monkeypatch, *docs, "--output", tmp_path) == 0
+    assert json.loads(merged.read_text(encoding="utf-8")) == first

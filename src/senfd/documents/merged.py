@@ -26,6 +26,8 @@ class FromFolder(Converter):
         merged.meta.stem = "merged"
 
         for path in path.glob(f"*{ModelDocument.SUFFIX_JSON}"):
+            if path.name == merged.json_filename():
+                continue
             model = ModelDocument(**json.loads(path.read_text(encoding="utf-8")))
             for cmdset_alias, cmdset in model.command_sets.items():
                 if not cmdset.commands:
