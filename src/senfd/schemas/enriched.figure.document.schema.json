@@ -1156,7 +1156,7 @@
         "DocumentMeta": {
             "properties": {
                 "version": {
-                    "default": "0.2.3",
+                    "default": "0.3.0",
                     "title": "Version",
                     "type": "string"
                 },
