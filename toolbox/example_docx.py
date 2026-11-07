@@ -103,6 +103,8 @@ FIGURES = [
         f"Ring {DASH} Command Dword 10",
         dword(("31:00", "Ring Count (RCNT): How many rings.")),
     ),
+    # A command that another document lists
+    (f"Zap {DASH} Command Dword 10", dword(("31:00", "Zap Count (ZCNT)"))),
     (
         f"Status Code {DASH} Generic Command Status Values, Foobar Command Set",
         {
@@ -406,7 +408,9 @@ def add_table(container, table, caption=None):
                 add_table(docx_cell, nested)
 
 
-def main(path):
+def write(path, figures):
+    """Write the document of 'figures' to 'path'"""
+
     document = docx.Document()
     document.core_properties.author = "senfd"
     document.add_heading("senfd example", 0)
@@ -415,13 +419,13 @@ def main(path):
     )
 
     document.styles.add_style("table of figures", WD_STYLE_TYPE.PARAGRAPH)
-    for number, (caption, _) in enumerate(FIGURES, 1):
+    for number, (caption, _) in enumerate(figures, 1):
         document.add_paragraph(
             f"Figure {number}: {caption}\t{number}", style="table of figures"
         )
 
     document.add_heading("Figures", 1)
-    for number, (caption, table) in enumerate(FIGURES, 1):
+    for number, (caption, table) in enumerate(figures, 1):
         if table is None:
             document.add_paragraph(f"Figure {number}: {caption}")
             continue
@@ -432,4 +436,7 @@ def main(path):
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]) if len(sys.argv) > 1 else Path("example/example.docx"))
+    write(
+        Path(sys.argv[1]) if len(sys.argv) > 1 else Path("example/example.docx"),
+        FIGURES,
+    )

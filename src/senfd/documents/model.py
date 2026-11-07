@@ -18,6 +18,11 @@ class ModelDocument(Document):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "model.document.html.jinja2"
 
     command_sets: Dict[str, senfd.models.CommandSet] = Field(default_factory=dict)
+    # Dwords of commands this document has no opcode of, as when a command set
+    # specification lists a command that the base specification defines
+    sqe_of_other_documents: List[senfd.models.CommandDwordLowerUpper] = Field(
+        default_factory=list
+    )
 
 
 class FromEnrichedDocument(Converter):
@@ -30,9 +35,6 @@ class FromEnrichedDocument(Converter):
         document: ModelDocument, enriched: EnrichedFigureDocument
     ) -> List[senfd.errors.Error]:
         errors: List[senfd.errors.Error] = []
-
-        if not enriched.command_io_opcode:
-            return errors
 
         # Convert I/O Opcodes and CommandSetName from the "Opcodes for ..." figure
         for item in (
@@ -90,6 +92,8 @@ class FromEnrichedDocument(Converter):
             ]
             for command in commands:
                 command.sqe.append(sqe)
+            if not commands:
+                document.sqe_of_other_documents.append(sqe)
 
         # Process CQE figures
 
