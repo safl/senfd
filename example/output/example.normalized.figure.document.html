@@ -1,0 +1,1230 @@
+<html>
+<head>
+<title>normalized example</title>
+<style>
+table { border-collapse: collapse; margin-bottom: 1em; }
+th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align: top; }
+th { background-color: #f2f2f2; }
+.warning { color: #a00; }
+</style>
+</head>
+<body>
+
+
+
+<h1>example</h1>
+<p>61 figures, 0 skipped, 1 not tables, 3 diagnostics</p>
+
+
+<h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
+<p>Subject: opcodes, name: Foobar. Shape: opcode.</p>
+
+
+<table>
+<tr><th>function</th><th>data_transfer</th><th>opcode</th><th>command</th><th>reference</th></tr>
+<tr><td>0000 00b</td><td>01b</td><td>01h</td><td>Ding</td><td>3.1</td></tr><tr><td>0000 01b</td><td>10b</td><td>02h</td><td>Dong</td><td>3.2</td></tr><tr><td>0000 10b</td><td>00b</td><td>04h</td><td>Ring</td><td>3.3</td></tr>
+</table>
+
+
+
+<h3>Figure 2: Ding - Command Dword 10</h3>
+<p>Subject: command_dword, name: Ding, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Count</td>
+  <td>FCNT</td>
+  <td>How many.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 3: Ding - Command Dword 11 if Foo Mode is set</h3>
+<p>Subject: command_dword, name: Ding, lower: 11, upper: 11, condition: Foo Mode is set. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:01</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>00</td>
+  <td>Foo Mode</td>
+  <td>FM</td>
+  <td>Whether foo.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 4: Ding - Command Dword 2 and Command Dword 3</h3>
+<p>Subject: command_dword, name: Ding, lower: 2, upper: 3. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:00</td>
+  <td>Foo Address</td>
+  <td>FADDR</td>
+  <td>Where foo is.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 5: Ding - Command Dword 14 and Command Dword 15</h3>
+<p>Subject: command_dword, name: Ding, lower: 14, upper: 15. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:00</td>
+  <td>Bar Address</td>
+  <td>BADDR</td>
+  <td>Where bar is.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 6: Ding - Data Pointer</h3>
+<p>Subject: data_pointer, name: Ding. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>127:00</td>
+  <td>Data Pointer</td>
+  <td>DPTR</td>
+  <td>The data.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 7: Ding - Metadata Pointer</h3>
+<p>Subject: metadata_pointer, name: Ding. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:00</td>
+  <td>Metadata Pointer</td>
+  <td>MPTR</td>
+  <td>The meta.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 8: Ding - Completion Queue Entry Dword 0</h3>
+<p>Subject: completion_dword, name: Ding, lower: 0, upper: 0. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Result</td>
+  <td>FRES</td>
+  <td>What came of foo.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 9: Ding - Command Specific Status Values</h3>
+<p>Subject: status_values, name: Ding, qualifier: Command Specific. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>80h</td><td>Foo is busy.</td><td>Foo Busy</td></tr><tr><td>81h</td><td></td><td>Foo Gone</td></tr>
+</table>
+
+
+
+<h3>Figure 10: Dong - Command Dword 10</h3>
+<p>Subject: command_dword, name: Dong, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:08</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:00</td>
+  <td>[Foo Specific] Bar Kind</td>
+  <td>BK</td>
+  <td>Which bar.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 11: Dong - Data Pointer</h3>
+<p>Subject: data_pointer, name: Dong. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>127:00</td>
+  <td>Data Pointer</td>
+  <td>DPTR</td>
+  <td>The data.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 12: Dong - Data Buffer</h3>
+<p>Subject: data_buffer, name: Dong. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>511:00</td>
+  <td>Bar Data</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 13: Dong - Data</h3>
+<p>Subject: other, name: Dong - Data. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Bar Size</td>
+  <td>BSZ</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 14: Ring - Command Dword 10</h3>
+<p>Subject: command_dword, name: Ring, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Ring Count</td>
+  <td>RCNT</td>
+  <td>How many rings.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 15: Zap - Command Dword 10</h3>
+<p>Subject: command_dword, name: Zap, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Zap Count</td>
+  <td>ZCNT</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 16: Status Code - Generic Command Status Values, Foobar Command Set</h3>
+<p>Subject: status_values, name: Status Code, qualifier: Generic Command, scope: Foobar Command Set. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>C0h</td><td>Foo is not valid.</td><td>Foo Invalid</td></tr>
+</table>
+
+
+
+<h3>Figure 17: Opcodes for Admin Commands</h3>
+<p>Subject: opcodes, name: Admin. Shape: opcode.</p>
+
+
+<table>
+<tr><th>function</th><th>data_transfer</th><th>opcode</th><th>namespace_identifier_used</th><th>command</th><th>reference</th></tr>
+<tr><td>0000 00b</td><td>10b</td><td>C2h</td><td>Yes</td><td>Foo Get</td><td>4.1</td></tr><tr><td>0000 01b</td><td>01b</td><td>C1h</td><td>No</td><td>Foo Set</td><td>4.2</td></tr>
+</table>
+
+
+
+<h3>Figure 18: Admin - Foo Command Support Requirements</h3>
+<p>Subject: requirements, name: Admin, qualifier: Foo Command. Shape: opcode.</p>
+
+
+<table>
+<tr><th>command</th><th>opcode</th><th>i_o</th><th>admin</th><th>discovery</th><th>reference</th></tr>
+<tr><td>Foo Get</td><td>C2h</td><td>M</td><td>O</td><td>P</td><td>4.1</td></tr>
+</table>
+
+
+
+<h3>Figure 19: I/O Controller - Foobar Command Set Support</h3>
+<p>Subject: requirements, name: I/O Controller, qualifier: Foobar Command Set. Shape: requirement.</p>
+
+
+<table>
+<tr><th>command</th><th>command_support_requirements</th></tr>
+<tr><td>Ding</td><td>M</td></tr><tr><td>Dong</td><td>O</td></tr>
+</table>
+
+
+
+<h3>Figure 20: Identify - CNS Values</h3>
+<p>Subject: cns_values, name: Identify. Shape: value.</p>
+
+
+<table>
+<tr><th>cns_value</th><th>om</th><th>description</th><th>nsid</th><th>cntid</th><th>csi</th><th>reference</th><th>name</th></tr>
+<tr><td>1Ch</td><td>O</td><td></td><td>Y</td><td>N</td><td>Y</td><td>5.1</td><td>Foo namespace data</td></tr>
+</table>
+
+
+
+<h3>Figure 21: Command Dword 11 - CNS Specific Identifier</h3>
+<p>Subject: command_dword, lower: 11, upper: 11, qualifier: CNS Specific Identifier. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Identifier</td>
+  <td>FID</td>
+  <td>Which foo.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 22: Command Dword 0</h3>
+<p>Subject: command_dword, lower: 0, upper: 0. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Command Identifier</td>
+  <td>CID</td>
+  <td>The command.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 23: Foo Get - Log Specific Identifier</h3>
+<p>Subject: other, name: Foo Get - Log Specific Identifier. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Index</td>
+  <td>FIDX</td>
+  <td>Which entry.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 24: Get Log Page - Log Page Identifiers</h3>
+<p>Subject: log_page_identifiers, name: Get Log Page. Shape: value.</p>
+
+
+<table>
+<tr><th>identifier</th><th>log_page_name</th></tr>
+<tr><td>C0h</td><td>Foo Statistics</td></tr><tr><td>C1h</td><td>Foo Events</td></tr>
+</table>
+
+
+
+<h3>Figure 25: Feature Identifiers - Foobar Command Set</h3>
+<p>Subject: feature_identifiers, name: Foobar Command Set. Shape: value.</p>
+
+
+<table>
+<tr><th>identifier</th><th>persistent_across_power_cycle_and_reset</th><th>uses_memory_buffer_for_attributes</th><th>description</th><th>scope</th><th>name</th></tr>
+<tr><td>C0h</td><td>No</td><td>No</td><td></td><td>Controller</td><td>Foo Config</td></tr>
+</table>
+
+
+
+<h3>Figure 26: Foo Feature Requirements</h3>
+<p>Subject: requirements, name: Foo Feature. Shape: requirement.</p>
+
+
+<table>
+<tr><th>feature_name</th><th>identifier</th><th>i_o</th><th>admin</th><th>discovery</th></tr>
+<tr><td>Foo Config</td><td>C0h</td><td>O</td><td>M</td><td>NR</td></tr>
+</table>
+
+
+
+<h3>Figure 27: Foobar Command Set Specification Version Descriptor Field Values</h3>
+<p>Subject: other, name: Foobar Command Set Specification Version Descriptor Field Values. Shape: none.</p>
+
+
+
+<table>
+<tr><th>Specification Versions</th><th>MJR Field</th><th>MNR Field</th><th>TER Field</th></tr>
+<tr><td>1.0</td><td>1h</td><td>0h</td><td>0h</td></tr><tr><td>1.1</td><td>1h</td><td>1h</td><td>0h</td></tr>
+</table>
+
+
+<h3>Figure 28: Foo Statistics Data Structure</h3>
+<p>Subject: data_structure, name: Foo Statistics. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Foo Count</td>
+  <td>FCNT</td>
+  <td>How many foos.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>08</td>
+  <td>Foo Attributes</td>
+  <td>FATTR</td>
+  <td>Bits of foo.
+  
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>7:1</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>0</td>
+  <td>Foo On</td>
+  <td>FON</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+</td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>511:09</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 29: Identify - Foo Namespace Data Structure, Foobar Command Set Specific</h3>
+<p>Subject: data_structure, name: Identify - Foo Namespace, qualifier: Foobar Command Set Specific. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Foo Size</td>
+  <td>FSZE</td>
+  <td>Foo blocks.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 30: FB Format Data Structure</h3>
+<p>Subject: data_structure, name: FB Format. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>01:00</td>
+  <td>Foo Format Size</td>
+  <td>FFS</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 31: Foo Statistics Log Page</h3>
+<p>Subject: log_page, name: Foo Statistics. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Reads</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 32: Example Foo Element returned by Foo Statistics Log Page</h3>
+<p>Subject: example. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Reads</td>
+  <td></td>
+  <td>2
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 33: Foo - Create Queue Specific</h3>
+<p>Subject: other, name: Foo - Create Queue Specific. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Foo Queue Size</td>
+  <td>FQSZ</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 34: PRP Entry - Foo Layout</h3>
+<p>Subject: other, name: PRP Entry - Foo Layout. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:02</td>
+  <td>Foo Page Address</td>
+  <td>FPA</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>01:00</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 35: Foo - Management Operation Specific</h3>
+<p>Subject: other, name: Foo - Management Operation Specific. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Operation</td>
+  <td>FOP</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 36: Foo Report Data for Foo Zones</h3>
+<p>Subject: other, name: Foo Report Data for Foo Zones. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:00</td>
+  <td>Number of Foo Zones</td>
+  <td>NFZ</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 37: Foo Element Types</h3>
+<p>Subject: other, name: Foo Element Types. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>0h</td><td></td><td>Foo Element</td></tr><tr><td>1h</td><td>Not foo.</td><td>Bar Element</td></tr>
+</table>
+
+
+
+<h3>Figure 38: Foo Acronym definitions</h3>
+<p>Subject: other, name: Foo Acronym definitions. Shape: value.</p>
+
+
+<table>
+<tr><th>name</th><th>description</th></tr>
+<tr><td>FOO</td><td>Foo Over Ober</td></tr>
+</table>
+
+
+
+<h3>Figure 39: Asynchronous Event Information - Foo Status</h3>
+<p>Subject: other, name: Asynchronous Event Information - Foo Status. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>00h</td><td></td><td>Foo Ready</td></tr>
+</table>
+
+
+
+<h3>Figure 40: Status Code - Foo Error Values</h3>
+<p>Subject: status_values, qualifier: Foo Error. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>01h</td><td></td><td>Foo Error</td></tr>
+</table>
+
+
+
+<h3>Figure 41: Foo Management - Host Software Specified Fields</h3>
+<p>Subject: other, name: Foo Management - Host Software Specified Fields. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Owner</td>
+  <td>FOWN</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 42: Offset 10h: FOOCAP - Foo Capabilities</h3>
+<p>Subject: register, name: FOOCAP - Foo Capabilities, offset: 10h. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td>type: RO<br>reset: 0h<br></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Limit</td>
+  <td>FL</td>
+  <td>The limit.
+  </td>
+  <td>type: RW<br>reset: 0h<br></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 43: Foo Get - Foo Specific Fields</h3>
+<p>Subject: other, name: Foo Get - Foo Specific Fields. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Option</td>
+  <td>FOPT</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 44: Foo Submission Queue Entry</h3>
+<p>Subject: other, name: Foo Submission Queue Entry. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:00</td>
+  <td>Foo Command</td>
+  <td>FCMD</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 45: Foo Descriptor</h3>
+<p>Subject: other, name: Foo Descriptor. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Key</td>
+  <td>FKEY</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 46: Completion Queue Entry Layout - Foo</h3>
+<p>Subject: other, name: Completion Queue Entry Layout - Foo. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Foo Status</td>
+  <td>FSTS</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 47: Foo Property Definition</h3>
+<p>Subject: other, name: Foo Property Definition. Shape: none.</p>
+
+
+
+<table>
+<tr><th>Offset (OFST)</th><th>Size (in bytes)</th><th>I/O Controller</th><th>Administrative Controller</th><th>Discovery Controller</th><th>Name</th></tr>
+<tr><td>00h</td><td>8</td><td>M</td><td>M</td><td>M</td><td>Foo Capabilities (FCAP)</td></tr>
+</table>
+
+
+<h3>Figure 48: Foo Event Data Format (Event Type 02h)</h3>
+<p>Subject: other, name: Foo Event Data Format (Event Type 02h). Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Event Count</td>
+  <td>FEC</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 49: RPMB - Foo Write Flow</h3>
+<p>Subject: other, name: RPMB - Foo Write Flow. Shape: none.</p>
+
+
+
+<table>
+<tr><th>Command</th><th>Bytes in Command</th><th>Field Name</th><th>Value</th><th>Objective</th></tr>
+<tr><td>Foo Set</td><td>511:00</td><td>Foo Key</td><td>1234h</td><td>Write foo</td></tr>
+</table>
+
+
+<h3>Figure 50: Foo State Transition Conditions</h3>
+<p>Subject: other, name: Foo State Transition Conditions. Shape: transition.</p>
+
+
+<table>
+<tr><th>starting</th><th>ending</th><th>transition_condition</th></tr>
+<tr><td>Idle</td><td>Busy</td><td>A foo arrives</td></tr>
+</table>
+
+
+
+<h3>Figure 51: Foo Response</h3>
+<p>Subject: other, name: Foo Response. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Reply</td>
+  <td>FRPL</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 52: Foo Attributes Entry</h3>
+<p>Subject: other, name: Foo Attributes Entry. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>01:00</td>
+  <td>Foo Attribute</td>
+  <td>FATR</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 53: Additional Hardware Error Information - Foo</h3>
+<p>Subject: other, name: Additional Hardware Error Information - Foo. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Foo Error Address</td>
+  <td>FEA</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 54: Foo Request Fields</h3>
+<p>Subject: other, name: Foo Request Fields. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Tag</td>
+  <td>FTAG</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 55: NVMe Management Foo - NVMe Management Dword 0</h3>
+<p>Subject: management_dword, name: NVMe Management Foo, lower: 0, upper: 0. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Selector</td>
+  <td>FSEL</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 56: Foo - PCIe Request Dword 1</h3>
+<p>Subject: pcie_request_dword, name: Foo, lower: 1, upper: 1. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Length</td>
+  <td>FLEN</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 57: Foo Request PDU (FooReq)</h3>
+<p>Subject: other, name: Foo Request PDU (FooReq). Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Foo Header</td>
+  <td></td>
+  <td>
+  </td>
+  <td>pdu_section: PDU Header<br></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 58: Foo to Bar Mapping Table</h3>
+<p>Subject: other, name: Foo to Bar Mapping Table. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Word Bar Word</td>
+  <td>BW</td>
+  <td>
+  </td>
+  <td>bytes_detail: 07:04<br></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 59: Bar Data Structure</h3>
+<p>Subject: data_structure, name: Bar. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Bar Identifier</td>
+  <td>BID</td>
+  <td>Which bar.
+  </td>
+  <td>om: M<br></td>
+</tr>
+
+<tr>
+  <td>07:04</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td>om: <br></td>
+</tr>
+
+<tr>
+  <td>11:08</td>
+  <td>[Bar Specific] Bar Mode</td>
+  <td>BMOD</td>
+  <td>How bar runs.
+00b: Bar is off.
+  </td>
+  <td>om: O<br></td>
+</tr>
+
+<tr>
+  <td>N+3:N</td>
+  <td>[Bar Specific] Bar Entry</td>
+  <td>BE</td>
+  <td>The bar entry, of N bytes.
+  </td>
+  <td>om: O<br></td>
+</tr>
+
+<tr>
+  <td>n/a</td>
+  <td>[Bar Specific] Bar Tail</td>
+  <td>BT</td>
+  <td>Not in the data.
+  </td>
+  <td>om: O<br></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 60: Offset 20h: BARCTL - Bar Control</h3>
+<p>Subject: register, name: BARCTL - Bar Control, offset: 20h. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:01</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td>reset: 0h<br>type: RO<br></td>
+</tr>
+
+<tr>
+  <td>00</td>
+  <td>Bar Enable</td>
+  <td>BEN</td>
+  <td>Enables bar.
+  </td>
+  <td>reset: 0h<br>type: RW<br></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 61: Foo Overview</h3>
+<p>Subject: other, name: Foo Overview. Shape: none.</p>
+
+
+
+<table>
+<tr><th>Name</th><th>Purpose</th></tr>
+<tr><td>Foo</td><td>Bar</td></tr>
+</table>
+
+
+
+<h2>Diagnostics</h2>
+<ul>
+
+<li class="note">Figure 5: note caption-dash: Caption dash not spaced: 'Ding -Command Dword 14 and Command Dword 15'</li>
+
+<li class="note">Figure 59: note range-symbolic: Range not a number: 'N+3:N'</li>
+
+<li class="note">Figure 59: note range-symbolic: Range not a number: 'n/a'</li>
+
+</ul>
+</body>
+</html>

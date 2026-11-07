@@ -218,6 +218,22 @@
                     },
                     "title": "Tables",
                     "type": "array"
+                },
+                "merged": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                "left",
+                                "up"
+                            ],
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Merged"
                 }
             },
             "title": "Cell",

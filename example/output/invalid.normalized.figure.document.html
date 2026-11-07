@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>normalized invalid</title>
+<style>
+table { border-collapse: collapse; margin-bottom: 1em; }
+th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align: top; }
+th { background-color: #f2f2f2; }
+.warning { color: #a00; }
+</style>
+</head>
+<body>
+
+
+
+<h1>invalid</h1>
+<p>3 figures, 0 skipped, 1 not tables, 0 diagnostics</p>
+
+
+<h3>Figure 1: A byte-table with an embedded bit-table</h3>
+<p>Subject: other, name: A byte-table with an embedded bit-table. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>11:08</td>
+  <td>Name</td>
+  <td>ACRONYM1</td>
+  <td>This is where a description would go
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>14:12</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15</td>
+  <td>Name with spaces</td>
+  <td>ACRONYM</td>
+  <td>The definition of this field is described in the table below.
+  
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:04</td>
+  <td>Name with spaces</td>
+  <td>ACRONYM3</td>
+  <td>5h as specified in some other figure
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Name with spaces</td>
+  <td>ACRONYM4</td>
+  <td>Valid values are specified in some other figure
+  </td>
+  <td></td>
+</tr>
+
+</table>
+</td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 2: I/O Controller - Foobar Command Set Support</h3>
+<p>Subject: requirements, name: I/O Controller, qualifier: Foobar Command Set. Shape: requirement.</p>
+
+
+
+
+<h3>Figure 3: Ringing - Command Dword 10</h3>
+<p>Subject: command_dword, name: Ringing, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Host Buffer Size</td>
+  <td>HBS</td>
+  <td>This field indicates the host buffer size in bytes.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+
+<h2>Diagnostics</h2>
+<ul>
+
+</ul>
+</body>
+</html>
