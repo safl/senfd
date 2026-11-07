@@ -22,7 +22,7 @@ from senfd.documents.normalized import (
     NormalizedFigureDocument,
 )
 from senfd.errors import Error
-from senfd.normalize import Diagnostic, warning
+from senfd.normalize import Diagnostic, note, warning
 
 
 class Source(BaseModel):
@@ -56,6 +56,7 @@ class Dwords(BaseModel):
     lower: int
     upper: int
     condition: Optional[str] = None
+    qualifier: Optional[str] = None
     fields: List[Bits] = Field(default_factory=list)
     source: Source
 
@@ -155,13 +156,18 @@ class SpecDocument(Document):
     FILENAME_SCHEMA: ClassVar[str] = "spec.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "spec.document.html.jinja2"
 
+    # What the figures describe: the commands of the opcode tables, the dwords
+    # by the name their captions give, the structures and the tables of values
     command_sets: Dict[str, CommandSet] = Field(default_factory=dict)
-    # Dwords of commands no opcode table of the document lists
     dwords: Dict[str, List[Dwords]] = Field(default_factory=dict)
-    features: Dict[str, Feature] = Field(default_factory=dict)
-    log_pages: Dict[str, LogPage] = Field(default_factory=dict)
     structures: List[Structure] = Field(default_factory=list)
     values: List[Values] = Field(default_factory=list)
+
+    # What resolve() makes of them: the dwords and operations of the commands,
+    # the features and log pages, and the dwords of none of them
+    features: Dict[str, Feature] = Field(default_factory=dict)
+    log_pages: Dict[str, LogPage] = Field(default_factory=dict)
+    unassigned: Dict[str, List[Dwords]] = Field(default_factory=dict)
     diagnostics: List[Diagnostic] = Field(default_factory=list)
 
 
@@ -231,6 +237,10 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             name = without_footnote(entry.get("command", ""))
             if not match or not name:
                 continue
+            if name.endswith(" Commands"):
+                # A row pointing at the commands of another table, as the
+                # range of opcodes the Fabrics commands take
+                continue
             command_set.commands[alias(name)] = Command(
                 name=name,
                 opcode=int(match["hex"], 16),
@@ -242,7 +252,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         return
 
     if figure.layout is None:
-        if figure.shape in ("value", "requirement") and figure.entries:
+        if figure.entries:
             document.values.append(
                 Values(
                     kind=subject.kind,
@@ -251,6 +261,14 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                     columns=figure.columns,
                     entries=[entry_of(entry) for entry in figure.entries],
                     source=source,
+                )
+            )
+        else:
+            document.diagnostics.append(
+                note(
+                    "figure-not-modelled",
+                    f"{stem} figure {figure.figure_nr}, a table of no shape senfd "
+                    f"models: '{figure.caption}'",
                 )
             )
         return
@@ -279,6 +297,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                 lower=dwords[0],
                 upper=dwords[1],
                 condition=subject.condition,
+                qualifier=subject.qualifier,
                 fields=fields_of(figure.layout),
                 source=source,
             )
@@ -325,49 +344,63 @@ def entry_of(entry: Dict[str, str]) -> Entry:
 
 
 def add_dwords(have: List[Dwords], dwords: Dwords) -> None:
-    """Add 'dwords' to 'have', unless the same dwords are there already"""
+    """
+    Add 'dwords' to 'have', unless they are there already; two figures
+    describing the same dwords, as the base specification and a command set
+    specification do, are both kept, each saying where it is from
+    """
 
-    key = (dwords.lower, dwords.upper, dwords.condition)
-    if all((d.lower, d.upper, d.condition) != key for d in have):
+    if all(d.source != dwords.source for d in have):
         have.append(dwords)
 
 
-def assign_dwords(document: SpecDocument) -> None:
-    """Give the commands of the command sets the dwords described for them"""
+def initials(name: str) -> str:
+    """The initials of the words of 'name', as "hctm" of "Host Controlled
+    Thermal Management" """
 
-    for key in list(document.dwords):
-        cqe = key.startswith("cqe:")
-        name = key.removeprefix("cqe:")
-        commands = [
-            command_set.commands[name]
-            for command_set in document.command_sets.values()
-            if name in command_set.commands
-        ]
-        if not commands:
-            continue
-        for command in commands:
-            have = command.cqe if cqe else command.sqe
-            for dwords in document.dwords[key]:
-                add_dwords(have, dwords)
-        del document.dwords[key]
+    return "".join(word[0] for word in re.findall(r"[A-Za-z0-9]+", name)).lower()
 
 
-class FromNormalizedDocument(Converter):
-    @staticmethod
-    def is_applicable(path: Path) -> bool:
-        return "".join(path.suffixes).lower() == NormalizedFigureDocument.SUFFIX_JSON
+def names_match(caption: str, name: str) -> bool:
+    """
+    Whether a caption names the thing of 'name': by the same name, by the
+    initials of either, or by a longer name starting with it, as "Arbitration &
+    Command Processing" is the feature "Arbitration"; a caption shorter than the
+    name, as "Foo" of "Foo Config", names something else
+    """
 
-    @staticmethod
-    def convert(path: Path, args: Namespace) -> Tuple[Document, List[Error]]:
-        normalized = NormalizedFigureDocument.model_validate_json(
-            path.read_text(encoding="utf-8")
-        )
-        document = SpecDocument()
-        document.meta.stem = strip_all_suffixes(path.stem)
-        for figure in normalized.figures:
-            add_figure(document, figure, document.meta.stem)
-        assign_dwords(document)
-        return document, []
+    a, b = alias(caption), alias(name)
+    if not a or not b:
+        return False
+    return (
+        a == b
+        or a == initials(name)
+        or b == initials(caption)
+        or a.startswith(b + "_")
+        or abbreviates(a.split("_"), b.split("_"))
+    )
+
+
+def abbreviates(short: List[str], long: List[str]) -> bool:
+    """
+    Whether the words 'short' abbreviate the words 'long', each word of 'short'
+    being a word of 'long', the initials of the next words of 'long', as "fdp"
+    of "flexible data placement", or the start of the next word, as "config"
+    of "configuration"
+    """
+
+    if not short:
+        return not long
+    if not long:
+        return False
+    word, rest = short[0], short[1:]
+    if word == long[0] or (len(word) >= 4 and long[0].startswith(word)):
+        if abbreviates(rest, long[1:]):
+            return True
+    for n in range(2, len(long) + 1):
+        if word == "".join(w[0] for w in long[:n]) and abbreviates(rest, long[n:]):
+            return True
+    return False
 
 
 def identified(document: SpecDocument, name_column: str, kind: str):
@@ -390,48 +423,83 @@ def identified(document: SpecDocument, name_column: str, kind: str):
                 yield int(match["hex"], 16), name, entry.columns, values.source
 
 
-def link_features(document: SpecDocument) -> None:
-    """The features of the feature identifier tables, with the dwords described
-    for each, which the captions name by the feature"""
+def link_features(document: SpecDocument, used: set) -> None:
+    """The features of the feature identifier tables, one by identifier, with
+    the dwords described for each, which the captions name by the feature"""
 
+    seen: Dict[int, str] = {}
     for identifier, name, columns, source in identified(
         document, "feature_name", "feature_identifiers"
     ):
-        key = alias(name)
-        feature = document.features.setdefault(
-            key,
-            Feature(identifier=identifier, name=name, columns=columns, source=source),
+        if identifier in seen:
+            continue
+        seen[identifier] = alias(name)
+        document.features[alias(name)] = Feature(
+            identifier=identifier, name=name, columns=columns, source=source
         )
-        for dwords in document.dwords.pop(key, []):
-            add_dwords(feature.sqe, dwords)
-        for dwords in document.dwords.pop(f"cqe:{key}", []):
-            add_dwords(feature.cqe, dwords)
+
+    # The exact name first, then the looser matches, so that "Asynchronous
+    # Event Configuration" is not taken by a feature it merely starts with
+    for exact in (True, False):
+        for key, described in document.dwords.items():
+            if key in used:
+                continue
+            cqe = key.startswith("cqe:")
+            caption = key.removeprefix("cqe:")
+            for feature in document.features.values():
+                if (
+                    (alias(feature.name) == caption)
+                    if exact
+                    else names_match(caption, feature.name)
+                ):
+                    for dwords in described:
+                        add_dwords(feature.cqe if cqe else feature.sqe, dwords)
+                    used.add(key)
+                    break
+
+
+def log_page_key(name: str) -> str:
+    """The name of a log page without what captions and tables add to it:
+    "Get Log Page - ", " Log Page", " Log Entry", a scope in parentheses"""
+
+    name = re.sub(r"^Get Log Page - ", "", name, flags=re.IGNORECASE)
+    name = re.sub(r"\s*\([^)]*\)$", "", name)
+    name = re.sub(r"\s+Log(?: Page)?(?: Entry)?$", "", name, flags=re.IGNORECASE)
+    return alias(name)
 
 
 def link_log_pages(document: SpecDocument) -> None:
-    """The log pages of the log page identifier tables, with the structure of
-    each, which a log page's caption names"""
+    """The log pages of the log page identifier tables, with the structure
+    laying out each: the log page's own figure before a data structure, the
+    first figure before later ones"""
 
-    structures = {alias(s.name): s for s in document.structures if s.kind == "log_page"}
+    candidates = sorted(
+        (s for s in document.structures if s.kind in ("log_page", "data_structure")),
+        key=lambda s: (s.kind != "log_page", s.source.document, s.source.figure_nr),
+    )
     for identifier, name, columns, source in identified(
         document, "log_page_name", "log_page_identifiers"
     ):
         key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
-        # "Foo (Controller scope)" is laid out by the structure of "Foo"
-        bare = alias(re.sub(r"\s*\([^)]*\)$", "", name))
-        document.log_pages.setdefault(
-            key,
-            LogPage(
-                identifier=identifier,
-                name=name,
-                columns=columns,
-                structure=structures.get(key) or structures.get(bare),
-                source=source,
-            ),
+        if key in document.log_pages:
+            continue
+        wanted = log_page_key(name)
+        structure = next(
+            (s for s in candidates if log_page_key(s.name) == wanted), None
+        ) or next(
+            (s for s in candidates if names_match(log_page_key(s.name), wanted)),
+            None,
+        )
+        document.log_pages[key] = LogPage(
+            identifier=identifier,
+            name=name,
+            columns=columns,
+            structure=structure,
+            source=source,
         )
 
 
-def link_directives(document: SpecDocument) -> None:
+def link_directives(document: SpecDocument, used: set) -> None:
     """
     The operations of each directive, from the tables of a directive's
     operations, as operations of the commands sending and receiving them; an
@@ -482,79 +550,106 @@ def link_directives(document: SpecDocument) -> None:
                 ],
                 source=values.source,
             )
-            for dwords in document.dwords.get(alias(name), []):
-                add_dwords(operation.sqe, dwords)
-            for dwords in document.dwords.get(f"cqe:{alias(name)}", []):
-                add_dwords(operation.cqe, dwords)
+            for key, have in (
+                (alias(name), operation.sqe),
+                (f"cqe:{alias(name)}", operation.cqe),
+            ):
+                for dwords in document.dwords.get(key, []):
+                    add_dwords(have, dwords)
+                if key in document.dwords:
+                    used.add(key)
             for command in commands.get(alias(sending), []):
                 command.operations.append(operation)
 
-    for operation in (
-        o
-        for cs in document.command_sets.values()
-        for c in cs.commands.values()
-        for o in c.operations
-    ):
-        document.dwords.pop(alias(operation.name), None)
-        document.dwords.pop(f"cqe:{alias(operation.name)}", None)
+
+def resolve(document: SpecDocument) -> SpecDocument:
+    """
+    Make, from what the figures of 'document' describe, the dwords and the
+    operations of its commands, its features and log pages, and the dwords of
+    none of them, which are a diagnostic; whatever 'document' was made of
+    before is made anew
+    """
+
+    used: set = set()
+    by_name: Dict[str, List[Command]] = {}
+    for command_set in document.command_sets.values():
+        for name, command in command_set.commands.items():
+            command.sqe, command.cqe, command.operations = [], [], []
+            by_name.setdefault(name, []).append(command)
+
+    # A command of the same name in two command sets is one command, as the
+    # reservation commands that the base specification describes and the NVM
+    # command set lists
+    for key, described in document.dwords.items():
+        cqe = key.startswith("cqe:")
+        for command in by_name.get(key.removeprefix("cqe:"), []):
+            for dwords in described:
+                add_dwords(command.cqe if cqe else command.sqe, dwords)
+            used.add(key)
+
+    document.features, document.log_pages = {}, {}
+    # The operations take their dwords before the looser matching of features
+    link_directives(document, used)
+    link_features(document, used)
+    link_log_pages(document)
+
+    document.unassigned = {
+        key: described for key, described in document.dwords.items() if key not in used
+    }
+    document.diagnostics = [
+        d for d in document.diagnostics if d.code != "dwords-unassigned"
+    ]
+    for key, unassigned in document.unassigned.items():
+        for d in unassigned:
+            document.diagnostics.append(
+                warning(
+                    "dwords-unassigned",
+                    f"Dwords {d.lower}:{d.upper} of '{key}', {d.source.document} "
+                    f"figure {d.source.figure_nr}, of no command, feature or "
+                    "directive operation",
+                )
+            )
+    return document
+
+
+class FromNormalizedDocument(Converter):
+    @staticmethod
+    def is_applicable(path: Path) -> bool:
+        return "".join(path.suffixes).lower() == NormalizedFigureDocument.SUFFIX_JSON
+
+    @staticmethod
+    def convert(path: Path, args: Namespace) -> Tuple[Document, List[Error]]:
+        normalized = NormalizedFigureDocument.model_validate_json(
+            path.read_text(encoding="utf-8")
+        )
+        document = SpecDocument()
+        document.meta.stem = strip_all_suffixes(path.stem)
+        for figure in normalized.figures:
+            add_figure(document, figure, document.meta.stem)
+        return resolve(document), []
 
 
 def merge(documents: List[SpecDocument]) -> SpecDocument:
     """
-    One document of 'documents': a command set listed by more than one is one
-    command set, and a command gets the dwords another document describes
+    One document of what 'documents' describe, resolved as one: a command set
+    listed by more than one is one command set, and a command gets the dwords
+    any of them describes; 'documents' are left as they are
     """
 
     merged = SpecDocument()
     merged.meta.stem = "merged"
-    for document in documents:
+    for document in (d.model_copy(deep=True) for d in documents):
         for key, command_set in document.command_sets.items():
             into = merged.command_sets.setdefault(
                 key, CommandSet(name=command_set.name)
             )
             for name, command in command_set.commands.items():
-                existing = into.commands.setdefault(name, command)
-                if existing is command:
-                    continue
-                for dwords in command.sqe:
-                    add_dwords(existing.sqe, dwords)
-                for dwords in command.cqe:
-                    add_dwords(existing.cqe, dwords)
+                into.commands.setdefault(name, command)
         for key, described in document.dwords.items():
             merged.dwords.setdefault(key, []).extend(described)
         merged.structures += document.structures
         merged.values += document.values
-        merged.diagnostics += document.diagnostics
-
-    assign_dwords(merged)
-
-    # A command of the same name in two command sets is the same command, as
-    # the reservation commands that the base specification describes and the
-    # NVM command set lists; each gets the dwords of the other
-    by_name: Dict[str, List[Command]] = {}
-    for command_set in merged.command_sets.values():
-        for name, command in command_set.commands.items():
-            by_name.setdefault(name, []).append(command)
-    for commands in by_name.values():
-        for command in commands:
-            for other in commands:
-                for dwords in other.sqe:
-                    add_dwords(command.sqe, dwords)
-                for dwords in other.cqe:
-                    add_dwords(command.cqe, dwords)
-
-    link_features(merged)
-    link_log_pages(merged)
-    link_directives(merged)
-
-    for key, unassigned in merged.dwords.items():
-        for d in unassigned:
-            merged.diagnostics.append(
-                warning(
-                    "dwords-without-command",
-                    f"Dwords {d.lower}:{d.upper} of '{key}', "
-                    f"{d.source.document} figure {d.source.figure_nr}, "
-                    "of no command of an opcode table",
-                )
-            )
-    return merged
+        merged.diagnostics += [
+            d for d in document.diagnostics if d.code != "dwords-unassigned"
+        ]
+    return resolve(merged)

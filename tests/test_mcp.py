@@ -41,3 +41,13 @@ def test_the_queries_are_tools_of_the_server_over_stdio():
         "  31:16 Reserved",
         "  15:00 Foo Count (FCNT)",
     ]
+
+
+def test_a_missing_model_is_said_to_the_client(tmp_path, monkeypatch):
+    import senfd.mcp_server
+
+    monkeypatch.setenv("SENFD_SPEC", str(tmp_path / "missing.json"))
+    senfd.mcp_server.spec.cache_clear()
+    with pytest.raises(RuntimeError, match="No model of the specification at"):
+        senfd.mcp_server.command("ding")
+    senfd.mcp_server.spec.cache_clear()

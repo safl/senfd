@@ -88,7 +88,7 @@ def test_a_command_gets_the_dwords_another_document_describes(tmp_path):
     merged = merge([example, other])
     zap = merged.command_sets["bar"].commands["zap"]
     assert [(d.lower, d.fields[0].acronym) for d in zap.sqe] == [(10, "ZCNT")]
-    assert "zap" not in merged.dwords
+    assert "zap" not in merged.unassigned
 
 
 def test_a_command_of_two_command_sets_has_the_dwords_of_both(tmp_path):
@@ -113,7 +113,7 @@ def test_dwords_of_no_command_are_a_diagnostic(tmp_path):
     codes = {
         d.message.split("'")[1]
         for d in spec.diagnostics
-        if d.code == "dwords-without-command"
+        if d.code == "dwords-unassigned"
     }
     assert "zap" in codes
 
@@ -142,4 +142,57 @@ def test_a_directive_operation_is_an_operation_of_its_command(tmp_path):
 
     (report,) = commands["foo_directive_receive"].operations
     assert report.structures == ["Bar Directive - Bar Report"]
-    assert "bar_reset" not in spec.dwords
+    assert "bar_reset" not in spec.unassigned
+
+
+def test_a_document_on_its_own_has_its_features_log_pages_and_diagnostics(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+
+    assert spec.features["foo_config"].sqe
+    assert spec.log_pages["foo_statistics"].structure
+    assert any(d.code == "dwords-unassigned" for d in spec.diagnostics)
+
+
+def test_a_merge_leaves_the_documents_it_merges_as_they_are(tmp_path):
+    example = spec_of(Path("example") / "example.docx", tmp_path / "a")
+    other = spec_of(
+        other_document(tmp_path, [("0000 00b", "01b", "81h", "Zap", "2.1")]),
+        tmp_path / "b",
+    )
+    before = (example.model_dump(), other.model_dump())
+
+    merge([example, other])
+    assert (example.model_dump(), other.model_dump()) == before
+
+
+def test_two_figures_of_the_same_dwords_are_both_kept(tmp_path):
+    """As the base specification and a command set specification both
+    describe a dword of a command"""
+
+    example = spec_of(Path("example") / "example.docx", tmp_path / "a")
+    twice = example.model_copy(deep=True)
+    twice.meta.stem = "again"
+    for described in twice.dwords.values():
+        for dwords in described:
+            dwords.source.document = "again"
+
+    merged = merge([example, twice])
+    ding = merged.command_sets["foobar"].commands["ding"]
+    assert sorted({d.source.document for d in ding.sqe if d.lower == 10}) == [
+        "again",
+        "example",
+    ]
+
+
+def test_a_caption_names_a_thing_by_its_name_initials_or_a_longer_name():
+    from senfd.documents.spec import log_page_key, names_match
+
+    assert names_match("HCTM", "Host Controlled Thermal Management")
+    assert names_match("Arbitration & Command Processing", "Arbitration")
+    assert not names_match("Foo", "Foo Config")
+    assert names_match("FDP Events", "Flexible Data Placement Events")
+    assert names_match("Key Value Config", "Key Value Configuration")
+    assert not names_match("Key Value", "Key Value Configuration")
+    assert log_page_key("Get Log Page - Foo Discovery Log Page") == "foo_discovery"
+    assert log_page_key("Foo Information Log Entry") == "foo_information"
+    assert log_page_key("Foo (Controller scope)") == "foo"

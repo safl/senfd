@@ -84,7 +84,8 @@ def dword_label(dwords: Dwords, prefix: str) -> str:
         else f"{prefix}{dwords.lower}-{dwords.upper}"
     )
     condition = f" if {dwords.condition}" if dwords.condition else ""
-    return f"{span}{condition} [{cite(dwords.source)}]"
+    qualifier = f", {dwords.qualifier}" if dwords.qualifier else ""
+    return f"{span}{condition}{qualifier} [{cite(dwords.source)}]"
 
 
 def lines_of_dwords(
@@ -110,6 +111,8 @@ def find(names: Iterable[str], text: str) -> List[str]:
 def command(
     spec: SpecDocument, name: str, dword: Optional[int] = None, verbose=False
 ) -> List[str]:
+    if not name.strip():
+        return ["Give the name of a command"]
     lines = []
     found = [
         (command_set, key)
@@ -124,9 +127,12 @@ def command(
             f"{cmd.name}: {command_set.name} command, opcode {cmd.opcode:02X}h "
             f"[{cite(cmd.source)}]"
         )
+        before = len(lines)
         lines += lines_of_dwords(cmd.sqe, "cdw", dword, verbose)
         if dword is None:
             lines += lines_of_dwords(cmd.cqe, "cqe dw", None, verbose)
+        elif len(lines) == before and not cmd.operations:
+            lines.append(f"No figure describes cdw{dword} of {cmd.name}")
         for operation in cmd.operations:
             selectors = " ".join(
                 f"{k}={v:02X}h" for k, v in operation.selectors.items()
@@ -142,6 +148,9 @@ def command(
 
 
 def by_identifier_or_name(items: dict, key: str) -> list:
+    """The items of identifier 'key', hexadecimal as the specification writes
+    identifiers, "12", "12h" and "0x12" alike, else those of name 'key'"""
+
     match = re.fullmatch(r"(?:0x)?([0-9A-Fa-f]{1,2})h?", key.strip())
     if match:
         identifier = int(match[1], 16)
@@ -162,10 +171,20 @@ def feature(spec: SpecDocument, key: str, verbose=False) -> List[str]:
 
 def log_page(spec: SpecDocument, key: str, verbose=False) -> List[str]:
     lines = []
+    shown = set()
     for page in by_identifier_or_name(spec.log_pages, key):
         lines.append(f"{page.identifier:02X}h {page.name} [{cite(page.source)}]")
-        if page.structure:
+        where = page.structure and (
+            page.structure.source.document,
+            page.structure.source.figure_nr,
+        )
+        if where and where in shown:
+            lines.append(f"  laid out as above, {page.structure.name}")
+        elif page.structure:
+            shown.add(where)
             lines += lines_of_structure(page.structure, verbose)
+        else:
+            lines.append("  no figure laying it out is known")
     return lines or [f"No log page '{key}'"]
 
 
@@ -179,8 +198,10 @@ def lines_of_structure(structure: Structure, verbose: bool) -> List[str]:
 
 def structure(spec: SpecDocument, name: str, verbose=False) -> List[str]:
     key = alias(name)
-    named = [s for s in spec.structures if alias(s.name) == key] or [
-        s for s in spec.structures if key in alias(s.name)
+    if not key:
+        return ["Give the name of a structure"]
+    named = [s for s in spec.structures if alias(s.name) == key] + [
+        s for s in spec.structures if key in alias(s.name) and alias(s.name) != key
     ]
     if len(named) > 8:
         return [f"{len(named)} structures; be more specific:"] + [
@@ -196,6 +217,8 @@ def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
     """Fields by acronym or name, and things by name, with where they are"""
 
     needle = text.strip().lower()
+    if not needle:
+        return ["Give an acronym or a name to search for"]
     hits: List[str] = []
 
     def match(field: Bits) -> bool:
@@ -220,8 +243,13 @@ def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
     for f in spec.features.values():
         if needle in f.name.lower():
             hits.append(f"feature {f.identifier:02X}h {f.name} [{cite(f.source)}]")
-        for d in f.sqe + f.cqe:
-            fields(f"feature {f.name} {dword_label(d, 'dw')}", d.fields)
+        for d in f.sqe:
+            fields(f"feature {f.name} {dword_label(d, 'cdw')}", d.fields)
+        for d in f.cqe:
+            fields(f"feature {f.name} {dword_label(d, 'cqe dw')}", d.fields)
+    for key, unassigned in spec.unassigned.items():
+        for d in unassigned:
+            fields(f"{key} {dword_label(d, 'cdw')}", d.fields)
     for page in spec.log_pages.values():
         if needle in page.name.lower():
             hits.append(
@@ -255,12 +283,12 @@ def main(argv: Optional[List[str]] = None) -> int:
     p = sub.add_parser("command", help="A command and its dwords")
     p.add_argument("name")
     p.add_argument("dword", nargs="?", type=int)
-    sub.add_parser("feature", help="A feature, by identifier or name").add_argument(
-        "key"
-    )
-    sub.add_parser("log-page", help="A log page, by identifier or name").add_argument(
-        "key"
-    )
+    sub.add_parser(
+        "feature", help="A feature, by hexadecimal identifier or name"
+    ).add_argument("key")
+    sub.add_parser(
+        "log-page", help="A log page, by hexadecimal identifier or name"
+    ).add_argument("key")
     sub.add_parser("structure", help="A data structure or register").add_argument(
         "name"
     )
