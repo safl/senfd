@@ -645,6 +645,58 @@ FIGURES = [
             ],
         },
     ),
+    # Fields named by their index: a run of them with the rows between the
+    # first and the last left out, a string, and entries as many as the data
+    # says, of a structure of their name
+    (
+        "Foo Table Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("31:00", "Foo Slot 0 Descriptor"),
+                ("63:32", "Foo Slot 1 Descriptor"),
+                ("...", ""),
+                ("255:224", "Foo Slot 7 Descriptor"),
+                ("263:256", "Foo Version (FVER): An ASCII string."),
+            ],
+        },
+    ),
+    (
+        "Foo Entry Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("07:00", "Foo Entry Key (FEK)"),
+                (
+                    "15:08",
+                    (
+                        "Foo Entry Pair (FEP): Two halves.",
+                        {
+                            "header": FIELD,
+                            "rows": [
+                                ("03:00", "Foo Low (FLO)"),
+                                ("07:04", "Foo High (FHI)"),
+                            ],
+                        },
+                    ),
+                ),
+                ("31:16", "Reserved"),
+            ],
+        },
+    ),
+    (
+        "Foo List Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("03:00", "Number of Foo Entries (NFE)"),
+                ("15:04", "Reserved"),
+                ("47:16", "Foo Entry 0"),
+                ("79:48", "Foo Entry 1"),
+                ("(NFE*32)+15:(NFE*32)-16", "Foo Entry NFE-1"),
+            ],
+        },
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",

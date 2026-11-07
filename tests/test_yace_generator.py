@@ -87,3 +87,80 @@ def test_yace_takes_the_header_in_its_strict_subset(tmp_path):
     )
     assert proc.returncode == 0, proc.stderr
     assert (tmp_path / "foo_spec.status").read_text().endswith("0 diagnostics\n")
+
+
+@pytest.fixture
+def structures(tmp_path):
+    """The spec header of the data structures of the example"""
+
+    options = {"spec": str(SPEC), "prefix": "foo_spec", "commands": "none"}
+    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    return path.read_text(encoding="utf-8")
+
+
+def test_a_structure_is_a_packed_struct_of_its_fields_at_their_offsets(structures):
+    assert "struct __attribute__((packed)) foo_spec_example_foo_statistics {" in (
+        structures
+    )
+    assert "\tuint64_t fcnt; ///< Foo Count, bytes 7:0" in structures
+    assert "\tuint8_t rsvd9[503]; ///< Reserved, bytes 511:9" in structures
+    assert "#define FOO_SPEC_EXAMPLE_FOO_STATISTICS_FATTR_FON 0x1" in structures
+    # What it is of is no part of its name, and a log page is named so
+    assert "struct __attribute__((packed)) foo_spec_example_foo_namespace {" in (
+        structures
+    )
+    assert "foo_spec_example_log_foo_statistics {" in structures
+    assert "_OPCODE" not in structures
+
+
+def test_fields_named_by_their_index_are_an_array_with_the_rows_left_out(
+    structures,
+):
+    assert (
+        "\tuint8_t foo_slot_descriptor[256]; ///< Foo Slot Descriptor, 8 of 32 bytes,"
+        in structures
+    )
+    # A string is of bytes, whatever its size
+    assert "\tuint8_t fver[8]; ///< Foo Version, bytes 263:256" in structures
+
+
+def test_entries_as_many_as_the_data_says_follow_the_struct(structures):
+    assert (
+        " * Followed, from byte 16, by as many Foo Entry as the data says, each a"
+        " 'struct foo_spec_example_foo_entry'" in structures
+    )
+    # The struct of the entries comes before what it follows
+    assert structures.index("foo_spec_example_foo_entry {") < structures.index(
+        "foo_spec_example_foo_list {"
+    )
+    assert "\tuint8_t rsvd4[12]; ///< Reserved, bytes 15:4\n};" in structures
+
+
+def test_the_bytes_of_a_field_are_no_masks_of_its_bits(structures):
+    assert "\tuint64_t fep; ///< Foo Entry Pair, bytes 15:8\n" in structures
+    assert "FOO_SPEC_EXAMPLE_FOO_ENTRY_FEP_" not in structures
+
+
+def test_entries_are_a_flexible_array_when_asked_for(tmp_path):
+    options = {"spec": str(SPEC), "commands": "none", "flexible": "1"}
+    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    text = path.read_text(encoding="utf-8")
+    assert "\tstruct spec_example_foo_entry foo_entry[]; ///< Foo Entry" in text
+
+
+def test_of_a_union_the_first_alternative_is_the_member(structures):
+    assert (
+        "\tuint8_t fip6[16]; ///< Foo IPv6 Address; or, in the same bytes, Foo IPv4"
+        " Address (FIP4), bytes 17:2" in structures
+    )
+
+
+def test_only_the_structures_asked_for_are_written(tmp_path):
+    options = {"spec": str(SPEC), "commands": "none", "structures": "example:fb_format"}
+    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    text = path.read_text(encoding="utf-8")
+    assert "struct __attribute__((packed)) spec_example_fb_format {" in text
+    assert "foo_statistics" not in text
+    options["structures"] = "none"
+    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    assert "struct __attribute__((packed))" not in path.read_text(encoding="utf-8")
