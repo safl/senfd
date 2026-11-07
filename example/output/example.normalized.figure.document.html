@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>66 figures, 0 skipped, 1 not tables, 6 diagnostics</p>
+<p>70 figures, 0 skipped, 1 not tables, 6 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -342,7 +342,7 @@ th { background-color: #f2f2f2; }
 
 <table>
 <tr><th>function</th><th>data_transfer</th><th>opcode</th><th>namespace_identifier_used</th><th>command</th><th>reference</th></tr>
-<tr><td>0000 00b</td><td>10b</td><td>C2h</td><td>Yes</td><td>Foo Get</td><td>4.1</td></tr><tr><td>0000 01b</td><td>01b</td><td>C1h</td><td>No</td><td>Foo Set</td><td>4.2</td></tr>
+<tr><td>0000 00b</td><td>10b</td><td>C2h</td><td>Yes</td><td>Foo Get</td><td>4.1</td></tr><tr><td>0000 01b</td><td>01b</td><td>C1h</td><td>No</td><td>Foo Set</td><td>4.2</td></tr><tr><td>0000 10b</td><td>01b</td><td>C5h</td><td>No</td><td>Foo Directive Send</td><td>4.3</td></tr><tr><td>0000 10b</td><td>10b</td><td>C6h</td><td>No</td><td>Foo Directive Receive</td><td>4.4</td></tr>
 </table>
 
 
@@ -1322,7 +1322,78 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 66: Foo Overview</h3>
+<h3>Figure 66: Directive Types</h3>
+<p>Subject: other, name: Directive Types. Shape: value.</p>
+
+
+<table>
+<tr><th>directive</th><th>directive_type_value</th><th>reference</th></tr>
+<tr><td>Foo</td><td>00h</td><td>6.1</td></tr><tr><td>Bar</td><td>01h</td><td>6.2</td></tr>
+</table>
+
+
+
+<h3>Figure 67: Bar - Directive Operations</h3>
+<p>Subject: other, name: Bar - Directive Operations. Shape: value.</p>
+
+
+<table>
+<tr><th>directive_command</th><th>directive_operation_name</th><th>directive_operation_value</th><th>reference</th></tr>
+<tr><td>Foo Directive Receive</td><td>Bar Report</td><td>01h</td><td>6.2.1</td></tr><tr><td>Foo Directive Receive</td><td>Reserved</td><td>All other values</td><td></td></tr><tr><td>Foo Directive Send</td><td>Bar Reset</td><td>01h</td><td>6.2.2</td></tr>
+</table>
+
+
+
+<h3>Figure 68: Bar Reset - Command Dword 12</h3>
+<p>Subject: command_dword, name: Bar Reset, lower: 12, upper: 12. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Bar Reset Count</td>
+  <td>BRC</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 69: Bar Directive - Bar Report Data Structure</h3>
+<p>Subject: data_structure, name: Bar Directive - Bar Report. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>01:00</td>
+  <td>Bar Report Length</td>
+  <td>BRL</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 70: Foo Overview</h3>
 <p>Subject: other, name: Foo Overview. Shape: none.</p>
 
 

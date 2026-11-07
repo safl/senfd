@@ -130,6 +130,11 @@ def shape_of(columns: List[str]) -> Optional[str]:
         return "requirement"
     if "name" in columns and "description" in columns:
         return "value"
+    # A value with a name, as "Directive Operation Value" and "... Name"
+    if any(c.endswith("_value") for c in columns) and any(
+        c.endswith("_name") or c == "directive" for c in columns
+    ):
+        return "value"
     return None
 
 

@@ -130,3 +130,16 @@ def test_the_merged_specification_is_written_by_the_command_line(tmp_path, monke
         (tmp_path / "merged.spec.document.json").read_text(encoding="utf-8")
     )
     assert "foobar" in merged["command_sets"]
+
+
+def test_a_directive_operation_is_an_operation_of_its_command(tmp_path):
+    spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
+    commands = spec.command_sets["admin"].commands
+
+    (reset,) = commands["foo_directive_send"].operations
+    assert (reset.name, reset.selectors) == ("Bar Reset", {"DTYPE": 1, "DOPER": 1})
+    assert [(d.lower, d.fields[1].acronym) for d in reset.sqe] == [(12, "BRC")]
+
+    (report,) = commands["foo_directive_receive"].operations
+    assert report.structures == ["Bar Directive - Bar Report"]
+    assert "bar_reset" not in spec.dwords

@@ -1156,6 +1156,74 @@ caption {
   
 </tr>
 
+<tr>
+  
+  <td>
+    0000 10b
+    
+  </td>
+  
+  <td>
+    01b
+    
+  </td>
+  
+  <td>
+    C5h
+    
+  </td>
+  
+  <td>
+    No
+    
+  </td>
+  
+  <td>
+    Foo Directive Send
+    
+  </td>
+  
+  <td>
+    4.3
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    0000 10b
+    
+  </td>
+  
+  <td>
+    10b
+    
+  </td>
+  
+  <td>
+    C6h
+    
+  </td>
+  
+  <td>
+    No
+    
+  </td>
+  
+  <td>
+    Foo Directive Receive
+    
+  </td>
+  
+  <td>
+    4.4
+    
+  </td>
+  
+</tr>
+
 </table>
 
 </figure>
@@ -4701,19 +4769,349 @@ caption {
 </figure>
 
 <figure>
-<figcaption>Figure 66: Foo Overview</figcaption>
+<figcaption>Figure 66: Directive Types</figcaption>
 
 <table>
 
 <tr>
   
   <td>
-    Figure 66: Foo Overview
+    Figure 66: Directive Types
     
   </td>
   
   <td>
-    Figure 66: Foo Overview
+    Figure 66: Directive Types
+    
+  </td>
+  
+  <td>
+    Figure 66: Directive Types
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Directive
+    
+  </td>
+  
+  <td>
+    Directive Type Value
+    
+  </td>
+  
+  <td>
+    Reference
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Foo
+    
+  </td>
+  
+  <td>
+    00h
+    
+  </td>
+  
+  <td>
+    6.1
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Bar
+    
+  </td>
+  
+  <td>
+    01h
+    
+  </td>
+  
+  <td>
+    6.2
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 67: Bar – Directive Operations</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 67: Bar – Directive Operations
+    
+  </td>
+  
+  <td>
+    Figure 67: Bar – Directive Operations
+    
+  </td>
+  
+  <td>
+    Figure 67: Bar – Directive Operations
+    
+  </td>
+  
+  <td>
+    Figure 67: Bar – Directive Operations
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Directive Command
+    
+  </td>
+  
+  <td>
+    Directive Operation Name
+    
+  </td>
+  
+  <td>
+    Directive Operation Value
+    
+  </td>
+  
+  <td>
+    Reference
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Foo Directive Receive
+    
+  </td>
+  
+  <td>
+    Bar Report
+    
+  </td>
+  
+  <td>
+    01h
+    
+  </td>
+  
+  <td>
+    6.2.1
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Foo Directive Receive
+    
+  </td>
+  
+  <td>
+    Reserved
+    
+  </td>
+  
+  <td>
+    All other values
+    
+  </td>
+  
+  <td>
+    
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Foo Directive Send
+    
+  </td>
+  
+  <td>
+    Bar Reset
+    
+  </td>
+  
+  <td>
+    01h
+    
+  </td>
+  
+  <td>
+    6.2.2
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 68: Bar Reset – Command Dword 12</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 68: Bar Reset – Command Dword 12
+    
+  </td>
+  
+  <td>
+    Figure 68: Bar Reset – Command Dword 12
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Bits
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    31:16
+    
+  </td>
+  
+  <td>
+    Reserved
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    15:00
+    
+  </td>
+  
+  <td>
+    Bar Reset Count (BRC)
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 69: Bar Directive – Bar Report Data Structure</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 69: Bar Directive – Bar Report Data Structure
+    
+  </td>
+  
+  <td>
+    Figure 69: Bar Directive – Bar Report Data Structure
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Bytes
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    01:00
+    
+  </td>
+  
+  <td>
+    Bar Report Length (BRL)
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 70: Foo Overview</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 70: Foo Overview
+    
+  </td>
+  
+  <td>
+    Figure 70: Foo Overview
     
   </td>
   
@@ -4752,7 +5150,7 @@ caption {
 </figure>
 
 <figure>
-<figcaption>Figure 67: Foo Architecture</figcaption>
+<figcaption>Figure 71: Foo Architecture</figcaption>
 
 <table>
 

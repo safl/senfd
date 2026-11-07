@@ -127,6 +127,17 @@ def command(
         lines += lines_of_dwords(cmd.sqe, "cdw", dword, verbose)
         if dword is None:
             lines += lines_of_dwords(cmd.cqe, "cqe dw", None, verbose)
+        for operation in cmd.operations:
+            selectors = " ".join(
+                f"{k}={v:02X}h" for k, v in operation.selectors.items()
+            )
+            lines.append(
+                f"operation {operation.name}, {selectors} [{cite(operation.source)}]"
+            )
+            lines += lines_of_dwords(operation.sqe, "cdw", dword, verbose)
+            if dword is None:
+                lines += lines_of_dwords(operation.cqe, "cqe dw", None, verbose)
+                lines += [f"  returns {name}" for name in operation.structures]
     return lines or [f"No command '{name}'"]
 
 

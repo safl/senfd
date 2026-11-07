@@ -62,3 +62,11 @@ def test_a_source_is_cited_by_the_short_name_of_its_document():
 def test_the_command_line_prints_the_answer(spec_path, capsys):
     assert senfd.query.main(["--spec", str(spec_path), "command", "ding", "10"]) == 0
     assert "Foo Count (FCNT)" in capsys.readouterr().out
+
+
+def test_a_command_has_its_operations_with_their_selectors(spec):
+    lines = senfd.query.command(spec, "foo directive send")
+    assert "operation Bar Reset, DTYPE=01h DOPER=01h [example, Figure" in "\n".join(
+        lines
+    )
+    assert "  15:00 Bar Reset Count (BRC)" in lines
