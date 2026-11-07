@@ -24,7 +24,8 @@ def header(tmp_path):
 def test_a_command_is_a_struct_of_its_dwords_with_its_masks(header):
     text, _ = header
 
-    assert "#define FOO_SPEC_FOOBAR_DING_OPCODE 0x01" in text
+    assert "enum foo_spec_foobar_opcode {" in text
+    assert "\tFOO_SPEC_FOOBAR_DING_OPCODE = 0x1, ///< Ding (example" in text
     assert "struct foo_spec_foobar_ding {" in text
     # A pair of dwords with a field across them is one member of 64 bits
     assert (
@@ -164,3 +165,23 @@ def test_only_the_structures_asked_for_are_written(tmp_path):
     options["structures"] = "none"
     (path,) = SpecHeaders(tmp_path, options).generate().headers
     assert "struct __attribute__((packed))" not in path.read_text(encoding="utf-8")
+
+
+def test_the_identifiers_and_status_codes_are_enums(structures):
+    assert "enum foo_spec_feature_identifier {" in structures
+    assert "\tFOO_SPEC_FEATURE_FOO_CONFIG = 0xc0, ///< Foo Config (example" in (
+        structures
+    )
+    assert "enum foo_spec_log_page_identifier {" in structures
+    assert "\tFOO_SPEC_LOG_PAGE_FOO_EVENTS = 0xc1," in structures
+    # The status codes by the document and the type of status they are of
+    assert "enum foo_spec_example_generic_command_status {" in structures
+    assert "\tFOO_SPEC_EXAMPLE_GENERIC_COMMAND_STATUS_FOO_INVALID = 0xc0," in structures
+
+
+def test_an_enum_names_a_constant_given_again_by_its_value():
+    from senfd.yace_generator import enum_lines
+
+    lines = enum_lines("e", "E", [("A", 1, "a"), ("A", 1, "a"), ("A", 2, "b")])
+    assert lines[4:6] == ["\tA = 0x1, ///< a", "\tA_2H = 0x2, ///< b"]
+    assert enum_lines("e", "E", []) == []
