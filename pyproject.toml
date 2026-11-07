@@ -27,6 +27,10 @@ all = ["senfd[dev]"]
 senfd = "senfd.cli:main"
 senfd-query = "senfd.query:main"
 senfd-mcp = "senfd.mcp_server:main"
+senfd-header = "senfd.yace_generator:main"
+
+[project.entry-points."yace.generators"]
+senfd = "senfd.yace_generator:SpecHeaders"
 
 [build-system]
 requires = ["setuptools>=42", "wheel"]
