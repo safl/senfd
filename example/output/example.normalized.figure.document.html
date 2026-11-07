@@ -512,14 +512,14 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 28: Foobar Command Set Specification Version Descriptor Field Values</h3>
-<p>Subject: other, name: Foobar Command Set Specification Version Descriptor Field Values. Shape: none.</p>
-
+<p>Subject: other, name: Foobar Command Set Specification Version Descriptor Field Values. Shape: table.</p>
 
 
 <table>
-<tr><th>Specification Versions</th><th>MJR Field</th><th>MNR Field</th><th>TER Field</th></tr>
+<tr><th>specification_versions</th><th>mjr_field</th><th>mnr_field</th><th>ter_field</th></tr>
 <tr><td>1.0</td><td>1h</td><td>0h</td><td>0h</td></tr><tr><td>1.1</td><td>1h</td><td>1h</td><td>0h</td></tr>
 </table>
+
 
 
 <h3>Figure 29: Foo Statistics Data Structure</h3>
@@ -935,14 +935,14 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 48: Foo Property Definition</h3>
-<p>Subject: other, name: Foo Property Definition. Shape: none.</p>
-
+<p>Subject: other, name: Foo Property Definition. Shape: table.</p>
 
 
 <table>
-<tr><th>Offset (OFST)</th><th>Size (in bytes)</th><th>I/O Controller</th><th>Administrative Controller</th><th>Discovery Controller</th><th>Name</th></tr>
-<tr><td>00h</td><td>8</td><td>M</td><td>M</td><td>M</td><td>Foo Capabilities (FCAP)</td></tr>
+<tr><th>offset_ofst</th><th>size_in_bytes</th><th>i_o_controller</th><th>administrative_controller</th><th>discovery_controller</th><th>name</th><th>acronym</th></tr>
+<tr><td>00h</td><td>8</td><td>M</td><td>M</td><td>M</td><td>Foo Capabilities</td><td>FCAP</td></tr>
 </table>
+
 
 
 <h3>Figure 49: Foo Event Data Format (Event Type 02h)</h3>
@@ -966,14 +966,14 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 50: RPMB - Foo Write Flow</h3>
-<p>Subject: other, name: RPMB - Foo Write Flow. Shape: none.</p>
-
+<p>Subject: other, name: RPMB - Foo Write Flow. Shape: table.</p>
 
 
 <table>
-<tr><th>Command</th><th>Bytes in Command</th><th>Field Name</th><th>Value</th><th>Objective</th></tr>
+<tr><th>command</th><th>bytes_in_command</th><th>name</th><th>value</th><th>objective</th></tr>
 <tr><td>Foo Set</td><td>511:00</td><td>Foo Key</td><td>1234h</td><td>Write foo</td></tr>
 </table>
+
 
 
 <h3>Figure 51: Foo State Transition Conditions</h3>
@@ -1405,14 +1405,14 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 71: Foo Overview</h3>
-<p>Subject: other, name: Foo Overview. Shape: none.</p>
-
+<p>Subject: other, name: Foo Overview. Shape: table.</p>
 
 
 <table>
-<tr><th>Name</th><th>Purpose</th></tr>
+<tr><th>name</th><th>purpose</th></tr>
 <tr><td>Foo</td><td>Bar</td></tr>
 </table>
+
 
 
 

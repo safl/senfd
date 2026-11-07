@@ -363,6 +363,10 @@ def parse_entries(
                 if acronym:
                     entry["acronym"] = acronym
                 entry["description"] = normalize_text(rest)
+        elif entry.get("name") and "acronym" not in entry:
+            name, acronym, _ = parse_field_description(values.texts["name"])
+            if name and acronym:
+                entry["name"], entry["acronym"] = name, acronym
         if section:
             entry["section"] = section
         entries.append(entry)
@@ -417,12 +421,27 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         normalized.entries = parse_entries(
             body, grid, diagnostics, headers, normalized.notes
         )
+    elif is_named_header(headers):
+        # A table of no shape senfd knows, as the steps of a flow or the fields
+        # of version descriptors, is entries by the names of its columns
+        normalized.shape = "table"
+        normalized.entries = parse_entries(
+            body, grid, diagnostics, headers, normalized.notes
+        )
     else:
         normalized.rows = [
             [normalize_text(c.text) for c in row.cells if c.merged != "left"]
             for row in body
         ]
     return normalized
+
+
+def is_named_header(headers: List[str]) -> bool:
+    """Whether 'headers' name columns, rather than number them as a diagram of
+    bits does, or leave them empty"""
+
+    named = {h for h in headers if re.search(r"[A-Za-z]{2}", h)}
+    return len(named) >= 2 and len(named) * 2 >= len(set(headers))
 
 
 class FromFigureDocument(Converter):
