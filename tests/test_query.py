@@ -109,7 +109,7 @@ def test_a_search_finds_commands_features_log_pages_and_structures(spec):
     assert any(line.startswith("structure Foo Statistics") for line in lines)
     assert lines[-1].startswith("... and ")
     assert any(
-        line.startswith("command Foo Get")
+        line.startswith("command Foo Get, opcode ")
         for line in senfd.query.search(spec, "foo get")
     )
     assert senfd.query.search(spec, "") == ["Give an acronym or a name to search for"]

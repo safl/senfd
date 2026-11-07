@@ -332,7 +332,9 @@ def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
     for command_set in spec.command_sets.values():
         for cmd in command_set.commands.values():
             if needle in cmd.name.lower():
-                hits.append(f"command {cmd.name} [{cite(cmd.source)}]")
+                hits.append(
+                    f"command {cmd.name}, opcode {cmd.opcode:02X}h [{cite(cmd.source)}]"
+                )
             for d in cmd.sqe:
                 fields(f"{cmd.name} {dword_label(d, 'cdw')}", d.fields)
             for d in cmd.cqe:
