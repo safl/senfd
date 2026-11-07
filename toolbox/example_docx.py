@@ -566,6 +566,21 @@ FIGURES = [
         "Foo Joining Layout",
         {"header": FIELD, "rows": [("03:00", "Foo Second (FSND)")]},
     ),
+    # A union: an address of the same bytes either IPv4, with the bytes after
+    # it reserved, or IPv6
+    (
+        "Foo Address Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("00", "Foo Address Family (FAF)"),
+                ("01:01", "Reserved"),
+                ("17:02", "Foo IPv6 Address (FIP6)"),
+                ("05:02", "Foo IPv4 Address (FIP4)"),
+                ("17:06", "Reserved"),
+            ],
+        },
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",

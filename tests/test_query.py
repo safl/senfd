@@ -176,3 +176,9 @@ def test_the_errata_say_where_they_are(spec):
         for line in lines
     )
     assert senfd.query.errata(spec, "nothing") == ["No errata"]
+
+
+def test_the_alternatives_of_a_union_say_so(spec):
+    lines = senfd.query.structure(spec, "Foo Address")
+    assert "  17:02 Foo IPv6 Address (FIP6) [union 0, alternative 0]" in lines
+    assert "  05:02 Foo IPv4 Address (FIP4) [union 0, alternative 1]" in lines

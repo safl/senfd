@@ -89,6 +89,30 @@
                     },
                     "title": "Fields",
                     "type": "array"
+                },
+                "union": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Union"
+                },
+                "alternative": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Alternative"
                 }
             },
             "required": [
