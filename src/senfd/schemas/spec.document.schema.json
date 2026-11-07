@@ -311,6 +311,34 @@
             "title": "Entry",
             "type": "object"
         },
+        "Erratum": {
+            "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
+            "properties": {
+                "code": {
+                    "title": "Code",
+                    "type": "string"
+                },
+                "message": {
+                    "title": "Message",
+                    "type": "string"
+                },
+                "found": {
+                    "default": "",
+                    "title": "Found",
+                    "type": "string"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "code",
+                "message",
+                "source"
+            ],
+            "title": "Erratum",
+            "type": "object"
+        },
         "Feature": {
             "description": "A feature, by its identifier, and the dwords of the commands setting and\ngetting it that are described for it",
             "properties": {
@@ -684,6 +712,13 @@
                 "$ref": "#/$defs/Diagnostic"
             },
             "title": "Diagnostics",
+            "type": "array"
+        },
+        "errata": {
+            "items": {
+                "$ref": "#/$defs/Erratum"
+            },
+            "title": "Errata",
             "type": "array"
         }
     },

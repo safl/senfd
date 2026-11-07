@@ -64,6 +64,12 @@ section, the figure and the page, as ``[Base 2.2, 5.1.10, Figure 190, page
    senfd-query structure "Controller Status"
    senfd-query search FUA
    senfd-query section 5.1.25
+   senfd-query errata Base
+
+A value that is not what its kind must be, as a range beyond the dwords it is
+of or an acronym that is not one, is left out of the model and is an erratum,
+as are bits of a command's dwords that no figure gives a field; ``errata``
+lists them, each with where it is, for the documents to be corrected.
 
 ``--spec`` or the environment variable ``SENFD_SPEC`` points at another
 merged model, and ``--verbose`` gives the descriptions too.

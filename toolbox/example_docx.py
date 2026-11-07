@@ -58,6 +58,10 @@ FIGURES = [
                 ("0000 00b", "01b", "01h", "Ding", "3.1"),
                 ("0000 01b", "10b", "02h", "Dong", "3.2"),
                 ("0000 10b", "00b", "04h", "Ring1", "3.3"),
+                # Errata: an opcode that is not a value, and the ranges of the
+                # reserved opcodes, which are none
+                ("0000 11b", "00b", "x", "Zing", "3.4"),
+                ("", "", "80h to FFh", "Reserved", ""),
             ],
         },
     ),
@@ -113,6 +117,16 @@ FIGURES = [
     ),
     (f"Dong {DASH} Data Buffer", {"header": FIELD, "rows": [("511:00", "Bar Data")]}),
     (f"Dong {DASH} Data", {"header": FIELD, "rows": [("03:00", "Bar Size (BSZ)")]}),
+    # Errata: a field beyond the bits of its dwords, an acronym that is not
+    # one, and bits of no field
+    (
+        f"Ring {DASH} Command Dword 14 and Command Dword 15",
+        dword(("64:00", "Ring Tail (RTL)")),
+    ),
+    (
+        f"Ring {DASH} Command Dword 11",
+        dword(("31:16", "Ring Mode (R MODE)")),
+    ),
     (
         f"Ring {DASH} Command Dword 10",
         dword(("31:00", "Ring Count (RCNT): How many rings.")),

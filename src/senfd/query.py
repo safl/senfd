@@ -327,6 +327,28 @@ def section(spec: SpecDocument, key: str) -> List[str]:
     return head + lines if lines else [f"No section '{key}'"]
 
 
+def errata(spec: SpecDocument, document: str = "") -> List[str]:
+    """The errata of the specification, of the documents whose short name has
+    'document' in it, by document and section, each with where it is"""
+
+    found = [
+        e
+        for e in spec.errata
+        if document.lower() in document_name(e.source.document).lower()
+    ]
+    found.sort(
+        key=lambda e: (
+            e.source.document,
+            [int(p) if p.isdigit() else p for p in (e.source.section or "").split(".")],
+            e.source.figure_nr,
+        )
+    )
+    lines = []
+    for e in found:
+        lines.append(f"{cite(e.source)}: {e.message}")
+    return lines or ["No errata"]
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Answer questions about the specification from its model"
@@ -356,6 +378,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     sub.add_parser(
         "section", help="What a section describes, by number or title"
     ).add_argument("key")
+    sub.add_parser(
+        "errata", help="Candidate errata of the documents, with where they are"
+    ).add_argument("document", nargs="?", default="")
     sub.add_parser("search", help="Fields and things by acronym or name").add_argument(
         "text"
     )
@@ -372,6 +397,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         lines = structure(spec, args.name, args.verbose)
     elif args.what == "section":
         lines = section(spec, args.key)
+    elif args.what == "errata":
+        lines = errata(spec, args.document)
     else:
         lines = search(spec, args.text)
     print("\n".join(lines))
