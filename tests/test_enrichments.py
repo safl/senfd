@@ -1,6 +1,7 @@
 import re
 
 from senfd.documents.enriched import FromFigureDocument
+from senfd.utils import pascal_to_snake
 
 
 def test_enriching_classes_has_regex_grid():
@@ -95,10 +96,22 @@ def test_a_figure_matching_several_categories_is_left_uncategorized(
     from senfd.documents.enriched import ExampleFigure
 
     # The example figure takes the data pointers too, which their own figure has
-    monkeypatch.setattr(ExampleFigure, "REGEX_FIGURE_DESCRIPTION", r".*Data Pointer$")
+    monkeypatch.setattr(ExampleFigure, "REGEX_FIGURE_DESCRIPTION", r".*\bData Pointer$")
     document, errors = enriched_example(tmp_path)
 
     multiple = [str(e) for e in errors if "Matched on multiple" in str(e)]
     assert len(multiple) == 2
     assert all("CommandSqeDataPointerFigure, ExampleFigure" in e for e in multiple)
     assert not document["command_sqe_data_pointer"]
+
+
+def test_every_category_has_a_figure_of_its_own_in_the_example(tmp_path):
+    """senfd is tested on the example alone, so a category it has no figure
+    of is a category nothing tests"""
+
+    document, errors = enriched_example(tmp_path)
+
+    assert not [e for e in errors if "Matched on multiple" in str(e)]
+    for cls in FromFigureDocument.get_figure_enriching_classes():
+        key = pascal_to_snake(cls.__name__).replace("_figure", "")
+        assert document[key], f"example/example.docx has no {cls.__name__}"
