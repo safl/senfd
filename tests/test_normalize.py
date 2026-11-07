@@ -369,3 +369,15 @@ def test_a_hyphen_that_does_not_break_is_a_hyphen(normalized):
 
     (field,) = figures["Foo Numbered Layout"]["layout"]["fields"]
     assert field["name"] == "Foo-Bar Number"
+
+
+def test_the_normalising_module_is_imported_on_its_own():
+    """As a script or a test of it would, with nothing of senfd imported before"""
+
+    import subprocess
+    import sys
+
+    proc = subprocess.run(
+        [sys.executable, "-c", "import senfd.normalize"], capture_output=True, text=True
+    )
+    assert proc.returncode == 0, proc.stderr
