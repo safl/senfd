@@ -1,5 +1,5 @@
 PROJECT_NAME:=senfd
-PROJECT_VERSION:=0.2.3
+PROJECT_VERSION:=$(shell sed -n 's/^__version__ = "\(.*\)"/\1/p' src/senfd/__init__.py)
 
 BROWSER:=chromium-browser
 

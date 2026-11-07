@@ -15,3 +15,14 @@ def test_module(tmp_path):
 
         # There are are bunch of parsing errors, thus there should be errors
         assert errors
+
+
+def test_the_package_version_is_that_of_the_module():
+    """pyproject.toml takes the version from senfd.__version__, so a bump sets it
+    in one place"""
+
+    from importlib.metadata import version
+
+    import senfd
+
+    assert version("senfd") == senfd.__version__
