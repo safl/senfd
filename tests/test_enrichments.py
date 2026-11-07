@@ -85,3 +85,20 @@ def test_a_data_structure_of_a_format_is_a_data_structure():
         "Foo Event Data Format (Event Type 02h)",
         re.I,
     )
+
+
+def test_a_figure_matching_several_categories_is_left_uncategorized(
+    tmp_path, monkeypatch
+):
+    """Neither category is chosen, and the error names both"""
+
+    from senfd.documents.enriched import ExampleFigure
+
+    # The example figure takes the data pointers too, which their own figure has
+    monkeypatch.setattr(ExampleFigure, "REGEX_FIGURE_DESCRIPTION", r".*Data Pointer$")
+    document, errors = enriched_example(tmp_path)
+
+    multiple = [str(e) for e in errors if "Matched on multiple" in str(e)]
+    assert len(multiple) == 2
+    assert all("CommandSqeDataPointerFigure, ExampleFigure" in e for e in multiple)
+    assert not document["command_sqe_data_pointer"]
