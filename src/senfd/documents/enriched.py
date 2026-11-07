@@ -560,7 +560,7 @@ class OffsetFigure(EnrichedFigure):
 
 class ParameterFieldFigure(EnrichedFigure):
     REGEX_FIGURE_DESCRIPTION: ClassVar[str] = (
-        r"^.*((Specific|Parameter|Flag|Field)s? ?){2,3}$"
+        r"^(?!.*Data.Structure).*((Specific|Parameter|Flag|Field)s? ?){2,3}$"
     )
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_RANGE,
@@ -618,7 +618,7 @@ class PropertyDefinitionFigure(EnrichedFigure):
 
 
 class FormatFigure(EnrichedFigure):
-    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^.*\s(Format\b).*$"
+    REGEX_FIGURE_DESCRIPTION: ClassVar[str] = r"^(?!.*Data.Structure).*\s(Format\b).*$"
     REGEX_GRID: ClassVar[List[Tuple]] = [
         REGEX_GRID_RANGE,
         REGEX_GRID_FIELD_DESCRIPTION,

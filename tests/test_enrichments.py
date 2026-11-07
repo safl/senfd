@@ -58,3 +58,30 @@ def test_an_example_of_a_log_page_is_an_example():
     assert not re.match(LogPageFigure.REGEX_FIGURE_DESCRIPTION, caption, re.I)
     assert re.match(ExampleFigure.REGEX_FIGURE_DESCRIPTION, caption, re.I)
     assert re.match(LogPageFigure.REGEX_FIGURE_DESCRIPTION, "Foo Log Page", re.I)
+
+
+def test_a_data_structure_of_a_format_is_a_data_structure():
+    """A data structure named after a format, or one ending in the specific
+    fields of a command set, is a data structure"""
+
+    from senfd.documents.enriched import (
+        DataStructureFigure,
+        FormatFigure,
+        ParameterFieldFigure,
+    )
+
+    for caption, other in [
+        ("FB Format Data Structure", FormatFigure),
+        ("Foo Format Data Structure, Foo Command Set Specific", FormatFigure),
+        (
+            "Identify - Identify Foo data structure, Foo Command Set Specific Fields",
+            ParameterFieldFigure,
+        ),
+    ]:
+        assert re.match(DataStructureFigure.REGEX_FIGURE_DESCRIPTION, caption, re.I)
+        assert not re.match(other.REGEX_FIGURE_DESCRIPTION, caption, re.I), caption
+    assert re.match(
+        FormatFigure.REGEX_FIGURE_DESCRIPTION,
+        "Foo Event Data Format (Event Type 02h)",
+        re.I,
+    )
