@@ -66,7 +66,7 @@ TYPES = {1: "uint8_t", 2: "uint16_t", 4: "uint32_t", 8: "uint64_t"}
 KINDS = ("data_structure", "log_page")
 
 # A field named by its index among fields alike, as "Power State 0 Descriptor"
-INDEXED = re.compile(r"^(?P<head>.+?)\s+(?P<index>\d+)(?P<tail>\s+\D.*)?$")
+INDEXED = re.compile(r"^(?P<head>.+?)\s+(?P<index>\d[\d,]*)(?P<tail>\s+\D.*)?$")
 
 
 def identifier(text: str) -> str:
@@ -209,6 +209,13 @@ class Member:
     size: int = 0
 
 
+def index_of(field: Bits) -> Optional[int]:
+    """The index 'field' is named by, as 65535 of "Stream Identifier 65,535" """
+
+    match = INDEXED.match(field.name or "")
+    return int(match["index"].replace(",", "")) if match else None
+
+
 def base_of(field: Bits) -> Optional[str]:
     """The name of 'field' without its index, if it is named by one"""
 
@@ -261,12 +268,9 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
     index = 0
     while index < len(fields):
         f = fields[index]
-        indexed = INDEXED.match(f.name or "")
-        base = (
-            f"{indexed['head']}{indexed['tail'] or ''}"
-            if indexed and indexed["index"] == "0"
-            else None
-        )
+        # A run is numbered from 0 or from 1, as the Result Data Structures
+        first = index_of(f)
+        base = base_of(f) if first in (0, 1) else None
         if f.lower is None or f.upper is None:
             ctype, _ = array(base or "", None) if base else ("uint8_t", None)
             what = base or f.name or "data"
@@ -285,7 +289,12 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
             gap = f.lower - offset
             members.append(
                 Member(
-                    named(f"rsvd{offset}", offset), "uint8_t", gap, offset, "Reserved"
+                    named(f"rsvd{offset}", offset),
+                    "uint8_t",
+                    None if gap == 1 else gap,
+                    offset,
+                    "Reserved",
+                    size=gap,
                 )
             )
             offset = f.lower
@@ -297,17 +306,21 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
             following = index + 1
             while following < len(fields):
                 g = fields[following]
-                match = INDEXED.match(g.name or "")
+                at = index_of(g)
                 if (
-                    not match
-                    or f"{match['head']}{match['tail'] or ''}" != base
-                    or int(match["index"]) < length
-                    or g.lower != f.lower + int(match["index"]) * size
+                    at is None
+                    or base_of(g) != base
+                    or at - first < length
+                    or g.lower != f.lower + (at - first) * size
                     or g.upper != g.lower + size - 1
                 ):
                     break
-                length = int(match["index"]) + 1
+                length = at - first + 1
                 following += 1
+            # Named as the acronym of the first is without its index, as PSD
+            # of PSD0, else by the name without it
+            stripped = re.sub(rf"{first}$", "", f.acronym or "")
+            run_name = identifier(stripped).lower() if stripped else alias(base)
             rest = fields[following] if following < len(fields) else None
             if rest is not None and rest.lower is None:
                 # Entries alternating with others, as a Zone Descriptor with
@@ -315,12 +328,9 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
                 bases = list(dict.fromkeys(filter(None, map(base_of, fields[index:]))))
                 ctype, _ = array(base, size) if bases == [base] else ("uint8_t", 1)
                 what = " and ".join(bases)
-                members.append(
-                    Member(named(alias(base), offset), ctype, 0, offset, what)
-                )
+                members.append(Member(named(run_name, offset), ctype, 0, offset, what))
                 left += [
-                    f"{g.name or g.range}: at an offset the data gives, in "
-                    f"'{alias(base)}'"
+                    f"{g.name or g.range}: at an offset the data gives, in '{run_name}'"
                     for g in fields[following + 1 :]
                     if g.name
                 ]
@@ -329,7 +339,7 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
                 ctype, per = array(base, size)
                 members.append(
                     Member(
-                        named(alias(base), offset),
+                        named(run_name, offset),
                         ctype,
                         length * (per or 1),
                         offset,
@@ -604,6 +614,7 @@ class SpecHeaders:
                 constants,
             )
         statuses: Dict[Tuple[str, str], List[Tuple[str, int, str]]] = {}
+        described: Dict[Tuple[str, str], str] = {}
         for values in spec.values:
             if (
                 values.kind != "status_values"
@@ -612,8 +623,24 @@ class SpecHeaders:
             ):
                 continue
             doc = document_key(values.source.document)
-            key = (doc, values.qualifier)
-            name = identifier(f"{stem}_{doc}_{alias(values.qualifier)}_status")
+            # A table of the types of status is of no type, and tables of one
+            # type for each of scopes, as the I/O and the Fabrics commands, give
+            # one value different meanings
+            # A scope naming a command set names that of the document
+            scope = values.scope
+            if scope and re.search(r"Command Set( Specific)?$", scope):
+                scope = None
+            what = alias(values.qualifier)
+            if what != "status_code_type":
+                what += f"_{alias(scope)}_status" if scope else "_status"
+            key = (doc, what)
+            name = identifier(f"{stem}_{doc}_{what}")
+            described[key] = (
+                "The types of status"
+                if what == "status_code_type"
+                else f"The status codes of the type {values.qualifier}"
+                + (f", of {scope}" if scope else "")
+            )
             for entry in values.entries:
                 value = number_of(entry)
                 if value is None or not entry.name or alias(entry.name) == "reserved":
@@ -625,11 +652,9 @@ class SpecHeaders:
                         f"{entry.name} ({senfd.query.cite(values.source)})",
                     )
                 )
-        for (doc, qualifier), constants in statuses.items():
+        for (doc, what), constants in statuses.items():
             lines += enum_lines(
-                f"{stem}_{doc}_{alias(qualifier)}_status",
-                f"The status codes of the type {qualifier}",
-                constants,
+                f"{stem}_{doc}_{what}", described[(doc, what)], constants
             )
         return lines
 

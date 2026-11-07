@@ -387,6 +387,17 @@ FIGURES = [
         {"header": ("Value", "Description"), "rows": [("00h", "Foo Ready")]},
     ),
     (
+        f"Status Code {DASH} Status Code Type Values",
+        {
+            "header": ("Value", "Description"),
+            "rows": [("0h", "Generic Command Status"), ("7h", "Vendor Specific")],
+        },
+    ),
+    (
+        f"Status Code {DASH} Generic Command Status Values, Foo Commands",
+        {"header": ("Value", "Description"), "rows": [("C0h", "Foo Clash")]},
+    ),
+    (
         f"Status Code {DASH} Foo Error Values",
         {"header": ("Value", "Description"), "rows": [("01h", "Foo Error")]},
     ),
@@ -694,6 +705,22 @@ FIGURES = [
                 ("47:16", "Foo Entry 0"),
                 ("79:48", "Foo Entry 1"),
                 ("(NFE*32)+15:(NFE*32)-16", "Foo Entry NFE-1"),
+            ],
+        },
+    ),
+    # A run numbered from 1, with the rows between left out, after a byte no
+    # field has
+    (
+        "Foo Results Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("00", "Foo Result Count (FRC)"),
+                ("03:02", "Foo Flags (FFL)"),
+                ("07:04", "Foo Result 1 (FR1)"),
+                ("11:08", "Foo Result 2 (FR2)"),
+                ("...", ""),
+                ("23:20", "Foo Result 5 (FR5)"),
             ],
         },
     ),
