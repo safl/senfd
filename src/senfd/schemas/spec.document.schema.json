@@ -122,6 +122,13 @@
                     "title": "Cqe",
                     "type": "array"
                 },
+                "operations": {
+                    "items": {
+                        "$ref": "#/$defs/Operation"
+                    },
+                    "title": "Operations",
+                    "type": "array"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"
@@ -375,6 +382,52 @@
                 "source"
             ],
             "title": "LogPage",
+            "type": "object"
+        },
+        "Operation": {
+            "description": "What a command does for the values of its selecting fields, as a directive\noperation of Directive Receive by its directive type (DTYPE) and operation\n(DOPER), with the dwords and the structures of that operation",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "selectors": {
+                    "additionalProperties": {
+                        "type": "integer"
+                    },
+                    "title": "Selectors",
+                    "type": "object"
+                },
+                "sqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Sqe",
+                    "type": "array"
+                },
+                "cqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Cqe",
+                    "type": "array"
+                },
+                "structures": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Structures",
+                    "type": "array"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "name",
+                "source"
+            ],
+            "title": "Operation",
             "type": "object"
         },
         "Source": {

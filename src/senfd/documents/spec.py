@@ -60,11 +60,27 @@ class Dwords(BaseModel):
     source: Source
 
 
+class Operation(BaseModel):
+    """
+    What a command does for the values of its selecting fields, as a directive
+    operation of Directive Receive by its directive type (DTYPE) and operation
+    (DOPER), with the dwords and the structures of that operation
+    """
+
+    name: str
+    selectors: Dict[str, int] = Field(default_factory=dict)
+    sqe: List[Dwords] = Field(default_factory=list)
+    cqe: List[Dwords] = Field(default_factory=list)
+    structures: List[str] = Field(default_factory=list)
+    source: Source
+
+
 class Command(BaseModel):
     name: str
     opcode: int
     sqe: List[Dwords] = Field(default_factory=list)
     cqe: List[Dwords] = Field(default_factory=list)
+    operations: List[Operation] = Field(default_factory=list)
     columns: Dict[str, str] = Field(default_factory=dict)
     source: Source
 
@@ -286,9 +302,17 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
 def entry_of(entry: Dict[str, str]) -> Entry:
     """An entry by its value, whichever column holds it"""
 
-    keys = ("value", "cns_value", "identifier", "command", "name")
-    key = next((k for k in keys if entry.get(k)), next(iter(entry), ""))
-    names = [k for k in ("name", "log_page_name", "feature_name") if k != key]
+    keys = ("value", "cns_value", "identifier")
+    key = next(
+        (k for k in keys if entry.get(k)),
+        next(
+            (k for k in entry if k.endswith("_value") and entry[k]),
+            next(
+                (k for k in ("command", "name") if entry.get(k)), next(iter(entry), "")
+            ),
+        ),
+    )
+    names = [k for k in entry if k == "name" or (k.endswith("_name") and k != key)]
     name_key = next((k for k in names if entry.get(k)), None)
     return Entry(
         value=entry.get(key, ""),
@@ -407,6 +431,74 @@ def link_log_pages(document: SpecDocument) -> None:
         )
 
 
+def link_directives(document: SpecDocument) -> None:
+    """
+    The operations of each directive, from the tables of a directive's
+    operations, as operations of the commands sending and receiving them; an
+    operation has the dwords its caption names it by, and the structures named
+    after the directive and the operation
+    """
+
+    types: Dict[str, int] = {}
+    for values in document.values:
+        if not {"directive", "directive_type_value"} <= set(values.columns):
+            continue
+        for entry in values.entries:
+            match = REGEX_HEX.match(entry.value)
+            name = entry.columns.get("directive", "")
+            if match and name:
+                types[alias(name)] = int(match["hex"], 16)
+
+    commands: Dict[str, List[Command]] = {}
+    for command_set in document.command_sets.values():
+        for key, command in command_set.commands.items():
+            commands.setdefault(key, []).append(command)
+
+    for values in document.values:
+        if "directive_operation_value" not in values.columns:
+            continue
+        # "Streams - Directive Operations", "Identify Directive - ..."
+        directive = re.sub(
+            r"(?:\s+Directive)?\s+-\s+Directive Operations$", "", values.name or ""
+        )
+        dtype = types.get(alias(directive))
+        for entry in values.entries:
+            match = REGEX_HEX.match(entry.value)
+            name = entry.name or ""
+            sending = entry.columns.get("directive_command", "")
+            if not match or not name or not sending:
+                continue
+            selectors = {"DOPER": int(match["hex"], 16)}
+            if dtype is not None:
+                selectors = {"DTYPE": dtype, **selectors}
+            operation = Operation(
+                name=name,
+                selectors=selectors,
+                structures=[
+                    s.name
+                    for s in document.structures
+                    if alias(s.name).startswith(alias(directive))
+                    and alias(name) in alias(s.name)
+                ],
+                source=values.source,
+            )
+            for dwords in document.dwords.get(alias(name), []):
+                add_dwords(operation.sqe, dwords)
+            for dwords in document.dwords.get(f"cqe:{alias(name)}", []):
+                add_dwords(operation.cqe, dwords)
+            for command in commands.get(alias(sending), []):
+                command.operations.append(operation)
+
+    for operation in (
+        o
+        for cs in document.command_sets.values()
+        for c in cs.commands.values()
+        for o in c.operations
+    ):
+        document.dwords.pop(alias(operation.name), None)
+        document.dwords.pop(f"cqe:{alias(operation.name)}", None)
+
+
 def merge(documents: List[SpecDocument]) -> SpecDocument:
     """
     One document of 'documents': a command set listed by more than one is one
@@ -453,6 +545,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
 
     link_features(merged)
     link_log_pages(merged)
+    link_directives(merged)
 
     for key, unassigned in merged.dwords.items():
         for d in unassigned:

@@ -132,6 +132,8 @@ FIGURES = [
             "rows": [
                 ("0000 00b", "10b", "C2h", "Yes", "Foo Get", "4.1"),
                 ("0000 01b", "01b", "C1h", "No", "Foo Set", "4.2"),
+                ("0000 10b", "01b", "C5h", "No", "Foo Directive Send", "4.3"),
+                ("0000 10b", "10b", "C6h", "No", "Foo Directive Receive", "4.4"),
             ],
         },
     ),
@@ -458,6 +460,39 @@ FIGURES = [
                 ("00", "0h", "RW", "Bar Enable (BEN): Enables bar."),
             ],
         },
+    ),
+    # Directives: their types, the operations of one, and the dwords and the
+    # structure of its operations
+    (
+        "Directive Types",
+        {
+            "header": ("Directive", "Directive Type Value", "Reference"),
+            "rows": [("Foo", "00h", "6.1"), ("Bar", "01h", "6.2")],
+        },
+    ),
+    (
+        f"Bar {DASH} Directive Operations",
+        {
+            "header": (
+                "Directive Command",
+                "Directive Operation Name",
+                "Directive Operation Value",
+                "Reference",
+            ),
+            "rows": [
+                ("Foo Directive Receive", "Bar Report", "01h", "6.2.1"),
+                ("Foo Directive Receive", "Reserved", "All other values", ""),
+                ("Foo Directive Send", "Bar Reset", "01h", "6.2.2"),
+            ],
+        },
+    ),
+    (
+        f"Bar Reset {DASH} Command Dword 12",
+        dword(("31:16", "Reserved"), ("15:00", "Bar Reset Count (BRC)")),
+    ),
+    (
+        f"Bar Directive {DASH} Bar Report Data Structure",
+        {"header": FIELD, "rows": [("01:00", "Bar Report Length (BRL)")]},
     ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
