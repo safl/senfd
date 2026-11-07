@@ -20,6 +20,7 @@ from senfd.documents.base import Converter, Document, strip_all_suffixes
 from senfd.documents.plain import FigureDocument
 from senfd.errors import Error
 from senfd.normalize import (
+    slug,
     Diagnostic,
     Range,
     Subject,
@@ -68,6 +69,7 @@ class NormalizedFigure(BaseModel):
     columns: List[str] = Field(default_factory=list)
     layout: Optional[Layout] = None
     entries: List[Dict[str, str]] = Field(default_factory=list)
+    notes: List[str] = Field(default_factory=list)
     rows: List[List[str]] = Field(default_factory=list)
 
 
@@ -100,7 +102,30 @@ def header_of(row: Row) -> Tuple[List[str], List[str]]:
         header = normalize_text(cell.text)
         headers.append(header)
         columns.append(normalize_header(header)[0] or f"column{idx}")
+
+    # Headers that differ by a number only, as "Command 1" and "Command 2", are
+    # columns of their own rather than one header with footnote markers
+    for idx, column in enumerate(columns):
+        same = [
+            i
+            for i, c in enumerate(columns)
+            if c == column and headers[i] != headers[idx]
+        ]
+        if same:
+            for i in [idx, *same]:
+                columns[i] = slug(headers[i]) or columns[i]
     return headers, columns
+
+
+REGEX_NOTES = re.compile(r"^notes?\b", flags=re.IGNORECASE)
+REGEX_ELISION = re.compile(r"^(?:\.\.\.|\u2026)$")
+
+
+def is_header_again(texts: List[str], headers: List[str]) -> bool:
+    """Whether a row of 'texts' is the header of 'headers' again, as the
+    documents repeat it after a page break"""
+
+    return [t.lower() for t in texts] == [h.lower() for h in headers]
 
 
 def find_header(
@@ -180,7 +205,10 @@ def values_of(row: Row, grid: List[str]) -> Optional[Values]:
 
 
 def parse_layout(
-    rows: List[Row], grid: List[str], diagnostics: List[Diagnostic]
+    rows: List[Row],
+    grid: List[str],
+    diagnostics: List[Diagnostic],
+    headers: Optional[List[str]] = None,
 ) -> Layout:
     unit = "bits" if "bits" in grid else "bytes"
     text_column = "name" if "name" in grid else "description"
@@ -202,32 +230,41 @@ def parse_layout(
             continue
 
         texts = {c: normalize_text(t) for c, t in values.texts.items()}
-        if [texts.get(c, "") for c in columns] == [
-            normalize_header(c)[0] and c for c in columns
-        ] or texts.get(unit, "").lower() == unit:
+        if (
+            headers
+            and is_header_again([normalize_text(c.text) for c in row.cells], headers)
+        ) or texts.get(unit, "").lower() in ("bit", "bits", "byte", "bytes"):
             continue  # The header again, as after a page break
 
-        # A row of one cell, or of one text, heads the rows below it
-        if values.spans == 1 or len(set(t for t in texts.values() if t)) == 1:
-            section = next((t for t in texts.values() if t), None)
+        filled = [t for t in texts.values() if t]
+        if filled and all(REGEX_ELISION.match(t) for t in filled):
+            continue  # Entries left out, as between the first and the last
+
+        # A row of one cell spanning the table is its notes, or heads the rows
+        # below it; so does a row of one text
+        if values.spans == 1 or len(set(filled)) == 1:
+            text = filled[0] if filled else None
+            if text and REGEX_NOTES.match(text):
+                layout.notes.append(text)
+            else:
+                section = text
             continue
 
         if all(cell.merged == "up" for cell in values.cells.get(unit, [])):
-            # The range of the row above, going on; its description continues
+            # The range of the row above, going on; its description continues,
+            # unless that is merged with the row above too
+            text_cells = values.cells.get(text_column, [])
             more = values.texts.get(text_column, "")
-            if layout.fields and more:
+            if layout.fields and more and not all(c.merged == "up" for c in text_cells):
                 field = layout.fields[-1]
                 field.description = "\n".join(p for p in [field.description, more] if p)
             continue
 
-        # A header spanning two cells of a row, the range and a detail of it
+        # A header spanning two cells of a row, the range and a detail of it;
+        # a range of "NOTE 1" is one a note gives, and the row a field
         range_cells = values.cells.get(unit, [])
         range_text = range_cells[0].text if range_cells else values.texts.get(unit, "")
         detail = " ".join(normalize_text(c.text) for c in range_cells[1:]).strip()
-
-        if re.match(r"^notes?\b", normalize_text(range_text), flags=re.IGNORECASE):
-            layout.notes.append(normalize_text(values.texts.get(text_column, "")))
-            continue
 
         rng = parse_range(unit, range_text)
         if rng is None:
@@ -276,16 +313,27 @@ def parse_layout(
 def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout]:
     """The layout of a table in a cell, which has a header and no caption"""
 
-    idx, _, grid, shape = find_header(table.rows)
+    idx, headers, grid, shape = find_header(table.rows)
     if shape != "layout" or idx is None:
         return None
-    return parse_layout(table.rows[idx + 1 :], grid, diagnostics)
+    return parse_layout(table.rows[idx + 1 :], grid, diagnostics, headers)
 
 
 def parse_entries(
-    rows: List[Row], grid: List[str], diagnostics: List[Diagnostic]
+    rows: List[Row],
+    grid: List[str],
+    diagnostics: List[Diagnostic],
+    headers: List[str],
+    notes: List[str],
 ) -> List[Dict[str, str]]:
+    """
+    The entries of a table of values, opcodes, requirements or transitions; a
+    row of one cell is a note, into 'notes', or heads the entries below it, as
+    their "section"
+    """
+
     entries = []
+    section = None
     for row in rows:
         values = values_of(row, grid)
         if values is None:
@@ -296,8 +344,17 @@ def parse_entries(
                 )
             )
             continue
+        if is_header_again([normalize_text(c.text) for c in row.cells], headers):
+            continue
         entry = {c: normalize_text(t) for c, t in values.texts.items()}
-        if not any(entry.values()) or values.spans == 1:
+        filled = [t for t in entry.values() if t]
+        if not filled or all(REGEX_ELISION.match(t) for t in filled):
+            continue
+        if values.spans == 1:
+            if REGEX_NOTES.match(filled[0]):
+                notes.append(filled[0])
+            else:
+                section = filled[0]
             continue
         if entry.get("description") and "name" not in entry:
             name, acronym, rest = parse_field_description(values.texts["description"])
@@ -306,6 +363,8 @@ def parse_entries(
                 if acronym:
                     entry["acronym"] = acronym
                 entry["description"] = normalize_text(rest)
+        if section:
+            entry["section"] = section
         entries.append(entry)
     return entries
 
@@ -332,10 +391,31 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         diagnostics.append(note("header-row", f"Header in row {idx + 2}"))
     body = rows[idx + 1 :]
 
+    # The header goes on in the rows below it while a cell of it is merged down
+    # into them; a header cell spanning columns names them by the cells below
+    while (
+        body
+        and len(body[0].cells) == len(grid)
+        and any(c.merged == "up" for c in body[0].cells)
+    ):
+        below = body.pop(0)
+        for i, cell in enumerate(below.cells):
+            spans = grid.count(grid[i]) > 1
+            if cell.merged is None and spans and normalize_text(cell.text):
+                text = normalize_text(cell.text)
+                grid[i] = normalize_header(text)[0] or grid[i]
+                headers[i] = f"{headers[i]} {text}"
+        diagnostics.append(note("header-rows", "Header of more than one row"))
+    normalized.headers, normalized.columns = unique(headers), unique(grid)
+    shape = shape_of(grid) or shape
+    normalized.shape = shape
+
     if shape == "layout":
-        normalized.layout = parse_layout(body, grid, diagnostics)
+        normalized.layout = parse_layout(body, grid, diagnostics, headers)
     elif shape:
-        normalized.entries = parse_entries(body, grid, diagnostics)
+        normalized.entries = parse_entries(
+            body, grid, diagnostics, headers, normalized.notes
+        )
     else:
         normalized.rows = [
             [normalize_text(c.text) for c in row.cells if c.merged != "left"]

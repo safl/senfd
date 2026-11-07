@@ -112,13 +112,19 @@ def test_the_variants_of_a_layout_come_out_as_one_form(normalized):
         ("11:08", "Bar Mode", "BMOD"),
         ("N+3:N", "Bar Entry", "BE"),
         ("n/a", "Bar Tail", "BT"),
+        ("NOTE 1", "Bar Descriptor 0", None),
+        ("NOTE 1", "Bar Descriptor NBD-1", None),
+        ("15:12", None, None),
     ]
+    # A sentence is a description, not a name
+    assert fields[-1]["description"] == "Ignored by the controller"
     # The reserved row is merged across the O/M and Description columns
     assert fields[1]["columns"] == {"om": ""}
     # The range continued in the row below continues the description
     assert fields[2]["description"] == "How bar runs.\n00b: Bar is off."
-    assert [f["section"] for f in fields] == [None, None] + ["Bar Specific"] * 3
-    assert figure["layout"]["notes"] == ["Bar identifiers are unique."]
+    # The elision between the descriptors heads nothing
+    assert [f["section"] for f in fields] == [None, None] + ["Bar Specific"] * 6
+    assert figure["layout"]["notes"] == ["NOTES: 1. Bar identifiers are unique."]
 
 
 def test_the_columns_of_a_layout_are_matched_by_name_not_position(normalized):
@@ -157,3 +163,51 @@ def test_a_row_spanning_other_grid_columns_than_the_header_is_mapped_by_cells():
 
     heading = Row(cells=[Cell(text="Foo Specific")])
     assert values_of(heading, grid).spans == 1
+
+
+def test_headers_differing_by_a_number_are_columns_of_their_own(normalized):
+    _, figures = normalized
+
+    figure = figures["Supported Foo Operations"]
+    assert figure["columns"] == ["command_1", "command_2", "opcode", "command"]
+    assert figure["entries"][0]["command_1"] == "Ding"
+
+
+def test_an_entry_table_has_its_sections_and_notes_and_no_header_again(normalized):
+    _, figures = normalized
+
+    figure = figures["Foo Get - Command Specific Status Values, Foo Get"]
+    assert [(e["value"], e.get("section")) for e in figure["entries"]] == [
+        ("82h", "Foo Errors"),
+        ("83h", "Foo Errors"),
+    ]
+    assert figure["notes"] == ["NOTE: Foo values are few."]
+
+
+def test_dword_captions_with_a_condition_or_a_qualifier_are_dwords():
+    subject = parse_caption("Completion Queue Entry Dword 0 when Foo is set to 1b")
+    assert (subject.kind, subject.lower, subject.condition) == (
+        "completion_dword",
+        0,
+        "Foo is set to 1b",
+    )
+    subject = parse_caption(
+        "Foo Set - Command Dword 10 - Foobar Command Set Specific Fields"
+    )
+    assert (subject.kind, subject.name, subject.lower, subject.qualifier) == (
+        "command_dword",
+        "Foo Set",
+        10,
+        "Foobar Command Set Specific Fields",
+    )
+
+
+def test_a_name_ending_in_a_number_keeps_it():
+    """Only after an acronym is a number a footnote marker"""
+
+    assert parse_field_description("Entry 1: The first.") == (
+        "Entry 1",
+        None,
+        "The first.",
+    )
+    assert parse_field_description("Foo NFOO-1: The last.")[0] == "Foo NFOO-1"

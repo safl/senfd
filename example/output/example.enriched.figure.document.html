@@ -45,12 +45,12 @@
       <div class="hdr">Non-tabular</div>
       <div class="hdr">Skipped</div>
       <div class="hdr">Maximum figure number</div>
+      <div>67</div>
       <div>63</div>
-      <div>60</div>
-      <div>2</div>
+      <div>3</div>
       <div>1</div>
       <div>0</div>
-      <div>63</div>
+      <div>67</div>
     </div>
   </div>
   
@@ -851,7 +851,7 @@ No errors logged for this figure.
           <a class="nav-link" id="table_tab_60" data-bs-toggle="tab" href="#table_60" role="tab" aria-controls="table_60" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_60" data-bs-toggle="tab" href="#errors_60" role="tab" aria-controls="errors_60" aria-selected="false">Errors (0)</a>
+          <a class="nav-link text-danger" id="errors_tab_60" data-bs-toggle="tab" href="#errors_60" role="tab" aria-controls="errors_60" aria-selected="false">Errors (2)</a>
         </li>
       </ul>
     </div>
@@ -998,11 +998,67 @@ No errors logged for this figure.
     
     <td>NOTE 1</td>
     
-    <td>Bar identifiers are unique</td>
+    <td>Bar Descriptor 0</td>
+    
+    <td>None</td>
+    
+    <td>The first.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>NOTE 1</td>
+    
+    <td>Bar Descriptor NBD-1</td>
+    
+    <td>None</td>
+    
+    <td>The last.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>Byte</td>
+    
+    <td>Description</td>
     
     <td>None</td>
     
     <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>12</td>
+    
+    <td>Ignored by the controller</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>NOTES</td>
+    
+    <td>NOTES</td>
+    
+    <td>None</td>
+    
+    <td>1. Bar identifiers are unique.</td>
     
   </tr>
   
@@ -1214,12 +1270,110 @@ No errors logged for this figure.
     </td>
     
     <td>
-      Bar identifiers are unique.
+      O
       
     </td>
     
     <td>
-      Bar identifiers are unique.
+      Bar Descriptor 0: The first.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      ...
+      
+    </td>
+    
+    <td>
+      
+      
+    </td>
+    
+    <td>
+      
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      NOTE 1
+      
+    </td>
+    
+    <td>
+      O
+      
+    </td>
+    
+    <td>
+      Bar Descriptor NBD-1: The last.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Byte
+      
+    </td>
+    
+    <td>
+      O/M1
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      15:12
+      
+    </td>
+    
+    <td>
+      O
+      
+    </td>
+    
+    <td>
+      Ignored by the controller
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      NOTES:
+1. Bar identifiers are unique.
+      
+    </td>
+    
+    <td>
+      NOTES:
+1. Bar identifiers are unique.
+      
+    </td>
+    
+    <td>
+      NOTES:
+1. Bar identifiers are unique.
       
     </td>
     
@@ -1232,7 +1386,9 @@ No errors logged for this figure.
 
 <pre>
 
-No errors logged for this figure.
+message='cell.text(...) no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]+):)?(?P<lower>[0-9 \\w\\+\\*]+))' figure_nr=60 table_nr=60 row_idx=11 cell_idx=0
+
+message='cell.text() no match((?P<name>[ \\/\\-\\w]+)(\\((?P<acronym>[^\\)]+)\\))?(:\\s*(?P<description>.*))?)' figure_nr=60 table_nr=60 row_idx=11 cell_idx=1
 
 </pre>
 
@@ -8061,6 +8217,160 @@ No errors logged for this figure.
   </div>
   
   
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 63</strong>: Completion Queue Entry Dword 0 when Foo is set to 1b</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>CompletionQueue</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_63" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_63" data-bs-toggle="tab" href="#grid_63" role="tab" aria-controls="grid_63" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_63" data-bs-toggle="tab" href="#table_63" role="tab" aria-controls="table_63" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_63" data-bs-toggle="tab" href="#errors_63" role="tab" aria-controls="errors_63" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_63" role="tabpanel" aria-labelledby="grid_tab_63">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>31</td>
+    
+    <td>00</td>
+    
+    <td>Foo Result </td>
+    
+    <td>FRES</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_63" role="tabpanel" aria-labelledby="table_tab_63">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b
+      
+    </td>
+    
+    <td>
+      Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Bits
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      31:00
+      
+    </td>
+    
+    <td>
+      Foo Result (FRES)
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_63" role="tabpanel" aria-labelledby="errors_tab_63">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
   
   
   <div class="card mb-4">
@@ -8204,6 +8514,160 @@ No errors logged for this figure.
   
         </div>
         <div class="tab-pane fade" id="errors_44" role="tabpanel" aria-labelledby="errors_tab_44">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 64</strong>: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>ParameterField</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_64" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_64" data-bs-toggle="tab" href="#grid_64" role="tab" aria-controls="grid_64" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_64" data-bs-toggle="tab" href="#table_64" role="tab" aria-controls="table_64" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_64" data-bs-toggle="tab" href="#errors_64" role="tab" aria-controls="errors_64" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_64" role="tabpanel" aria-labelledby="grid_tab_64">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>31</td>
+    
+    <td>00</td>
+    
+    <td>Foo Value </td>
+    
+    <td>FVAL</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_64" role="tabpanel" aria-labelledby="table_tab_64">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 64: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields
+      
+    </td>
+    
+    <td>
+      Figure 64: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Bits
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      31:00
+      
+    </td>
+    
+    <td>
+      Foo Value (FVAL)
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_64" role="tabpanel" aria-labelledby="errors_tab_64">
 
 <pre>
 
@@ -8862,6 +9326,238 @@ No errors logged for this figure.
 <pre>
 
 No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 62</strong>: Foo Get – Command Specific Status Values, Foo Get</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Foo Get - Command Specific</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>Foo Get</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_62" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_62" data-bs-toggle="tab" href="#grid_62" role="tab" aria-controls="grid_62" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_62" data-bs-toggle="tab" href="#table_62" role="tab" aria-controls="table_62" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" id="errors_tab_62" data-bs-toggle="tab" href="#errors_62" role="tab" aria-controls="errors_62" aria-selected="false">Errors (3)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_62" role="tabpanel" aria-labelledby="grid_tab_62">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>82h</td>
+    
+    <td>Foo Lost</td>
+    
+    <td>Foo is lost.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>83h</td>
+    
+    <td>Foo Late</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_62" role="tabpanel" aria-labelledby="table_tab_62">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 62: Foo Get – Command Specific Status Values, Foo Get
+      
+    </td>
+    
+    <td>
+      Figure 62: Foo Get – Command Specific Status Values, Foo Get
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Foo Errors
+      
+    </td>
+    
+    <td>
+      Foo Errors
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      82h
+      
+    </td>
+    
+    <td>
+      Foo Lost: Foo is lost.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      83h
+      
+    </td>
+    
+    <td>
+      Foo Late
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      NOTE: Foo values are few.
+      
+    </td>
+    
+    <td>
+      NOTE: Foo values are few.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_62" role="tabpanel" aria-labelledby="errors_tab_62">
+
+<pre>
+
+message='cell.text(Foo Errors) no match(^(?P<value>[a-zA-Z0-9]{1,2}h)$)' figure_nr=62 table_nr=62 row_idx=2 cell_idx=0
+
+message='cell.text(Value) no match(^(?P<value>[a-zA-Z0-9]{1,2}h)$)' figure_nr=62 table_nr=62 row_idx=4 cell_idx=0
+
+message='cell.text(NOTE: Foo values are few.) no match(^(?P<value>[a-zA-Z0-9]{1,2}h)$)' figure_nr=62 table_nr=62 row_idx=6 cell_idx=0
 
 </pre>
 
@@ -11348,7 +12044,7 @@ No errors logged for this figure.
   <div class="card mb-4">
 
     <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 63</strong>: Foo Architecture</h5>
+      <h3 class="card-title mb-0"><strong>Figure 67</strong>: Foo Architecture</h5>
     </div>
     <div class="card-header">
       
@@ -11377,22 +12073,22 @@ No errors logged for this figure.
     </div>
     
     <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_63" role="tablist">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_67" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_63" data-bs-toggle="tab" href="#grid_63" role="tab" aria-controls="grid_63" aria-selected="true">Grid</a>
+          <a class="nav-link active" id="grid_tab_67" data-bs-toggle="tab" href="#grid_67" role="tab" aria-controls="grid_67" aria-selected="true">Grid</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="table_tab_63" data-bs-toggle="tab" href="#table_63" role="tab" aria-controls="table_63" aria-selected="false">Table</a>
+          <a class="nav-link" id="table_tab_67" data-bs-toggle="tab" href="#table_67" role="tab" aria-controls="table_67" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_63" data-bs-toggle="tab" href="#errors_63" role="tab" aria-controls="errors_63" aria-selected="false">Errors (0)</a>
+          <a class="nav-link " id="errors_tab_67" data-bs-toggle="tab" href="#errors_67" role="tab" aria-controls="errors_67" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
   
     <div class="card-body">
       <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_63" role="tabpanel" aria-labelledby="grid_tab_63">
+        <div class="tab-pane fade show active" id="grid_67" role="tabpanel" aria-labelledby="grid_tab_67">
           <!-- GRID TABLE rendered -->
           
             
@@ -11409,7 +12105,7 @@ No errors logged for this figure.
   
           
         </div>
-        <div class="tab-pane fade" id="table_63" role="tabpanel" aria-labelledby="table_tab_63">
+        <div class="tab-pane fade" id="table_67" role="tabpanel" aria-labelledby="table_tab_67">
           <!-- RAW TABLE rendered here -->
           
   <table class="table mb-0">
@@ -11419,7 +12115,7 @@ No errors logged for this figure.
   </table>
   
         </div>
-        <div class="tab-pane fade" id="errors_63" role="tabpanel" aria-labelledby="errors_tab_63">
+        <div class="tab-pane fade" id="errors_67" role="tabpanel" aria-labelledby="errors_tab_67">
 
 <pre>
 
@@ -11438,7 +12134,7 @@ No errors logged for this figure.
   <div class="card mb-4">
 
     <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 61</strong>: Offset 20h: BARCTL - Bar Control</h5>
+      <h3 class="card-title mb-0"><strong>Figure 61</strong>: Supported Foo Operations</h5>
     </div>
     <div class="card-header">
       
@@ -11475,7 +12171,7 @@ No errors logged for this figure.
           <a class="nav-link" id="table_tab_61" data-bs-toggle="tab" href="#table_61" role="tab" aria-controls="table_61" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_61" data-bs-toggle="tab" href="#errors_61" role="tab" aria-controls="errors_61" aria-selected="false">Errors (1)</a>
+          <a class="nav-link " id="errors_tab_61" data-bs-toggle="tab" href="#errors_61" role="tab" aria-controls="errors_61" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
@@ -11507,22 +12203,180 @@ No errors logged for this figure.
   <tr>
     
     <td>
-      Figure 61: Offset 20h: BARCTL - Bar Control
+      Figure 61: Supported Foo Operations
       
     </td>
     
     <td>
-      Figure 61: Offset 20h: BARCTL - Bar Control
+      Figure 61: Supported Foo Operations
       
     </td>
     
     <td>
-      Figure 61: Offset 20h: BARCTL - Bar Control
+      Figure 61: Supported Foo Operations
       
     </td>
     
     <td>
-      Figure 61: Offset 20h: BARCTL - Bar Control
+      Figure 61: Supported Foo Operations
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Command 1
+      
+    </td>
+    
+    <td>
+      Command 2
+      
+    </td>
+    
+    <td>
+      Combined Opcode
+      
+    </td>
+    
+    <td>
+      Command
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Ding
+      
+    </td>
+    
+    <td>
+      Dong
+      
+    </td>
+    
+    <td>
+      05h
+      
+    </td>
+    
+    <td>
+      Ding Dong
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_61" role="tabpanel" aria-labelledby="errors_tab_61">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 65</strong>: Offset 20h: BARCTL - Bar Control</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>Uncategorized</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_65" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_65" data-bs-toggle="tab" href="#grid_65" role="tab" aria-controls="grid_65" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_65" data-bs-toggle="tab" href="#table_65" role="tab" aria-controls="table_65" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" id="errors_tab_65" data-bs-toggle="tab" href="#errors_65" role="tab" aria-controls="errors_65" aria-selected="false">Errors (1)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_65" role="tabpanel" aria-labelledby="grid_tab_65">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_65" role="tabpanel" aria-labelledby="table_tab_65">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 65: Offset 20h: BARCTL - Bar Control
+      
+    </td>
+    
+    <td>
+      Figure 65: Offset 20h: BARCTL - Bar Control
+      
+    </td>
+    
+    <td>
+      Figure 65: Offset 20h: BARCTL - Bar Control
+      
+    </td>
+    
+    <td>
+      Figure 65: Offset 20h: BARCTL - Bar Control
       
     </td>
     
@@ -11603,11 +12457,11 @@ No errors logged for this figure.
   </table>
   
         </div>
-        <div class="tab-pane fade" id="errors_61" role="tabpanel" aria-labelledby="errors_tab_61">
+        <div class="tab-pane fade" id="errors_65" role="tabpanel" aria-labelledby="errors_tab_65">
 
 <pre>
 
-message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
+message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=65
 
 </pre>
 
@@ -11620,7 +12474,7 @@ message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
   <div class="card mb-4">
 
     <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 62</strong>: Foo Overview</h5>
+      <h3 class="card-title mb-0"><strong>Figure 66</strong>: Foo Overview</h5>
     </div>
     <div class="card-header">
       
@@ -11649,22 +12503,22 @@ message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
     </div>
     
     <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_62" role="tablist">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_66" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_62" data-bs-toggle="tab" href="#grid_62" role="tab" aria-controls="grid_62" aria-selected="true">Grid</a>
+          <a class="nav-link active" id="grid_tab_66" data-bs-toggle="tab" href="#grid_66" role="tab" aria-controls="grid_66" aria-selected="true">Grid</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="table_tab_62" data-bs-toggle="tab" href="#table_62" role="tab" aria-controls="table_62" aria-selected="false">Table</a>
+          <a class="nav-link" id="table_tab_66" data-bs-toggle="tab" href="#table_66" role="tab" aria-controls="table_66" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link " id="errors_tab_62" data-bs-toggle="tab" href="#errors_62" role="tab" aria-controls="errors_62" aria-selected="false">Errors (0)</a>
+          <a class="nav-link " id="errors_tab_66" data-bs-toggle="tab" href="#errors_66" role="tab" aria-controls="errors_66" aria-selected="false">Errors (0)</a>
         </li>
       </ul>
     </div>
   
     <div class="card-body">
       <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_62" role="tabpanel" aria-labelledby="grid_tab_62">
+        <div class="tab-pane fade show active" id="grid_66" role="tabpanel" aria-labelledby="grid_tab_66">
           <!-- GRID TABLE rendered -->
           
             
@@ -11681,7 +12535,7 @@ message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
   
           
         </div>
-        <div class="tab-pane fade" id="table_62" role="tabpanel" aria-labelledby="table_tab_62">
+        <div class="tab-pane fade" id="table_66" role="tabpanel" aria-labelledby="table_tab_66">
           <!-- RAW TABLE rendered here -->
           
   <table class="table mb-0">
@@ -11689,12 +12543,12 @@ message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
   <tr>
     
     <td>
-      Figure 62: Foo Overview
+      Figure 66: Foo Overview
       
     </td>
     
     <td>
-      Figure 62: Foo Overview
+      Figure 66: Foo Overview
       
     </td>
     
@@ -11731,7 +12585,7 @@ message='OffsetFigure.REGEX_GRID did not match table, continuing' figure_nr=61
   </table>
   
         </div>
-        <div class="tab-pane fade" id="errors_62" role="tabpanel" aria-labelledby="errors_tab_62">
+        <div class="tab-pane fade" id="errors_66" role="tabpanel" aria-labelledby="errors_tab_66">
 
 <pre>
 

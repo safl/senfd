@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>62 figures, 0 skipped, 1 not tables, 3 diagnostics</p>
+<p>66 figures, 0 skipped, 1 not tables, 6 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -374,8 +374,8 @@ th { background-color: #f2f2f2; }
 
 
 <table>
-<tr><th>cns_value</th><th>om</th><th>description</th><th>nsid</th><th>cntid</th><th>csi</th><th>reference</th><th>name</th></tr>
-<tr><td>1Ch</td><td>O</td><td></td><td>Y</td><td>N</td><td>Y</td><td>5.1</td><td>Foo namespace data</td></tr>
+<tr><th>cns_value</th><th>om</th><th>description</th><th>nsid</th><th>cntid</th><th>csi</th><th>reference</th></tr>
+<tr><td>1Ch</td><td>O</td><td>Foo namespace data</td><td>Y</td><td>N</td><td>Y</td><td>5.1</td></tr>
 </table>
 
 
@@ -501,7 +501,7 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 27: Foo Feature Requirements</h3>
-<p>Subject: requirements, name: Foo Feature. Shape: requirement.</p>
+<p>Subject: requirements, name: Foo Feature. Shape: value.</p>
 
 
 <table>
@@ -1199,12 +1199,101 @@ th { background-color: #f2f2f2; }
   <td>om: O<br></td>
 </tr>
 
+<tr>
+  <td>NOTE 1</td>
+  <td>[Bar Specific] Bar Descriptor 0</td>
+  <td></td>
+  <td>The first.
+  </td>
+  <td>om: O<br></td>
+</tr>
+
+<tr>
+  <td>NOTE 1</td>
+  <td>[Bar Specific] Bar Descriptor NBD-1</td>
+  <td></td>
+  <td>The last.
+  </td>
+  <td>om: O<br></td>
+</tr>
+
+<tr>
+  <td>15:12</td>
+  <td>[Bar Specific] </td>
+  <td></td>
+  <td>Ignored by the controller
+  </td>
+  <td>om: O<br></td>
+</tr>
+
 </table>
 
 
 
 
-<h3>Figure 61: Offset 20h: BARCTL - Bar Control</h3>
+<h3>Figure 61: Supported Foo Operations</h3>
+<p>Subject: other, name: Supported Foo Operations. Shape: opcode.</p>
+
+
+<table>
+<tr><th>command_1</th><th>command_2</th><th>opcode</th><th>command</th></tr>
+<tr><td>Ding</td><td>Dong</td><td>05h</td><td>Ding Dong</td></tr>
+</table>
+
+
+
+<h3>Figure 62: Foo Get - Command Specific Status Values, Foo Get</h3>
+<p>Subject: status_values, name: Foo Get, qualifier: Command Specific, scope: Foo Get. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th><th>section</th></tr>
+<tr><td>82h</td><td>Foo is lost.</td><td>Foo Lost</td><td>Foo Errors</td></tr><tr><td>83h</td><td></td><td>Foo Late</td><td>Foo Errors</td></tr>
+</table>
+
+
+
+<h3>Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b</h3>
+<p>Subject: completion_dword, lower: 0, upper: 0, condition: Foo is set to 1b. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Result</td>
+  <td>FRES</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 64: Foo Set - Command Dword 10 - Foobar Command Set Specific Fields</h3>
+<p>Subject: command_dword, name: Foo Set, lower: 10, upper: 10, qualifier: Foobar Command Set Specific Fields. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Value</td>
+  <td>FVAL</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 65: Offset 20h: BARCTL - Bar Control</h3>
 <p>Subject: register, name: BARCTL - Bar Control, offset: 20h. Shape: layout.</p>
 
 <table>
@@ -1233,7 +1322,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 62: Foo Overview</h3>
+<h3>Figure 66: Foo Overview</h3>
 <p>Subject: other, name: Foo Overview. Shape: none.</p>
 
 
@@ -1253,6 +1342,12 @@ th { background-color: #f2f2f2; }
 <li class="note">Figure 60: note range-symbolic: Range not a number: 'N+3:N'</li>
 
 <li class="note">Figure 60: note range-symbolic: Range not a number: 'n/a'</li>
+
+<li class="note">Figure 60: note range-symbolic: Range not a number: 'NOTE 1'</li>
+
+<li class="note">Figure 60: note range-symbolic: Range not a number: 'NOTE 1'</li>
+
+<li class="note">Figure 60: note field-name: Field without a name: 'Ignored by the controller'</li>
 
 </ul>
 </body>

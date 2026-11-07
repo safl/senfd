@@ -206,6 +206,13 @@
                     "title": "Entries",
                     "type": "array"
                 },
+                "notes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Notes",
+                    "type": "array"
+                },
                 "rows": {
                     "items": {
                         "items": {
