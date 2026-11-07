@@ -299,7 +299,7 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
             )
             offset = f.lower
         size = f.upper - f.lower + 1
-        if base:
+        if base and first is not None:
             # The documents leave out the rows between the first entries and
             # the last, so an entry may follow at the offset of its index
             length = 1
