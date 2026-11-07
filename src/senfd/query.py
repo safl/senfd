@@ -89,7 +89,8 @@ def lines_of_fields(
             yield indent + "  " + field.description.split("\n")[0][:160]
         if verbose:
             for value in field.values:
-                name = " ".join(senfd_value_names(value))
+                # The name, else the start of the description, for reading
+                name = (senfd_value_names(value) or [value.description[:60]])[0]
                 yield f"{indent}    = {value.value} {name}".rstrip()
         if field.fields:
             yield from lines_of_fields(field.fields, verbose, indent + "    ")

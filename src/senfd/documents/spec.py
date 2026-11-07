@@ -277,7 +277,36 @@ def value_of(entry: Dict[str, str]) -> "Entry":
 
 
 def fields_of(layout: Layout) -> List[Bits]:
-    return unions_of([bits_of(field, layout.unit) for field in layout.fields])
+    fields = unions_of([bits_of(field, layout.unit) for field in layout.fields])
+    number_unions(fields)
+    return fields
+
+
+def same_structure(a: Bits, b: Bits) -> bool:
+    """Whether fields are of one structure, as a table listing the fields of
+    several, by a column naming the structure of each, gives fields of others"""
+
+    for column in set(a.columns) & set(b.columns):
+        if "structure" in column and a.columns[column] != b.columns[column]:
+            return False
+    return True
+
+
+def number_unions(fields: List[Bits], start: int = 0) -> int:
+    """Number the unions of 'fields' and of the fields nested in them anew, in
+    one sequence, so that no two unions of a layout have the same number;
+    returns the next number"""
+
+    renumbered: Dict[int, int] = {}
+    for field in fields:
+        if field.union is not None:
+            if field.union not in renumbered:
+                renumbered[field.union] = start + len(renumbered)
+            field.union = renumbered[field.union]
+    start += len(renumbered)
+    for field in fields:
+        start = number_unions(field.fields, start)
+    return start
 
 
 def unions_of(fields: List[Bits]) -> List[Bits]:
@@ -304,7 +333,11 @@ def unions_of(fields: List[Bits]) -> List[Bits]:
         # The regions: fields joined by sharing bits, directly or through others
         regions: List[List[Bits]] = []
         for field in these:
-            joined = [r for r in regions if any(overlaps(field, f) for f in r)]
+            joined = [
+                r
+                for r in regions
+                if any(overlaps(field, f) and same_structure(field, f) for f in r)
+            ]
             region = [field] + [f for r in joined for f in r]
             regions = [r for r in regions if r not in joined] + [region]
         for region in regions:
@@ -316,7 +349,10 @@ def unions_of(fields: List[Bits]) -> List[Bits]:
                     (
                         i
                         for i, alternative in enumerate(alternatives)
-                        if not any(overlaps(field, f) for f in alternative)
+                        if not any(
+                            overlaps(field, f) and same_structure(field, f)
+                            for f in alternative
+                        )
                     ),
                     None,
                 )
@@ -527,7 +563,14 @@ TYPED_FORMS = [
             r"(?:\s*(?:to|-)\s*(?P<upper>[0-9A-Fa-f]+)h)?" + FOOTNOTES + r"$"
         ),
     ),
-    ("number", re.compile(r"^(?P<binary>[01]+)b" + FOOTNOTES + r"$")),
+    (
+        "number",
+        re.compile(
+            r"^(?P<binary>[01]+)b(?:\s*(?:to|-)\s*(?P<binary_upper>[01]+)b)?"
+            + FOOTNOTES
+            + r"$"
+        ),
+    ),
     ("number", re.compile(r"^(?P<decimal>\d+)$")),
     ("note", re.compile(r"^Note\s*(?P<note>\d+)$", re.IGNORECASE)),
     ("reference", re.compile(r"^Refer to (?:the )?(?P<reference>.+?)\.?$")),
@@ -559,12 +602,12 @@ def typed_of(text: str) -> Optional[Typed]:
             typed.lower = int(groups["lower"], 16)
             typed.upper = int(groups["upper"], 16) if groups["upper"] else typed.lower
         elif kind == "number":
-            number = (
-                int(groups["binary"], 2)
-                if groups.get("binary")
-                else int(groups["decimal"])
-            )
-            typed.lower = typed.upper = number
+            if groups.get("binary"):
+                typed.lower = int(groups["binary"], 2)
+                upper = groups.get("binary_upper")
+                typed.upper = int(upper, 2) if upper else typed.lower
+            else:
+                typed.lower = typed.upper = int(groups["decimal"])
         elif kind == "note":
             typed.note = int(groups["note"])
         elif kind == "reference":
@@ -925,17 +968,18 @@ def gaps(command: Command) -> List[Erratum]:
 
 
 def value_names(entry: "Entry") -> List[str]:
-    """The names a value of a field goes by: its name, or the text of the
-    first column naming it, as "management_operation" does"""
+    """The name a value of a field goes by, as a list of none or one: its name,
+    else the text of the first column naming it, as "management_operation"
+    does; the heading the value is under is no name of it"""
 
-    names = [entry.name] if entry.name else []
-    skip = {"reference", "om", "description", "refer_to_section"}
-    names += [
+    if entry.name:
+        return [entry.name]
+    skip = {"reference", "om", "description", "refer_to_section", "section"}
+    return [
         text
         for column, text in entry.columns.items()
         if column not in skip and text and not typed_of(text)
     ][:1]
-    return names
 
 
 def names_operation(caption: str, name: str) -> bool:
@@ -947,18 +991,44 @@ def names_operation(caption: str, name: str) -> bool:
     return bool(b) and a in (b, f"{b}_operation", f"{b}_management_operation")
 
 
+def shared_prefix(a: Optional[str], b: Optional[str]) -> int:
+    """How many leading parts the section numbers 'a' and 'b' share"""
+
+    n = 0
+    for x, y in zip((a or "").split("."), (b or "").split(".")):
+        if x != y or not x:
+            break
+        n += 1
+    return n
+
+
 def link_operations(document: SpecDocument, used: set) -> None:
     """
     The operations of the commands a field of whose dwords selects, by the
     values the field takes: a value whose name names dwords described for it,
     as "Suspend - Command Dword 11" of the value Suspend of the Select field of
-    Migration Send, is an operation of the command with those dwords
+    Migration Send, or names the section they are in, is an operation of the
+    command with those dwords
+
+    Only dwords of the document describing the selecting field are taken, and
+    dwords the values of two commands name are those of the command whose
+    section is nearest theirs; where that does not decide, they are a
+    diagnostic, and neither command's.
     """
 
+    def named(described: Dwords, name: str, key: str) -> bool:
+        title = re.sub(r"\s*\([^)]*\)$", "", described.source.section_title or "")
+        return names_operation(key.removeprefix("cqe:"), name) or (
+            bool(title) and alias(title) == alias(name)
+        )
+
+    Claim = Tuple[Command, Bits, Entry, str, Dwords]
+    claims: Dict[int, List[Claim]] = {}
+    described_by: Dict[int, Tuple[str, Dwords]] = {}
     for command_set in document.command_sets.values():
         for command in command_set.commands.values():
-            for dwords in list(command.sqe):
-                for field in dwords.fields:
+            for selecting in list(command.sqe):
+                for field in selecting.fields:
                     for value in field.values:
                         typed = value.typed.get(value.value_column)
                         if (
@@ -968,36 +1038,51 @@ def link_operations(document: SpecDocument, used: set) -> None:
                         ):
                             continue
                         for name in value_names(value):
-                            # Dwords a command or another operation has are
-                            # not this one's, as Delete's of the Key Value
-                            # command set are no Delete operation of another
-                            keys = [
-                                k
-                                for k in document.dwords
-                                if k not in used
-                                and names_operation(k.removeprefix("cqe:"), name)
-                            ]
-                            if not keys or any(
-                                o.name == name for o in command.operations
-                            ):
-                                continue
-                            operation = Operation(
-                                name=name,
-                                selectors={
-                                    field.acronym or field.name or "": typed.lower
-                                },
-                                source=dwords.source,
-                            )
-                            for k in keys:
-                                for described in document.dwords[k]:
-                                    add_dwords(
-                                        operation.cqe
-                                        if k.startswith("cqe:")
-                                        else operation.sqe,
-                                        described,
-                                    )
-                                used.add(k)
-                            command.operations.append(operation)
+                            for key, described in document.dwords.items():
+                                if key in used:
+                                    continue
+                                for d in described:
+                                    if d.source.document != selecting.source.document:
+                                        continue
+                                    if named(d, name, key):
+                                        claims.setdefault(id(d), []).append(
+                                            (command, field, value, name, selecting)
+                                        )
+                                        described_by[id(d)] = (key, d)
+
+    for ident, claimed in claims.items():
+        key, described = described_by[ident]
+        if len({id(c[0]) for c in claimed}) > 1:
+
+            def nearness(claim: Claim) -> int:
+                return shared_prefix(claim[4].source.section, described.source.section)
+
+            nearest = max(nearness(c) for c in claimed)
+            claimed = [c for c in claimed if nearness(c) == nearest]
+            if len({id(c[0]) for c in claimed}) > 1:
+                document.diagnostics.append(
+                    warning(
+                        "operation-ambiguous",
+                        f"Dwords of '{key}', {described.source.document} figure "
+                        f"{described.source.figure_nr}, named by values of "
+                        + ", ".join(sorted({c[0].name for c in claimed})),
+                    )
+                )
+                continue
+        command, field, value, name, selecting = claimed[0]
+        typed = value.typed[value.value_column]
+        operation = next((o for o in command.operations if o.name == name), None)
+        if operation is None:
+            operation = Operation(
+                name=name,
+                selectors={field.acronym or field.name or "": typed.lower or 0},
+                source=selecting.source,
+            )
+            command.operations.append(operation)
+        add_dwords(
+            operation.cqe if key.startswith("cqe:") else operation.sqe, described
+        )
+        used.add(key)
 
 
 def resolve(document: SpecDocument) -> SpecDocument:

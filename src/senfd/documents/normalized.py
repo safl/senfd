@@ -333,16 +333,19 @@ def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout
 def parse_nested_values(
     table: Table, diagnostics: List[Diagnostic]
 ) -> List[Dict[str, str]]:
-    """The entries of a table of values in a cell, as the values of a field;
-    a value column is named "value", whatever its header, as "PIT Value" """
+    """The entries of a table of values in a cell, as the values of a field,
+    the value in the column "value", whatever its header, as "PIT Value" """
 
     idx, headers, grid, shape = find_header(table.rows)
     if idx is None or not (shape or is_named_header(headers)):
         return []
-    grid = [
-        "value" if column.endswith("_value") and "value" not in grid else column
-        for column in grid
-    ]
+    # The value column is decided once for the table: the one named "value",
+    # else one named for a value, else the first, as "Select" of a table of
+    # the values of the field Select
+    if "value" not in grid:
+        named = [c for c in grid if c.endswith("_value")]
+        first = named[0] if named else grid[0]
+        grid = ["value" if c == first else c for c in grid]
     grid = [
         "description"
         if column.endswith(("_definition", "_description"))
