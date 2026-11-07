@@ -103,6 +103,14 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 
 <h3>Foo Set, opcode C1h</h3>
 
+<p>Dwords 10:10 (figure 64)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Foo Value</td><td>FVAL</td></tr>
+</table>
+
+
 
 
 
@@ -334,11 +342,19 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
-<tr><td>03:00</td><td>Bar Identifier</td><td>BID</td></tr><tr><td>07:04</td><td>Reserved</td><td></td></tr><tr><td>11:08</td><td>Bar Mode</td><td>BMOD</td></tr><tr><td>N+3:N</td><td>Bar Entry</td><td>BE</td></tr><tr><td>n/a</td><td>Bar Tail</td><td>BT</td></tr>
+<tr><td>03:00</td><td>Bar Identifier</td><td>BID</td></tr><tr><td>07:04</td><td>Reserved</td><td></td></tr><tr><td>11:08</td><td>Bar Mode</td><td>BMOD</td></tr><tr><td>N+3:N</td><td>Bar Entry</td><td>BE</td></tr><tr><td>n/a</td><td>Bar Tail</td><td>BT</td></tr><tr><td>NOTE 1</td><td>Bar Descriptor 0</td><td></td></tr><tr><td>NOTE 1</td><td>Bar Descriptor NBD-1</td><td></td></tr><tr><td>15:12</td><td></td><td></td></tr>
 </table>
 
 
-<h3>BARCTL - Bar Control (register, figure 61)</h3>
+<h3>Completion Queue Entry Dword 0 when Foo is set to 1b (completion_dword, figure 63)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Foo Result</td><td>FRES</td></tr>
+</table>
+
+
+<h3>BARCTL - Bar Control (register, figure 65)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>

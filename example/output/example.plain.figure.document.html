@@ -4178,12 +4178,110 @@ caption {
   </td>
   
   <td>
-    Bar identifiers are unique.
+    O
     
   </td>
   
   <td>
-    Bar identifiers are unique.
+    Bar Descriptor 0: The first.
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    ...
+    
+  </td>
+  
+  <td>
+    
+    
+  </td>
+  
+  <td>
+    
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    NOTE 1
+    
+  </td>
+  
+  <td>
+    O
+    
+  </td>
+  
+  <td>
+    Bar Descriptor NBD-1: The last.
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Byte
+    
+  </td>
+  
+  <td>
+    O/M1
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    15:12
+    
+  </td>
+  
+  <td>
+    O
+    
+  </td>
+  
+  <td>
+    Ignored by the controller
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    NOTES:
+1. Bar identifiers are unique.
+    
+  </td>
+  
+  <td>
+    NOTES:
+1. Bar identifiers are unique.
+    
+  </td>
+  
+  <td>
+    NOTES:
+1. Bar identifiers are unique.
     
   </td>
   
@@ -4194,29 +4292,319 @@ caption {
 </figure>
 
 <figure>
-<figcaption>Figure 61: Offset 20h: BARCTL - Bar Control</figcaption>
+<figcaption>Figure 61: Supported Foo Operations</figcaption>
 
 <table>
 
 <tr>
   
   <td>
-    Figure 61: Offset 20h: BARCTL - Bar Control
+    Figure 61: Supported Foo Operations
     
   </td>
   
   <td>
-    Figure 61: Offset 20h: BARCTL - Bar Control
+    Figure 61: Supported Foo Operations
     
   </td>
   
   <td>
-    Figure 61: Offset 20h: BARCTL - Bar Control
+    Figure 61: Supported Foo Operations
     
   </td>
   
   <td>
-    Figure 61: Offset 20h: BARCTL - Bar Control
+    Figure 61: Supported Foo Operations
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Command 1
+    
+  </td>
+  
+  <td>
+    Command 2
+    
+  </td>
+  
+  <td>
+    Combined Opcode
+    
+  </td>
+  
+  <td>
+    Command
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Ding
+    
+  </td>
+  
+  <td>
+    Dong
+    
+  </td>
+  
+  <td>
+    05h
+    
+  </td>
+  
+  <td>
+    Ding Dong
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 62: Foo Get – Command Specific Status Values, Foo Get</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 62: Foo Get – Command Specific Status Values, Foo Get
+    
+  </td>
+  
+  <td>
+    Figure 62: Foo Get – Command Specific Status Values, Foo Get
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Value
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Foo Errors
+    
+  </td>
+  
+  <td>
+    Foo Errors
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    82h
+    
+  </td>
+  
+  <td>
+    Foo Lost: Foo is lost.
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Value
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    83h
+    
+  </td>
+  
+  <td>
+    Foo Late
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    NOTE: Foo values are few.
+    
+  </td>
+  
+  <td>
+    NOTE: Foo values are few.
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b
+    
+  </td>
+  
+  <td>
+    Figure 63: Completion Queue Entry Dword 0 when Foo is set to 1b
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Bits
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    31:00
+    
+  </td>
+  
+  <td>
+    Foo Result (FRES)
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 64: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 64: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields
+    
+  </td>
+  
+  <td>
+    Figure 64: Foo Set – Command Dword 10 – Foobar Command Set Specific Fields
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    Bits
+    
+  </td>
+  
+  <td>
+    Description
+    
+  </td>
+  
+</tr>
+
+<tr>
+  
+  <td>
+    31:00
+    
+  </td>
+  
+  <td>
+    Foo Value (FVAL)
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</figure>
+
+<figure>
+<figcaption>Figure 65: Offset 20h: BARCTL - Bar Control</figcaption>
+
+<table>
+
+<tr>
+  
+  <td>
+    Figure 65: Offset 20h: BARCTL - Bar Control
+    
+  </td>
+  
+  <td>
+    Figure 65: Offset 20h: BARCTL - Bar Control
+    
+  </td>
+  
+  <td>
+    Figure 65: Offset 20h: BARCTL - Bar Control
+    
+  </td>
+  
+  <td>
+    Figure 65: Offset 20h: BARCTL - Bar Control
     
   </td>
   
@@ -4299,19 +4687,19 @@ caption {
 </figure>
 
 <figure>
-<figcaption>Figure 62: Foo Overview</figcaption>
+<figcaption>Figure 66: Foo Overview</figcaption>
 
 <table>
 
 <tr>
   
   <td>
-    Figure 62: Foo Overview
+    Figure 66: Foo Overview
     
   </td>
   
   <td>
-    Figure 62: Foo Overview
+    Figure 66: Foo Overview
     
   </td>
   
@@ -4350,7 +4738,7 @@ caption {
 </figure>
 
 <figure>
-<figcaption>Figure 63: Foo Architecture</figcaption>
+<figcaption>Figure 67: Foo Architecture</figcaption>
 
 <table>
 

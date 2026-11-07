@@ -65,7 +65,7 @@ COLUMNS: Dict[str, List[str]] = {
     "bits": ["bits", "bit"],
     "bytes": ["bytes", "byte"],
     "description": ["description", "definition"],
-    "name": ["name", "field name", "term", "acronym"],
+    "name": ["name", "field name", "field", "term", "acronym"],
     "value": ["value", "code", "status code value", "level"],
     "cns_value": ["cns value"],
     "opcode": ["combined opcode", "combined opcode value", "opcode value", "opcode"],
@@ -113,6 +113,7 @@ SHAPES: List[Tuple[str, List[str]]] = [
     ("value", ["cns_value", "description"]),
     ("value", ["identifier", "description"]),
     ("value", ["identifier", "log_page_name"]),
+    ("value", ["identifier", "feature_name"]),
     ("value", ["value", "description"]),
     ("transition", ["transition_condition"]),
 ]
@@ -163,10 +164,11 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
     return Range(unit=unit, text=text) if text else None
 
 
-# A footnote marker can follow the acronym, as in "Name (ACR) 1:" or "(ACR)1, 3:"
+# A footnote marker can follow the acronym, as in "Name (ACR) 1:" or "(ACR)1, 3:";
+# without an acronym, digits at the end are the name's, as in "Entry 1:"
 REGEX_FIELD = re.compile(
-    r"^(?P<name>[^:()]*?[^\s:()])\s*(?:\((?P<acronym>[^()]+)\))?"
-    r"(?:\s*\d+(?:,\s*\d+)*)?\s*(?::\s*(?P<rest>.*))?$"
+    r"^(?P<name>[^:()]*?[^\s:()])\s*(?:\((?P<acronym>[^()]+)\)"
+    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::\s*(?P<rest>.*))?$"
 )
 
 
@@ -192,9 +194,29 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
     if not match or len(match["name"]) > 80:
         return None, None, "\n".join(p for p in [first, more] if p)
 
+    name = match["name"].strip()
+    if match["rest"] is None and not match["acronym"] and not is_name(name):
+        # A sentence, as "Ignored by the controller", describes and names nothing
+        return None, None, "\n".join(p for p in [first, more] if p)
+
     rest = (match["rest"] or "").strip()
     description = "\n".join(p for p in [rest, more] if p)
-    return match["name"].strip(), match["acronym"], description
+    return name, match["acronym"], description
+
+
+def is_name(text: str) -> bool:
+    """Whether 'text', with neither colon nor acronym after it, is a name rather
+    than a sentence: "Reserved", "Vendor Specific", but not "Refer to the NVM
+    Command Set Specification" """
+
+    words = text.split()
+    small = {"a", "an", "and", "by", "for", "in", "is", "of", "or", "the", "to"}
+    return (
+        len(words) <= 4
+        and not text.endswith(".")
+        and all(w[0].isupper() or w[0].isdigit() or w in small for w in words)
+        and sum(w in small for w in words) <= 1
+    )
 
 
 class Subject(BaseModel):
@@ -232,13 +254,20 @@ CAPTIONS: List[Tuple[str, List[str]]] = [
     (
         "command_dword",
         [
-            r"^" + NAME + r" - " + DWORDS + r"(?: if (?P<condition>.+))?$",
+            r"^"
+            + NAME
+            + r" - "
+            + DWORDS
+            + r"(?: if (?P<condition>.+?))?(?: - (?P<qualifier>.+))?$",
             r"^" + DWORDS + r"(?: - (?P<qualifier>.+))?$",
         ],
     ),
     (
         "completion_dword",
-        [r"^" + NAME + r" - Completion Queue Entry Dword (?P<lower>\d+)$"],
+        [
+            r"^(?:" + NAME + r" - )?Completion Queue Entry Dword (?P<lower>\d+)"
+            r"(?: (?:if|when) (?P<condition>.+))?$"
+        ],
     ),
     ("data_pointer", [r"^" + NAME + r" - Data Pointer$"]),
     ("metadata_pointer", [r"^" + NAME + r" - Metadata Pointer$"]),
@@ -256,7 +285,13 @@ CAPTIONS: List[Tuple[str, List[str]]] = [
         [r"^Offset (?P<offset>[0-9A-Fa-f]+h)(?:\s*:\s*|\s+-\s+)" + NAME + r"$"],
     ),
     ("cns_values", [r"^(?:" + NAME + r" - )?CNS Values$"]),
-    ("feature_identifiers", [r"^Feature Identifiers(?: - " + NAME + r")?$"]),
+    (
+        "feature_identifiers",
+        [
+            r"^Feature Identifiers(?: - " + NAME + r")?$",
+            r"^" + NAME + r" - Feature Identifiers$",
+        ],
+    ),
     ("log_page_identifiers", [r"^(?:" + NAME + r" - )?Log Page Identifiers$"]),
     (
         "status_values",

@@ -407,9 +407,43 @@ FIGURES = [
                 (UP, UP, "00b: Bar is off."),
                 ("N+3:N", "O", "Bar Entry (BE) The bar entry, of N bytes."),
                 ("n/a", "O", "Bar Tail (BT): Not in the data."),
-                ("NOTE 1", "Bar identifiers are unique.", LEFT),
+                # A range a note gives, and fields named by their ordinal
+                ("NOTE 1", "O", "Bar Descriptor 0: The first."),
+                ("...", "", ""),
+                ("NOTE 1", "O", "Bar Descriptor NBD-1: The last."),
+                ("Byte", "O/M1", "Description"),
+                ("15:12", "O", "Ignored by the controller"),
+                ("NOTES:\n1. Bar identifiers are unique.", LEFT, LEFT),
             ],
         },
+    ),
+    (
+        "Supported Foo Operations",
+        {
+            "header": ("Command 1", "Command 2", "Combined Opcode", "Command"),
+            "rows": [("Ding", "Dong", "05h", "Ding Dong")],
+        },
+    ),
+    (
+        f"Foo Get {DASH} Command Specific Status Values, Foo Get",
+        {
+            "header": ("Value", "Description"),
+            "rows": [
+                ("Foo Errors", LEFT),
+                ("82h", "Foo Lost: Foo is lost."),
+                ("Value", "Description"),
+                ("83h", "Foo Late"),
+                ("NOTE: Foo values are few.", LEFT),
+            ],
+        },
+    ),
+    (
+        "Completion Queue Entry Dword 0 when Foo is set to 1b",
+        dword(("31:00", "Foo Result (FRES)")),
+    ),
+    (
+        f"Foo Set {DASH} Command Dword 10 {DASH} Foobar Command Set Specific Fields",
+        dword(("31:00", "Foo Value (FVAL)")),
     ),
     (
         "Offset 20h: BARCTL - Bar Control",
