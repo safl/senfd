@@ -393,13 +393,15 @@ def link_log_pages(document: SpecDocument) -> None:
         document, "log_page_name", "log_page_identifiers"
     ):
         key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
+        # "Foo (Controller scope)" is laid out by the structure of "Foo"
+        bare = alias(re.sub(r"\s*\([^)]*\)$", "", name))
         document.log_pages.setdefault(
             key,
             LogPage(
                 identifier=identifier,
                 name=name,
                 columns=columns,
-                structure=structures.get(key),
+                structure=structures.get(key) or structures.get(bare),
                 source=source,
             ),
         )
