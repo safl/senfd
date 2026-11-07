@@ -71,7 +71,7 @@ COLUMNS: Dict[str, List[str]] = {
     "opcode": ["combined opcode", "combined opcode value", "opcode value", "opcode"],
     "command": ["command", "nvme command", "admin command"],
     "reference": ["reference", "reference section"],
-    "om": ["o/m"],
+    "om": ["o/m", "m/o"],
     "identifier": ["feature identifier", "log page identifier", "identifier"],
     "log_page_name": ["log page name"],
     "transition": ["state transition", "state transitions"],

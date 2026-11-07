@@ -138,6 +138,16 @@
                     },
                     "title": "Layouts",
                     "type": "array"
+                },
+                "values": {
+                    "items": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "title": "Values",
+                    "type": "array"
                 }
             },
             "required": [

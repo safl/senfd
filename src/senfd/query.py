@@ -15,6 +15,7 @@ import re
 from pathlib import Path
 from typing import Iterable, List, Optional
 
+from senfd.documents.spec import value_names as senfd_value_names
 from senfd.documents.spec import (
     Bits,
     Command,
@@ -86,6 +87,10 @@ def lines_of_fields(
         yield indent + bits(field)
         if verbose and field.description:
             yield indent + "  " + field.description.split("\n")[0][:160]
+        if verbose:
+            for value in field.values:
+                name = " ".join(senfd_value_names(value))
+                yield f"{indent}    = {value.value} {name}".rstrip()
         if field.fields:
             yield from lines_of_fields(field.fields, verbose, indent + "    ")
 

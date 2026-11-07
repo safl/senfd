@@ -113,6 +113,13 @@
                     ],
                     "default": null,
                     "title": "Alternative"
+                },
+                "values": {
+                    "items": {
+                        "$ref": "#/$defs/Entry"
+                    },
+                    "title": "Values",
+                    "type": "array"
                 }
             },
             "required": [

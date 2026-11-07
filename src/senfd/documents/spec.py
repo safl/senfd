@@ -58,6 +58,8 @@ class Bits(BaseModel):
     # address of the same bytes
     union: Optional[int] = None
     alternative: Optional[int] = None
+    # The values the field takes, as the table in its description gives them
+    values: List["Entry"] = Field(default_factory=list)
 
 
 class Dwords(BaseModel):
@@ -259,7 +261,19 @@ def bits_of(field: LayoutField, unit: str) -> Bits:
                 for nested_field in nested.fields
             ]
         ),
+        values=[value_of(entry) for entry in field.values],
     )
+
+
+def value_of(entry: Dict[str, str]) -> "Entry":
+    """A value a field takes, its value typed where it has a form, as "000b",
+    "1h" or "2" """
+
+    value = entry_of(entry)
+    typed = typed_of(value.value)
+    if typed:
+        value.typed[value.value_column] = typed
+    return value
 
 
 def fields_of(layout: Layout) -> List[Bits]:
@@ -513,6 +527,8 @@ TYPED_FORMS = [
             r"(?:\s*(?:to|-)\s*(?P<upper>[0-9A-Fa-f]+)h)?" + FOOTNOTES + r"$"
         ),
     ),
+    ("number", re.compile(r"^(?P<binary>[01]+)b" + FOOTNOTES + r"$")),
+    ("number", re.compile(r"^(?P<decimal>\d+)$")),
     ("note", re.compile(r"^Note\s*(?P<note>\d+)$", re.IGNORECASE)),
     ("reference", re.compile(r"^Refer to (?:the )?(?P<reference>.+?)\.?$")),
     ("reserved", re.compile(r"^Reserved\b.*$", re.IGNORECASE)),
@@ -542,6 +558,13 @@ def typed_of(text: str) -> Optional[Typed]:
         elif kind == "identifier":
             typed.lower = int(groups["lower"], 16)
             typed.upper = int(groups["upper"], 16) if groups["upper"] else typed.lower
+        elif kind == "number":
+            number = (
+                int(groups["binary"], 2)
+                if groups.get("binary")
+                else int(groups["decimal"])
+            )
+            typed.lower = typed.upper = number
         elif kind == "note":
             typed.note = int(groups["note"])
         elif kind == "reference":
@@ -901,6 +924,82 @@ def gaps(command: Command) -> List[Erratum]:
     return errata
 
 
+def value_names(entry: "Entry") -> List[str]:
+    """The names a value of a field goes by: its name, or the text of the
+    first column naming it, as "management_operation" does"""
+
+    names = [entry.name] if entry.name else []
+    skip = {"reference", "om", "description", "refer_to_section"}
+    names += [
+        text
+        for column, text in entry.columns.items()
+        if column not in skip and text and not typed_of(text)
+    ][:1]
+    return names
+
+
+def names_operation(caption: str, name: str) -> bool:
+    """Whether a caption names the operation of 'name': by that name, or that
+    name with only "Operation" or "Management Operation" after it; "Create
+    Controller Data Queue" is not the operation Create"""
+
+    a, b = alias(caption), alias(name)
+    return bool(b) and a in (b, f"{b}_operation", f"{b}_management_operation")
+
+
+def link_operations(document: SpecDocument, used: set) -> None:
+    """
+    The operations of the commands a field of whose dwords selects, by the
+    values the field takes: a value whose name names dwords described for it,
+    as "Suspend - Command Dword 11" of the value Suspend of the Select field of
+    Migration Send, is an operation of the command with those dwords
+    """
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            for dwords in list(command.sqe):
+                for field in dwords.fields:
+                    for value in field.values:
+                        typed = value.typed.get(value.value_column)
+                        if (
+                            typed is None
+                            or typed.lower is None
+                            or typed.lower != typed.upper
+                        ):
+                            continue
+                        for name in value_names(value):
+                            # Dwords a command or another operation has are
+                            # not this one's, as Delete's of the Key Value
+                            # command set are no Delete operation of another
+                            keys = [
+                                k
+                                for k in document.dwords
+                                if k not in used
+                                and names_operation(k.removeprefix("cqe:"), name)
+                            ]
+                            if not keys or any(
+                                o.name == name for o in command.operations
+                            ):
+                                continue
+                            operation = Operation(
+                                name=name,
+                                selectors={
+                                    field.acronym or field.name or "": typed.lower
+                                },
+                                source=dwords.source,
+                            )
+                            for k in keys:
+                                for described in document.dwords[k]:
+                                    add_dwords(
+                                        operation.cqe
+                                        if k.startswith("cqe:")
+                                        else operation.sqe,
+                                        described,
+                                    )
+                                used.add(k)
+                            command.operations.append(operation)
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -929,6 +1028,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     document.features, document.log_pages = {}, {}
     # The operations take their dwords before the looser matching of features
     link_directives(document, used)
+    link_operations(document, used)
     link_features(document, used)
     link_log_pages(document)
 
