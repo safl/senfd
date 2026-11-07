@@ -1,0 +1,43 @@
+import asyncio
+import os
+import shutil
+from pathlib import Path
+
+import pytest
+
+mcp = pytest.importorskip("mcp")
+
+SPEC = Path("example") / "output" / "merged.spec.document.json"
+
+
+def test_the_queries_are_tools_of_the_server_over_stdio():
+    """As an agent runs it: senfd-mcp over stdio, asked for a command's dword"""
+
+    from mcp import ClientSession
+    from mcp.client.stdio import StdioServerParameters, stdio_client
+
+    executable = shutil.which("senfd-mcp")
+    assert executable, "senfd-mcp is not installed"
+    parameters = StdioServerParameters(
+        command=executable, env={**os.environ, "SENFD_SPEC": str(SPEC.resolve())}
+    )
+
+    async def ask():
+        async with stdio_client(parameters) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                tools = await session.list_tools()
+                result = await session.call_tool(
+                    "command", {"name": "ding", "dword": 10}
+                )
+                return [t.name for t in tools.tools], result
+
+    names, result = asyncio.run(ask())
+    assert names == ["command", "feature", "log_page", "structure", "search"]
+    (content,) = result.content
+    assert content.text.splitlines() == [
+        "Ding: Foobar command, opcode 01h [example, Figure 1]",
+        "cdw10 [example, Figure 2]",
+        "  31:16 Reserved",
+        "  15:00 Foo Count (FCNT)",
+    ]
