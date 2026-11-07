@@ -250,3 +250,16 @@ def test_the_values_of_a_table_are_typed(tmp_path):
     # A value of no form its column holds is an erratum, and is not typed
     assert ("value", "Maybe") in {(e.code, e.found) for e in spec.errata}
     assert "i_o" not in by_name["Foo Odd"].typed
+
+
+def test_fields_sharing_bytes_are_the_alternatives_of_a_union(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (address,) = [st for st in spec.structures if st.name == "Foo Address"]
+
+    assert [(f.range, f.union, f.alternative) for f in address.fields] == [
+        ("00", None, None),
+        ("01:01", None, None),
+        ("17:02", 0, 0),
+        ("05:02", 0, 1),
+        ("17:06", 0, 1),
+    ]

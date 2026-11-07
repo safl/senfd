@@ -66,7 +66,13 @@ def cite(source: Source) -> str:
 def bits(field: Bits) -> str:
     rng = field.range  # As the document writes it
     acronym = f" ({field.acronym})" if field.acronym else ""
-    return f"{rng} {field.name or ''}{acronym}"
+    # Fields sharing bits are alternatives, "either" of a union
+    either = (
+        f" [union {field.union}, alternative {field.alternative}]"
+        if field.union is not None
+        else ""
+    )
+    return f"{rng} {field.name or ''}{acronym}{either}"
 
 
 def lines_of_fields(

@@ -52,6 +52,12 @@ class Bits(BaseModel):
     section: Optional[str] = None
     columns: Dict[str, str] = Field(default_factory=dict)
     fields: List["Bits"] = Field(default_factory=list)
+    # Fields sharing bits are alternatives of one union: 'union' numbers the
+    # union of the layout the field is of, 'alternative' the fields that go
+    # together, as an IPv4 address and the reserved bits after it, or an IPv6
+    # address of the same bytes
+    union: Optional[int] = None
+    alternative: Optional[int] = None
 
 
 class Dwords(BaseModel):
@@ -246,16 +252,68 @@ def bits_of(field: LayoutField, unit: str) -> Bits:
         description=field.description,
         section=field.section,
         columns=field.columns,
-        fields=[
-            bits_of(nested_field, nested.unit)
-            for nested in field.layouts
-            for nested_field in nested.fields
-        ],
+        fields=unions_of(
+            [
+                bits_of(nested_field, nested.unit)
+                for nested in field.layouts
+                for nested_field in nested.fields
+            ]
+        ),
     )
 
 
 def fields_of(layout: Layout) -> List[Bits]:
-    return [bits_of(field, layout.unit) for field in layout.fields]
+    return unions_of([bits_of(field, layout.unit) for field in layout.fields])
+
+
+def unions_of(fields: List[Bits]) -> List[Bits]:
+    """
+    'fields' with those sharing bits, of a section, made alternatives of a
+    union: the fields of bits some other shares are a region, and each is,
+    in the order of the table, of the first alternative of its region whose
+    fields it shares no bits with
+    """
+
+    def overlaps(a: Bits, b: Bits) -> bool:
+        return (
+            a.lower is not None
+            and b.lower is not None
+            and a.upper is not None
+            and b.upper is not None
+            and a.lower <= b.upper
+            and b.lower <= a.upper
+        )
+
+    unions = 0
+    for section in dict.fromkeys(f.section for f in fields):
+        these = [f for f in fields if f.section == section and f.lower is not None]
+        # The regions: fields joined by sharing bits, directly or through others
+        regions: List[List[Bits]] = []
+        for field in these:
+            joined = [r for r in regions if any(overlaps(field, f) for f in r)]
+            region = [field] + [f for r in joined for f in r]
+            regions = [r for r in regions if r not in joined] + [region]
+        for region in regions:
+            if len(region) < 2:
+                continue
+            alternatives: List[List[Bits]] = []
+            for field in sorted(region, key=fields.index):
+                at = next(
+                    (
+                        i
+                        for i, alternative in enumerate(alternatives)
+                        if not any(overlaps(field, f) for f in alternative)
+                    ),
+                    None,
+                )
+                if at is None:
+                    alternatives.append([field])
+                    at = len(alternatives) - 1
+                else:
+                    alternatives[at].append(field)
+                field.union, field.alternative = unions, at
+            unions += 1
+    return fields
 
 
 # The dwords of the pointers, where the common command format puts them; their
