@@ -331,3 +331,17 @@ def test_a_table_of_no_known_shape_is_entries_by_its_column_names(normalized):
         "Foo Capabilities",
         "FCAP",
     )
+
+
+def test_a_figure_has_its_page_and_section(normalized):
+    """The section by counting the headings, which Word numbers, and by the
+    table of contents where it numbers a section otherwise"""
+
+    _, figures = normalized
+    ding = figures["Ding - Command Dword 10"]
+    assert (ding["page_nr"], ding["section"], ding["section_title"]) == (
+        2,
+        "1.2",
+        "Ding command",
+    )
+    assert figures["Foo Statistics Data Structure"]["section"] == "4"

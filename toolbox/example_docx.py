@@ -33,7 +33,15 @@ def dword(*rows):
 # Each entry is (caption, table); a table is a header and rows, or None for a
 # figure that is not a table. A cell is text, or a (text, table) pair of a
 # cell holding a table of its own.
+def heading(level, title):
+    """A heading of 'level' before the figures after it, numbered by Word"""
+
+    return ("heading", level, title)
+
+
 FIGURES = [
+    heading(1, "Foobar Command Set"),
+    heading(2, "Foobar Commands"),
     # The command set: its opcodes and the dwords of its commands make up the
     # model document
     (
@@ -53,6 +61,7 @@ FIGURES = [
             ],
         },
     ),
+    heading(2, "Ding command"),
     (
         f"Ding {DASH} Command Dword 10",
         dword(("31:16", "Reserved"), ("15:00", "Foo Count (FCNT): How many.")),
@@ -117,6 +126,7 @@ FIGURES = [
             "rows": [("C0h", "Foo Invalid: Foo is not valid.")],
         },
     ),
+    heading(1, "Admin Commands"),
     # The admin commands and the identify command
     (
         "Opcodes for Admin Commands",
@@ -230,6 +240,7 @@ FIGURES = [
             "rows": [("1.0", "1h", "0h", "0h"), ("1.1", "1h", "1h", "0h")],
         },
     ),
+    heading(1, "Data Structures"),
     # Data structures, in the forms their captions take
     (
         "Foo Statistics Data Structure",
@@ -543,8 +554,27 @@ def add_table(container, table, caption=None):
         docx_table.cell(*other).merge(docx_table.cell(ridx, cidx)).text = text
 
 
+def number_headings(figures):
+    """The number of each heading of 'figures', as Word numbers them"""
+
+    counters, numbers = [], []
+    for entry in figures:
+        if entry[0] == "heading":
+            level = entry[1]
+            counters = counters[:level] + [0] * (level - len(counters[:level]))
+            counters[level - 1] += 1
+            numbers.append(".".join(str(c) for c in counters))
+    return numbers
+
+
+# A section that the table of contents numbers otherwise than counting the
+# headings does, as when Word numbers a heading that does not show
+TOC_NUMBERS = {"Data Structures": "4"}
+
+
 def write(path, figures):
-    """Write the document of 'figures' to 'path'"""
+    """Write the document of 'figures', and of the headings among them, to
+    'path', with a table of contents and a table of figures"""
 
     document = docx.Document()
     document.core_properties.author = "senfd"
@@ -552,15 +582,28 @@ def write(path, figures):
     document.add_paragraph(
         "Figures of each kind senfd recognises, with made-up names and text."
     )
+    for name in ["NVMe H1", "NVMe H2", "toc 1", "toc 2", "table of figures"]:
+        document.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
 
-    document.styles.add_style("table of figures", WD_STYLE_TYPE.PARAGRAPH)
-    for number, (caption, _) in enumerate(figures, 1):
+    headings = [entry for entry in figures if entry[0] == "heading"]
+    for (_, level, title), number in zip(headings, number_headings(figures)):
+        number = TOC_NUMBERS.get(title, number)
+        document.add_paragraph(f"{number}\t{title}\t1", style=f"toc {level}")
+
+    captions = [entry for entry in figures if entry[0] != "heading"]
+    for number, (caption, _) in enumerate(captions, 1):
         document.add_paragraph(
             f"Figure {number}: {caption}\t{number}", style="table of figures"
         )
 
-    document.add_heading("Figures", 1)
-    for number, (caption, table) in enumerate(figures, 1):
+    document.add_paragraph("Figures")
+    number = 0
+    for entry in figures:
+        if entry[0] == "heading":
+            document.add_paragraph(entry[2], style=f"NVMe H{entry[1]}")
+            continue
+        number += 1
+        caption, table = entry
         if table is None:
             document.add_paragraph(f"Figure {number}: {caption}")
             continue

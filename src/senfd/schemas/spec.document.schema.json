@@ -443,7 +443,7 @@
             "type": "object"
         },
         "Source": {
-            "description": "The document and the figure something came from",
+            "description": "Where something came from: the document, the figure, the page the\nfigure is on, and the section it is in, by number and title",
             "properties": {
                 "document": {
                     "title": "Document",
@@ -452,6 +452,42 @@
                 "figure_nr": {
                     "title": "Figure Nr",
                     "type": "integer"
+                },
+                "page_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Page Nr"
+                },
+                "section": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Section"
+                },
+                "section_title": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Section Title"
                 }
             },
             "required": [

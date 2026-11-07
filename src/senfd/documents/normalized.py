@@ -63,6 +63,9 @@ class Layout(BaseModel):
 class NormalizedFigure(BaseModel):
     figure_nr: int
     caption: str
+    page_nr: Optional[int] = None
+    section: Optional[str] = None
+    section_title: Optional[str] = None
     subject: Subject
     shape: Optional[str] = None
     headers: List[str] = Field(default_factory=list)
@@ -380,6 +383,9 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
     normalized = NormalizedFigure(
         figure_nr=figure.figure_nr,
         caption=caption,
+        page_nr=figure.page_nr,
+        section=figure.section,
+        section_title=figure.section_title,
         subject=parse_caption(caption),
     )
 

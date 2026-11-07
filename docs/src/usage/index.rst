@@ -52,7 +52,9 @@ the documents you have, into the cache:
 
    senfd path/to/specs/*.docx --output ~/.cache/senfd
 
-Then ask, and each answer cites the document and figure it came from:
+Then ask, and each answer cites where it came from, the document, the
+section, the figure and the page, as ``[Base 2.2, 5.1.10, Figure 190, page
+195]``:
 
 .. code-block:: bash
 
@@ -61,6 +63,7 @@ Then ask, and each answer cites the document and figure it came from:
    senfd-query log-page 02h
    senfd-query structure "Controller Status"
    senfd-query search FUA
+   senfd-query section 5.1.25
 
 ``--spec`` or the environment variable ``SENFD_SPEC`` points at another
 merged model, and ``--verbose`` gives the descriptions too.

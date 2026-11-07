@@ -78,6 +78,14 @@ def search(text: str) -> str:
     return "\n".join(senfd.query.search(spec(), text))
 
 
+@server.tool(structured_output=False)
+def section(key: str) -> str:
+    """What a section of the specification describes, by its number, as
+    "5.1.25", with its subsections, or by a word of its title"""
+
+    return "\n".join(senfd.query.section(spec(), key))
+
+
 def main() -> int:
     server.run("stdio")
     return 0
