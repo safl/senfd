@@ -386,11 +386,11 @@
             "type": "array"
         },
         "skipped": {
-            "items": {
-                "type": "integer"
+            "additionalProperties": {
+                "type": "string"
             },
             "title": "Skipped",
-            "type": "array"
+            "type": "object"
         },
         "nontabular": {
             "items": {

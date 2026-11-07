@@ -1,9 +1,8 @@
-from senfd.documents.enriched import EnrichedFigureDocument
-from senfd.documents.plain import FigureDocument
+from senfd.documents import get_document_classes
 
 
 def test_check_schema_equivalence():
-    for document_class in [FigureDocument, EnrichedFigureDocument]:
+    for document_class in get_document_classes():
         dynamic_schema = document_class.schema()
         assert dynamic_schema
 

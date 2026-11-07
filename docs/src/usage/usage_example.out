@@ -1,5 +1,8 @@
-html_path(/tmp/foo/example.plain.figure.document.html)
-json_path(/tmp/foo/example.plain.figure.document.json)
-html_path(/tmp/foo/example.enriched.figure.document.html)
-json_path(/tmp/foo/example.enriched.figure.document.json)
-
+/tmp/foo/example.error.log
+/tmp/foo/example.normalized.figure.document.html
+/tmp/foo/example.normalized.figure.document.json
+/tmp/foo/example.plain.figure.document.html
+/tmp/foo/example.plain.figure.document.json
+/tmp/foo/example.spec.document.html
+/tmp/foo/example.spec.document.json
+/tmp/foo/merged.spec.document.json

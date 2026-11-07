@@ -22,10 +22,12 @@ Place yourself in the root of the repository and run:
 .. literalinclude:: usage_example.cmd
    :language: bash
 
-This will extract table and figure information from the ``.docx`` file,
-storing it as a ``FigureDocument`` with minimal semantic enrichment, then the
-``FigureDocument`` is processed producing a ``CategorizedFigureDocument`` with
-figures categorized by the content they are captioning.
+This extracts the figures of the ``.docx`` file, their captions and tables,
+into a ``FigureDocument``; normalises each into a ``NormalizedFigureDocument``,
+by the shape of its table and the subject of its caption, with diagnostics
+saying what was normalised; and makes the model of the specification of it, a
+``SpecDocument``. The ``SpecDocument`` of every document given is merged into
+``merged.spec.document.json``.
 
 For all of the output files then they are stored in the directory pointed to
 by ``--output``, in this case ``/tmp/foo``, each named by the input-document
@@ -37,12 +39,6 @@ or locally in the folder ``example/output``.
 
 For details on the structure of the **JSON** documents, then have a look at
 the :ref:`schema <sec-schema>` section.
-
-Besides those, each document is normalised into a
-``NormalizedFigureDocument``, every tabular figure by the shape of its table
-and the subject of its caption, with diagnostics saying what was normalised,
-and from that a ``SpecDocument``, the model of the specification. The model of
-all the documents given is merged into ``merged.spec.document.json``.
 
 .. _sec-usage-query:
 

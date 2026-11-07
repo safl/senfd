@@ -22,14 +22,13 @@ def test_a_skip_list_leaves_out_the_figures_it_matches(tmp_path):
 
     path = Path("example") / "example.docx"
     senfd.pipeline.process(path, tmp_path, Namespace(skip_figures=skiplist))
-    (enriched,) = tmp_path.glob("*.enriched.figure.document.json")
-    document = json.loads(enriched.read_text(encoding="utf-8"))
+    (normalized,) = tmp_path.glob("*.normalized.figure.document.json")
+    document = json.loads(normalized.read_text(encoding="utf-8"))
 
+    assert set(document["skipped"].values()) == {"Not used here"}
     assert len(document["skipped"]) == 2
-    assert document["stats"]["skipped"] == 2
-    assert not document["command_sqe_data_pointer"]
-    # A SkipElement is a tuple of the pattern, the description and the count
-    assert {e[1] for e in document["skip_map"].values()} == {"Not used here"}
+    kinds = [f["subject"]["kind"] for f in document["figures"]]
+    assert "data_pointer" not in kinds
 
 
 def test_a_skip_list_matching_other_than_it_says_names_both_counts(tmp_path):

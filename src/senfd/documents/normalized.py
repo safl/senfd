@@ -81,7 +81,8 @@ class NormalizedFigureDocument(Document):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "normalized.figure.document.html.jinja2"
 
     figures: List[NormalizedFigure] = Field(default_factory=list)
-    skipped: List[int] = Field(default_factory=list)
+    # The figures a skip list leaves out, by number, with why
+    skipped: Dict[int, str] = Field(default_factory=dict)
     nontabular: List[int] = Field(default_factory=list)
     diagnostics: List[Diagnostic] = Field(default_factory=list)
 
@@ -464,8 +465,9 @@ class FromFigureDocument(Converter):
             if not figure.table:
                 document.nontabular.append(figure.figure_nr)
                 continue
-            if skip_patterns.skip_figure(figure):
-                document.skipped.append(figure.figure_nr)
+            skip = skip_patterns.skip_figure(figure)
+            if skip:
+                document.skipped[figure.figure_nr] = skip.description
                 continue
 
             diagnostics: List[Diagnostic] = []

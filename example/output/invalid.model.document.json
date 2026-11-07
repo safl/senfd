@@ -1,1 +1,0 @@
-{"meta":{"version":"0.4.0","stem":"invalid"},"command_sets":{},"sqe_of_other_documents":[{"command_alias":"ringing","nbytes":4,"lower":10,"upper":10,"condition":null,"fields":[{"nbits":32,"lower":0,"upper":31,"name":"Host Buffer Size","acronym":"hbs","description":"This field indicates the host buffer size in bytes."}]}]}
