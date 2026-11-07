@@ -5,25 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>enriched invalid</title>
+    <style>
+.document-stats {
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  background: var(--bs-border-color);
+  gap: 1px 0px;
+  padding: 0;
+  margin: 20px;
+}
+.document-stats > * {
+  background: white;
+  padding: 6px;
+}
+.document-stats .hdr {
+  font-weight: bold;
+}
+@media (max-width: 1300px) {
+  .document-stats {
+    text-align: left;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr auto;
+  }
+}
+    </style>
   </head>
   <body>
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Document figure stats.</h3>
+      <h3 class="card-title">Document figure stats</h3>
     </div>
-    <div class="card-body">
-
-      <table class="table">
-      <tr>
-        <td>Uncategorized</td>
-        <td>1</td>
-      <tr>
-      </tr>
-        <td>Non-tabular</td>
-        <td>1</td>
-      </table>
-
+    <div class="card-body document-stats">
+      <div class="hdr">Total number of figures</div>
+      <div class="hdr">Categorized</div>
+      <div class="hdr">Uncategorized</div>
+      <div class="hdr">Non-tabular</div>
+      <div class="hdr">Skipped</div>
+      <div class="hdr">Maximum figure number</div>
+      <div>4</div>
+      <div>2</div>
+      <div>1</div>
+      <div>1</div>
+      <div>0</div>
+      <div>6</div>
     </div>
   </div>
   
@@ -36,6 +63,18 @@
 
   <!-- Sections and figures under those sections -->
   <div class="container mt-5">
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -74,11 +113,11 @@
 
   <table class="mb-0">
   <tr>
-    <td><strong>Categorization</strong>:</td><td>IoControllerCommandSetSupportRequirement</td>
+    <td><strong>Categorization</strong>:</td><td>IoControllerSupportRequirement</td>
   </tr>
   
   <tr>
-    <td><strong>CommandSetName</strong>:</td><td>Foobar </td>
+    <td><strong>Supported</strong>:</td><td>Foobar Command Set</td>
   </tr>
   
   </table>
@@ -105,6 +144,7 @@
         <div class="tab-pane fade show active" id="grid_2" role="tabpanel" aria-labelledby="grid_tab_2">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -116,6 +156,7 @@
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_2" role="tabpanel" aria-labelledby="table_tab_2">
           <!-- RAW TABLE rendered here -->
@@ -157,9 +198,9 @@
 
 <pre>
 
-message='Grid is missing fields; check IoControllerCommandSetSupportRequirementFigure.REGEX_GRID' figure_nr=2
+message='Grid is missing fields; check IoControllerSupportRequirementFigure.REGEX_GRID' figure_nr=2
 
-message='Grid is missing values; check IoControllerCommandSetSupportRequirementFigure.REGEX_GRID' figure_nr=2
+message='Grid is missing values; check IoControllerSupportRequirementFigure.REGEX_GRID' figure_nr=2
 
 </pre>
 
@@ -211,6 +252,10 @@ message='Grid is missing values; check IoControllerCommandSetSupportRequirementF
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -218,11 +263,15 @@ message='Grid is missing values; check IoControllerCommandSetSupportRequirementF
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ringing </td>
+    <td><strong>CommandName</strong>:</td><td>Ringing</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>10</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -249,6 +298,7 @@ message='Grid is missing values; check IoControllerCommandSetSupportRequirementF
         <div class="tab-pane fade show active" id="grid_3" role="tabpanel" aria-labelledby="grid_tab_3">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -284,6 +334,7 @@ message='Grid is missing values; check IoControllerCommandSetSupportRequirementF
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_3" role="tabpanel" aria-labelledby="table_tab_3">
           <!-- RAW TABLE rendered here -->
@@ -401,6 +452,24 @@ No errors logged for this figure.
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <div class="card mb-4">
 
     <div class="card-header">
@@ -451,6 +520,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_6" role="tabpanel" aria-labelledby="grid_tab_6">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -462,6 +532,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_6" role="tabpanel" aria-labelledby="table_tab_6">
           <!-- RAW TABLE rendered here -->
@@ -539,6 +610,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_1" role="tabpanel" aria-labelledby="grid_tab_1">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -550,6 +622,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_1" role="tabpanel" aria-labelledby="table_tab_1">
           <!-- RAW TABLE rendered here -->

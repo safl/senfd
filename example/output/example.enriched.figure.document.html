@@ -5,25 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <title>enriched example</title>
+    <style>
+.document-stats {
+  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  background: var(--bs-border-color);
+  gap: 1px 0px;
+  padding: 0;
+  margin: 20px;
+}
+.document-stats > * {
+  background: white;
+  padding: 6px;
+}
+.document-stats .hdr {
+  font-weight: bold;
+}
+@media (max-width: 1300px) {
+  .document-stats {
+    text-align: left;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr auto;
+  }
+}
+    </style>
   </head>
   <body>
 
   <div class="card">
     <div class="card-header">
-      <h3 class="card-title">Document figure stats.</h3>
+      <h3 class="card-title">Document figure stats</h3>
     </div>
-    <div class="card-body">
-
-      <table class="table">
-      <tr>
-        <td>Uncategorized</td>
-        <td>1</td>
-      <tr>
-      </tr>
-        <td>Non-tabular</td>
-        <td>1</td>
-      </table>
-
+    <div class="card-body document-stats">
+      <div class="hdr">Total number of figures</div>
+      <div class="hdr">Categorized</div>
+      <div class="hdr">Uncategorized</div>
+      <div class="hdr">Non-tabular</div>
+      <div class="hdr">Skipped</div>
+      <div class="hdr">Maximum figure number</div>
+      <div>46</div>
+      <div>44</div>
+      <div>1</div>
+      <div>1</div>
+      <div>0</div>
+      <div>46</div>
     </div>
   </div>
   
@@ -63,10 +90,18 @@
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>Ringing - Return</td>
   </tr>
   
   </table>
@@ -93,6 +128,7 @@
         <div class="tab-pane fade show active" id="grid_15" role="tabpanel" aria-labelledby="grid_tab_15">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -142,6 +178,7 @@
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_15" role="tabpanel" aria-labelledby="table_tab_15">
           <!-- RAW TABLE rendered here -->
@@ -307,10 +344,18 @@ message='cell.text() no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>Foobar Baz</td>
   </tr>
   
   </table>
@@ -337,6 +382,7 @@ message='cell.text() no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]
         <div class="tab-pane fade show active" id="grid_16" role="tabpanel" aria-labelledby="grid_tab_16">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -400,6 +446,7 @@ message='cell.text() no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_16" role="tabpanel" aria-labelledby="table_tab_16">
           <!-- RAW TABLE rendered here -->
@@ -515,10 +562,18 @@ No errors logged for this figure.
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>Error Information Log Entry</td>
   </tr>
   
   </table>
@@ -545,6 +600,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_38" role="tabpanel" aria-labelledby="grid_tab_38">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -580,6 +636,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_38" role="tabpanel" aria-labelledby="table_tab_38">
           <!-- RAW TABLE rendered here -->
@@ -667,10 +724,18 @@ No errors logged for this figure.
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>Self-test Results</td>
   </tr>
   
   </table>
@@ -697,6 +762,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_39" role="tabpanel" aria-labelledby="grid_tab_39">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -732,6 +798,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_39" role="tabpanel" aria-labelledby="table_tab_39">
           <!-- RAW TABLE rendered here -->
@@ -819,10 +886,18 @@ No errors logged for this figure.
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>Identify - I/O Command Set Specific Identify Namespace</td>
   </tr>
   
   </table>
@@ -839,7 +914,7 @@ No errors logged for this figure.
           <a class="nav-link" id="table_tab_41" data-bs-toggle="tab" href="#table_41" role="tab" aria-controls="table_41" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_41" data-bs-toggle="tab" href="#errors_41" role="tab" aria-controls="errors_41" aria-selected="false">Errors (30)</a>
+          <a class="nav-link text-danger" id="errors_tab_41" data-bs-toggle="tab" href="#errors_41" role="tab" aria-controls="errors_41" aria-selected="false">Errors (3)</a>
         </li>
       </ul>
     </div>
@@ -849,17 +924,365 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_41" role="tabpanel" aria-labelledby="grid_tab_41">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
+    
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
   <tbody>
   
+  <tr>
+    
+    <td>07</td>
+    
+    <td>00</td>
+    
+    <td>Namespace Size </td>
+    
+    <td>NSZE</td>
+    
+    <td>This field indicates the total size of the namespace in bytes. This is the space to Ring Foobar Bazs and FB values. This field is undefined prior to the namespace being formatted.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>08</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>23</td>
+    
+    <td>16</td>
+    
+    <td>Namespace Utilization </td>
+    
+    <td>NUSE</td>
+    
+    <td>This field indicates the current number of bytes of namespace capacity that are in use to Ring Foobar Bazs and FB values. This field is less than or equal to the Namespace Size field.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>24</td>
+    
+    <td>Namespace Features </td>
+    
+    <td>NSFEAT</td>
+    
+    <td>This field defines features of the namespace.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>25</td>
+    
+    <td>Number of FB Formats </td>
+    
+    <td>NFBF</td>
+    
+    <td>This field defines the number of FB format descriptors supported by the namespace. FB formats shall be packed sequentially starting at the FB Format 0 Support (FBF0) field. This is a 0's based value.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>26</td>
+    
+    <td>Namespace Multi-path I/O and Namespace Sharing Capabilities </td>
+    
+    <td>NMIC</td>
+    
+    <td>Refer to the NMIC field in the I/O Command Set Independent Identify Namespace data structure in the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>27</td>
+    
+    <td>Reservation Capabilities </td>
+    
+    <td>RESCAP</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>28</td>
+    
+    <td>Format Progress Indicator </td>
+    
+    <td>FPI</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>29</td>
+    
+    <td>FB Format Capabilities </td>
+    
+    <td>FBFC</td>
+    
+    <td>This field defines capabilities associated with the FB format.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>31</td>
+    
+    <td>30</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>35</td>
+    
+    <td>32</td>
+    
+    <td>Namespace Optimal Value Granularity </td>
+    
+    <td>NOVG</td>
+    
+    <td>This field indicates the optimal value granularity for this namespace. This field is specified in bytes. The host should construct Ring commands that Ring multiples of NOVG bytes to achieve optimal performance. A value of 0h indicates that no optimal value granularity is reported.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>39</td>
+    
+    <td>36</td>
+    
+    <td>ANA Group Identifier </td>
+    
+    <td>ANAGRPID</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>42</td>
+    
+    <td>40</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>43</td>
+    
+    <td>Namespace Attributes </td>
+    
+    <td>NSATTR</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>45</td>
+    
+    <td>44</td>
+    
+    <td>NVM Set Identifier </td>
+    
+    <td>NVMSETID</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>47</td>
+    
+    <td>46</td>
+    
+    <td>Endurance Group Identifier </td>
+    
+    <td>ENDGID</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>63</td>
+    
+    <td>48</td>
+    
+    <td>Namespace Globally Unique Identifier </td>
+    
+    <td>NGUID</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>71</td>
+    
+    <td>64</td>
+    
+    <td>IEEE Extended Unique Identifier </td>
+    
+    <td>EUI64</td>
+    
+    <td>Refer to the Specification</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>FB Formats</td>
+    
+    <td>FB Formats</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87</td>
+    
+    <td>72</td>
+    
+    <td>FB Format 0 Support </td>
+    
+    <td>FBF0</td>
+    
+    <td>This field indicates the FB format 0 that is supported by the controller. The FB format field is defined in Figure 42.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>103</td>
+    
+    <td>88</td>
+    
+    <td>FB Format 1 Support </td>
+    
+    <td>FBF1</td>
+    
+    <td>This field indicates the FB format 1 that is supported by the controller. The FB format field is defined in Figure 42.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>327</td>
+    
+    <td>312</td>
+    
+    <td>FB Format 15 Support </td>
+    
+    <td>FBF15</td>
+    
+    <td>This field indicates the FB format 15 that is supported by the controller. The FB format field is defined in Figure 42.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>3839</td>
+    
+    <td>328</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>4095</td>
+    
+    <td>3840</td>
+    
+    <td>Vendor Specific</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_41" role="tabpanel" aria-labelledby="table_tab_41">
           <!-- RAW TABLE rendered here -->
@@ -1671,65 +2094,11 @@ Identifies fields that report information for the Identify command when querying
 
 <pre>
 
-message="No match REGEX_GRID/Headers on idx([(1, '(Definition|Description).*', 'O/M 1')])" figure_nr=41 table_nr=41 row_idx=1
+message='cell.text(...) no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]+):)?(?P<lower>[0-9 \\w\\+\\*]+))' figure_nr=41 table_nr=41 row_idx=23 cell_idx=0
 
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '07:00'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=2
+message='cell.text(...) no match((?P<name>[ \\/\\-\\w]+)(\\((?P<acronym>[^\\)]+)\\))?(:\\s*(?P<description>.*))?)' figure_nr=41 table_nr=41 row_idx=23 cell_idx=1
 
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '15:08'), (1, '(Definition|Description).*', '')])" figure_nr=41 table_nr=41 row_idx=3
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '23:16'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=4
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '24'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=5
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '25'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=6
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '26'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=7
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '27'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=8
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '28'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=9
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '29'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=10
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '31:30'), (1, '(Definition|Description).*', '')])" figure_nr=41 table_nr=41 row_idx=11
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '35:32'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=12
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '39:36'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=13
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '42:40'), (1, '(Definition|Description).*', '')])" figure_nr=41 table_nr=41 row_idx=14
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '43'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=15
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '45:44'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=16
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '47:46'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=17
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '63:48'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=18
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '71:64'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=19
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', 'FB Formats'), (1, '(Definition|Description).*', 'FB Formats')])" figure_nr=41 table_nr=41 row_idx=20
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '87:72'), (1, '(Definition|Description).*', 'M')])" figure_nr=41 table_nr=41 row_idx=21
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '103:88'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=22
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '…'), (1, '(Definition|Description).*', '…')])" figure_nr=41 table_nr=41 row_idx=23
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '327:312'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=24
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '3839:328'), (1, '(Definition|Description).*', '')])" figure_nr=41 table_nr=41 row_idx=25
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '4095:3840'), (1, '(Definition|Description).*', 'O')])" figure_nr=41 table_nr=41 row_idx=26
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', 'Notes: O/M definition: O = Optional, M = Mandatory. Identifies fields that report information for the Identify command when querying the capabilities of LBA formats.'), (1, '(Definition|Description).*', 'Notes: O/M definition: O = Optional, M = Mandatory. Identifies fields that report information for the Identify command when querying the capabilities of LBA formats.')])" figure_nr=41 table_nr=41 row_idx=27
-
-message='Grid is missing headers; check DataStructureFigure.REGEX_GRID' figure_nr=41
-
-message='Grid is missing fields; check DataStructureFigure.REGEX_GRID' figure_nr=41
-
-message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr=41
+message='cell.text(Notes:\nO/M definition: O = Optional, M = Mandatory.\nIdentifies fields that report information for the Identify command when querying the capabilities of LBA formats.) no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]+):)?(?P<lower>[0-9 \\w\\+\\*]+))' figure_nr=41 table_nr=41 row_idx=27 cell_idx=0
 
 </pre>
 
@@ -1761,10 +2130,18 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
   
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
     <td><strong>Categorization</strong>:</td><td>DataStructure</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Command</strong>:</td><td>FB Format</td>
   </tr>
   
   </table>
@@ -1781,7 +2158,7 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
           <a class="nav-link" id="table_tab_42" data-bs-toggle="tab" href="#table_42" role="tab" aria-controls="table_42" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_42" data-bs-toggle="tab" href="#errors_42" role="tab" aria-controls="errors_42" aria-selected="false">Errors (15)</a>
+          <a class="nav-link text-danger" id="errors_tab_42" data-bs-toggle="tab" href="#errors_42" role="tab" aria-controls="errors_42" aria-selected="false">Errors (2)</a>
         </li>
       </ul>
     </div>
@@ -1791,17 +2168,155 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
         <div class="tab-pane fade show active" id="grid_42" role="tabpanel" aria-labelledby="grid_tab_42">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
+    
+    <th>Upper</th>
+    
+    <th>Lower</th>
+    
+    <th>Name</th>
+    
+    <th>Acronym</th>
+    
+    <th>Description</th>
     
   </tr>
   </thead>
   <tbody>
   
+  <tr>
+    
+    <td>01</td>
+    
+    <td>00</td>
+    
+    <td>Foobar Baz Max Length </td>
+    
+    <td>FBKML</td>
+    
+    <td>Maximum length of a Foobar Baz in a Foobar pair in bytes. The value of this field shall be less than or equal to 16.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>02</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>03</td>
+    
+    <td>Additional Format Options </td>
+    
+    <td>AFO</td>
+    
+    <td></td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>07</td>
+    
+    <td>04</td>
+    
+    <td>FB Value Max Length </td>
+    
+    <td>FBVML</td>
+    
+    <td>Maximum length in bytes of a FB value in a Foobar pair.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>11</td>
+    
+    <td>08</td>
+    
+    <td>Max Num Foobars </td>
+    
+    <td>MNKS</td>
+    
+    <td>Maximum number of Foobar Bazs allowed in the namespace. A value of 0h indicates that no maximum number is indicated.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>15</td>
+    
+    <td>12</td>
+    
+    <td>Reserved</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>Figure 43</td>
+    
+    <td> I</td>
+    
+    <td>Figure 43</td>
+    
+    <td>None</td>
+    
+    <td>I/O Command Set Specific Identify Controller Data Structure for the Foobar Command Set</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>None</td>
+    
+    <td>Bytes</td>
+    
+    <td>O/M 1</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>03</td>
+    
+    <td>00</td>
+    
+    <td>M</td>
+    
+    <td>None</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_42" role="tabpanel" aria-labelledby="table_tab_42">
           <!-- RAW TABLE rendered here -->
@@ -2383,35 +2898,9 @@ O/M definition: O = Optional, M = Mandatory.
 
 <pre>
 
-message="No match REGEX_GRID/Headers on idx([(1, '(Definition|Description).*', 'Bytes')])" figure_nr=42 table_nr=42 row_idx=1
+message='cell.text() no match((?P<name>[ \\/\\-\\w]+)(\\((?P<acronym>[^\\)]+)\\))?(:\\s*(?P<description>.*))?)' figure_nr=42 table_nr=42 row_idx=11 cell_idx=1
 
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '01:00'), (1, '(Definition|Description).*', '01:00')])" figure_nr=42 table_nr=42 row_idx=2
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '02'), (1, '(Definition|Description).*', '02')])" figure_nr=42 table_nr=42 row_idx=3
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '03'), (1, '(Definition|Description).*', '03')])" figure_nr=42 table_nr=42 row_idx=4
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '07:04'), (1, '(Definition|Description).*', '07:04')])" figure_nr=42 table_nr=42 row_idx=5
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '11:08'), (1, '(Definition|Description).*', '11:08')])" figure_nr=42 table_nr=42 row_idx=6
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '15:12'), (1, '(Definition|Description).*', '15:12')])" figure_nr=42 table_nr=42 row_idx=7
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', 'Figure 43: I/O Command Set Specific Identify Controller Data Structure for the Foobar Command Set'), (1, '(Definition|Description).*', 'Figure 43: I/O Command Set Specific Identify Controller Data Structure for the Foobar Command Set')])" figure_nr=42 table_nr=42 row_idx=8
-
-message="No match REGEX_GRID/Headers on idx([(1, '(Definition|Description).*', 'O/M 1')])" figure_nr=42 table_nr=42 row_idx=9
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '03:00'), (1, '(Definition|Description).*', 'M')])" figure_nr=42 table_nr=42 row_idx=10
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', '4095:04'), (1, '(Definition|Description).*', '')])" figure_nr=42 table_nr=42 row_idx=11
-
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Bytes).*', 'Notes: O/M definition: O = Optional, M = Mandatory.'), (1, '(Definition|Description).*', 'Notes: O/M definition: O = Optional, M = Mandatory.')])" figure_nr=42 table_nr=42 row_idx=12
-
-message='Grid is missing headers; check DataStructureFigure.REGEX_GRID' figure_nr=42
-
-message='Grid is missing fields; check DataStructureFigure.REGEX_GRID' figure_nr=42
-
-message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr=42
+message='cell.text(Notes:\nO/M definition: O = Optional, M = Mandatory.) no match((?!Note|specficiation)(?:(?P<upper>[0-9 \\w\\+\\*]+):)?(?P<lower>[0-9 \\w\\+\\*]+))' figure_nr=42 table_nr=42 row_idx=12 cell_idx=0
 
 </pre>
 
@@ -2419,6 +2908,18 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
       </div>
     </div>
   </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -2454,11 +2955,11 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
 
   <table class="mb-0">
   <tr>
-    <td><strong>Categorization</strong>:</td><td>IoControllerCommandSetSupportRequirement</td>
+    <td><strong>Categorization</strong>:</td><td>IoControllerSupportRequirement</td>
   </tr>
   
   <tr>
-    <td><strong>CommandSetName</strong>:</td><td>Foobar </td>
+    <td><strong>Supported</strong>:</td><td>Foobar Command Set</td>
   </tr>
   
   </table>
@@ -2485,6 +2986,7 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
         <div class="tab-pane fade show active" id="grid_2" role="tabpanel" aria-labelledby="grid_tab_2">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -2540,6 +3042,7 @@ message='Grid is missing values; check DataStructureFigure.REGEX_GRID' figure_nr
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_2" role="tabpanel" aria-labelledby="table_tab_2">
           <!-- RAW TABLE rendered here -->
@@ -2679,6 +3182,197 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited) no match
   </div>
   
   
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 3</strong>: I/O Controller – Feature Support</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>IoControllerSupportRequirement</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Supported</strong>:</td><td>Feature</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_3" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_3" data-bs-toggle="tab" href="#grid_3" role="tab" aria-controls="grid_3" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_3" data-bs-toggle="tab" href="#table_3" role="tab" aria-controls="table_3" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" id="errors_tab_3" data-bs-toggle="tab" href="#errors_3" role="tab" aria-controls="errors_3" aria-selected="false">Errors (2)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_3" role="tabpanel" aria-labelledby="grid_tab_3">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>CommandName</th>
+    
+    <th>Requirement</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>Foobar Configuration</td>
+    
+    <td>M</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_3" role="tabpanel" aria-labelledby="table_tab_3">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 3: I/O Controller – Feature Support
+      
+    </td>
+    
+    <td>
+      Figure 3: I/O Controller – Feature Support
+      
+    </td>
+    
+    <td>
+      Figure 3: I/O Controller – Feature Support
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Feature Name
+      
+    </td>
+    
+    <td>
+      Feature Support 
+Requirements 1
+      
+    </td>
+    
+    <td>
+      Logged in 
+Persistent Event Log
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Foobar Configuration 
+      
+    </td>
+    
+    <td>
+      M
+      
+    </td>
+    
+    <td>
+      Yes
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Notes:
+O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
+      
+    </td>
+    
+    <td>
+      Notes:
+O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
+      
+    </td>
+    
+    <td>
+      Notes:
+O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_3" role="tabpanel" aria-labelledby="errors_tab_3">
+
+<pre>
+
+message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended) no match(^(?P<command_name>[a-zA-Z -/]*)[ \\d]*$)' figure_nr=3 table_nr=3 row_idx=3 cell_idx=0
+
+message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended) no match(^(?:(?P<requirement>O|M|P|NR|Note)(?:[ \\d]*))?$)' figure_nr=3 table_nr=3 row_idx=3 cell_idx=1
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
   
   
   
@@ -2743,6 +3437,7 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited) no match
         <div class="tab-pane fade show active" id="grid_5" role="tabpanel" aria-labelledby="grid_tab_5">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -2834,6 +3529,7 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited) no match
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_5" role="tabpanel" aria-labelledby="table_tab_5">
           <!-- RAW TABLE rendered here -->
@@ -3332,9 +4028,9 @@ This command may support the use of the Namespace Identifier (NSID) field set to
 
 <pre>
 
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Function).*', 'Opcode by Field'), (1, '(Data.Transfer).*', 'Opcode by Field')])" figure_nr=5 table_nr=5 row_idx=1
+message='No match REGEX_GRID/Headers on idx([])' figure_nr=5 table_nr=5 row_idx=1
 
-message="No match REGEX_GRID/Headers on idx([(0, '(Bits|Function).*', '(07:02)'), (1, '(Data.Transfer).*', '(01:00)')])" figure_nr=5 table_nr=5 row_idx=2
+message='No match REGEX_GRID/Headers on idx([])' figure_nr=5 table_nr=5 row_idx=2
 
 message='cell.text(Refer to the Specifcation) no match((?P<bitstr>\\d{4}\\s\\d{2}b))' figure_nr=5 table_nr=5 row_idx=4 cell_idx=0
 
@@ -3386,8 +4082,6 @@ message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specificatio
       </div>
     </div>
   </div>
-  
-  
   
   
   
@@ -3462,6 +4156,7 @@ message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specificatio
         <div class="tab-pane fade show active" id="grid_45" role="tabpanel" aria-labelledby="grid_tab_45">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -3497,6 +4192,7 @@ message='cell.text(Notes:\nOpcodes not Ringinged are defined in the Specificatio
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_45" role="tabpanel" aria-labelledby="table_tab_45">
           <!-- RAW TABLE rendered here -->
@@ -3564,6 +4260,8 @@ No errors logged for this figure.
   
   
   
+  
+  
   <div class="card mb-4">
 
     <div class="card-header">
@@ -3594,6 +4292,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -3601,11 +4303,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Dong </td>
+    <td><strong>CommandName</strong>:</td><td>Dong</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -3632,6 +4338,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_6" role="tabpanel" aria-labelledby="grid_tab_6">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -3681,6 +4388,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_6" role="tabpanel" aria-labelledby="table_tab_6">
           <!-- RAW TABLE rendered here -->
@@ -3790,6 +4498,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -3797,11 +4509,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ringing </td>
+    <td><strong>CommandName</strong>:</td><td>Ringing</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>10</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -3828,6 +4544,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_10" role="tabpanel" aria-labelledby="grid_tab_10">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -3863,6 +4580,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_10" role="tabpanel" aria-labelledby="table_tab_10">
           <!-- RAW TABLE rendered here -->
@@ -3958,6 +4676,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -3965,11 +4687,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ringing </td>
+    <td><strong>CommandName</strong>:</td><td>Ringing</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -3996,6 +4722,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_11" role="tabpanel" aria-labelledby="grid_tab_11">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -4045,6 +4772,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_11" role="tabpanel" aria-labelledby="table_tab_11">
           <!-- RAW TABLE rendered here -->
@@ -4154,6 +4882,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -4161,11 +4893,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ding </td>
+    <td><strong>CommandName</strong>:</td><td>Ding</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>10</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -4192,6 +4928,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_18" role="tabpanel" aria-labelledby="grid_tab_18">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -4227,6 +4964,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_18" role="tabpanel" aria-labelledby="table_tab_18">
           <!-- RAW TABLE rendered here -->
@@ -4322,6 +5060,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -4329,11 +5071,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ding </td>
+    <td><strong>CommandName</strong>:</td><td>Ding</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -4360,6 +5106,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_19" role="tabpanel" aria-labelledby="grid_tab_19">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -4423,6 +5170,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_19" role="tabpanel" aria-labelledby="table_tab_19">
           <!-- RAW TABLE rendered here -->
@@ -4596,6 +5344,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -4603,11 +5355,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ding </td>
+    <td><strong>CommandName</strong>:</td><td>Ding</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>13</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -4634,6 +5390,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_20" role="tabpanel" aria-labelledby="grid_tab_20">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -4697,6 +5454,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_20" role="tabpanel" aria-labelledby="table_tab_20">
           <!-- RAW TABLE rendered here -->
@@ -4820,6 +5578,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -4827,11 +5589,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Keep </td>
+    <td><strong>CommandName</strong>:</td><td>Keep</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -4858,6 +5624,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_24" role="tabpanel" aria-labelledby="grid_tab_24">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -4907,6 +5674,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_24" role="tabpanel" aria-labelledby="table_tab_24">
           <!-- RAW TABLE rendered here -->
@@ -5016,6 +5784,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -5023,11 +5795,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ring </td>
+    <td><strong>CommandName</strong>:</td><td>Ring</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>10</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -5054,6 +5830,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_29" role="tabpanel" aria-labelledby="grid_tab_29">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -5089,6 +5866,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_29" role="tabpanel" aria-labelledby="table_tab_29">
           <!-- RAW TABLE rendered here -->
@@ -5184,6 +5962,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -5191,11 +5973,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ring </td>
+    <td><strong>CommandName</strong>:</td><td>Ring</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -5222,6 +6008,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_30" role="tabpanel" aria-labelledby="grid_tab_30">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -5285,6 +6072,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_30" role="tabpanel" aria-labelledby="table_tab_30">
           <!-- RAW TABLE rendered here -->
@@ -5485,6 +6273,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -5492,11 +6284,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Ring </td>
+    <td><strong>CommandName</strong>:</td><td>Ring</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>13</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -5523,6 +6319,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_31" role="tabpanel" aria-labelledby="grid_tab_31">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -5586,6 +6383,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_31" role="tabpanel" aria-labelledby="table_tab_31">
           <!-- RAW TABLE rendered here -->
@@ -5709,6 +6507,10 @@ No errors logged for this figure.
           
       
   
+      
+          
+      
+  
 
   <table class="mb-0">
   <tr>
@@ -5716,11 +6518,15 @@ No errors logged for this figure.
   </tr>
   
   <tr>
-    <td><strong>CommandName</strong>:</td><td>Foobar Config </td>
+    <td><strong>CommandName</strong>:</td><td>Foobar Config</td>
   </tr>
   
   <tr>
     <td><strong>CommandDword</strong>:</td><td>11</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Condition</strong>:</td><td>None</td>
   </tr>
   
   </table>
@@ -5747,6 +6553,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_36" role="tabpanel" aria-labelledby="grid_tab_36">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -5796,6 +6603,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_36" role="tabpanel" aria-labelledby="table_tab_36">
           <!-- RAW TABLE rendered here -->
@@ -5879,6 +6687,12 @@ No errors logged for this figure.
   
   
   
+  
+  
+  
+  
+  
+  
   <div class="card mb-4">
 
     <div class="card-header">
@@ -5955,6 +6769,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_7" role="tabpanel" aria-labelledby="grid_tab_7">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -5990,6 +6805,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_7" role="tabpanel" aria-labelledby="table_tab_7">
           <!-- RAW TABLE rendered here -->
@@ -6131,6 +6947,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_8" role="tabpanel" aria-labelledby="grid_tab_8">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -6166,6 +6983,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_8" role="tabpanel" aria-labelledby="table_tab_8">
           <!-- RAW TABLE rendered here -->
@@ -6307,6 +7125,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_12" role="tabpanel" aria-labelledby="grid_tab_12">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -6342,6 +7161,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_12" role="tabpanel" aria-labelledby="table_tab_12">
           <!-- RAW TABLE rendered here -->
@@ -6483,6 +7303,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_13" role="tabpanel" aria-labelledby="grid_tab_13">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -6518,6 +7339,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_13" role="tabpanel" aria-labelledby="table_tab_13">
           <!-- RAW TABLE rendered here -->
@@ -6659,6 +7481,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_21" role="tabpanel" aria-labelledby="grid_tab_21">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -6694,6 +7517,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_21" role="tabpanel" aria-labelledby="table_tab_21">
           <!-- RAW TABLE rendered here -->
@@ -6835,6 +7659,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_22" role="tabpanel" aria-labelledby="grid_tab_22">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -6870,6 +7695,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_22" role="tabpanel" aria-labelledby="table_tab_22">
           <!-- RAW TABLE rendered here -->
@@ -7011,6 +7837,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_25" role="tabpanel" aria-labelledby="grid_tab_25">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7046,6 +7873,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_25" role="tabpanel" aria-labelledby="table_tab_25">
           <!-- RAW TABLE rendered here -->
@@ -7187,6 +8015,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_26" role="tabpanel" aria-labelledby="grid_tab_26">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7222,6 +8051,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_26" role="tabpanel" aria-labelledby="table_tab_26">
           <!-- RAW TABLE rendered here -->
@@ -7363,6 +8193,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_32" role="tabpanel" aria-labelledby="grid_tab_32">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7398,6 +8229,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_32" role="tabpanel" aria-labelledby="table_tab_32">
           <!-- RAW TABLE rendered here -->
@@ -7539,6 +8371,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_33" role="tabpanel" aria-labelledby="grid_tab_33">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7574,6 +8407,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_33" role="tabpanel" aria-labelledby="table_tab_33">
           <!-- RAW TABLE rendered here -->
@@ -7701,6 +8535,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_17" role="tabpanel" aria-labelledby="grid_tab_17">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7736,6 +8571,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_17" role="tabpanel" aria-labelledby="table_tab_17">
           <!-- RAW TABLE rendered here -->
@@ -7861,6 +8697,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_28" role="tabpanel" aria-labelledby="grid_tab_28">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -7896,6 +8733,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_28" role="tabpanel" aria-labelledby="table_tab_28">
           <!-- RAW TABLE rendered here -->
@@ -7974,1359 +8812,6 @@ No errors logged for this figure.
   <div class="card mb-4">
 
     <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 4</strong>: Status Code – Generic Command Status Values, Foobar Command Set</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_4" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_4" data-bs-toggle="tab" href="#grid_4" role="tab" aria-controls="grid_4" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_4" data-bs-toggle="tab" href="#table_4" role="tab" aria-controls="table_4" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_4" data-bs-toggle="tab" href="#errors_4" role="tab" aria-controls="errors_4" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_4" role="tabpanel" aria-labelledby="grid_tab_4">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>81h</td>
-    
-    <td>Capacity Exceeded</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>82h</td>
-    
-    <td>Namespace Not Ready</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>83h</td>
-    
-    <td>Reservation Conflict</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>84h</td>
-    
-    <td>Format In Progress</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>85h</td>
-    
-    <td>Invalid Value Size</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>86h</td>
-    
-    <td>Invalid Foobar Size</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>88h</td>
-    
-    <td>Unrecovered Error</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>89h</td>
-    
-    <td>Foobar Keeps</td>
-    
-    <td>None</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_4" role="tabpanel" aria-labelledby="table_tab_4">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
-      
-    </td>
-    
-    <td>
-      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
-      
-    </td>
-    
-    <td>
-      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Definition
-      
-    </td>
-    
-    <td>
-      Commands Affected
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      81h
-      
-    </td>
-    
-    <td>
-      Capacity Exceeded
-      
-    </td>
-    
-    <td>
-      Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      82h
-      
-    </td>
-    
-    <td>
-      Namespace Not Ready
-      
-    </td>
-    
-    <td>
-      Dong, Keep, Ding, Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      83h
-      
-    </td>
-    
-    <td>
-      Reservation Conflict
-      
-    </td>
-    
-    <td>
-      Dong, Ring, Ding
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      84h
-      
-    </td>
-    
-    <td>
-      Format In Progress
-      
-    </td>
-    
-    <td>
-      Dong, Keep, Ringing, Ding, Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      85h
-      
-    </td>
-    
-    <td>
-      Invalid Value Size
-      
-    </td>
-    
-    <td>
-      Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      86h
-      
-    </td>
-    
-    <td>
-      Invalid Foobar Size
-      
-    </td>
-    
-    <td>
-      Ringing, Ding, Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      87h
-      
-    </td>
-    
-    <td>
-      Foobar Baz Does Not Keep
-      
-    </td>
-    
-    <td>
-      Dong, Keep, Ding, Ring
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      88h
-      
-    </td>
-    
-    <td>
-      Unrecovered Error
-      
-    </td>
-    
-    <td>
-      Ding
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      89h
-      
-    </td>
-    
-    <td>
-      Foobar Keeps
-      
-    </td>
-    
-    <td>
-      Ring
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_4" role="tabpanel" aria-labelledby="errors_tab_4">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 9</strong>: Dong – Generic Command Status Values</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_9" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_9" data-bs-toggle="tab" href="#grid_9" role="tab" aria-controls="grid_9" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_9" data-bs-toggle="tab" href="#table_9" role="tab" aria-controls="table_9" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_9" data-bs-toggle="tab" href="#errors_9" role="tab" aria-controls="errors_9" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_9" role="tabpanel" aria-labelledby="grid_tab_9">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>The Foobar Baz does not Keep.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0Bh</td>
-    
-    <td>Invalid Namespace or Format</td>
-    
-    <td>The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set.</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_9" role="tabpanel" aria-labelledby="table_tab_9">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 9: Dong – Generic Command Status Values
-      
-    </td>
-    
-    <td>
-      Figure 9: Dong – Generic Command Status Values
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Description
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      87h
-      
-    </td>
-    
-    <td>
-      Foobar Baz Does Not Keep: The Foobar Baz does not Keep.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      0Bh
-      
-    </td>
-    
-    <td>
-      Invalid Namespace or Format: The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set.
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_9" role="tabpanel" aria-labelledby="errors_tab_9">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 14</strong>: Ringing – Generic Command Status Values</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_14" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_14" data-bs-toggle="tab" href="#grid_14" role="tab" aria-controls="grid_14" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_14" data-bs-toggle="tab" href="#table_14" role="tab" aria-controls="table_14" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_14" data-bs-toggle="tab" href="#errors_14" role="tab" aria-controls="errors_14" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_14" role="tabpanel" aria-labelledby="grid_tab_14">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>86h</td>
-    
-    <td>Invalid Foobar Size</td>
-    
-    <td>The Foobar Baz size is not valid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0Bh</td>
-    
-    <td>Invalid Namespace or Format</td>
-    
-    <td>The namespace or the format of that namespace is invalid.</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_14" role="tabpanel" aria-labelledby="table_tab_14">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 14: Ringing – Generic Command Status Values
-      
-    </td>
-    
-    <td>
-      Figure 14: Ringing – Generic Command Status Values
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Definition
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      86h
-      
-    </td>
-    
-    <td>
-      Invalid Foobar Size: The Foobar Baz size is not valid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      0Bh
-      
-    </td>
-    
-    <td>
-      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_14" role="tabpanel" aria-labelledby="errors_tab_14">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 23</strong>: Ding – Generic Command Status Values</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_23" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_23" data-bs-toggle="tab" href="#grid_23" role="tab" aria-controls="grid_23" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_23" data-bs-toggle="tab" href="#table_23" role="tab" aria-controls="table_23" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_23" data-bs-toggle="tab" href="#errors_23" role="tab" aria-controls="errors_23" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_23" role="tabpanel" aria-labelledby="grid_tab_23">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>86h</td>
-    
-    <td>Invalid Foobar Size</td>
-    
-    <td>The Foobar Baz size is not valid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0Bh</td>
-    
-    <td>Invalid Namespace or Format</td>
-    
-    <td>The namespace or the format of that namespace is invalid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>The Foobar Baz does not Keep.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>88h</td>
-    
-    <td>Unrecovered Error</td>
-    
-    <td>There was an unrecovered error when reading from the medium.</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_23" role="tabpanel" aria-labelledby="table_tab_23">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 23: Ding – Generic Command Status Values
-      
-    </td>
-    
-    <td>
-      Figure 23: Ding – Generic Command Status Values
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Definition
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      86h
-      
-    </td>
-    
-    <td>
-      Invalid Foobar Size: The Foobar Baz size is not valid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      0Bh
-      
-    </td>
-    
-    <td>
-      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      87h
-      
-    </td>
-    
-    <td>
-      Foobar Baz Does Not Keep: The Foobar Baz does not Keep.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      88h
-      
-    </td>
-    
-    <td>
-      Unrecovered Error: There was an unrecovered error when reading from the medium.
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_23" role="tabpanel" aria-labelledby="errors_tab_23">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 27</strong>: Keep – Generic Command Status Values</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_27" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_27" data-bs-toggle="tab" href="#grid_27" role="tab" aria-controls="grid_27" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_27" data-bs-toggle="tab" href="#table_27" role="tab" aria-controls="table_27" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_27" data-bs-toggle="tab" href="#errors_27" role="tab" aria-controls="errors_27" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_27" role="tabpanel" aria-labelledby="grid_tab_27">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>The Foobar Baz does not Keep.</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_27" role="tabpanel" aria-labelledby="table_tab_27">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 27: Keep – Generic Command Status Values
-      
-    </td>
-    
-    <td>
-      Figure 27: Keep – Generic Command Status Values
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Definition
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      87h
-      
-    </td>
-    
-    <td>
-      Foobar Baz Does Not Keep:The Foobar Baz does not Keep.
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_27" role="tabpanel" aria-labelledby="errors_tab_27">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 34</strong>: Ring – Generic Command Status Values</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>GenericCommandStatusValue</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_34" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_34" data-bs-toggle="tab" href="#grid_34" role="tab" aria-controls="grid_34" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_34" data-bs-toggle="tab" href="#table_34" role="tab" aria-controls="table_34" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " id="errors_tab_34" data-bs-toggle="tab" href="#errors_34" role="tab" aria-controls="errors_34" aria-selected="false">Errors (0)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_34" role="tabpanel" aria-labelledby="grid_tab_34">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>Value</th>
-    
-    <th>Name</th>
-    
-    <th>Description</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>85h</td>
-    
-    <td>Invalid Value Size</td>
-    
-    <td>The value size is not valid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>86h</td>
-    
-    <td>Invalid Foobar Size</td>
-    
-    <td>The Foobar Baz size is not valid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>0Bh</td>
-    
-    <td>Invalid Namespace or Format</td>
-    
-    <td>The namespace or the format of that namespace is invalid.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>81h</td>
-    
-    <td>Capacity Exceeded</td>
-    
-    <td>The capacity of the device was exceeded.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>89h</td>
-    
-    <td>Foobar Keeps</td>
-    
-    <td>The Ring If No Foobar Keeps (SINKE) bit is set to '1' in the Ring Option field and the Foobar Baz Keeps.</td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>87h</td>
-    
-    <td>Foobar Baz Does Not Keep</td>
-    
-    <td>The Ring If Foobar Keeps (SIKE) bit is set to '1' in the Ring Option field and the Foobar Baz does not Keep.</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_34" role="tabpanel" aria-labelledby="table_tab_34">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 34: Ring – Generic Command Status Values
-      
-    </td>
-    
-    <td>
-      Figure 34: Ring – Generic Command Status Values
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Value
-      
-    </td>
-    
-    <td>
-      Definition
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      85h
-      
-    </td>
-    
-    <td>
-      Invalid Value Size: The value size is not valid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      86h
-      
-    </td>
-    
-    <td>
-      Invalid Foobar Size: The Foobar Baz size is not valid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      0Bh
-      
-    </td>
-    
-    <td>
-      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      81h
-      
-    </td>
-    
-    <td>
-      Capacity Exceeded: The capacity of the device was exceeded.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      89h
-      
-    </td>
-    
-    <td>
-      Foobar Keeps: The Ring If No Foobar Keeps (SINKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz Keeps.
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      87h
-      
-    </td>
-    
-    <td>
-      Foobar Baz Does Not Keep: The Ring If Foobar Keeps (SIKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz does not Keep.
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_34" role="tabpanel" aria-labelledby="errors_tab_34">
-
-<pre>
-
-No errors logged for this figure.
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
       <h3 class="card-title mb-0"><strong>Figure 40</strong>: Identify – CNS Values</h5>
     </div>
     <div class="card-header">
@@ -9376,6 +8861,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_40" role="tabpanel" aria-labelledby="grid_tab_40">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -9455,6 +8941,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_40" role="tabpanel" aria-labelledby="table_tab_40">
           <!-- RAW TABLE rendered here -->
@@ -9810,189 +9297,6 @@ message='cell.text(Notes:\nO/M definition: O = Optional, M = Mandatory.\nThe NSI
   <div class="card mb-4">
 
     <div class="card-header">
-      <h3 class="card-title mb-0"><strong>Figure 3</strong>: I/O Controller – Feature Support</h5>
-    </div>
-    <div class="card-header">
-      
-  
-  
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-      
-  
-
-  <table class="mb-0">
-  <tr>
-    <td><strong>Categorization</strong>:</td><td>FeatureSupport</td>
-  </tr>
-  
-  </table>
-
-  
-    </div>
-    
-    <div class="card-header">
-      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_3" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="grid_tab_3" data-bs-toggle="tab" href="#grid_3" role="tab" aria-controls="grid_3" aria-selected="true">Grid</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="table_tab_3" data-bs-toggle="tab" href="#table_3" role="tab" aria-controls="table_3" aria-selected="false">Table</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_3" data-bs-toggle="tab" href="#errors_3" role="tab" aria-controls="errors_3" aria-selected="false">Errors (2)</a>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="card-body">
-      <div class="tab-content" id="tabcontent">
-        <div class="tab-pane fade show active" id="grid_3" role="tabpanel" aria-labelledby="grid_tab_3">
-          <!-- GRID TABLE rendered -->
-          
-  <table class="table mb-0" >
-  <thead class="table-dark">
-  <tr>
-    
-    <th>FeatureName</th>
-    
-    <th>Requirement</th>
-    
-  </tr>
-  </thead>
-  <tbody>
-  
-  <tr>
-    
-    <td>Foobar Configuration</td>
-    
-    <td>M</td>
-    
-  </tr>
-  
-  </tbody>
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="table_3" role="tabpanel" aria-labelledby="table_tab_3">
-          <!-- RAW TABLE rendered here -->
-          
-  <table class="table mb-0">
-  
-  <tr>
-    
-    <td>
-      Figure 3: I/O Controller – Feature Support
-      
-    </td>
-    
-    <td>
-      Figure 3: I/O Controller – Feature Support
-      
-    </td>
-    
-    <td>
-      Figure 3: I/O Controller – Feature Support
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Feature Name
-      
-    </td>
-    
-    <td>
-      Feature Support 
-Requirements 1
-      
-    </td>
-    
-    <td>
-      Logged in 
-Persistent Event Log
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Foobar Configuration 
-      
-    </td>
-    
-    <td>
-      M
-      
-    </td>
-    
-    <td>
-      Yes
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    
-    <td>
-      Notes:
-O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
-      
-    </td>
-    
-    <td>
-      Notes:
-O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
-      
-    </td>
-    
-    <td>
-      Notes:
-O = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended
-      
-    </td>
-    
-  </tr>
-  
-  </table>
-  
-        </div>
-        <div class="tab-pane fade" id="errors_3" role="tabpanel" aria-labelledby="errors_tab_3">
-
-<pre>
-
-message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended) no match(^(?P<feature_name>[a-zA-Z -/]*)[ \\d]*$)' figure_nr=3 table_nr=3 row_idx=3 cell_idx=0
-
-message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not Recommended) no match(^(?:(?P<requirement>O|M|P|NR|Note)(?:[ \\d]*))?$)' figure_nr=3 table_nr=3 row_idx=3 cell_idx=1
-
-</pre>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
-  
-  
-  <div class="card mb-4">
-
-    <div class="card-header">
       <h3 class="card-title mb-0"><strong>Figure 35</strong>: Feature Identifiers – Foobar Command Set</h5>
     </div>
     <div class="card-header">
@@ -10032,7 +9336,7 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not
           <a class="nav-link" id="table_tab_35" data-bs-toggle="tab" href="#table_35" role="tab" aria-controls="table_35" aria-selected="false">Table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-danger" id="errors_tab_35" data-bs-toggle="tab" href="#errors_35" role="tab" aria-controls="errors_35" aria-selected="false">Errors (2)</a>
+          <a class="nav-link text-danger" id="errors_tab_35" data-bs-toggle="tab" href="#errors_35" role="tab" aria-controls="errors_35" aria-selected="false">Errors (1)</a>
         </li>
       </ul>
     </div>
@@ -10042,6 +9346,7 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not
         <div class="tab-pane fade show active" id="grid_35" role="tabpanel" aria-labelledby="grid_tab_35">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -10077,6 +9382,7 @@ message='cell.text(Notes:\nO = Optional, M = Mandatory, P = Prohibited, NR = Not
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_35" role="tabpanel" aria-labelledby="table_tab_35">
           <!-- RAW TABLE rendered here -->
@@ -10216,8 +9522,6 @@ This column is only valid if the feature is not saveable (refer to the Specifcat
 
 <pre>
 
-message='Varying row lengths([5, 6])' figure_nr=35 lengths=[5, 6]
-
 message='cell.text(Notes:\nThis column is only valid if the feature is not saveable (refer to the Specifcation). If the feature is saveable, then this column is not used and any feature may be configured to be saved across power cycles and reset.) no match(^(?P<identifier>[a-zA-Z0-9]{1,2}h)$)' figure_nr=35 table_nr=35 row_idx=3 cell_idx=0
 
 </pre>
@@ -10282,17 +9586,14 @@ message='cell.text(Notes:\nThis column is only valid if the feature is not savea
         <div class="tab-pane fade show active" id="grid_37" role="tabpanel" aria-labelledby="grid_tab_37">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
     
     <th>LogPageIdentifier</th>
     
-    <th>Scope</th>
-    
     <th>LogPageName</th>
-    
-    <th>Reference</th>
     
   </tr>
   </thead>
@@ -10302,11 +9603,7 @@ message='cell.text(Notes:\nThis column is only valid if the feature is not savea
     
     <td>01h</td>
     
-    <td>Refer to the Specifcation</td>
-    
     <td>Error Information</td>
-    
-    <td>4.1.4.1</td>
     
   </tr>
   
@@ -10314,17 +9611,14 @@ message='cell.text(Notes:\nThis column is only valid if the feature is not savea
     
     <td>06h</td>
     
-    <td>Refer to the Specifcation</td>
-    
     <td>Device Self-test</td>
-    
-    <td>4.1.4.2</td>
     
   </tr>
   
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_37" role="tabpanel" aria-labelledby="table_tab_37">
           <!-- RAW TABLE rendered here -->
@@ -10460,6 +9754,1465 @@ No errors logged for this figure.
   
   
   
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 4</strong>: Status Code – Generic Command Status Values, Foobar Command Set</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Status Code - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>Foobar Command Set</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_4" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_4" data-bs-toggle="tab" href="#grid_4" role="tab" aria-controls="grid_4" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_4" data-bs-toggle="tab" href="#table_4" role="tab" aria-controls="table_4" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_4" data-bs-toggle="tab" href="#errors_4" role="tab" aria-controls="errors_4" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_4" role="tabpanel" aria-labelledby="grid_tab_4">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>81h</td>
+    
+    <td>Capacity Exceeded</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>82h</td>
+    
+    <td>Namespace Not Ready</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>83h</td>
+    
+    <td>Reservation Conflict</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>84h</td>
+    
+    <td>Format In Progress</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>85h</td>
+    
+    <td>Invalid Value Size</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>88h</td>
+    
+    <td>Unrecovered Error</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>89h</td>
+    
+    <td>Foobar Keeps</td>
+    
+    <td>None</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_4" role="tabpanel" aria-labelledby="table_tab_4">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
+      
+    </td>
+    
+    <td>
+      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
+      
+    </td>
+    
+    <td>
+      Figure 4: Status Code – Generic Command Status Values, Foobar Command Set
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Definition
+      
+    </td>
+    
+    <td>
+      Commands Affected
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      81h
+      
+    </td>
+    
+    <td>
+      Capacity Exceeded
+      
+    </td>
+    
+    <td>
+      Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      82h
+      
+    </td>
+    
+    <td>
+      Namespace Not Ready
+      
+    </td>
+    
+    <td>
+      Dong, Keep, Ding, Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      83h
+      
+    </td>
+    
+    <td>
+      Reservation Conflict
+      
+    </td>
+    
+    <td>
+      Dong, Ring, Ding
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      84h
+      
+    </td>
+    
+    <td>
+      Format In Progress
+      
+    </td>
+    
+    <td>
+      Dong, Keep, Ringing, Ding, Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      85h
+      
+    </td>
+    
+    <td>
+      Invalid Value Size
+      
+    </td>
+    
+    <td>
+      Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      86h
+      
+    </td>
+    
+    <td>
+      Invalid Foobar Size
+      
+    </td>
+    
+    <td>
+      Ringing, Ding, Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      87h
+      
+    </td>
+    
+    <td>
+      Foobar Baz Does Not Keep
+      
+    </td>
+    
+    <td>
+      Dong, Keep, Ding, Ring
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      88h
+      
+    </td>
+    
+    <td>
+      Unrecovered Error
+      
+    </td>
+    
+    <td>
+      Ding
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      89h
+      
+    </td>
+    
+    <td>
+      Foobar Keeps
+      
+    </td>
+    
+    <td>
+      Ring
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_4" role="tabpanel" aria-labelledby="errors_tab_4">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 9</strong>: Dong – Generic Command Status Values</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Dong - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>None</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_9" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_9" data-bs-toggle="tab" href="#grid_9" role="tab" aria-controls="grid_9" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_9" data-bs-toggle="tab" href="#table_9" role="tab" aria-controls="table_9" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_9" data-bs-toggle="tab" href="#errors_9" role="tab" aria-controls="errors_9" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_9" role="tabpanel" aria-labelledby="grid_tab_9">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set.</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_9" role="tabpanel" aria-labelledby="table_tab_9">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 9: Dong – Generic Command Status Values
+      
+    </td>
+    
+    <td>
+      Figure 9: Dong – Generic Command Status Values
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Description
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      87h
+      
+    </td>
+    
+    <td>
+      Foobar Baz Does Not Keep: The Foobar Baz does not Keep.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      0Bh
+      
+    </td>
+    
+    <td>
+      Invalid Namespace or Format: The namespace or the format of that namespace is invalid or the namespace is not associated with the Foobar Command Set.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_9" role="tabpanel" aria-labelledby="errors_tab_9">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 14</strong>: Ringing – Generic Command Status Values</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Ringing - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>None</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_14" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_14" data-bs-toggle="tab" href="#grid_14" role="tab" aria-controls="grid_14" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_14" data-bs-toggle="tab" href="#table_14" role="tab" aria-controls="table_14" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_14" data-bs-toggle="tab" href="#errors_14" role="tab" aria-controls="errors_14" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_14" role="tabpanel" aria-labelledby="grid_tab_14">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_14" role="tabpanel" aria-labelledby="table_tab_14">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 14: Ringing – Generic Command Status Values
+      
+    </td>
+    
+    <td>
+      Figure 14: Ringing – Generic Command Status Values
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Definition
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      86h
+      
+    </td>
+    
+    <td>
+      Invalid Foobar Size: The Foobar Baz size is not valid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      0Bh
+      
+    </td>
+    
+    <td>
+      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_14" role="tabpanel" aria-labelledby="errors_tab_14">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 23</strong>: Ding – Generic Command Status Values</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Ding - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>None</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_23" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_23" data-bs-toggle="tab" href="#grid_23" role="tab" aria-controls="grid_23" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_23" data-bs-toggle="tab" href="#table_23" role="tab" aria-controls="table_23" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_23" data-bs-toggle="tab" href="#errors_23" role="tab" aria-controls="errors_23" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_23" role="tabpanel" aria-labelledby="grid_tab_23">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>88h</td>
+    
+    <td>Unrecovered Error</td>
+    
+    <td>There was an unrecovered error when reading from the medium.</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_23" role="tabpanel" aria-labelledby="table_tab_23">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 23: Ding – Generic Command Status Values
+      
+    </td>
+    
+    <td>
+      Figure 23: Ding – Generic Command Status Values
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Definition
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      86h
+      
+    </td>
+    
+    <td>
+      Invalid Foobar Size: The Foobar Baz size is not valid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      0Bh
+      
+    </td>
+    
+    <td>
+      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      87h
+      
+    </td>
+    
+    <td>
+      Foobar Baz Does Not Keep: The Foobar Baz does not Keep.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      88h
+      
+    </td>
+    
+    <td>
+      Unrecovered Error: There was an unrecovered error when reading from the medium.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_23" role="tabpanel" aria-labelledby="errors_tab_23">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 27</strong>: Keep – Generic Command Status Values</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Keep - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>None</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_27" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_27" data-bs-toggle="tab" href="#grid_27" role="tab" aria-controls="grid_27" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_27" data-bs-toggle="tab" href="#table_27" role="tab" aria-controls="table_27" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_27" data-bs-toggle="tab" href="#errors_27" role="tab" aria-controls="errors_27" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_27" role="tabpanel" aria-labelledby="grid_tab_27">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>The Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_27" role="tabpanel" aria-labelledby="table_tab_27">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 27: Keep – Generic Command Status Values
+      
+    </td>
+    
+    <td>
+      Figure 27: Keep – Generic Command Status Values
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Definition
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      87h
+      
+    </td>
+    
+    <td>
+      Foobar Baz Does Not Keep:The Foobar Baz does not Keep.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_27" role="tabpanel" aria-labelledby="errors_tab_27">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="card mb-4">
+
+    <div class="card-header">
+      <h3 class="card-title mb-0"><strong>Figure 34</strong>: Ring – Generic Command Status Values</h5>
+    </div>
+    <div class="card-header">
+      
+  
+  
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+  
+      
+          
+      
+  
+      
+          
+      
+  
+
+  <table class="mb-0">
+  <tr>
+    <td><strong>Categorization</strong>:</td><td>StatusValue</td>
+  </tr>
+  
+  <tr>
+    <td><strong>CommandName</strong>:</td><td>Ring - Generic Command</td>
+  </tr>
+  
+  <tr>
+    <td><strong>Commands</strong>:</td><td>None</td>
+  </tr>
+  
+  </table>
+
+  
+    </div>
+    
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" id="figure_tabs_34" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="grid_tab_34" data-bs-toggle="tab" href="#grid_34" role="tab" aria-controls="grid_34" aria-selected="true">Grid</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="table_tab_34" data-bs-toggle="tab" href="#table_34" role="tab" aria-controls="table_34" aria-selected="false">Table</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " id="errors_tab_34" data-bs-toggle="tab" href="#errors_34" role="tab" aria-controls="errors_34" aria-selected="false">Errors (0)</a>
+        </li>
+      </ul>
+    </div>
+  
+    <div class="card-body">
+      <div class="tab-content" id="tabcontent">
+        <div class="tab-pane fade show active" id="grid_34" role="tabpanel" aria-labelledby="grid_tab_34">
+          <!-- GRID TABLE rendered -->
+          
+            
+  <table class="table mb-0" >
+  <thead class="table-dark">
+  <tr>
+    
+    <th>Value</th>
+    
+    <th>Name</th>
+    
+    <th>Description</th>
+    
+  </tr>
+  </thead>
+  <tbody>
+  
+  <tr>
+    
+    <td>85h</td>
+    
+    <td>Invalid Value Size</td>
+    
+    <td>The value size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>86h</td>
+    
+    <td>Invalid Foobar Size</td>
+    
+    <td>The Foobar Baz size is not valid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>0Bh</td>
+    
+    <td>Invalid Namespace or Format</td>
+    
+    <td>The namespace or the format of that namespace is invalid.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>81h</td>
+    
+    <td>Capacity Exceeded</td>
+    
+    <td>The capacity of the device was exceeded.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>89h</td>
+    
+    <td>Foobar Keeps</td>
+    
+    <td>The Ring If No Foobar Keeps (SINKE) bit is set to '1' in the Ring Option field and the Foobar Baz Keeps.</td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>87h</td>
+    
+    <td>Foobar Baz Does Not Keep</td>
+    
+    <td>The Ring If Foobar Keeps (SIKE) bit is set to '1' in the Ring Option field and the Foobar Baz does not Keep.</td>
+    
+  </tr>
+  
+  </tbody>
+  </table>
+  
+          
+        </div>
+        <div class="tab-pane fade" id="table_34" role="tabpanel" aria-labelledby="table_tab_34">
+          <!-- RAW TABLE rendered here -->
+          
+  <table class="table mb-0">
+  
+  <tr>
+    
+    <td>
+      Figure 34: Ring – Generic Command Status Values
+      
+    </td>
+    
+    <td>
+      Figure 34: Ring – Generic Command Status Values
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      Value
+      
+    </td>
+    
+    <td>
+      Definition
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      85h
+      
+    </td>
+    
+    <td>
+      Invalid Value Size: The value size is not valid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      86h
+      
+    </td>
+    
+    <td>
+      Invalid Foobar Size: The Foobar Baz size is not valid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      0Bh
+      
+    </td>
+    
+    <td>
+      Invalid Namespace or Format: The namespace or the format of that namespace is invalid.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      81h
+      
+    </td>
+    
+    <td>
+      Capacity Exceeded: The capacity of the device was exceeded.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      89h
+      
+    </td>
+    
+    <td>
+      Foobar Keeps: The Ring If No Foobar Keeps (SINKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz Keeps.
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    
+    <td>
+      87h
+      
+    </td>
+    
+    <td>
+      Foobar Baz Does Not Keep: The Ring If Foobar Keeps (SIKE) bit is set to ‘1’ in the Ring Option field and the Foobar Baz does not Keep.
+      
+    </td>
+    
+  </tr>
+  
+  </table>
+  
+        </div>
+        <div class="tab-pane fade" id="errors_34" role="tabpanel" aria-labelledby="errors_tab_34">
+
+<pre>
+
+No errors logged for this figure.
+
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
   
   
   
@@ -10522,6 +11275,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_44" role="tabpanel" aria-labelledby="grid_tab_44">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -10565,6 +11319,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_44" role="tabpanel" aria-labelledby="table_tab_44">
           <!-- RAW TABLE rendered here -->
@@ -10772,6 +11527,7 @@ message='cell.text(Notes:\nThe specification version Ringinged includes lettered
         <div class="tab-pane fade show active" id="grid_46" role="tabpanel" aria-labelledby="grid_tab_46">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -10947,6 +11703,7 @@ message='cell.text(Notes:\nThe specification version Ringinged includes lettered
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_46" role="tabpanel" aria-labelledby="table_tab_46">
           <!-- RAW TABLE rendered here -->
@@ -11241,6 +11998,22 @@ message='cell.text(Notes:\nA value of 0h specifies that the controller determine
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <div class="card mb-4">
 
     <div class="card-header">
@@ -11291,6 +12064,7 @@ message='cell.text(Notes:\nA value of 0h specifies that the controller determine
         <div class="tab-pane fade show active" id="grid_43" role="tabpanel" aria-labelledby="grid_tab_43">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -11302,6 +12076,7 @@ message='cell.text(Notes:\nA value of 0h specifies that the controller determine
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_43" role="tabpanel" aria-labelledby="table_tab_43">
           <!-- RAW TABLE rendered here -->
@@ -11379,6 +12154,7 @@ No errors logged for this figure.
         <div class="tab-pane fade show active" id="grid_1" role="tabpanel" aria-labelledby="grid_tab_1">
           <!-- GRID TABLE rendered -->
           
+            
   <table class="table mb-0" >
   <thead class="table-dark">
   <tr>
@@ -11390,6 +12166,7 @@ No errors logged for this figure.
   </tbody>
   </table>
   
+          
         </div>
         <div class="tab-pane fade" id="table_1" role="tabpanel" aria-labelledby="table_tab_1">
           <!-- RAW TABLE rendered here -->
