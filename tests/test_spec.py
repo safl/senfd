@@ -440,3 +440,30 @@ def test_a_register_of_a_format_it_shares_is_named_by_its_section(tmp_path):
 
     assert (version.kind, version.offset) == ("register", "18h")
     assert [f.acronym for f in version.fields] == ["FMJR", "FMNR"]
+
+
+def test_a_table_of_values_keeps_the_scope_its_caption_confines_it_to(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    scoped = [
+        (v.qualifier, v.scope)
+        for v in spec.values
+        if v.kind == "status_values" and v.qualifier == "Generic Command"
+    ]
+
+    assert ("Generic Command", "Foo Commands") in scoped
+    assert ("Generic Command", "Foobar Command Set") in scoped
+
+
+def test_fields_named_by_their_index_keep_their_offsets_with_rows_left_out(
+    tmp_path,
+):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (table,) = [st for st in spec.structures if st.name == "Foo Table"]
+    (results,) = [st for st in spec.structures if st.name == "Foo Results"]
+
+    assert [(f.name, f.lower, f.upper) for f in table.fields][:3] == [
+        ("Foo Slot 0 Descriptor", 0, 31),
+        ("Foo Slot 1 Descriptor", 32, 63),
+        ("Foo Slot 7 Descriptor", 224, 255),
+    ]
+    assert [f.acronym for f in results.fields] == ["FRC", "FFL", "FR1", "FR2", "FR5"]
