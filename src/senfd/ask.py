@@ -532,6 +532,21 @@ def interact(spec: SpecDocument, llm: Optional[str] = None) -> int:
             console.print(Markdown(reply(spec, question, vocabulary, llm)))
 
 
+def show(markdown: str, raw: bool = False) -> None:
+    """Print 'markdown' rendered, where the extra 'ask' is installed and not
+    'raw', else as it is"""
+
+    try:
+        if raw:
+            raise ImportError
+        from rich.console import Console
+        from rich.markdown import Markdown
+    except ImportError:
+        print(markdown)
+        return
+    Console().print(Markdown(markdown))
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n")[0])
     parser.add_argument("question", nargs="*", help="Answer this, and leave")
@@ -542,6 +557,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         help=f"The merged model (default: {senfd.query.default_spec_path()})",
     )
     parser.add_argument(
+        "--raw", action="store_true", help="Print an answer as Markdown, unrendered"
+    )
+    parser.add_argument(
         "--llm",
         default=None,
         metavar="URL",
@@ -550,7 +568,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parser.parse_args(argv)
     spec = senfd.query.load(args.spec)
     if args.question:
-        print(reply(spec, " ".join(args.question), Vocabulary.of(spec), args.llm))
+        show(
+            reply(spec, " ".join(args.question), Vocabulary.of(spec), args.llm),
+            args.raw,
+        )
         return 0
     return interact(spec, args.llm)
 

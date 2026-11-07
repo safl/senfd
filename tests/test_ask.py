@@ -110,7 +110,7 @@ def test_a_lookup_found_wanting_is_said_to_the_language_model(
 
 def test_the_command_line_answers_a_question(capsys):
     spec = str(Path("example") / "output" / "merged.spec.document.json")
-    assert senfd.ask.main(["--spec", spec, "opcode", "of", "ding"]) == 0
+    assert senfd.ask.main(["--spec", spec, "--raw", "opcode", "of", "ding"]) == 0
     assert "opcode 01h" in capsys.readouterr().out
 
 
@@ -181,3 +181,12 @@ def test_a_command_named_with_its_command_set_is_the_command(
     text, tried = senfd.ask.respond(spec, "What is FCNT of Ding?", vocabulary, "x")
     assert "| 15:00 | Foo Count | FCNT |" in text
     assert tried == ["command('Ding', dword=10)"]
+
+
+def test_an_answer_is_rendered_where_it_can_be(capsys):
+    pytest.importorskip("rich")
+    senfd.ask.show("| Bits | Name |\n|---|---|\n| 30 | Force Unit Access |")
+    out = capsys.readouterr().out
+    assert "Force Unit Access" in out and "|---|" not in out
+    senfd.ask.show("| a |", raw=True)
+    assert capsys.readouterr().out == "| a |\n"
