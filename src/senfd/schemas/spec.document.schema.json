@@ -274,10 +274,15 @@
             "type": "object"
         },
         "Entry": {
-            "description": "A row of a table of values, as a status value or a log page identifier",
+            "description": "A row of a table of values, as a status value or a log page identifier;\n'typed' has the values of its columns of a known kind as what they are",
             "properties": {
                 "value": {
                     "title": "Value",
+                    "type": "string"
+                },
+                "value_column": {
+                    "default": "",
+                    "title": "Value Column",
                     "type": "string"
                 },
                 "name": {
@@ -302,6 +307,13 @@
                         "type": "string"
                     },
                     "title": "Columns",
+                    "type": "object"
+                },
+                "typed": {
+                    "additionalProperties": {
+                        "$ref": "#/$defs/Typed"
+                    },
+                    "title": "Typed",
                     "type": "object"
                 }
             },
@@ -589,6 +601,99 @@
                 "source"
             ],
             "title": "Structure",
+            "type": "object"
+        },
+        "Typed": {
+            "description": "A value of a table as what it is: a requirement \"level\" (M, O, P, NR, R),\na yes or no \"flag\", an \"identifier\" or a range of them, a \"note\" it is\ngiven by, a \"reference\" to another specification, or \"reserved\" or\n\"vendor_specific\"; with the footnotes marked on it",
+            "properties": {
+                "kind": {
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "level": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Level"
+                },
+                "flag": {
+                    "anyOf": [
+                        {
+                            "type": "boolean"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Flag"
+                },
+                "lower": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Lower"
+                },
+                "upper": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Upper"
+                },
+                "note": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Note"
+                },
+                "reference": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Reference"
+                },
+                "footnotes": {
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Footnotes",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "kind"
+            ],
+            "title": "Typed",
             "type": "object"
         },
         "Values": {
