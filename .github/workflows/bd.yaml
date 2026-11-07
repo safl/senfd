@@ -9,8 +9,6 @@ on:
     branches:
     - "!gh-pages"
     - "**"
-    tags:
-    - "v*"
 
 defaults:
   run:
@@ -58,6 +56,13 @@ jobs:
       run: |
         make build install-dev
 
+    - name: Upload the build, which a release publishes
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
     - name: Run -- show help
       run: |
         senfd --help
@@ -87,11 +92,3 @@ jobs:
         file: coverage.lcov
         format: lcov
         github-token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Publish
-      if: startsWith(github.ref, 'refs/tags/v') && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: |
-        make release
