@@ -38,7 +38,7 @@ build:
 	pyproject-build
 
 test:
-	pytest --cov=$(PROJECT_NAME) --cov-report=lcov --cov-report=term-missing --cov-report=html -vvs tests
+	pytest --cov=$(PROJECT_NAME) --cov-fail-under=95 --cov-report=lcov --cov-report=term-missing --cov-report=html -vvs tests
 
 release:
 	twine upload dist/*
