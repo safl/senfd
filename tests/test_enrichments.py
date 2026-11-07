@@ -23,3 +23,26 @@ def test_enriching_classes_regex_grid_overlap():
                 assert not list_of_sets[i].intersection(list_of_sets[j]), (
                     f"cls({cls.__name__}) has overlapping REGEX_GRID values"
                 )
+
+
+def enriched_example(tmp_path):
+    """The enriched figure document of the example, and the errors of making it"""
+
+    import json
+    from argparse import Namespace
+    from pathlib import Path
+
+    import senfd.pipeline
+
+    path = Path("example") / "example.docx"
+    errors = senfd.pipeline.process(path, tmp_path, Namespace(skip_figures=None))
+    (enriched,) = tmp_path.glob("*.enriched.figure.document.json")
+    return json.loads(enriched.read_text(encoding="utf-8")), errors
+
+
+def test_the_admin_opcodes_are_not_an_io_command_set():
+    from senfd.documents.enriched import CommandIoOpcodeFigure
+
+    regex = CommandIoOpcodeFigure.REGEX_FIGURE_DESCRIPTION
+    assert not re.match(regex, "Opcodes for Admin Commands", flags=re.IGNORECASE)
+    assert re.match(regex, "Opcodes for NVM Commands", flags=re.IGNORECASE)
