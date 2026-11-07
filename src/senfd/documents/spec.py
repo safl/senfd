@@ -111,13 +111,34 @@ class Structure(BaseModel):
     source: Source
 
 
+class Typed(BaseModel):
+    """
+    A value of a table as what it is: a requirement "level" (M, O, P, NR, R),
+    a yes or no "flag", an "identifier" or a range of them, a "note" it is
+    given by, a "reference" to another specification, or "reserved" or
+    "vendor_specific"; with the footnotes marked on it
+    """
+
+    kind: str
+    level: Optional[str] = None
+    flag: Optional[bool] = None
+    lower: Optional[int] = None
+    upper: Optional[int] = None
+    note: Optional[int] = None
+    reference: Optional[str] = None
+    footnotes: List[int] = Field(default_factory=list)
+
+
 class Entry(BaseModel):
-    """A row of a table of values, as a status value or a log page identifier"""
+    """A row of a table of values, as a status value or a log page identifier;
+    'typed' has the values of its columns of a known kind as what they are"""
 
     value: str
+    value_column: str = ""
     name: Optional[str] = None
     description: str = ""
     columns: Dict[str, str] = Field(default_factory=dict)
+    typed: Dict[str, Typed] = Field(default_factory=dict)
 
 
 class Values(BaseModel):
@@ -361,6 +382,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                     source=source,
                 )
             )
+            document.errata += type_values(document.values[-1])
         else:
             document.diagnostics.append(
                 note(
@@ -422,6 +444,107 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
     )
 
 
+FOOTNOTES = r"(?P<footnotes>(?:\s*\d+(?:,\s*\d+)*)?)"
+TYPED_FORMS = [
+    ("level", re.compile(r"^(?P<level>M|O|P|NR|R)" + FOOTNOTES + r"$")),
+    ("flag", re.compile(r"^(?P<flag>Yes|No|Y|N)" + FOOTNOTES + r"$", re.IGNORECASE)),
+    (
+        "identifier",
+        re.compile(
+            r"^(?P<lower>[0-9A-Fa-f]+)h"
+            r"(?:\s*(?:to|-)\s*(?P<upper>[0-9A-Fa-f]+)h)?" + FOOTNOTES + r"$"
+        ),
+    ),
+    ("note", re.compile(r"^Note\s*(?P<note>\d+)$", re.IGNORECASE)),
+    ("reference", re.compile(r"^Refer to (?:the )?(?P<reference>.+?)\.?$")),
+    ("reserved", re.compile(r"^Reserved\b.*$", re.IGNORECASE)),
+    (
+        "vendor_specific",
+        re.compile(r"^Vendor Specific" + FOOTNOTES + r"$", re.IGNORECASE),
+    ),
+]
+# The forms any typed column can hold besides its own
+COMMON = {"note", "reference", "reserved", "vendor_specific"}
+
+
+def typed_of(text: str) -> Optional[Typed]:
+    """The typed form of the text of a value, or None when it has none"""
+
+    for kind, regex in TYPED_FORMS:
+        match = regex.match(text.strip())
+        if not match:
+            continue
+        groups = match.groupdict()
+        footnotes = [int(n) for n in re.findall(r"\d+", groups.get("footnotes") or "")]
+        typed = Typed(kind=kind, footnotes=footnotes)
+        if kind == "level":
+            typed.level = groups["level"]
+        elif kind == "flag":
+            typed.flag = groups["flag"].lower().startswith("y")
+        elif kind == "identifier":
+            typed.lower = int(groups["lower"], 16)
+            typed.upper = int(groups["upper"], 16) if groups["upper"] else typed.lower
+        elif kind == "note":
+            typed.note = int(groups["note"])
+        elif kind == "reference":
+            typed.reference = groups["reference"]
+        return typed
+    return None
+
+
+def kinds_of(column: str, values: "Values") -> Optional[set]:
+    """The kinds of value a column holds, by its name and the table it is of,
+    or None for a column of text"""
+
+    if column in ("om", "i_o", "admin", "administrative", "discovery") or (
+        "requirement" in column
+    ):
+        return {"level"}
+    if column.startswith(
+        ("persistent", "uses_memory", "namespace_identifier_used", "current_setting")
+    ):
+        return {"flag"}
+    if values.kind == "cns_values" and column in ("nsid", "cntid", "csi"):
+        # The base specification says whether the field is used, a command set
+        # specification may give the value of it
+        return {"flag", "identifier"}
+    if column in ("identifier", "cns_value") or (
+        column == "value" and "identifier" in values.columns
+    ):
+        return {"identifier"}
+    return None
+
+
+def type_values(values: "Values") -> List["Erratum"]:
+    """Type the values of the columns of a known kind of 'values', and the
+    errata of those of no form their column holds"""
+
+    errata = []
+    for entry in values.entries:
+        cells = {entry.value_column: entry.value, **entry.columns}
+        others = [v for k, v in cells.items() if k != entry.value_column and v]
+        for column, text in cells.items():
+            kinds = kinds_of(column, values)
+            if kinds is None or not text.strip():
+                continue
+            typed = typed_of(text)
+            if typed and typed.kind in kinds | COMMON:
+                entry.typed[column] = typed
+            elif others or entry.name or entry.description:
+                errata.append(
+                    Erratum(
+                        code="value",
+                        message=(
+                            f"'{text}' of column {column} is not "
+                            + " or ".join(sorted(kinds))
+                        ),
+                        found=text,
+                        source=values.source,
+                    )
+                )
+    return errata
+
+
 def entry_of(entry: Dict[str, str]) -> Entry:
     """An entry by its value, whichever column holds it"""
 
@@ -439,6 +562,7 @@ def entry_of(entry: Dict[str, str]) -> Entry:
     name_key = next((k for k in names if entry.get(k)), None)
     return Entry(
         value=entry.get(key, ""),
+        value_column=key,
         name=entry.get(name_key) if name_key else None,
         description=entry.get("description", ""),
         columns={

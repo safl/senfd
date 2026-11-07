@@ -244,7 +244,20 @@ FIGURES = [
                 "Admin",
                 "Discovery",
             ),
-            "rows": [("Foo Config", "C0h", "O", "M", "NR")],
+            "rows": [
+                ("Foo Config", "C0h", "O", "M", "NR"),
+                # The forms of a requirement besides a level, and footnotes
+                (
+                    "Foo Mode",
+                    "C1h to C3h",
+                    "M 2",
+                    "NOTE 3",
+                    "Refer to the Bar Specification",
+                ),
+                ("Foo Spare", "C4h-C7h", "Reserved", "Vendor Specific", "O"),
+                # An erratum: a requirement of no form
+                ("Foo Odd", "C8h", "Maybe", "O", "O"),
+            ],
         },
     ),
     (

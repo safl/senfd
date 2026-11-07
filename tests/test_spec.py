@@ -219,3 +219,34 @@ def test_values_that_are_not_what_they_must_be_are_errata_not_model(tmp_path):
 
     # The bits the left out field had are its erratum, not a gap besides
     assert not [e for e in spec.errata if e.code == "gap" and "cdw14" in e.message]
+
+
+def test_the_values_of_a_table_are_typed(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (requirements,) = [v for v in spec.values if v.name == "Foo Feature"]
+    by_name = {e.name or e.value: e for e in requirements.entries}
+
+    mode = by_name["Foo Mode"]
+    assert (mode.typed["identifier"].lower, mode.typed["identifier"].upper) == (
+        0xC1,
+        0xC3,
+    )
+    assert (mode.typed["i_o"].level, mode.typed["i_o"].footnotes) == ("M", [2])
+    assert mode.typed["admin"].note == 3
+    assert mode.typed["discovery"].reference == "Bar Specification"
+    spare = by_name["Foo Spare"]
+    assert (spare.typed["identifier"].lower, spare.typed["identifier"].upper) == (
+        0xC4,
+        0xC7,
+    )
+    assert [spare.typed[c].kind for c in ("i_o", "admin")] == [
+        "reserved",
+        "vendor_specific",
+    ]
+
+    (cns,) = [v for v in spec.values if v.kind == "cns_values"]
+    assert cns.entries[0].typed["nsid"].flag is True
+
+    # A value of no form its column holds is an erratum, and is not typed
+    assert ("value", "Maybe") in {(e.code, e.found) for e in spec.errata}
+    assert "i_o" not in by_name["Foo Odd"].typed
