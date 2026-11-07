@@ -313,3 +313,21 @@ def test_a_header_below_a_title_row_is_found_and_noted():
     assert normalized.shape == "layout"
     assert [f.acronym for f in normalized.layout.fields] == ["F"]
     assert [d.code for d in diagnostics] == ["header-row"]
+
+
+def test_a_table_of_no_known_shape_is_entries_by_its_column_names(normalized):
+    _, figures = normalized
+
+    flow = figures["RPMB - Foo Write Flow"]
+    assert flow["shape"] == "table"
+    assert flow["entries"][0]["bytes_in_command"] == "511:00"
+    versions = figures[
+        "Foobar Command Set Specification Version Descriptor Field Values"
+    ]
+    assert versions["shape"] == "table"
+    assert [e["mjr_field"] for e in versions["entries"]] == ["1h", "1h"]
+    properties = figures["Foo Property Definition"]
+    assert (properties["entries"][0]["name"], properties["entries"][0]["acronym"]) == (
+        "Foo Capabilities",
+        "FCAP",
+    )
