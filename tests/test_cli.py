@@ -52,7 +52,7 @@ def test_the_documents_and_their_merged_model_are_written(tmp_path, monkeypatch)
 
     for doc in docs:
         assert (tmp_path / f"{doc.stem}.error.log").is_file()
-    merged = "merged.model.document.json"
+    merged = "merged.spec.document.json"
     expected = Path("example") / "output" / merged
     assert json.loads((tmp_path / merged).read_text(encoding="utf-8")) == json.loads(
         expected.read_text(encoding="utf-8")
@@ -83,7 +83,7 @@ def test_a_merged_model_already_in_the_output_is_not_merged_again(
 
     docs = sorted(Path("example").glob("*.docx"))
     assert senfd_main(monkeypatch, *docs, "--output", tmp_path) == 0
-    merged = tmp_path / "merged.model.document.json"
+    merged = tmp_path / "merged.spec.document.json"
     first = json.loads(merged.read_text(encoding="utf-8"))
 
     stale = dict(first, command_sets={"stale": {"alias": "stale", "name": "Stale"}})

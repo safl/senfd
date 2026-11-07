@@ -3,8 +3,6 @@ from pathlib import Path
 from typing import List, Type
 
 from senfd.documents.base import Converter
-from senfd.documents.enriched import FromFigureDocument
-from senfd.documents.model import FromEnrichedDocument
 from senfd.documents.normalized import FromFigureDocument as FromPlainDocument
 from senfd.documents.plain import FromDocx
 from senfd.documents.spec import FromNormalizedDocument
@@ -12,9 +10,7 @@ from senfd.errors import Error
 
 CONVERTERS: List[Type[Converter]] = [
     FromDocx,
-    FromFigureDocument,
     FromPlainDocument,
-    FromEnrichedDocument,
     FromNormalizedDocument,
 ]
 
