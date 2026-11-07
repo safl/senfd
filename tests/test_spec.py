@@ -285,3 +285,150 @@ def test_a_field_s_values_select_the_operations_of_its_command(tmp_path):
 
     # The dwords of the command Ding are no operation of Foo Migrate
     assert spec.command_sets["foobar"].commands["ding"].sqe
+
+
+def test_a_field_s_values_are_typed_by_a_value_column_named_after_it(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    migrate = spec.command_sets["foobar"].commands["foo_migrate"]
+
+    (cdw12,) = [d for d in migrate.sqe if d.lower == 12]
+    values = cdw12.fields[1].values
+    assert [
+        (v.value, v.typed["value"].lower, v.typed["value"].upper) for v in values
+    ] == [
+        ("000b", 0, 0),
+        ("001b", 1, 1),
+        ("010b to 111b", 2, 7),
+    ]
+
+    # The heading the values are under names none of them
+    (cdw10,) = [d for d in migrate.sqe if d.lower == 10]
+    assert "Foo Operations" not in [o.name for o in migrate.operations]
+
+
+def test_fields_of_several_structures_in_a_table_are_no_union(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (sizes,) = [st for st in spec.structures if st.name == "Foo Size Fields"]
+    assert [f.union for f in sizes.fields] == [None, None]
+
+
+def test_the_unions_of_a_layout_and_those_nested_in_it_have_numbers_of_their_own():
+    from senfd.documents.spec import Bits, number_unions
+
+    def bits(range_, union, fields=()):
+        return Bits(
+            unit="bits", range=range_, union=union, alternative=0, fields=list(fields)
+        )
+
+    nested = [bits("1:0", 0), bits("1:0", 0)]
+    fields = [bits("7:0", 0), bits("7:0", 0, nested)]
+    number_unions(fields)
+    assert [f.union for f in fields] == [0, 0]
+    assert [f.union for f in nested] == [1, 1]
+
+
+OPERATIONS = [
+    ("heading", 1, "Alpha command"),
+    (
+        "Opcodes for Bar Command Set Commands",
+        {
+            "header": (
+                "Function",
+                "Data Transfer",
+                "Combined Opcode",
+                "Command",
+                "Reference",
+            ),
+            "rows": [
+                ("0000 00b", "01b", "81h", "Alpha", "1"),
+                ("0000 01b", "01b", "82h", "Beta", "2"),
+            ],
+        },
+    ),
+    (
+        "Alpha - Command Dword 10",
+        {
+            "header": ("Bits", "Description"),
+            "rows": [
+                (
+                    "07:00",
+                    (
+                        "Select (SEL): The operation.",
+                        {"header": ("Value", "Operation"), "rows": [("0h", "Create")]},
+                    ),
+                ),
+            ],
+        },
+    ),
+    ("heading", 2, "Create (Management Operation 0h)"),
+    (
+        "Create - Command Dword 11",
+        {"header": ("Bits", "Description"), "rows": [("31:00", "Alpha Count (ACNT)")]},
+    ),
+    (
+        "Make - Command Dword 12",
+        {"header": ("Bits", "Description"), "rows": [("31:00", "Alpha Make (AMK)")]},
+    ),
+    ("heading", 1, "Beta command"),
+    (
+        "Beta - Command Dword 10",
+        {
+            "header": ("Bits", "Description"),
+            "rows": [
+                (
+                    "07:00",
+                    (
+                        "Select (SEL): The operation.",
+                        {"header": ("Value", "Operation"), "rows": [("0h", "Create")]},
+                    ),
+                ),
+            ],
+        },
+    ),
+]
+
+
+def test_an_operation_takes_the_dwords_of_its_own_command_s_section(tmp_path):
+    """Two commands each have a Create; the dwords are of the one whose
+    section they are in, the order of the opcode table whatever, and dwords
+    a section names after the operation are of it too"""
+
+    toolbox = runpy.run_path("toolbox/example_docx.py")
+    for order in (0, 1):
+        figures = [list(f) if isinstance(f, tuple) else f for f in OPERATIONS]
+        rows = OPERATIONS[1][1]["rows"]
+        table = dict(OPERATIONS[1][1], rows=rows if order == 0 else rows[::-1])
+        figures[1] = (OPERATIONS[1][0], table)
+        path = tmp_path / f"order{order}" / "operations.docx"
+        path.parent.mkdir()
+        toolbox["write"](path, [tuple(f) for f in figures])
+        spec = merge([spec_of(path, tmp_path / f"out{order}")])
+        commands = spec.command_sets["bar"].commands
+
+        (create,) = commands["alpha"].operations
+        assert [(d.lower, d.fields[0].acronym) for d in create.sqe] == [
+            (11, "ACNT"),
+            (12, "AMK"),
+        ]
+        assert commands["beta"].operations == []
+
+
+def test_an_operation_takes_no_dwords_of_another_document(tmp_path):
+    example = spec_of(Path("example") / "example.docx", tmp_path / "a")
+    toolbox = runpy.run_path("toolbox/example_docx.py")
+    path = tmp_path / "docx" / "other.docx"
+    path.parent.mkdir()
+    toolbox["write"](
+        path,
+        [
+            (
+                "Foo Pause - Command Dword 12",
+                {"header": ("Bits", "Description"), "rows": [("31:00", "Other (OTH)")]},
+            )
+        ],
+    )
+    merged = merge([example, spec_of(path, tmp_path / "b")])
+    migrate = merged.command_sets["foobar"].commands["foo_migrate"]
+
+    (pause,) = [o for o in migrate.operations if o.name == "Foo Pause"]
+    assert [d.lower for d in pause.sqe] == [11]

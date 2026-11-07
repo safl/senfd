@@ -132,9 +132,30 @@ FIGURES = [
                     {
                         "header": ("Value", "M/O", "Management Operation", "Reference"),
                         "rows": [
+                            ("Foo Operations", LEFT, LEFT, LEFT),
                             ("0h", "M", "Foo Pause", "3.5.1"),
                             ("1h", "O", "Foo Go", "3.5.2"),
                             ("2h", "O", "Ding", "3.1"),
+                        ],
+                    },
+                ),
+            ),
+        ),
+    ),
+    (
+        f"Foo Migrate {DASH} Command Dword 12",
+        dword(
+            ("31:03", "Reserved"),
+            (
+                "02:00",
+                (
+                    "Mode (MODE): How to migrate.",
+                    {
+                        "header": ("Mode", "Description"),
+                        "rows": [
+                            ("000b", "Current"),
+                            ("001b", "Default"),
+                            ("010b to 111b", "Reserved"),
                         ],
                     },
                 ),
@@ -610,6 +631,17 @@ FIGURES = [
                 ("17:02", "Foo IPv6 Address (FIP6)"),
                 ("05:02", "Foo IPv4 Address (FIP4)"),
                 ("17:06", "Reserved"),
+            ],
+        },
+    ),
+    # Fields of two structures in one table, sharing bytes but no union
+    (
+        "Foo Size Fields",
+        {
+            "header": ("Bytes", "Data Structure", "Description"),
+            "rows": [
+                ("07:00", "Foo Data Structure", "Foo Size (FSZ)"),
+                ("07:00", "Bar Data Structure", "Bar Size (BSZ)"),
             ],
         },
     ),
