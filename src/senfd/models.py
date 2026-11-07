@@ -51,6 +51,7 @@ class CommandDwordLowerUpper(BaseModel):
     nbytes: int
     lower: int
     upper: int
+    condition: Optional[str] = None
     fields: List[Bits] = Field(default_factory=list)
 
 

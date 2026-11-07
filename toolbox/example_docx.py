@@ -86,7 +86,12 @@ FIGURES = [
     ),
     (
         f"Dong {DASH} Command Dword 10",
-        dword(("31:08", "Reserved"), ("07:00", "Bar Kind (BK): Which bar.")),
+        dword(
+            ("31:08", "Reserved"),
+            # A row heading the rows below it, rather than bits
+            ("Foo Specific", "Foo Specific"),
+            ("07:00", "Bar Kind (BK): Which bar."),
+        ),
     ),
     (
         f"Dong {DASH} Data Pointer",
