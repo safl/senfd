@@ -1,0 +1,350 @@
+<html>
+<head>
+<title>spec example</title>
+<style>
+table { border-collapse: collapse; margin-bottom: 1em; }
+th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<h1>example</h1>
+
+
+
+
+<h2>Foobar commands</h2>
+
+<h3>Ding, opcode 01h</h3>
+
+<p>Dwords 10:10 (figure 2)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:16</td><td>Reserved</td><td></td></tr><tr><td>15:00</td><td>Foo Count</td><td>FCNT</td></tr>
+</table>
+
+
+<p>Dwords 11:11 if Foo Mode is set (figure 3)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:01</td><td>Reserved</td><td></td></tr><tr><td>00</td><td>Foo Mode</td><td>FM</td></tr>
+</table>
+
+
+<p>Dwords 2:3 (figure 4)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:00</td><td>Foo Address</td><td>FADDR</td></tr>
+</table>
+
+
+<p>Dwords 14:15 (figure 5)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:00</td><td>Bar Address</td><td>BADDR</td></tr>
+</table>
+
+
+<p>Dwords 6:9 (figure 6)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>127:00</td><td>Data Pointer</td><td>DPTR</td></tr>
+</table>
+
+
+<p>Dwords 4:5 (figure 7)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:00</td><td>Metadata Pointer</td><td>MPTR</td></tr>
+</table>
+
+
+
+<h3>Dong, opcode 02h</h3>
+
+<p>Dwords 10:10 (figure 10)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:08</td><td>Reserved</td><td></td></tr><tr><td>07:00</td><td>Bar Kind</td><td>BK</td></tr>
+</table>
+
+
+<p>Dwords 6:9 (figure 11)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>127:00</td><td>Data Pointer</td><td>DPTR</td></tr>
+</table>
+
+
+
+<h3>Ring, opcode 04h</h3>
+
+<p>Dwords 10:10 (figure 14)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Ring Count</td><td>RCNT</td></tr>
+</table>
+
+
+
+
+<h2>Admin commands</h2>
+
+<h3>Foo Get, opcode C2h</h3>
+
+
+<h3>Foo Set, opcode C1h</h3>
+
+
+
+
+<h2>Features</h2>
+<ul></ul>
+
+<h2>Log pages</h2>
+<ul></ul>
+
+<h2>Structures</h2>
+
+<h3>Dong (data_buffer, figure 12)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>511:00</td><td>Bar Data</td><td></td></tr>
+</table>
+
+
+<h3>Dong - Data (other, figure 13)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Bar Size</td><td>BSZ</td></tr>
+</table>
+
+
+<h3>Command Dword 11 - CNS Specific Identifier (command_dword, figure 21)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:16</td><td>Reserved</td><td></td></tr><tr><td>15:00</td><td>Foo Identifier</td><td>FID</td></tr>
+</table>
+
+
+<h3>Command Dword 0 (command_dword, figure 22)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:16</td><td>Command Identifier</td><td>CID</td></tr>
+</table>
+
+
+<h3>Foo Get - Log Specific Identifier (other, figure 23)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>15:00</td><td>Foo Index</td><td>FIDX</td></tr>
+</table>
+
+
+<h3>Foo Statistics (data_structure, figure 29)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>07:00</td><td>Foo Count</td><td>FCNT</td></tr><tr><td>08</td><td>Foo Attributes</td><td>FATTR</td></tr><tr><td>511:09</td><td>Reserved</td><td></td></tr>
+</table>
+
+
+<h3>Identify - Foo Namespace (data_structure, figure 30)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>07:00</td><td>Foo Size</td><td>FSZE</td></tr>
+</table>
+
+
+<h3>FB Format (data_structure, figure 31)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>01:00</td><td>Foo Format Size</td><td>FFS</td></tr>
+</table>
+
+
+<h3>Foo Statistics (log_page, figure 32)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>15:00</td><td>Foo Reads</td><td></td></tr>
+</table>
+
+
+<h3>Example Foo Element returned by Foo Statistics Log Page (example, figure 33)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>15:00</td><td>Foo Reads</td><td></td></tr>
+</table>
+
+
+<h3>Foo - Create Queue Specific (other, figure 34)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:16</td><td>Foo Queue Size</td><td>FQSZ</td></tr><tr><td>15:00</td><td>Reserved</td><td></td></tr>
+</table>
+
+
+<h3>PRP Entry - Foo Layout (other, figure 35)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:02</td><td>Foo Page Address</td><td>FPA</td></tr><tr><td>01:00</td><td>Reserved</td><td></td></tr>
+</table>
+
+
+<h3>Foo - Management Operation Specific (other, figure 36)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Foo Operation</td><td>FOP</td></tr>
+</table>
+
+
+<h3>Foo Report Data for Foo Zones (other, figure 37)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:00</td><td>Number of Foo Zones</td><td>NFZ</td></tr>
+</table>
+
+
+<h3>Foo Management - Host Software Specified Fields (other, figure 42)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Foo Owner</td><td>FOWN</td></tr>
+</table>
+
+
+<h3>FOOCAP - Foo Capabilities (register, figure 43)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:16</td><td>Reserved</td><td></td></tr><tr><td>15:00</td><td>Foo Limit</td><td>FL</td></tr>
+</table>
+
+
+<h3>Foo Get - Foo Specific Fields (other, figure 44)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Foo Option</td><td>FOPT</td></tr>
+</table>
+
+
+<h3>Foo Submission Queue Entry (other, figure 45)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>63:00</td><td>Foo Command</td><td>FCMD</td></tr>
+</table>
+
+
+<h3>Foo Descriptor (other, figure 46)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>15:00</td><td>Foo Key</td><td>FKEY</td></tr>
+</table>
+
+
+<h3>Completion Queue Entry Layout - Foo (other, figure 47)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>15:00</td><td>Foo Status</td><td>FSTS</td></tr>
+</table>
+
+
+<h3>Foo Event Data Format (Event Type 02h) (other, figure 49)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Foo Event Count</td><td>FEC</td></tr>
+</table>
+
+
+<h3>Foo Response (other, figure 52)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Foo Reply</td><td>FRPL</td></tr>
+</table>
+
+
+<h3>Foo Attributes Entry (other, figure 53)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>01:00</td><td>Foo Attribute</td><td>FATR</td></tr>
+</table>
+
+
+<h3>Additional Hardware Error Information - Foo (other, figure 54)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>07:00</td><td>Foo Error Address</td><td>FEA</td></tr>
+</table>
+
+
+<h3>Foo Request Fields (other, figure 55)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Foo Tag</td><td>FTAG</td></tr>
+</table>
+
+
+<h3>Foo Request PDU (FooReq) (other, figure 58)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>07:00</td><td>Foo Header</td><td></td></tr>
+</table>
+
+
+<h3>Foo to Bar Mapping Table (other, figure 59)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Foo Word Bar Word</td><td>BW</td></tr>
+</table>
+
+
+<h3>Bar (data_structure, figure 60)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Bar Identifier</td><td>BID</td></tr><tr><td>07:04</td><td>Reserved</td><td></td></tr><tr><td>11:08</td><td>Bar Mode</td><td>BMOD</td></tr><tr><td>N+3:N</td><td>Bar Entry</td><td>BE</td></tr><tr><td>n/a</td><td>Bar Tail</td><td>BT</td></tr>
+</table>
+
+
+<h3>BARCTL - Bar Control (register, figure 61)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:01</td><td>Reserved</td><td></td></tr><tr><td>00</td><td>Bar Enable</td><td>BEN</td></tr>
+</table>
+
+
+</body>
+</html>

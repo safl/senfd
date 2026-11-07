@@ -1,0 +1,581 @@
+{
+    "$defs": {
+        "Bits": {
+            "description": "A field of bits or bytes; 'upper' and 'lower' are None where the document\ngives the range by a formula, which 'range' then holds",
+            "properties": {
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Acronym"
+                },
+                "unit": {
+                    "title": "Unit",
+                    "type": "string"
+                },
+                "upper": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Upper"
+                },
+                "lower": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Lower"
+                },
+                "range": {
+                    "title": "Range",
+                    "type": "string"
+                },
+                "description": {
+                    "default": "",
+                    "title": "Description",
+                    "type": "string"
+                },
+                "section": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Section"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                },
+                "fields": {
+                    "items": {
+                        "$ref": "#/$defs/Bits"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "unit",
+                "range"
+            ],
+            "title": "Bits",
+            "type": "object"
+        },
+        "Command": {
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "opcode": {
+                    "title": "Opcode",
+                    "type": "integer"
+                },
+                "sqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Sqe",
+                    "type": "array"
+                },
+                "cqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Cqe",
+                    "type": "array"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "name",
+                "opcode",
+                "source"
+            ],
+            "title": "Command",
+            "type": "object"
+        },
+        "CommandSet": {
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "commands": {
+                    "additionalProperties": {
+                        "$ref": "#/$defs/Command"
+                    },
+                    "title": "Commands",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "CommandSet",
+            "type": "object"
+        },
+        "Diagnostic": {
+            "description": "Something about a figure that senfd normalised, or could not make sense of\n\nA 'note' is a variant senfd normalised; nothing is lost. A 'warning' is\nsomething left out of the output, as a row whose range is not a range.",
+            "properties": {
+                "figure_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Figure Nr"
+                },
+                "severity": {
+                    "title": "Severity",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "type": "string"
+                },
+                "message": {
+                    "title": "Message",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "severity",
+                "code",
+                "message"
+            ],
+            "title": "Diagnostic",
+            "type": "object"
+        },
+        "DocumentMeta": {
+            "properties": {
+                "version": {
+                    "default": "0.4.0",
+                    "title": "Version",
+                    "type": "string"
+                },
+                "stem": {
+                    "title": "Stem",
+                    "type": "string"
+                }
+            },
+            "title": "DocumentMeta",
+            "type": "object"
+        },
+        "Dwords": {
+            "description": "The dwords 'lower' to 'upper' of a command, and their fields",
+            "properties": {
+                "lower": {
+                    "title": "Lower",
+                    "type": "integer"
+                },
+                "upper": {
+                    "title": "Upper",
+                    "type": "integer"
+                },
+                "condition": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Condition"
+                },
+                "fields": {
+                    "items": {
+                        "$ref": "#/$defs/Bits"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "lower",
+                "upper",
+                "source"
+            ],
+            "title": "Dwords",
+            "type": "object"
+        },
+        "Entry": {
+            "description": "A row of a table of values, as a status value or a log page identifier",
+            "properties": {
+                "value": {
+                    "title": "Value",
+                    "type": "string"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "description": {
+                    "default": "",
+                    "title": "Description",
+                    "type": "string"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "value"
+            ],
+            "title": "Entry",
+            "type": "object"
+        },
+        "Feature": {
+            "description": "A feature, by its identifier, and the dwords of the commands setting and\ngetting it that are described for it",
+            "properties": {
+                "identifier": {
+                    "title": "Identifier",
+                    "type": "integer"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                },
+                "sqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Sqe",
+                    "type": "array"
+                },
+                "cqe": {
+                    "items": {
+                        "$ref": "#/$defs/Dwords"
+                    },
+                    "title": "Cqe",
+                    "type": "array"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "identifier",
+                "name",
+                "source"
+            ],
+            "title": "Feature",
+            "type": "object"
+        },
+        "LogPage": {
+            "description": "A log page, by its identifier, and the structure laying it out",
+            "properties": {
+                "identifier": {
+                    "title": "Identifier",
+                    "type": "integer"
+                },
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                },
+                "structure": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Structure"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "identifier",
+                "name",
+                "source"
+            ],
+            "title": "LogPage",
+            "type": "object"
+        },
+        "Source": {
+            "description": "The document and the figure something came from",
+            "properties": {
+                "document": {
+                    "title": "Document",
+                    "type": "string"
+                },
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "document",
+                "figure_nr"
+            ],
+            "title": "Source",
+            "type": "object"
+        },
+        "Structure": {
+            "description": "A layout of fields that is no command's dwords: a data structure, a log\npage, a register or anything else a figure lays out",
+            "properties": {
+                "name": {
+                    "title": "Name",
+                    "type": "string"
+                },
+                "kind": {
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "unit": {
+                    "title": "Unit",
+                    "type": "string"
+                },
+                "qualifier": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Qualifier"
+                },
+                "offset": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Offset"
+                },
+                "fields": {
+                    "items": {
+                        "$ref": "#/$defs/Bits"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                },
+                "notes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Notes",
+                    "type": "array"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "name",
+                "kind",
+                "unit",
+                "source"
+            ],
+            "title": "Structure",
+            "type": "object"
+        },
+        "Values": {
+            "description": "A table of values, by the kind of its caption and what it names",
+            "properties": {
+                "kind": {
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "qualifier": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Qualifier"
+                },
+                "columns": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "array"
+                },
+                "entries": {
+                    "items": {
+                        "$ref": "#/$defs/Entry"
+                    },
+                    "title": "Entries",
+                    "type": "array"
+                },
+                "source": {
+                    "$ref": "#/$defs/Source"
+                }
+            },
+            "required": [
+                "kind",
+                "source"
+            ],
+            "title": "Values",
+            "type": "object"
+        }
+    },
+    "properties": {
+        "meta": {
+            "$ref": "#/$defs/DocumentMeta"
+        },
+        "command_sets": {
+            "additionalProperties": {
+                "$ref": "#/$defs/CommandSet"
+            },
+            "title": "Command Sets",
+            "type": "object"
+        },
+        "dwords": {
+            "additionalProperties": {
+                "items": {
+                    "$ref": "#/$defs/Dwords"
+                },
+                "type": "array"
+            },
+            "title": "Dwords",
+            "type": "object"
+        },
+        "features": {
+            "additionalProperties": {
+                "$ref": "#/$defs/Feature"
+            },
+            "title": "Features",
+            "type": "object"
+        },
+        "log_pages": {
+            "additionalProperties": {
+                "$ref": "#/$defs/LogPage"
+            },
+            "title": "Log Pages",
+            "type": "object"
+        },
+        "structures": {
+            "items": {
+                "$ref": "#/$defs/Structure"
+            },
+            "title": "Structures",
+            "type": "array"
+        },
+        "values": {
+            "items": {
+                "$ref": "#/$defs/Values"
+            },
+            "title": "Values",
+            "type": "array"
+        },
+        "diagnostics": {
+            "items": {
+                "$ref": "#/$defs/Diagnostic"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+        }
+    },
+    "title": "SpecDocument",
+    "type": "object"
+}

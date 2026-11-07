@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>spec {{ document.meta.stem }}</title>
+<style>
+table { border-collapse: collapse; margin-bottom: 1em; }
+th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align: top; }
+</style>
+</head>
+<body>
+<h1>{{ document.meta.stem }}</h1>
+
+{% macro render_fields(fields) %}
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+{% for f in fields %}<tr><td>{{ f.range }}</td><td>{{ f.name or "" }}</td><td>{{ f.acronym or "" }}</td></tr>{% endfor %}
+</table>
+{% endmacro %}
+
+{% for set_key, command_set in document.command_sets.items() %}
+<h2>{{ command_set.name }} commands</h2>
+{% for key, command in command_set.commands.items() %}
+<h3>{{ command.name }}, opcode {{ "%02Xh" | format(command.opcode) }}</h3>
+{% for d in command.sqe %}
+<p>Dwords {{ d.lower }}:{{ d.upper }}{% if d.condition %} if {{ d.condition }}{% endif %} (figure {{ d.source.figure_nr }})</p>
+{{ render_fields(d.fields) }}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+<h2>Features</h2>
+<ul>{% for key, f in document.features.items() %}<li>{{ "%02Xh" | format(f.identifier) }} {{ f.name }}</li>{% endfor %}</ul>
+
+<h2>Log pages</h2>
+<ul>{% for key, l in document.log_pages.items() %}<li>{{ "%02Xh" | format(l.identifier) }} {{ l.name }}</li>{% endfor %}</ul>
+
+<h2>Structures</h2>
+{% for s in document.structures %}
+<h3>{{ s.name }} ({{ s.kind }}, figure {{ s.source.figure_nr }})</h3>
+{{ render_fields(s.fields) }}
+{% endfor %}
+</body>
+</html>

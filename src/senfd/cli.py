@@ -16,6 +16,7 @@ import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
 from senfd.documents.merged import FromFolder
+from senfd.documents.spec import SpecDocument, merge
 from senfd.errors import Error
 
 PARSEARGS_EPILOG = """\
@@ -119,6 +120,15 @@ def main() -> int:
     if FromFolder.is_applicable(args.output):  # Merge ModelDocuments
         merged, errors = FromFolder.convert(args.output, args)
         merged.to_json_file(args.output / merged.json_filename())
+
+    specs = [
+        SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
+        for path in sorted(args.output.glob(f"*{SpecDocument.SUFFIX_JSON}"))
+        if not path.name.startswith("merged.")
+    ]
+    if specs:
+        spec = merge(specs)
+        spec.to_json_file(args.output / spec.json_filename())
 
     return 0
 

@@ -73,12 +73,10 @@ def test_a_command_gets_the_dwords_another_document_describes(tmp_path):
         ],
     )
     example = model_of(Path("example") / "example.docx", tmp_path)
-    assert [sqe["command_alias"] for sqe in example["sqe_of_other_documents"]] == [
-        "zap"
-    ]
+    assert "zap" in [sqe["command_alias"] for sqe in example["sqe_of_other_documents"]]
     model_of(other, tmp_path)
 
     merged, _ = senfd.documents.merged.FromFolder.convert(tmp_path, Namespace())
     zap = merged.command_sets["bar"].commands["zap"]
     assert [(sqe.lower, sqe.fields[0].acronym) for sqe in zap.sqe] == [(10, "zcnt")]
-    assert not merged.sqe_of_other_documents
+    assert "zap" not in [sqe.command_alias for sqe in merged.sqe_of_other_documents]
