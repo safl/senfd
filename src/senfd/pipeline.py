@@ -5,10 +5,16 @@ from typing import List, Type
 from senfd.documents.base import Converter
 from senfd.documents.enriched import FromFigureDocument
 from senfd.documents.model import FromEnrichedDocument
+from senfd.documents.normalized import FromFigureDocument as FromPlainDocument
 from senfd.documents.plain import FromDocx
 from senfd.errors import Error
 
-CONVERTERS: List[Type[Converter]] = [FromDocx, FromFigureDocument, FromEnrichedDocument]
+CONVERTERS: List[Type[Converter]] = [
+    FromDocx,
+    FromFigureDocument,
+    FromPlainDocument,
+    FromEnrichedDocument,
+]
 
 
 def process(input: Path, output: Path, args: Namespace) -> List[Error]:
@@ -25,6 +31,5 @@ def process(input: Path, output: Path, args: Namespace) -> List[Error]:
         json_path = document.to_json_file(output)
 
         all_errors += process(json_path, output, args)
-        break
 
     return all_errors

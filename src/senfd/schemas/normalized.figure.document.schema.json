@@ -1,0 +1,405 @@
+{
+    "$defs": {
+        "Diagnostic": {
+            "description": "Something about a figure that senfd normalised, or could not make sense of\n\nA 'note' is a variant senfd normalised; nothing is lost. A 'warning' is\nsomething left out of the output, as a row whose range is not a range.",
+            "properties": {
+                "figure_nr": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Figure Nr"
+                },
+                "severity": {
+                    "title": "Severity",
+                    "type": "string"
+                },
+                "code": {
+                    "title": "Code",
+                    "type": "string"
+                },
+                "message": {
+                    "title": "Message",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "severity",
+                "code",
+                "message"
+            ],
+            "title": "Diagnostic",
+            "type": "object"
+        },
+        "DocumentMeta": {
+            "properties": {
+                "version": {
+                    "default": "0.4.0",
+                    "title": "Version",
+                    "type": "string"
+                },
+                "stem": {
+                    "title": "Stem",
+                    "type": "string"
+                }
+            },
+            "title": "DocumentMeta",
+            "type": "object"
+        },
+        "Layout": {
+            "properties": {
+                "unit": {
+                    "title": "Unit",
+                    "type": "string"
+                },
+                "fields": {
+                    "items": {
+                        "$ref": "#/$defs/LayoutField"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                },
+                "notes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Notes",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "unit"
+            ],
+            "title": "Layout",
+            "type": "object"
+        },
+        "LayoutField": {
+            "description": "A field of a layout table: its range, name, acronym and description, the\nother columns of its row by their name, the heading it is under, and the\nlayouts of the tables in its description",
+            "properties": {
+                "range": {
+                    "$ref": "#/$defs/Range"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Acronym"
+                },
+                "description": {
+                    "default": "",
+                    "title": "Description",
+                    "type": "string"
+                },
+                "columns": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "object"
+                },
+                "section": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Section"
+                },
+                "layouts": {
+                    "items": {
+                        "$ref": "#/$defs/Layout"
+                    },
+                    "title": "Layouts",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "range"
+            ],
+            "title": "LayoutField",
+            "type": "object"
+        },
+        "NormalizedFigure": {
+            "properties": {
+                "figure_nr": {
+                    "title": "Figure Nr",
+                    "type": "integer"
+                },
+                "caption": {
+                    "title": "Caption",
+                    "type": "string"
+                },
+                "subject": {
+                    "$ref": "#/$defs/Subject"
+                },
+                "shape": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Shape"
+                },
+                "headers": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Headers",
+                    "type": "array"
+                },
+                "columns": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Columns",
+                    "type": "array"
+                },
+                "layout": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Layout"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                },
+                "entries": {
+                    "items": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "title": "Entries",
+                    "type": "array"
+                },
+                "rows": {
+                    "items": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "title": "Rows",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "figure_nr",
+                "caption",
+                "subject"
+            ],
+            "title": "NormalizedFigure",
+            "type": "object"
+        },
+        "Range": {
+            "description": "The bits or bytes of a field, as 'upper' and 'lower'; a range the document\ngives by a formula, such as \"(N*16)+15:N*16\", has the formula as its text\nand neither bound",
+            "properties": {
+                "unit": {
+                    "title": "Unit",
+                    "type": "string"
+                },
+                "text": {
+                    "title": "Text",
+                    "type": "string"
+                },
+                "upper": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Upper"
+                },
+                "lower": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Lower"
+                }
+            },
+            "required": [
+                "unit",
+                "text"
+            ],
+            "title": "Range",
+            "type": "object"
+        },
+        "Subject": {
+            "description": "What a figure describes, from its caption\n\n'kind' is one of the kinds of CAPTIONS, or \"other\" for a caption of none of\nthem; 'name' is the command, data structure, log page or other thing named.",
+            "properties": {
+                "kind": {
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "lower": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Lower"
+                },
+                "upper": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Upper"
+                },
+                "condition": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Condition"
+                },
+                "offset": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Offset"
+                },
+                "qualifier": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Qualifier"
+                },
+                "scope": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Scope"
+                }
+            },
+            "required": [
+                "kind"
+            ],
+            "title": "Subject",
+            "type": "object"
+        }
+    },
+    "properties": {
+        "meta": {
+            "$ref": "#/$defs/DocumentMeta"
+        },
+        "figures": {
+            "items": {
+                "$ref": "#/$defs/NormalizedFigure"
+            },
+            "title": "Figures",
+            "type": "array"
+        },
+        "skipped": {
+            "items": {
+                "type": "integer"
+            },
+            "title": "Skipped",
+            "type": "array"
+        },
+        "nontabular": {
+            "items": {
+                "type": "integer"
+            },
+            "title": "Nontabular",
+            "type": "array"
+        },
+        "diagnostics": {
+            "items": {
+                "$ref": "#/$defs/Diagnostic"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+        }
+    },
+    "title": "NormalizedFigureDocument",
+    "type": "object"
+}

@@ -77,19 +77,30 @@ class FromDocx(Converter):
         def docx_table_to_table(docx_table: docx.table.Table) -> Table:
             table = Table()
 
+            above: List = []
             for docx_row in docx_table.rows:
                 row = Row()
                 table.rows.append(row)
 
-                for docx_cell in docx_row.cells:
+                docx_cells = docx_row.cells
+                for idx, docx_cell in enumerate(docx_cells):
+                    merged = None
+                    if idx and docx_cell._tc is docx_cells[idx - 1]._tc:
+                        merged = "left"
+                    elif idx < len(above) and docx_cell._tc is above[idx]._tc:
+                        merged = "up"
                     cell = Cell(
                         text=str(docx_cell.text),
                         tables=[
                             docx_table_to_table(nested_table)
                             for nested_table in docx_cell.tables
-                        ],
+                        ]
+                        if merged is None
+                        else [],
+                        merged=merged,
                     )
                     row.cells.append(cell)
+                above = list(docx_cells)
 
             return table
 

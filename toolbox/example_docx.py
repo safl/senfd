@@ -17,6 +17,11 @@ from docx.enum.style import WD_STYLE_TYPE
 # The specification documents separate a caption's parts by an en dash
 DASH = "\u2013"
 
+# A cell merged with the one to its left, or with the one above it
+LEFT = "<"
+UP = "^"
+
+
 FIELD = ("Bytes", "Description")
 BITS = ("Bits", "Description")
 
@@ -381,6 +386,37 @@ FIGURES = [
             "rows": [("03:00", "Foo Word", "07:04", "Bar Word (BW)")],
         },
     ),
+    # The variants the documents write the same thing in: footnote markers on
+    # headers and acronyms, a reserved row merged across columns, a heading row,
+    # the header again after a page break, a range continued in the row below,
+    # ranges by formula, a note, and a name with no colon after it
+    (
+        "Bar Data Structure",
+        {
+            "header": ("Bytes", "O/M1", "Description"),
+            "rows": [
+                ("03:00", "M", "Bar Identifier (BID) 1: Which bar."),
+                ("07:04", "Reserved", LEFT),
+                ("Bar Specific", LEFT, LEFT),
+                ("Bytes", "O/M1", "Description"),
+                ("11:08", "O", "Bar Mode (BMOD)2: How bar runs."),
+                (UP, UP, "00b: Bar is off."),
+                ("N+3:N", "O", "Bar Entry (BE) The bar entry, of N bytes."),
+                ("n/a", "O", "Bar Tail (BT): Not in the data."),
+                ("NOTE 1", "Bar identifiers are unique.", LEFT),
+            ],
+        },
+    ),
+    (
+        "Offset 20h: BARCTL - Bar Control",
+        {
+            "header": ("Bits", "Reset", "Type", "Definition"),
+            "rows": [
+                ("31:01", "0h", "RO", "Reserved"),
+                ("00", "0h", "RW", "Bar Enable (BEN): Enables bar."),
+            ],
+        },
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",
@@ -392,7 +428,8 @@ FIGURES = [
 
 def add_table(container, table, caption=None):
     """Add 'table' to 'container', the document or a cell, with the caption in a
-    first row spanning the table, as the specification documents do"""
+    first row spanning the table, as the specification documents do; a cell of
+    LEFT or UP is merged with the cell to its left or above it"""
 
     columns = len(table["header"])
     rows = [table["header"], *table["rows"]]
@@ -400,12 +437,22 @@ def add_table(container, table, caption=None):
     if caption:
         first = docx_table.rows[0].cells
         first[0].merge(first[-1]).text = caption
-    for docx_row, row in zip(docx_table.rows[bool(caption) :], rows):
-        for docx_cell, cell in zip(docx_row.cells, row):
+    offset = bool(caption)
+    merges = []
+    for ridx, row in enumerate(rows, offset):
+        for cidx, cell in enumerate(row):
+            if cell in (LEFT, UP):
+                merges.append((ridx, cidx, cell))
+                continue
             text, nested = cell if isinstance(cell, tuple) else (cell, None)
+            docx_cell = docx_table.cell(ridx, cidx)
             docx_cell.text = text
             if nested:
                 add_table(docx_cell, nested)
+    for ridx, cidx, how in merges:
+        other = (ridx, cidx - 1) if how == LEFT else (ridx - 1, cidx)
+        text = docx_table.cell(*other).text
+        docx_table.cell(*other).merge(docx_table.cell(ridx, cidx)).text = text
 
 
 def write(path, figures):

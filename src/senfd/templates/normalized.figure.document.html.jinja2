@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>normalized {{ document.meta.stem }}</title>
+<style>
+table { border-collapse: collapse; margin-bottom: 1em; }
+th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align: top; }
+th { background-color: #f2f2f2; }
+.warning { color: #a00; }
+</style>
+</head>
+<body>
+
+{% macro render_layout(layout) %}
+<table>
+<tr><th>{{ layout.unit }}</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+{% for field in layout.fields %}
+<tr>
+  <td>{{ field.range.text }}</td>
+  <td>{% if field.section %}[{{ field.section }}] {% endif %}{{ field.name or "" }}</td>
+  <td>{{ field.acronym or "" }}</td>
+  <td>{{ field.description }}
+  {% for nested in field.layouts %}{{ render_layout(nested) }}{% endfor %}</td>
+  <td>{% for k, v in field.columns.items() %}{{ k }}: {{ v }}<br>{% endfor %}</td>
+</tr>
+{% endfor %}
+</table>
+{% endmacro %}
+
+<h1>{{ document.meta.stem }}</h1>
+<p>{{ document.figures | length }} figures, {{ document.skipped | length }} skipped, {{ document.nontabular | length }} not tables, {{ document.diagnostics | length }} diagnostics</p>
+
+{% for figure in document.figures %}
+<h3>Figure {{ figure.figure_nr }}: {{ figure.caption }}</h3>
+<p>Subject: {{ figure.subject.kind }}{% for k, v in figure.subject.items() if v is not none and k != "kind" %}, {{ k }}: {{ v }}{% endfor %}. Shape: {{ figure.shape or "none" }}.</p>
+{% if figure.layout %}{{ render_layout(figure.layout) }}{% endif %}
+{% if figure.entries %}
+<table>
+<tr>{% for k in figure.entries[0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+{% for entry in figure.entries %}<tr>{% for v in entry.values() %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}
+</table>
+{% endif %}
+{% if figure.rows %}
+<table>
+<tr>{% for h in figure.headers %}<th>{{ h }}</th>{% endfor %}</tr>
+{% for row in figure.rows %}<tr>{% for v in row %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+
+<h2>Diagnostics</h2>
+<ul>
+{% for d in document.diagnostics %}
+<li class="{{ d.severity }}">Figure {{ d.figure_nr }}: {{ d.severity }} {{ d.code }}: {{ d.message }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>

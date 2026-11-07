@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -6,6 +6,9 @@ from pydantic import BaseModel, Field
 class Cell(BaseModel):
     text: str = Field(default_factory=str)
     tables: List["Table"] = Field(default_factory=list)
+    # A cell merged with the one to its left ("left") or above it ("up") is that
+    # same cell again, its text repeated, rather than a cell of its own
+    merged: Optional[Literal["left", "up"]] = None
 
 
 class Row(BaseModel):
