@@ -55,7 +55,8 @@ def test_a_command_name_is_without_its_footnote_marker(tmp_path):
     spec = spec_of(Path("example") / "example.docx", tmp_path)
 
     ring = spec.command_sets["foobar"].commands["ring"]
-    assert (ring.name, [d.lower for d in ring.sqe]) == ("Ring", [10])
+    assert ring.name == "Ring"
+    assert 10 in [d.lower for d in ring.sqe]
 
 
 def test_a_feature_has_the_dwords_its_caption_names_it_by(tmp_path):
@@ -196,3 +197,25 @@ def test_a_caption_names_a_thing_by_its_name_initials_or_a_longer_name():
     assert log_page_key("Get Log Page - Foo Discovery Log Page") == "foo_discovery"
     assert log_page_key("Foo Information Log Entry") == "foo_information"
     assert log_page_key("Foo (Controller scope)") == "foo"
+
+
+def test_values_that_are_not_what_they_must_be_are_errata_not_model(tmp_path):
+    spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
+    ring = spec.command_sets["foobar"].commands["ring"]
+
+    errata = {(e.code, e.found) for e in spec.errata}
+    assert ("range-outside", "64:00") in errata
+    assert ("acronym", "R MODE") in errata
+    assert ("opcode", "x") in errata
+    assert ("gap", ", ".join(str(b) for b in range(8))) in errata
+    assert not [e for e in spec.errata if e.found == "80h to FFh"]
+
+    # The field beyond its dwords is not in the model, the bad acronym is not
+    (cdw14,) = [d for d in ring.sqe if d.lower == 14]
+    assert cdw14.fields == []
+    (cdw11,) = [d for d in ring.sqe if d.lower == 11]
+    assert [(f.name, f.acronym) for f in cdw11.fields] == [("Ring Mode", None)]
+    assert "zing" not in spec.command_sets["foobar"].commands
+
+    # The bits the left out field had are its erratum, not a gap besides
+    assert not [e for e in spec.errata if e.code == "gap" and "cdw14" in e.message]

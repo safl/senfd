@@ -86,6 +86,14 @@ def section(key: str) -> str:
     return "\n".join(senfd.query.section(spec(), key))
 
 
+@server.tool(structured_output=False)
+def errata(document: str = "") -> str:
+    """Candidate errata of the documents, values that are not what their kind
+    must be, each with where it is; 'document' as "Base" or "NVM" narrows them"""
+
+    return "\n".join(senfd.query.errata(spec(), document))
+
+
 def main() -> int:
     server.run("stdio")
     return 0
