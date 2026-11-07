@@ -99,8 +99,17 @@ pretty-printers, bindings and checks apply:
 
 The options are ``spec``, the merged model, by default the one in the cache,
 ``prefix``, by default ``spec``, and ``commands``, command sets or commands of
-them, as ``nvm`` or ``nvm:write``. ``senfd-header <output> [key=value ...]``
-writes the same without **yace**.
+them, as ``nvm`` or ``nvm:write``, or ``none``. ``senfd-header <output>
+[key=value ...]`` writes the same without **yace**.
+
+It writes the data structures and log pages too, each a packed struct of its
+fields at their offsets, named by the document and the structure, as
+``spec_base_identify_controller``. Fields named by their index, as "Power State
+0 Descriptor" to "Power State 31 Descriptor", are an array, and entries as many
+as the data says are named in the doc of the struct they follow, as **yace**
+binds no flexible array; ``flexible=1`` makes them one. ``structures`` names
+others, by their name or their document's and theirs, as
+``base:identify_controller``, or is ``none``.
 
 .. _sec-usage-auxiliary:
 

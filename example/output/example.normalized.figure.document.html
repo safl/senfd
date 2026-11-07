@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>84 figures, 0 skipped, 1 not tables, 7 diagnostics</p>
+<p>87 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -1727,7 +1727,171 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 84: Foo Overview</h3>
+<h3>Figure 84: Foo Table Data Structure</h3>
+<p>Subject: data_structure, name: Foo Table. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Slot 0 Descriptor</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>63:32</td>
+  <td>Foo Slot 1 Descriptor</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>255:224</td>
+  <td>Foo Slot 7 Descriptor</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>263:256</td>
+  <td>Foo Version</td>
+  <td>FVER</td>
+  <td>An ASCII string.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 85: Foo Entry Data Structure</h3>
+<p>Subject: data_structure, name: Foo Entry. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Foo Entry Key</td>
+  <td>FEK</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:08</td>
+  <td>Foo Entry Pair</td>
+  <td>FEP</td>
+  <td>Two halves.
+  
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Low</td>
+  <td>FLO</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:04</td>
+  <td>Foo High</td>
+  <td>FHI</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+</td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 86: Foo List Data Structure</h3>
+<p>Subject: data_structure, name: Foo List. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Number of Foo Entries</td>
+  <td>NFE</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:04</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>47:16</td>
+  <td>Foo Entry 0</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>79:48</td>
+  <td>Foo Entry 1</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>(NFE*32)+15:(NFE*32)-16</td>
+  <td>Foo Entry NFE-1</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 87: Foo Overview</h3>
 <p>Subject: other, name: Foo Overview. Shape: table.</p>
 
 
@@ -1755,6 +1919,8 @@ th { background-color: #f2f2f2; }
 <li class="note">Figure 66: note field-name: Field without a name: 'Ignored by the controller'</li>
 
 <li class="note">Figure 76: note header-rows: Header of more than one row</li>
+
+<li class="note">Figure 86: note range-symbolic: Range not a number: '(NFE*32)+15:(NFE*32)-16'</li>
 
 </ul>
 </body>

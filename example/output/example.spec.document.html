@@ -467,5 +467,29 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
+<h3>Foo Table (data_structure, figure 84)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:00</td><td>Foo Slot 0 Descriptor</td><td></td></tr><tr><td>63:32</td><td>Foo Slot 1 Descriptor</td><td></td></tr><tr><td>255:224</td><td>Foo Slot 7 Descriptor</td><td></td></tr><tr><td>263:256</td><td>Foo Version</td><td>FVER</td></tr>
+</table>
+
+
+<h3>Foo Entry (data_structure, figure 85)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>07:00</td><td>Foo Entry Key</td><td>FEK</td></tr><tr><td>15:08</td><td>Foo Entry Pair</td><td>FEP</td></tr><tr><td>31:16</td><td>Reserved</td><td></td></tr>
+</table>
+
+
+<h3>Foo List (data_structure, figure 86)</h3>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>03:00</td><td>Number of Foo Entries</td><td>NFE</td></tr><tr><td>15:04</td><td>Reserved</td><td></td></tr><tr><td>47:16</td><td>Foo Entry 0</td><td></td></tr><tr><td>79:48</td><td>Foo Entry 1</td><td></td></tr><tr><td>(NFE*32)+15:(NFE*32)-16</td><td>Foo Entry NFE-1</td><td></td></tr>
+</table>
+
+
 </body>
 </html>
