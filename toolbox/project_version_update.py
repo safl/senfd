@@ -2,12 +2,8 @@
 """
 Set the project version in the various locations where it is "hardcoded"
 
-* Using pyproject.toml[project.version] as the default bumping
-
-Requirements
-------------
-
-* Python 3.11 (tomllib)
+* Using src/senfd/__init__.py[__version__], which pyproject.toml takes the
+  package version from, as the default bumping
 """
 
 import argparse
@@ -15,18 +11,16 @@ import re
 import sys
 from pathlib import Path
 
-import tomllib as toml
 
 REGEX = r"^(?P<before>.*?version.*?=.*?)(?P<version>\d\.\d\.\d)(?P<after>.*?)$"
 FILES = [
-    (Path("pyproject.toml"), REGEX),
     (Path("docs") / "pyproject.toml", REGEX),
     (Path("src") / "senfd" / "__init__.py", REGEX),
 ]
 
 
-def get_project_version(toml_file):
-    return toml.load(toml_file)["project"]["version"]
+def get_project_version(init_file):
+    return re.search(r'__version__ = "([^"]+)"', init_file.read_text()).group(1)
 
 
 def bump_patch_version(version):
@@ -48,7 +42,7 @@ def main():
         args.version
         if args.version
         else bump_patch_version(
-            get_project_version((Path.cwd() / "pyproject.toml").open("rb"))
+            get_project_version(Path.cwd() / "src" / "senfd" / "__init__.py")
         )
     )
 
