@@ -82,6 +82,26 @@ about the specification with a tool call rather than by reading the documents:
 
    claude mcp add senfd -- senfd-mcp
 
+.. _sec-usage-yace:
+
+Spec headers, by yace
+~~~~~~~~~~~~~~~~~~~~~
+
+senfd is a generator for **yace**: it writes the spec header of the commands
+of the model, a struct of each command's dwords with the masks of its fields,
+named by the specification's acronyms and citing their figures, and the
+function making a command, for **yace** to parse as any header, so its
+pretty-printers, bindings and checks apply:
+
+.. code-block:: bash
+
+   yace --generate senfd --generator-option senfd.commands=nvm --emit capi python
+
+The options are ``spec``, the merged model, by default the one in the cache,
+``prefix``, by default ``spec``, and ``commands``, command sets or commands of
+them, as ``nvm`` or ``nvm:write``. ``senfd-header <output> [key=value ...]``
+writes the same without **yace**.
+
 .. _sec-usage-auxiliary:
 
 Auxiliary
