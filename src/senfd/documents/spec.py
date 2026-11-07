@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 """
 The specification document: the model of a specification made from its
 normalised figures, for generating code from and for answering questions with

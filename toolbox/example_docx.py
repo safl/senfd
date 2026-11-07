@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 """
 Write example/example.docx: one or more figures of every kind senfd sorts
 figures into, laid out the way the specification documents lay them out, with
