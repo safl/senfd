@@ -153,6 +153,20 @@ class LogPage(BaseModel):
     source: Source
 
 
+class Erratum(BaseModel):
+    """
+    Something of a figure that is not what its kind of value must be, as a
+    range beyond the dword it is of, left out of the model; or fields that do
+    not fit together, as two of the same bits, which the model keeps. Each is
+    a candidate erratum of the specification, saying where it is.
+    """
+
+    code: str
+    message: str
+    found: str = ""
+    source: Source
+
+
 class SpecDocument(Document):
     SUFFIX_JSON: ClassVar[str] = ".spec.document.json"
     SUFFIX_HTML: ClassVar[str] = ".spec.document.html"
@@ -173,6 +187,7 @@ class SpecDocument(Document):
     log_pages: Dict[str, LogPage] = Field(default_factory=dict)
     unassigned: Dict[str, List[Dwords]] = Field(default_factory=dict)
     diagnostics: List[Diagnostic] = Field(default_factory=list)
+    errata: List[Erratum] = Field(default_factory=list)
 
 
 def without_footnote(name: str) -> str:
@@ -227,6 +242,67 @@ def fields_of(layout: Layout) -> List[Bits]:
 POINTERS = {"metadata_pointer": (4, 5), "data_pointer": (6, 9)}
 
 
+# An acronym is letters and digits, in parts joined by "-", "_", "/" or ".", as
+# "SLBA", "128CCS" or "NVMSETID"
+REGEX_ACRONYM = re.compile(r"^[A-Za-z0-9]+(?:[-_/.][A-Za-z0-9]+)*$")
+
+
+def checked(
+    fields: List[Bits], width: Optional[int], source: Source
+) -> Tuple[List[Bits], List[Erratum]]:
+    """
+    The fields of a layout that are what fields must be, and the errata of
+    those that are not: an acronym that is not one is left out, and a field of
+    reversed bounds, or beyond the 'width' of the dwords it is of, is left out
+    whole; fields sharing bits are not errata, as a layout can give either of
+    two, as an IPv4 or an IPv6 address
+    """
+
+    errata: List[Erratum] = []
+    kept: List[Bits] = []
+    for field in fields:
+        what = f"{field.range} {field.name or ''}".strip()
+        if field.acronym and not REGEX_ACRONYM.match(field.acronym):
+            errata.append(
+                Erratum(
+                    code="acronym",
+                    message=f"Field {what}: acronym '{field.acronym}' is not one",
+                    found=field.acronym,
+                    source=source,
+                )
+            )
+            field = field.model_copy(update={"acronym": None})
+        if field.upper is not None and field.lower is not None:
+            if field.upper < field.lower:
+                errata.append(
+                    Erratum(
+                        code="range-reversed",
+                        message=f"Field {what}: upper bound below the lower",
+                        found=field.range,
+                        source=source,
+                    )
+                )
+                continue
+            if width is not None and field.unit == "bits" and field.upper >= width:
+                errata.append(
+                    Erratum(
+                        code="range-outside",
+                        message=(
+                            f"Field {what}: bit {field.upper} beyond the "
+                            f"{width} bits of its dwords"
+                        ),
+                        found=field.range,
+                        source=source,
+                    )
+                )
+                continue
+        nested, nested_errata = checked(field.fields, None, source)
+        errata += nested_errata
+        kept.append(field.model_copy(update={"fields": nested}))
+
+    return kept, errata
+
+
 def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
     source = Source(
         document=stem,
@@ -245,7 +321,19 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         for entry in figure.entries:
             match = REGEX_HEX.match(entry.get("opcode", ""))
             name = without_footnote(entry.get("command", ""))
-            if not match or not name:
+            if not name:
+                continue
+            if not match:
+                # Reserved and vendor specific opcodes are given as ranges
+                if entry.get("opcode") and " to " not in entry["opcode"]:
+                    document.errata.append(
+                        Erratum(
+                            code="opcode",
+                            message=f"Command {name}: opcode is not a value",
+                            found=entry.get("opcode", ""),
+                            source=source,
+                        )
+                    )
                 continue
             if name.endswith(" Commands"):
                 # A row pointing at the commands of another table, as the
@@ -302,18 +390,24 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         # A caption can give the acronym of the command after its name
         name = re.sub(r"\s*\([A-Z0-9]+\)$", "", subject.name)
         key = ("cqe:" if subject.kind == "completion_dword" else "") + alias(name)
+        fields, errata = checked(
+            fields_of(figure.layout), 32 * (dwords[1] - dwords[0] + 1), source
+        )
+        document.errata += errata
         document.dwords.setdefault(key, []).append(
             Dwords(
                 lower=dwords[0],
                 upper=dwords[1],
                 condition=subject.condition,
                 qualifier=subject.qualifier,
-                fields=fields_of(figure.layout),
+                fields=fields,
                 source=source,
             )
         )
         return
 
+    fields, errata = checked(fields_of(figure.layout), None, source)
+    document.errata += errata
     document.structures.append(
         Structure(
             name=subject.name or figure.caption,
@@ -321,7 +415,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             unit=figure.layout.unit,
             qualifier=subject.qualifier,
             offset=subject.offset,
-            fields=fields_of(figure.layout),
+            fields=fields,
             notes=figure.layout.notes,
             source=source,
         )
@@ -572,6 +666,59 @@ def link_directives(document: SpecDocument, used: set) -> None:
                 command.operations.append(operation)
 
 
+def gaps(command: Command) -> List[Erratum]:
+    """
+    The bits of a command's dwords that no figure gives a field, all its
+    figures of the dwords taken together, as the base specification and a
+    command set's give a dword's fields between them; a figure of a condition
+    is taken with those of none
+    """
+
+    errata = []
+    for kind, described in (("cdw", command.sqe), ("cqe dw", command.cqe)):
+        spans = {(d.lower, d.upper) for d in described}
+        for lower, upper in sorted(spans):
+            figures = [d for d in described if (d.lower, d.upper) == (lower, upper)]
+            plain = [d for d in figures if d.condition is None]
+            named = sorted(d.condition for d in figures if d.condition)
+            conditions: List[Optional[str]] = list(dict.fromkeys(named)) or [None]
+            for condition in conditions:
+                these = plain + [d for d in figures if d.condition == condition]
+                fields = [f for d in these for f in d.fields]
+                if any(f.lower is None or f.unit != "bits" for f in fields):
+                    continue
+                width = 32 * (upper - lower + 1)
+                covered = {
+                    b
+                    for f in fields
+                    if f.lower is not None and f.upper is not None
+                    for b in range(f.lower, f.upper + 1)
+                }
+                missing = sorted(set(range(width)) - covered)
+                if not missing:
+                    continue
+                span = f"{kind}{lower}" if lower == upper else f"{kind}{lower}-{upper}"
+                if condition:
+                    span += f" if {condition}"
+                errata.append(
+                    Erratum(
+                        code="gap",
+                        message=(
+                            f"{command.name} {span}: bits "
+                            + (
+                                f"{missing[0]} to {missing[-1]}"
+                                if len(missing) > 1
+                                else f"{missing[0]}"
+                            )
+                            + " are of no field"
+                        ),
+                        found=", ".join(str(b) for b in missing[:8]),
+                        source=these[0].source,
+                    )
+                )
+    return errata
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -602,6 +749,21 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_directives(document, used)
     link_features(document, used)
     link_log_pages(document)
+
+    # A gap where a field was left out as an erratum is that erratum again
+    document.errata = [e for e in document.errata if e.code != "gap"]
+    excluded = {
+        (e.source.document, e.source.figure_nr)
+        for e in document.errata
+        if e.code.startswith("range")
+    }
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            document.errata += [
+                e
+                for e in gaps(command)
+                if (e.source.document, e.source.figure_nr) not in excluded
+            ]
 
     document.unassigned = {
         key: described for key, described in document.dwords.items() if key not in used
@@ -659,6 +821,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
             merged.dwords.setdefault(key, []).extend(described)
         merged.structures += document.structures
         merged.values += document.values
+        merged.errata += document.errata
         merged.diagnostics += [
             d for d in document.diagnostics if d.code != "dwords-unassigned"
         ]

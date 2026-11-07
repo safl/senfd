@@ -167,3 +167,12 @@ def test_a_section_lists_what_its_figures_describe(spec):
     assert senfd.query.section(spec, "ding")[0] == "example 1.2 Ding command"
     assert senfd.query.section(spec, "9") == ["No section '9'"]
     assert senfd.query.section(spec, "") == ["Give the number or title of a section"]
+
+
+def test_the_errata_say_where_they_are(spec):
+    lines = senfd.query.errata(spec)
+    assert any(
+        line.startswith("example, 1") and "bit 64 beyond the 64 bits" in line
+        for line in lines
+    )
+    assert senfd.query.errata(spec, "nothing") == ["No errata"]
