@@ -38,6 +38,45 @@ or locally in the folder ``example/output``.
 For details on the structure of the **JSON** documents, then have a look at
 the :ref:`schema <sec-schema>` section.
 
+Besides those, each document is normalised into a
+``NormalizedFigureDocument``, every tabular figure by the shape of its table
+and the subject of its caption, with diagnostics saying what was normalised,
+and from that a ``SpecDocument``, the model of the specification. The model of
+all the documents given is merged into ``merged.spec.document.json``.
+
+.. _sec-usage-query:
+
+Query
+~~~~~
+
+The merged model answers questions about the specification. Make it once, from
+the documents you have, into the cache:
+
+.. code-block:: bash
+
+   senfd path/to/specs/*.docx --output ~/.cache/senfd
+
+Then ask, and each answer cites the document and figure it came from:
+
+.. code-block:: bash
+
+   senfd-query command write 12
+   senfd-query feature 07h
+   senfd-query log-page 02h
+   senfd-query structure "Controller Status"
+   senfd-query search FUA
+
+``--spec`` or the environment variable ``SENFD_SPEC`` points at another
+merged model, and ``--verbose`` gives the descriptions too.
+
+The same queries are the tools of an MCP server, ``senfd-mcp``, installed with
+``pip install senfd[mcp]``. Registered with an agent, it answers a question
+about the specification with a tool call rather than by reading the documents:
+
+.. code-block:: bash
+
+   claude mcp add senfd -- senfd-mcp
+
 .. _sec-usage-auxiliary:
 
 Auxiliary
