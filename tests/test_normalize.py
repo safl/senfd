@@ -211,3 +211,105 @@ def test_a_name_ending_in_a_number_keeps_it():
         "The first.",
     )
     assert parse_field_description("Foo NFOO-1: The last.")[0] == "Foo NFOO-1"
+
+
+def test_a_header_of_two_rows_names_the_columns_below_its_spanning_cell(normalized):
+    _, figures = normalized
+
+    figure = figures["Foo Command Support Requirements"]
+    assert figure["columns"] == ["command", "opcode", "i_o", "admin"]
+    assert figure["entries"] == [
+        {"command": "Foo Get", "opcode": "C2h", "i_o": "M", "admin": "O"}
+    ]
+
+
+def rows(*texts):
+    return [Row(cells=[Cell(text=t) for t in row]) for row in texts]
+
+
+def test_irregular_rows_of_a_layout_are_warnings_not_fields():
+    from senfd.documents.normalized import parse_layout
+
+    diagnostics = []
+    layout = parse_layout(
+        rows(
+            ("07:00", "M", "Foo (F): Foo.", "x"),
+            ("", "O", "Foo text"),
+            ("15:08", "O", "Bar (B): Bar."),
+        ),
+        ["bytes", "om", "description"],
+        diagnostics,
+    )
+    assert [f.acronym for f in layout.fields] == ["B"]
+    assert [d.code for d in diagnostics] == ["row-length", "range"]
+
+
+def test_a_layout_of_names_and_descriptions_has_both():
+    from senfd.documents.normalized import parse_layout
+
+    layout = parse_layout(
+        rows(("31:00", "Foo Count (FC)", "How many foos.")),
+        ["bits", "name", "description"],
+        [],
+    )
+    (field,) = layout.fields
+    assert (field.name, field.acronym, field.description) == (
+        "Foo Count",
+        "FC",
+        "How many foos.",
+    )
+
+
+def test_a_table_in_a_cell_that_is_no_layout_is_left_as_text():
+    from senfd.documents.normalized import parse_nested
+    from senfd.tables import Table
+
+    assert parse_nested(Table(rows=rows(("Foo", "Bar"), ("1", "2"))), []) is None
+    assert parse_nested(Table(rows=[]), []) is None
+
+
+def test_entries_name_their_acronym_and_warn_of_irregular_rows():
+    from senfd.documents.normalized import parse_entries
+
+    diagnostics, notes = [], []
+    entries = parse_entries(
+        rows(("80h", "Foo Busy (FB): Foo is busy."), ("81h",), ("82h", "a", "b")),
+        ["value", "description"],
+        diagnostics,
+        ["Value", "Description"],
+        notes,
+    )
+    assert entries == [
+        {
+            "value": "80h",
+            "description": "Foo is busy.",
+            "name": "Foo Busy",
+            "acronym": "FB",
+        }
+    ]
+    assert [d.code for d in diagnostics] == ["row-length"]
+
+
+def test_a_header_below_a_title_row_is_found_and_noted():
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.plain import Figure
+    from senfd.tables import Table
+
+    figure = Figure(
+        figure_nr=1,
+        caption="Figure 1: Foo Layout",
+        description="Foo Layout",
+        table=Table(
+            rows=rows(
+                ("Figure 1: Foo Layout",),
+                ("Foo",),
+                ("Bytes", "Description"),
+                ("00", "Foo (F)"),
+            )
+        ),
+    )
+    diagnostics = []
+    normalized = normalize_figure(figure, diagnostics)
+    assert normalized.shape == "layout"
+    assert [f.acronym for f in normalized.layout.fields] == ["F"]
+    assert [d.code for d in diagnostics] == ["header-row"]

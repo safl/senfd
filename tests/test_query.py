@@ -70,3 +70,86 @@ def test_a_command_has_its_operations_with_their_selectors(spec):
         lines
     )
     assert "  15:00 Bar Reset Count (BRC)" in lines
+
+
+def test_verbose_gives_the_descriptions_and_the_headings(spec):
+    lines = senfd.query.command(spec, "ding", 10, verbose=True)
+    assert "    How many." in lines
+    lines = senfd.query.structure(spec, "Bar", verbose=True)
+    assert "  [Bar Specific]" in lines
+    assert any(line.startswith("  Note: NOTES:") for line in lines)
+
+
+def test_a_structure_of_the_name_given_comes_before_those_containing_it(spec):
+    lines = senfd.query.structure(spec, "foo statistics")
+    assert lines[0].startswith("Foo Statistics, bytes")
+    assert senfd.query.structure(spec, "nothing") == ["No structure 'nothing'"]
+    assert senfd.query.structure(spec, " ") == ["Give the name of a structure"]
+
+
+def test_a_register_says_its_offset(spec):
+    (first, *_) = senfd.query.structure(spec, "FOOCAP")
+    assert first.startswith("FOOCAP - Foo Capabilities at offset 10h, bits")
+
+
+def test_many_structures_of_a_name_are_listed_rather_than_shown(spec):
+    lines = senfd.query.structure(spec, "foo")
+    assert lines[0].endswith("structures; be more specific:")
+
+
+def test_a_search_finds_commands_features_log_pages_and_structures(spec):
+    lines = senfd.query.search(spec, "foo")
+    assert any(line.startswith("feature C0h Foo Config") for line in lines)
+    assert any(line.startswith("log page C0h Foo Statistics") for line in lines)
+    assert any(line.startswith("structure Foo Statistics") for line in lines)
+    assert lines[-1].startswith("... and ")
+    assert any(
+        line.startswith("command Foo Get")
+        for line in senfd.query.search(spec, "foo get")
+    )
+    assert senfd.query.search(spec, "") == ["Give an acronym or a name to search for"]
+    assert senfd.query.search(spec, "nothing") == ["Nothing named 'nothing'"]
+
+
+def test_a_search_finds_the_fields_of_features_and_of_no_command(spec):
+    assert any(
+        line.startswith("feature Foo Config cdw11")
+        for line in senfd.query.search(spec, "FLVL")
+    )
+    assert any(
+        line.startswith("zap cdw10") for line in senfd.query.search(spec, "ZCNT")
+    )
+
+
+def test_nothing_of_an_identifier_or_dword_says_so(spec):
+    assert senfd.query.feature(spec, "EEh") == ["No feature 'EEh'"]
+    assert senfd.query.log_page(spec, "EEh") == ["No log page 'EEh'"]
+    assert (
+        senfd.query.command(spec, "ding", 13)[-1] == "No figure describes cdw13 of Ding"
+    )
+    assert senfd.query.command(spec, "") == ["Give the name of a command"]
+    assert "  no figure laying it out is known" in senfd.query.log_page(spec, "C1h")
+
+
+def test_every_question_of_the_command_line(spec_path, capsys):
+    for argv in (
+        ["feature", "C0h"],
+        ["log-page", "C0h"],
+        ["structure", "Bar"],
+        ["search", "FCNT"],
+        ["-v", "command", "ding"],
+    ):
+        assert senfd.query.main(["--spec", str(spec_path), *argv]) == 0
+    out = capsys.readouterr().out
+    assert "Foo Config" in out and "Foo Statistics" in out and "Ding cdw10" in out
+
+
+def test_the_model_is_found_by_the_environment_or_in_the_cache(monkeypatch, tmp_path):
+    monkeypatch.setenv("SENFD_SPEC", str(tmp_path / "spec.json"))
+    assert senfd.query.default_spec_path() == tmp_path / "spec.json"
+    monkeypatch.delenv("SENFD_SPEC")
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path))
+    assert (
+        senfd.query.default_spec_path()
+        == tmp_path / "senfd" / "merged.spec.document.json"
+    )

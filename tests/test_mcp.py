@@ -51,3 +51,15 @@ def test_a_missing_model_is_said_to_the_client(tmp_path, monkeypatch):
     with pytest.raises(RuntimeError, match="No model of the specification at"):
         senfd.mcp_server.command("ding")
     senfd.mcp_server.spec.cache_clear()
+
+
+def test_every_tool_answers_from_the_model(monkeypatch):
+    import senfd.mcp_server
+
+    monkeypatch.setenv("SENFD_SPEC", str(SPEC.resolve()))
+    senfd.mcp_server.spec.cache_clear()
+    assert senfd.mcp_server.feature("C0h").startswith("C0h Foo Config")
+    assert senfd.mcp_server.log_page("C0h").startswith("C0h Foo Statistics")
+    assert senfd.mcp_server.structure("FOOCAP").startswith("FOOCAP")
+    assert "Ding cdw10" in senfd.mcp_server.search("FCNT")
+    senfd.mcp_server.spec.cache_clear()

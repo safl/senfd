@@ -494,6 +494,17 @@ FIGURES = [
         f"Bar Directive {DASH} Bar Report Data Structure",
         {"header": FIELD, "rows": [("01:00", "Bar Report Length (BRL)")]},
     ),
+    # A header of two rows, a header cell spanning the columns below it
+    (
+        "Foo Command Support Requirements",
+        {
+            "header": ("Command", "Combined Opcode", "Support Requirements", LEFT),
+            "rows": [
+                (UP, UP, "I/O", "Admin"),
+                ("Foo Get", "C2h", "M", "O"),
+            ],
+        },
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",

@@ -399,9 +399,10 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         and any(c.merged == "up" for c in body[0].cells)
     ):
         below = body.pop(0)
+        # Which header cells span columns, before any column is renamed
+        spanning = [grid.count(column) > 1 for column in grid]
         for i, cell in enumerate(below.cells):
-            spans = grid.count(grid[i]) > 1
-            if cell.merged is None and spans and normalize_text(cell.text):
+            if cell.merged is None and spanning[i] and normalize_text(cell.text):
                 text = normalize_text(cell.text)
                 grid[i] = normalize_header(text)[0] or grid[i]
                 headers[i] = f"{headers[i]} {text}"
