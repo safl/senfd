@@ -72,7 +72,9 @@ as are bits of a command's dwords that no figure gives a field; ``errata``
 lists them, each with where it is, for the documents to be corrected.
 
 ``--spec`` or the environment variable ``SENFD_SPEC`` points at another
-merged model, and ``--verbose`` gives the descriptions too.
+merged model, and ``--verbose`` gives the descriptions too. ``--markdown``
+gives the fields of a command, feature, log page or structure as a Markdown
+table, for an answer shown to a reader.
 
 The same queries are the tools of an MCP server, ``senfd-mcp``, installed with
 ``pip install senfd[mcp]``. Registered with an agent, it answers a question

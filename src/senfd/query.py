@@ -2,7 +2,9 @@
 Answers to questions about the specification, from its merged model
 
 Each answer is a few lines of text, saying the figure of the document it came
-from, so that it can be checked against the specification. The model is the
+from, so that it can be checked against the specification. Given 'markdown',
+the fields of an answer are a table of them instead, for an answer shown to a
+reader rather than read by an agent. The model is the
 merged specification document that senfd writes, by default in the cache:
 
     senfd *.docx --output ~/.cache/senfd
@@ -96,6 +98,53 @@ def lines_of_fields(
             yield from lines_of_fields(field.fields, verbose, indent + "    ")
 
 
+def cell(text: str) -> str:
+    """'text' as one cell of a Markdown table"""
+
+    return " ".join(text.split()).replace("|", "\\|")
+
+
+def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> List[str]:
+    """The fields as a Markdown table; a field within another is named by both
+    acronyms, as "PRINFO.PRACT", and a heading of fields is a row of its own"""
+
+    head = ["Bits" if unit == "bits" else "Bytes", "Name", "Acronym"]
+    head += ["Description"] if verbose else []
+    lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
+
+    def rows(fields: List[Bits], parent: str) -> Iterable[str]:
+        section = None
+        for field in fields:
+            if field.section != section and field.section:
+                blank = [""] * (len(head) - 2)
+                yield (
+                    "| | **" + cell(field.section) + "** | " + " | ".join(blank) + " |"
+                )
+            section = field.section
+            acronym = field.acronym or ""
+            path = f"{parent}.{acronym}" if parent and acronym else acronym
+            either = (
+                f" (union {field.union}, alternative {field.alternative})"
+                if field.union is not None
+                else ""
+            )
+            row = [field.range, cell((field.name or "") + either), cell(path)]
+            if verbose:
+                text = (field.description or "").split("\n")[0][:160]
+                values = [
+                    f"{v.value} {(senfd_value_names(v) or [v.description[:60]])[0]}"
+                    for v in field.values
+                ]
+                if values:
+                    text += " Values: " + ", ".join(values)
+                row.append(cell(text))
+            yield "| " + " | ".join(row) + " |"
+            yield from rows(field.fields, path or parent)
+
+    lines += rows(fields, "")
+    return lines
+
+
 def dword_label(dwords: Dwords, prefix: str) -> str:
     span = (
         f"{prefix}{dwords.lower}"
@@ -108,13 +157,23 @@ def dword_label(dwords: Dwords, prefix: str) -> str:
 
 
 def lines_of_dwords(
-    dwords: List[Dwords], prefix: str, dword: Optional[int], verbose: bool
+    dwords: List[Dwords],
+    prefix: str,
+    dword: Optional[int],
+    verbose: bool,
+    markdown: bool = False,
 ) -> Iterable[str]:
     for d in sorted(dwords, key=lambda d: (d.lower, d.condition or "")):
         if dword is not None and not d.lower <= dword <= d.upper:
             continue
-        yield dword_label(d, prefix)
-        yield from lines_of_fields(d.fields, verbose)
+        if markdown:
+            yield ""
+            yield f"**{dword_label(d, prefix)}**"
+            yield ""
+            yield from table_of_fields(d.fields, verbose)
+        else:
+            yield dword_label(d, prefix)
+            yield from lines_of_fields(d.fields, verbose)
 
 
 def find(names: Iterable[str], text: str) -> List[str]:
@@ -128,7 +187,11 @@ def find(names: Iterable[str], text: str) -> List[str]:
 
 
 def command(
-    spec: SpecDocument, name: str, dword: Optional[int] = None, verbose=False
+    spec: SpecDocument,
+    name: str,
+    dword: Optional[int] = None,
+    verbose=False,
+    markdown=False,
 ) -> List[str]:
     if not name.strip():
         return ["Give the name of a command"]
@@ -142,26 +205,30 @@ def command(
     exact = [(cs, key) for cs, key in found if key == alias(name)]
     for command_set, key in exact or found:
         cmd: Command = command_set.commands[key]
-        lines.append(
+        title = (
             f"{cmd.name}: {command_set.name} command, opcode {cmd.opcode:02X}h "
             f"[{cite(cmd.source)}]"
         )
+        lines.append(f"### {title}" if markdown else title)
         before = len(lines)
-        lines += lines_of_dwords(cmd.sqe, "cdw", dword, verbose)
+        lines += lines_of_dwords(cmd.sqe, "cdw", dword, verbose, markdown)
         if dword is None:
-            lines += lines_of_dwords(cmd.cqe, "cqe dw", None, verbose)
+            lines += lines_of_dwords(cmd.cqe, "cqe dw", None, verbose, markdown)
         elif len(lines) == before and not cmd.operations:
             lines.append(f"No figure describes cdw{dword} of {cmd.name}")
         for operation in cmd.operations:
             selectors = " ".join(
                 f"{k}={v:02X}h" for k, v in operation.selectors.items()
             )
-            lines.append(
+            title = (
                 f"operation {operation.name}, {selectors} [{cite(operation.source)}]"
             )
-            lines += lines_of_dwords(operation.sqe, "cdw", dword, verbose)
+            lines += ["", f"#### {title}"] if markdown else [title]
+            lines += lines_of_dwords(operation.sqe, "cdw", dword, verbose, markdown)
             if dword is None:
-                lines += lines_of_dwords(operation.cqe, "cqe dw", None, verbose)
+                lines += lines_of_dwords(
+                    operation.cqe, "cqe dw", None, verbose, markdown
+                )
                 lines += [f"  returns {name}" for name in operation.structures]
     return lines or [f"No command '{name}'"]
 
@@ -179,20 +246,22 @@ def by_identifier_or_name(items: dict, key: str) -> list:
     return [items[k] for k in find(items, key)]
 
 
-def feature(spec: SpecDocument, key: str, verbose=False) -> List[str]:
+def feature(spec: SpecDocument, key: str, verbose=False, markdown=False) -> List[str]:
     lines = []
     for f in by_identifier_or_name(spec.features, key):
-        lines.append(f"{f.identifier:02X}h {f.name} [{cite(f.source)}]")
-        lines += lines_of_dwords(f.sqe, "cdw", None, verbose)
-        lines += lines_of_dwords(f.cqe, "cqe dw", None, verbose)
+        title = f"{f.identifier:02X}h {f.name} [{cite(f.source)}]"
+        lines.append(f"### Feature {title}" if markdown else title)
+        lines += lines_of_dwords(f.sqe, "cdw", None, verbose, markdown)
+        lines += lines_of_dwords(f.cqe, "cqe dw", None, verbose, markdown)
     return lines or [f"No feature '{key}'"]
 
 
-def log_page(spec: SpecDocument, key: str, verbose=False) -> List[str]:
+def log_page(spec: SpecDocument, key: str, verbose=False, markdown=False) -> List[str]:
     lines = []
     shown = set()
     for page in by_identifier_or_name(spec.log_pages, key):
-        lines.append(f"{page.identifier:02X}h {page.name} [{cite(page.source)}]")
+        title = f"{page.identifier:02X}h {page.name} [{cite(page.source)}]"
+        lines.append(f"### Log page {title}" if markdown else title)
         where = page.structure and (
             page.structure.source.document,
             page.structure.source.figure_nr,
@@ -201,21 +270,30 @@ def log_page(spec: SpecDocument, key: str, verbose=False) -> List[str]:
             lines.append(f"  laid out as above, {page.structure.name}")
         elif page.structure:
             shown.add(where)
-            lines += lines_of_structure(page.structure, verbose)
+            lines += lines_of_structure(page.structure, verbose, markdown)
         else:
             lines.append("  no figure laying it out is known")
     return lines or [f"No log page '{key}'"]
 
 
-def lines_of_structure(structure: Structure, verbose: bool) -> List[str]:
+def lines_of_structure(
+    structure: Structure, verbose: bool, markdown: bool = False
+) -> List[str]:
     offset = f" at offset {structure.offset}" if structure.offset else ""
-    lines = [f"{structure.name}{offset}, {structure.unit} [{cite(structure.source)}]"]
-    lines += lines_of_fields(structure.fields, verbose)
+    title = f"{structure.name}{offset}, {structure.unit} [{cite(structure.source)}]"
+    if markdown:
+        lines = ["", f"**{title}**", ""]
+        lines += table_of_fields(structure.fields, verbose, structure.unit)
+    else:
+        lines = [title]
+        lines += lines_of_fields(structure.fields, verbose)
     lines += [f"  Note: {note[:160]}" for note in structure.notes if verbose]
     return lines
 
 
-def structure(spec: SpecDocument, name: str, verbose=False) -> List[str]:
+def structure(
+    spec: SpecDocument, name: str, verbose=False, markdown=False
+) -> List[str]:
     key = alias(name)
     if not key:
         return ["Give the name of a structure"]
@@ -228,7 +306,7 @@ def structure(spec: SpecDocument, name: str, verbose=False) -> List[str]:
         ]
     lines = []
     for s in named:
-        lines += lines_of_structure(s, verbose)
+        lines += lines_of_structure(s, verbose, markdown)
     return lines or [f"No structure '{name}'"]
 
 
@@ -374,6 +452,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument(
         "-v", "--verbose", action="store_true", help="Give the descriptions too"
     )
+    parser.add_argument(
+        "--markdown",
+        action="store_true",
+        help="Give the fields of an answer as Markdown tables, for reading",
+    )
     sub = parser.add_subparsers(dest="what", required=True)
     p = sub.add_parser("command", help="A command and its dwords")
     p.add_argument("name")
@@ -400,13 +483,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     spec = load(args.spec)
     if args.what == "command":
-        lines = command(spec, args.name, args.dword, args.verbose)
+        lines = command(spec, args.name, args.dword, args.verbose, args.markdown)
     elif args.what == "feature":
-        lines = feature(spec, args.key, args.verbose)
+        lines = feature(spec, args.key, args.verbose, args.markdown)
     elif args.what == "log-page":
-        lines = log_page(spec, args.key, args.verbose)
+        lines = log_page(spec, args.key, args.verbose, args.markdown)
     elif args.what == "structure":
-        lines = structure(spec, args.name, args.verbose)
+        lines = structure(spec, args.name, args.verbose, args.markdown)
     elif args.what == "section":
         lines = section(spec, args.key)
     elif args.what == "errata":
