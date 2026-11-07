@@ -724,6 +724,19 @@ FIGURES = [
             ],
         },
     ),
+    # A register whose layout is a figure of a format it shares, under a
+    # heading naming the register
+    heading(2, f"Offset 18h: FOOVER {DASH} Foo Version"),
+    (
+        "Foo Version Descriptor",
+        {
+            "header": BITS,
+            "rows": [
+                ("31:16", "Foo Major Version (FMJR)"),
+                ("15:00", "Foo Minor Version (FMNR)"),
+            ],
+        },
+    ),
     # A table of no kind senfd knows, and a figure that is not a table
     (
         "Foo Overview",
@@ -778,7 +791,10 @@ def number_headings(figures):
 
 # A section that the table of contents numbers otherwise than counting the
 # headings does, as when Word numbers a heading that does not show
-TOC_NUMBERS = {"Data Structures": "4"}
+TOC_NUMBERS = {
+    "Data Structures": "4",
+    f"Offset 18h: FOOVER {DASH} Foo Version": "4.1",
+}
 
 
 def numbered_by_field(cell, number, caption):

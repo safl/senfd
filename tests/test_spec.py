@@ -432,3 +432,11 @@ def test_an_operation_takes_no_dwords_of_another_document(tmp_path):
 
     (pause,) = [o for o in migrate.operations if o.name == "Foo Pause"]
     assert [d.lower for d in pause.sqe] == [11]
+
+
+def test_a_register_of_a_format_it_shares_is_named_by_its_section(tmp_path):
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (version,) = [st for st in spec.structures if st.name == "FOOVER - Foo Version"]
+
+    assert (version.kind, version.offset) == ("register", "18h")
+    assert [f.acronym for f in version.fields] == ["FMJR", "FMNR"]

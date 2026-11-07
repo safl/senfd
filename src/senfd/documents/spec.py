@@ -443,6 +443,20 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         section_title=figure.section_title,
     )
     subject = figure.subject
+    # A register whose layout is a figure of a format it shares, as VS of the
+    # Specification Version Descriptor, is named by the title of its section
+    if (
+        subject.kind == "other"
+        and figure.shape == "layout"
+        and figure.layout is not None
+        and figure.layout.unit == "bits"
+        and figure.section_title
+    ):
+        from senfd.normalize import normalize_caption, parse_caption
+
+        titled = parse_caption(normalize_caption(figure.section_title)[0])
+        if titled.kind == "register":
+            subject = titled
 
     if figure.shape == "opcode" and subject.kind == "opcodes" and subject.name:
         set_name = command_set_name(subject.name)
