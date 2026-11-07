@@ -5,16 +5,15 @@ from argparse import Namespace
 import senfd.pipeline
 
 
-def test_module(tmp_path):
-    path_example = Path("example")
-    paths = list(path_example.glob("*.docx"))
-    assert len(paths) > 0, f"No documents available for testing in path({path_example})"
+def test_the_errors_of_an_invalid_document_are_reported(tmp_path):
+    """The example is a valid document, the invalid one has captions and tables
+    of figures that are not on the form senfd reads"""
 
-    for path in paths:
-        errors = senfd.pipeline.process(path, tmp_path, Namespace(skip_figures=None))
-
-        # There are are bunch of parsing errors, thus there should be errors
-        assert errors
+    example = Path("example") / "example.docx"
+    invalid = Path("example") / "invalid.docx"
+    assert not senfd.pipeline.process(example, tmp_path, Namespace(skip_figures=None))
+    errors = senfd.pipeline.process(invalid, tmp_path, Namespace(skip_figures=None))
+    assert {type(e).__name__ for e in errors} >= {"TableError", "TableOfFiguresError"}
 
 
 def test_the_package_version_is_that_of_the_module():

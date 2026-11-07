@@ -2,7 +2,8 @@
 Command-Line Interface
 ======================
 
-Produces organized and semantically enriched ``.json`` documents from
+Produces normalised figure documents and a model of the specification, as
+``.json``, from the ``.docx`` documents of the specification.
 """
 
 import json
@@ -15,7 +16,6 @@ import senfd.pipeline
 import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
-from senfd.documents.merged import FromFolder
 from senfd.documents.spec import SpecDocument, merge
 from senfd.errors import Error
 
@@ -116,10 +116,6 @@ def main() -> int:
 
         errors = senfd.pipeline.process(path, args.output, args)
         to_log_file(errors, path.stem, args.output)
-
-    if FromFolder.is_applicable(args.output):  # Merge ModelDocuments
-        merged, errors = FromFolder.convert(args.output, args)
-        merged.to_json_file(args.output / merged.json_filename())
 
     specs = [
         SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
