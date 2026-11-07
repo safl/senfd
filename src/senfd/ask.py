@@ -255,8 +255,23 @@ def strip_command(name: str) -> str:
     return re.sub(r"\s+command$", "", name.strip())
 
 
-def answer(spec: SpecDocument, understood: Understood) -> List[str]:
-    """The Markdown answering 'understood'"""
+def answer(
+    spec: SpecDocument,
+    understood: Understood,
+    vocabulary: Optional[Vocabulary] = None,
+) -> List[str]:
+    """The Markdown answering 'understood'; a command named with more than its
+    name, as "Admin Track Send", is the command its name names"""
+
+    if understood.query == "command" and vocabulary is not None:
+        lines = senfd.query.command(
+            spec, understood.argument, understood.dword, markdown=True
+        )
+        named = spot(understood.argument, vocabulary)
+        if nothing(lines) and named and named[0] == "command":
+            understood.argument = named[1]
+        else:
+            return lines
 
     q = senfd.query
     found: List[str]
@@ -374,7 +389,7 @@ def respond(
         understood = understand(question, vocabulary)
         if understood.query == "help":
             return "\n".join(answer(spec, understood)), [str(understood)]
-        attempts = [(understood, answer(spec, understood))]
+        attempts = [(understood, answer(spec, understood, vocabulary))]
     else:
         attempts = []
         messages = [
@@ -386,7 +401,7 @@ def respond(
             if understood.query == "unknown":
                 attempts.append((understood, []))
                 break
-            lines = answer(spec, understood)
+            lines = answer(spec, understood, vocabulary)
             attempts.append((understood, lines))
             missing = unmentioned(question, lines)
             if not nothing(lines) and not missing:
