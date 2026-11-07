@@ -150,11 +150,13 @@ class Entry(BaseModel):
 
 
 class Values(BaseModel):
-    """A table of values, by the kind of its caption and what it names"""
+    """A table of values, by the kind of its caption and what it names; the
+    scope is what the caption confines it to, as "I/O Commands" """
 
     kind: str
     name: Optional[str] = None
     qualifier: Optional[str] = None
+    scope: Optional[str] = None
     columns: List[str] = Field(default_factory=list)
     entries: List[Entry] = Field(default_factory=list)
     source: Source
@@ -485,6 +487,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                     kind=subject.kind,
                     name=subject.name,
                     qualifier=subject.qualifier,
+                    scope=subject.scope,
                     columns=figure.columns,
                     entries=[entry_of(entry) for entry in figure.entries],
                     source=source,

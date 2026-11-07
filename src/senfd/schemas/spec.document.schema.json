@@ -728,7 +728,7 @@
             "type": "object"
         },
         "Values": {
-            "description": "A table of values, by the kind of its caption and what it names",
+            "description": "A table of values, by the kind of its caption and what it names; the\nscope is what the caption confines it to, as \"I/O Commands\" ",
             "properties": {
                 "kind": {
                     "title": "Kind",
@@ -757,6 +757,18 @@
                     ],
                     "default": null,
                     "title": "Qualifier"
+                },
+                "scope": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Scope"
                 },
                 "columns": {
                     "items": {

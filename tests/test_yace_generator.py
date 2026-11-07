@@ -185,3 +185,29 @@ def test_an_enum_names_a_constant_given_again_by_its_value():
     lines = enum_lines("e", "E", [("A", 1, "a"), ("A", 1, "a"), ("A", 2, "b")])
     assert lines[4:6] == ["\tA = 0x1, ///< a", "\tA_2H = 0x2, ///< b"]
     assert enum_lines("e", "E", []) == []
+
+
+def test_the_status_codes_of_a_type_for_each_scope_are_enums_of_their_own(
+    structures,
+):
+    assert "enum foo_spec_example_generic_command_foo_commands_status {" in (structures)
+    assert "_FOO_COMMANDS_STATUS_FOO_CLASH = 0xc0," in structures
+    # A scope naming a command set is that of the document
+    assert "_GENERIC_COMMAND_STATUS_FOO_INVALID = 0xc0," in structures
+    # The types of status are no status codes
+    assert "enum foo_spec_example_status_code_type {" in structures
+    assert "\tFOO_SPEC_EXAMPLE_STATUS_CODE_TYPE_VENDOR_SPECIFIC = 0x7," in structures
+
+
+def test_a_run_numbered_from_one_is_an_array_named_by_its_acronym(structures):
+    assert "\tuint32_t fr[5]; ///< Foo Result, 5 of 4 bytes, bytes 23:4" in structures
+    # A byte no field has is one reserved byte, with its offset
+    assert "\tuint8_t rsvd1; ///< Reserved, byte 1\n" in structures
+
+
+def test_an_index_is_read_with_its_thousands_separated():
+    from senfd.documents.spec import Bits
+    from senfd.yace_generator import base_of, index_of
+
+    field = Bits(unit="bytes", range="1:0", name="Foo Identifier 65,535")
+    assert (index_of(field), base_of(field)) == (65535, "Foo Identifier")
