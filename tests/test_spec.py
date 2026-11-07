@@ -73,6 +73,9 @@ def test_a_log_page_has_its_identifier_and_its_structure(tmp_path):
     assert log_page.identifier == 0xC0
     assert log_page.structure.source.figure_nr is not None
     assert spec.log_pages["foo_events"].structure is None
+    # A log page of a scope is laid out by the structure of the log page
+    scoped = spec.log_pages["foo_statistics_namespace_scope"]
+    assert scoped.structure.name == "Foo Statistics"
 
 
 def test_a_command_gets_the_dwords_another_document_describes(tmp_path):

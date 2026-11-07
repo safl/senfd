@@ -184,7 +184,11 @@ FIGURES = [
         f"Get Log Page {DASH} Log Page Identifiers",
         {
             "header": ("Log Page Identifier", "Log Page Name"),
-            "rows": [("C0h", "Foo Statistics"), ("C1h", "Foo Events")],
+            "rows": [
+                ("C0h", "Foo Statistics"),
+                ("C1h", "Foo Events"),
+                ("C2h", "Foo Statistics (Namespace scope)"),
+            ],
         },
     ),
     (
