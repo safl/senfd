@@ -33,3 +33,41 @@ def test_cli_tool_dump_schema(tmp_path):
     result = run(["senfd", "--dump-schema"], capture_output=True, text=True)
 
     assert not result.returncode
+
+
+def senfd_main(monkeypatch, *args):
+    """Run the command-line entrypoint in this process, as 'senfd *args'"""
+
+    import senfd.cli
+
+    monkeypatch.setattr("sys.argv", ["senfd", *map(str, args)])
+    return senfd.cli.main()
+
+
+def test_the_documents_and_their_merged_model_are_written(tmp_path, monkeypatch):
+    import json
+
+    docs = sorted(Path("example").glob("*.docx"))
+    assert senfd_main(monkeypatch, *docs, "--output", tmp_path) == 0
+
+    for doc in docs:
+        assert (tmp_path / f"{doc.stem}.error.log").is_file()
+    merged = "merged.model.document.json"
+    expected = Path("example") / "output" / merged
+    assert json.loads((tmp_path / merged).read_text(encoding="utf-8")) == json.loads(
+        expected.read_text(encoding="utf-8")
+    )
+
+
+def test_the_version_and_the_schemas_are_printed_in_process(
+    tmp_path, monkeypatch, capsys
+):
+    import senfd
+
+    assert senfd_main(monkeypatch, "--version", "--output", tmp_path) == 0
+    assert capsys.readouterr().out.strip() == senfd.__version__
+
+    assert senfd_main(monkeypatch, "--dump-schema", "--output", tmp_path) == 0
+    assert sorted(p.name for p in tmp_path.glob("*.schema.json")) == sorted(
+        p.name for p in Path("src/senfd/schemas").glob("*.schema.json")
+    )
