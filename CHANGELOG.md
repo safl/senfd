@@ -10,6 +10,15 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.6.0
+
+The model holds only values that are what their kind must be. An acronym that
+is not one is left out, and a field whose bounds are reversed or lie beyond the
+dwords it is of is left out whole; those, the bits of a command's dwords that
+no figure gives a field, and an opcode that is not a value, are errata, each
+saying the document, section, figure and page it is in. `senfd-query errata`
+and the MCP tool `errata` list them, for the documents to be corrected.
+
 ## 0.5.0
 
 senfd makes a model of the specification to generate code from and to
