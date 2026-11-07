@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 """
 The queries of senfd.query as the tools of an MCP server, over stdio
 

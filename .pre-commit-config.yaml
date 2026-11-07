@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -15,3 +19,9 @@ repos:
         args: [ --fix ]
       # Run the formatter.
       - id: ruff-format
+
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: v6.3.0
+    hooks:
+      # Every file says its copyright and license, by REUSE 3.3
+      - id: reuse

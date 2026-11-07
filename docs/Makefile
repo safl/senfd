@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 # The builddir path is hardcoded in the config/doxy.conf and config/conf.py
 PROJECT_NAME:=senfd
 BUILD_DIR?=_build

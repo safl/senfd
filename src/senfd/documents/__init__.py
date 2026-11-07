@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+
 def get_document_classes():
     """The classes of the documents senfd makes; imported here rather than at
     the top, as the modules of the documents import senfd.normalize, which

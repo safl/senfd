@@ -1,0 +1,19 @@
+version = 1
+
+# The files that cannot carry a header of their own: data, images, the
+# synthetic example documents, and what senfd writes of them
+[[annotations]]
+path = [
+    "CHANGELOG.md",
+    "LICENSE",
+    "docs/_static/**",
+    "docs/_templates/**",
+    "docs/poetry.lock",
+    "docs/src/**/*.cmd",
+    "docs/src/**/*.out",
+    "example/**",
+    "src/senfd/schemas/**",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Simon A. F. Lund <os@safl.dk>"
+SPDX-License-Identifier = "LGPL-2.1-only"

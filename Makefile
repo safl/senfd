@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 PROJECT_NAME:=senfd
 PROJECT_VERSION:=$(shell sed -n 's/^__version__ = "\(.*\)"/\1/p' src/senfd/__init__.py)
 

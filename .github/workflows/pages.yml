@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
 ---
 # Simple workflow for deploying static content to GitHub Pages
 name: Deploy sphinx-doc generated HTML to Pages
