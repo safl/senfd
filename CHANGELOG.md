@@ -10,6 +10,27 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.5.0
+
+senfd makes a model of the specification to generate code from and to
+answer questions with. Each figure is normalised by the shape of its table,
+decided by its header with columns matched by name, and by the subject its
+caption names, and every normalisation is a diagnostic, which makes senfd a
+linter of the documents too. From that, the specification document holds the
+command sets with each command's dwords and directive operations, the features
+and log pages by identifier, the structures and the tables of values, each
+citing its document, section, figure and page. `senfd-query` answers from the
+merged model, and `senfd-mcp`, with `senfd[mcp]`, serves the same answers to an
+agent over MCP, by command, feature, log page, structure, field and section.
+
+The enriched figure document, its 49 caption categories, the model document and
+merged.model.document.json are gone; merged.spec.document.json takes the place
+of the last. The skip lists apply to the normalised stage.
+
+The plain stage reads the text of Word's fields, the number of a figure among
+them, and finds the tables of figures that it missed, among them a caption
+after an empty cell, a table wrapped in another, and two figures in one table.
+
 ## 0.4.0
 
 The example document is written by `toolbox/example_docx.py` and holds a
