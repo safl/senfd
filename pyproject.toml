@@ -16,17 +16,19 @@ readme = { file = "README.rst", content-type = "text/x-rst" }
 
 [project.optional-dependencies]
 mcp = ["mcp>=2"]
+ask = ["prompt_toolkit>=3", "rich>=13"]
 dev = [
     "mcp>=2",
     "pytest",
     "pytest-cov",
 ]
-all = ["senfd[dev]"]
+all = ["senfd[dev,ask]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
 senfd-query = "senfd.query:main"
 senfd-mcp = "senfd.mcp_server:main"
+senfd-ask = "senfd.ask:main"
 
 
 [build-system]
