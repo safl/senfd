@@ -210,6 +210,41 @@ def sections_of(
     return by_table, by_caption, errors
 
 
+W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+SKIPPED = {f"{W}del", f"{W}instrText", f"{W}delText"}
+
+
+def text_of_paragraph(element) -> str:
+    """
+    The text of a paragraph element as it reads, the results of its fields
+    included, as the number of "Figure 4:" when a field numbers the figure,
+    which python-docx leaves out; deleted text and field codes are not text
+    """
+
+    parts = []
+    for node in element.iter():
+        if any(
+            a.tag in SKIPPED or a.tag.endswith("}Fallback")
+            for a in [node, *node.iterancestors()]
+            if a is not element.getparent()
+        ):
+            continue
+        if node.tag == f"{W}t":
+            parts.append(node.text or "")
+        elif node.tag in (f"{W}tab", f"{W}ptab"):
+            parts.append("\t")
+        elif node.tag in (f"{W}br", f"{W}cr"):
+            parts.append("\n")
+        elif node.tag == f"{W}noBreakHyphen":
+            # As python-docx reads it; a soft hyphen shows only at a line end
+            parts.append("-")
+    return "".join(parts)
+
+
+def text_of_cell(docx_cell) -> str:
+    return "\n".join(text_of_paragraph(p._p) for p in docx_cell.paragraphs)
+
+
 class FromDocx(Converter):
     @staticmethod
     def is_applicable(path: Path) -> bool:
@@ -233,7 +268,7 @@ class FromDocx(Converter):
                     elif idx < len(above) and docx_cell._tc is above[idx]._tc:
                         merged = "up"
                     cell = Cell(
-                        text=str(docx_cell.text),
+                        text=text_of_cell(docx_cell),
                         tables=[
                             docx_table_to_table(nested_table)
                             for nested_table in docx_cell.tables
@@ -254,34 +289,72 @@ class FromDocx(Converter):
 
         # Add tabular figures -- page_nr unavailable
         for table_nr, docx_table in enumerate(docx_document.tables, 1):
-            caption = str(docx_table.rows[0].cells[0].text).strip()
-
-            figure = Figure.from_regex(Figure.REGEX_TABLE_ROW, caption)
-            if not figure:
+            # A table of one cell holding a table and no text wraps that table
+            only = docx_table.rows[0].cells[0] if len(docx_table.rows) == 1 else None
+            if (
+                only is not None
+                and len({id(c._tc) for c in docx_table.rows[0].cells}) == 1
+                and len(only.tables) == 1
+                and not text_of_cell(only).strip()
+            ):
+                docx_table = only.tables[0]
                 errors.append(
                     senfd.errors.TableError(
                         table_nr=table_nr,
-                        message="Caption not on the form; 'Figure X: lorem ipsum'",
-                        caption=caption,
+                        message="Table wrapped in a table of one cell; unwrapped",
+                        caption="",
                     )
                 )
-                continue
+            table = docx_table_to_table(docx_table)
 
-            existing_figure = figures.get(figure.figure_nr, None)
-            if existing_figure:
+            # A table holds the figures whose captions are rows of it, as when
+            # the table of one figure goes on with another's caption and rows
+            parts: List[Tuple[str, List[Row]]] = []
+            for row in table.rows:
+                texts = {c.text.strip() for c in row.cells if c.text.strip()}
+                caption = next(iter(texts)) if len(texts) == 1 else ""
+                if Figure.from_regex(Figure.REGEX_TABLE_ROW, caption) or not parts:
+                    parts.append((caption, [row]))
+                else:
+                    parts[-1][1].append(row)
+            if len(parts) > 1:
                 errors.append(
-                    senfd.errors.FigureDuplicateNumberError(
-                        figure_nr=figure.figure_nr,
-                        message=f"Duplicate figure_nr({figure.figure_nr})",
-                        caption_toinsert=figure.caption,
-                        caption_existing=existing_figure.caption,
+                    senfd.errors.TableError(
+                        table_nr=table_nr,
+                        message=(
+                            f"Table of {len(parts)} figures, by the captions in "
+                            "its rows; split"
+                        ),
+                        caption=parts[0][0],
                     )
                 )
-                continue
 
-            figure.table = docx_table_to_table(docx_table)
-            figure.table.table_nr = table_nr
-            figures[figure.figure_nr] = figure
+            for caption, rows in parts:
+                figure = Figure.from_regex(Figure.REGEX_TABLE_ROW, caption)
+                if not figure:
+                    errors.append(
+                        senfd.errors.TableError(
+                            table_nr=table_nr,
+                            message="Caption not on the form; 'Figure X: lorem ipsum'",
+                            caption=caption or rows[0].cells[0].text.strip(),
+                        )
+                    )
+                    continue
+
+                existing_figure = figures.get(figure.figure_nr, None)
+                if existing_figure:
+                    errors.append(
+                        senfd.errors.FigureDuplicateNumberError(
+                            figure_nr=figure.figure_nr,
+                            message=f"Duplicate figure_nr({figure.figure_nr})",
+                            caption_toinsert=figure.caption,
+                            caption_existing=existing_figure.caption,
+                        )
+                    )
+                    continue
+
+                figure.table = Table(table_nr=table_nr, rows=rows)
+                figures[figure.figure_nr] = figure
 
         # The section of each figure
         by_table, by_caption, section_errors = sections_of(docx_document)

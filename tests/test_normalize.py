@@ -345,3 +345,27 @@ def test_a_figure_has_its_page_and_section(normalized):
         "Ding command",
     )
     assert figures["Foo Statistics Data Structure"]["section"] == "4"
+
+
+def test_tables_written_oddly_are_the_figures_they_caption(normalized):
+    """The number of the figure a field of Word, the caption after an empty
+    cell, the table wrapped in another, and the next figure's caption and
+    rows in the table of this one"""
+
+    _, figures = normalized
+    for caption, acronym in [
+        ("Foo Numbered Layout", "FNUM"),
+        ("Foo Indented Layout", "FIND"),
+        ("Foo Wrapped Layout", "FWRP"),
+        ("Foo Joined Layout", "FFST"),
+        ("Foo Joining Layout", "FSND"),
+    ]:
+        fields = figures[caption]["layout"]["fields"]
+        assert [f["acronym"] for f in fields] == [acronym], caption
+
+
+def test_a_hyphen_that_does_not_break_is_a_hyphen(normalized):
+    _, figures = normalized
+
+    (field,) = figures["Foo Numbered Layout"]["layout"]["fields"]
+    assert field["name"] == "Foo-Bar Number"
