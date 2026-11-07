@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import ClassVar, Dict, List, Optional, Tuple
 
 import docx
+import docx.text.paragraph
 from pydantic import BaseModel, Field
 
 import senfd.schemas
@@ -38,6 +39,9 @@ class Figure(BaseModel):
     description: str  # The part of figure caption without the "Fig X:" prefix
 
     page_nr: Optional[int] = None
+    # The number and title of the section the figure is in, as "5.2.4"
+    section: Optional[str] = None
+    section_title: Optional[str] = None
     table: Optional[senfd.tables.Table] = None
 
     @classmethod
@@ -65,6 +69,145 @@ class FigureDocument(Document):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "plain.figure.document.html.jinja2"
 
     figures: List[Figure] = Field(default_factory=list)
+
+
+# Heading styles by the level of their heading; an annex numbers by a letter
+REGEX_HEADING_STYLE = re.compile(
+    r"^(?:(?:NVMe H|Heading )(?P<level>\d)|Annex(?P<annex>(?:\.1)*))$"
+)
+REGEX_TOC = re.compile(
+    r"^(?:Annex\s+)?(?P<number>[A-Z]?[\d.]*\d|[A-Z])\.?\t(?P<title>.+?)\t\d+$"
+)
+
+
+def heading_level(style_name: str) -> Optional[Tuple[int, bool]]:
+    """The level of a heading of 'style_name', 1 being a chapter, and whether it
+    is of an annex, or None when the style is no heading's"""
+
+    match = REGEX_HEADING_STYLE.match(style_name)
+    if not match:
+        return None
+    if match["level"]:
+        return int(match["level"]), False
+    return 1 + match["annex"].count(".1"), True
+
+
+class Sections:
+    """
+    The number and title of the section at each point of a document, by
+    counting its headings, which Word numbers by itself and leaves out of their
+    text; the numbers are checked against the table of contents, which has them
+    """
+
+    def __init__(self):
+        self.chapters = 0
+        self.annexes = 0
+        self.counters: List[int] = []
+        self.annex = False
+        self.current: Optional[Tuple[str, str]] = None
+
+    def heading(self, level: int, annex: bool, title: str) -> None:
+        if level == 1:
+            self.annex = annex
+            if annex:
+                self.annexes += 1
+            else:
+                self.chapters += 1
+            self.counters = [self.annexes if annex else self.chapters]
+        elif len(self.counters) >= level:
+            self.counters = self.counters[:level]
+            self.counters[level - 1] += 1
+        else:
+            # A level skipped, as a heading of level 3 right after one of 1
+            self.counters += [1] * (level - len(self.counters))
+        numbers = [str(n) for n in self.counters]
+        if self.annex:
+            numbers[0] = chr(ord("A") + self.counters[0] - 1)
+        number = ".".join(numbers)
+        self.current = (number, title)
+
+    def renumber(self, number: str) -> None:
+        """The current section is numbered 'number', as "1.4.2" or "B.6"; the
+        sections after it count from there"""
+
+        parts = number.split(".")
+        self.annex = parts[0].isalpha()
+        first = ord(parts[0]) - ord("A") + 1 if self.annex else int(parts[0])
+        if self.annex:
+            self.annexes = first
+        else:
+            self.chapters = first
+        self.counters = [first] + [int(p) for p in parts[1:]]
+        assert self.current
+        self.current = (number, self.current[1])
+
+
+def sections_of(
+    docx_document,
+) -> Tuple[Dict[int, Tuple[str, str]], Dict[int, Tuple[str, str]], List[Error]]:
+    """
+    The section of each top-level table, by its index from 1, and of each
+    figure whose caption is a paragraph, by the figure's number; and the errors
+    of headings whose number counted disagrees with the table of contents
+
+    The table of contents has the numbers as the document prints them, so a
+    heading it lists takes its number from there, the count going on from it;
+    Word numbers headings that do not show, as a heading without text.
+    """
+
+    toc: List[Tuple[str, str]] = []
+    for paragraph in docx_document.paragraphs:
+        if paragraph.style is not None and paragraph.style.name.startswith("toc"):
+            match = REGEX_TOC.match(paragraph.text.strip())
+            if match:
+                title = " ".join(match["title"].split()).lower()
+                toc.append((title, match["number"].rstrip(".")))
+    depth = max((number.count(".") + 1 for _, number in toc), default=0)
+
+    errors: List[Error] = []
+    sections = Sections()
+    by_table: Dict[int, Tuple[str, str]] = {}
+    by_caption: Dict[int, Tuple[str, str]] = {}
+    table_nr = 0
+    listed = 0
+    for element in docx_document.element.body.iterchildren():
+        tag = element.tag.rsplit("}", 1)[-1]
+        if tag == "tbl":
+            table_nr += 1
+            if sections.current:
+                by_table[table_nr] = sections.current
+            continue
+        if tag != "p":
+            continue
+        paragraph = docx.text.paragraph.Paragraph(element, docx_document)
+        style = paragraph.style.name if paragraph.style is not None else ""
+        text = paragraph.text.strip()
+        if style.startswith("toc"):
+            continue
+        level = heading_level(style)
+        if level and text:
+            sections.heading(*level, text)
+            if level[0] <= depth and listed < len(toc):
+                title, number = toc[listed]
+                if title == " ".join(text.split()).lower():
+                    listed += 1
+                    if sections.current and sections.current[0] != number:
+                        errors.append(
+                            senfd.errors.Error(
+                                message=(
+                                    f"Section '{text}' counted as "
+                                    f"{sections.current[0]}, the table of "
+                                    f"contents has {number}"
+                                )
+                            )
+                        )
+                        sections.renumber(number)
+            continue
+        caption = Figure.from_regex(Figure.REGEX_TABLE_ROW, text)
+        if caption and sections.current and style != "table of figures":
+            by_caption[caption.figure_nr] = sections.current
+
+    return by_table, by_caption, errors
 
 
 class FromDocx(Converter):
@@ -140,6 +283,14 @@ class FromDocx(Converter):
             figure.table.table_nr = table_nr
             figures[figure.figure_nr] = figure
 
+        # The section of each figure
+        by_table, by_caption, section_errors = sections_of(docx_document)
+        errors += section_errors
+        for figure in figures.values():
+            figure_table = figure.table.table_nr if figure.table else None
+            section = by_table.get(figure_table) if figure_table else None
+            figure.section, figure.section_title = section or (None, None)
+
         # Update tabular figures with page_nr
         # Add non-tabular figures
         # Check table-of-figure description validity
@@ -198,6 +349,10 @@ class FromDocx(Converter):
                     )
             else:
                 figures[figure.figure_nr] = figure
+
+        for figure in figures.values():
+            if figure.section is None and figure.figure_nr in by_caption:
+                figure.section, figure.section_title = by_caption[figure.figure_nr]
 
         return (
             FigureDocument(
