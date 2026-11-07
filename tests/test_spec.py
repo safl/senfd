@@ -263,3 +263,25 @@ def test_fields_sharing_bytes_are_the_alternatives_of_a_union(tmp_path):
         ("05:02", 0, 1),
         ("17:06", 0, 1),
     ]
+
+
+def test_a_field_s_values_select_the_operations_of_its_command(tmp_path):
+    spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
+    migrate = spec.command_sets["foobar"].commands["foo_migrate"]
+
+    (cdw10,) = [d for d in migrate.sqe if d.lower == 10]
+    select = cdw10.fields[1]
+    assert [
+        (v.value, v.typed["value"].lower, v.columns["om"]) for v in select.values
+    ] == [
+        ("0h", 0, "M"),
+        ("1h", 1, "O"),
+        ("2h", 2, "O"),
+    ]
+    assert [
+        (o.name, o.selectors, [f.acronym for d in o.sqe for f in d.fields])
+        for o in migrate.operations
+    ] == [("Foo Pause", {"SEL": 0}, ["FPT"]), ("Foo Go", {"SEL": 1}, ["FGS"])]
+
+    # The dwords of the command Ding are no operation of Foo Migrate
+    assert spec.command_sets["foobar"].commands["ding"].sqe

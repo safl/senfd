@@ -52,6 +52,9 @@ class LayoutField(BaseModel):
     columns: Dict[str, str] = Field(default_factory=dict)
     section: Optional[str] = None
     layouts: List["Layout"] = Field(default_factory=list)
+    # The tables of values in its description, as the values a field selecting
+    # an operation takes, by the names of their columns
+    values: List[Dict[str, str]] = Field(default_factory=list)
 
 
 class Layout(BaseModel):
@@ -291,13 +294,16 @@ def parse_layout(
                 note("field-name", f"Field without a name: '{description[:60]}'")
             )
 
-        nested = []
+        nested: List[Layout] = []
+        enumerated: List[Dict[str, str]] = []
         for cells in values.cells.values():
             for cell in cells:
                 for table in cell.tables:
                     nested_layout = parse_nested(table, diagnostics)
                     if nested_layout:
                         nested.append(nested_layout)
+                    else:
+                        enumerated += parse_nested_values(table, diagnostics)
 
         layout.fields.append(
             LayoutField(
@@ -309,6 +315,7 @@ def parse_layout(
                 | ({f"{unit}_detail": detail} if detail else {}),
                 section=section,
                 layouts=nested,
+                values=enumerated,
             )
         )
     return layout
@@ -321,6 +328,29 @@ def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout
     if shape != "layout" or idx is None:
         return None
     return parse_layout(table.rows[idx + 1 :], grid, diagnostics, headers)
+
+
+def parse_nested_values(
+    table: Table, diagnostics: List[Diagnostic]
+) -> List[Dict[str, str]]:
+    """The entries of a table of values in a cell, as the values of a field;
+    a value column is named "value", whatever its header, as "PIT Value" """
+
+    idx, headers, grid, shape = find_header(table.rows)
+    if idx is None or not (shape or is_named_header(headers)):
+        return []
+    grid = [
+        "value" if column.endswith("_value") and "value" not in grid else column
+        for column in grid
+    ]
+    grid = [
+        "description"
+        if column.endswith(("_definition", "_description"))
+        and "description" not in grid
+        else column
+        for column in grid
+    ]
+    return parse_entries(table.rows[idx + 1 :], grid, diagnostics, headers, [])
 
 
 def parse_entries(

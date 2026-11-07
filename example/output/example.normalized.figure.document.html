@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>79 figures, 0 skipped, 1 not tables, 7 diagnostics</p>
+<p>82 figures, 0 skipped, 1 not tables, 7 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -22,7 +22,7 @@ th { background-color: #f2f2f2; }
 
 <table>
 <tr><th>function</th><th>data_transfer</th><th>opcode</th><th>command</th><th>reference</th></tr>
-<tr><td>0000 00b</td><td>01b</td><td>01h</td><td>Ding</td><td>3.1</td></tr><tr><td>0000 01b</td><td>10b</td><td>02h</td><td>Dong</td><td>3.2</td></tr><tr><td>0000 10b</td><td>00b</td><td>04h</td><td>Ring1</td><td>3.3</td></tr><tr><td>0000 11b</td><td>00b</td><td>x</td><td>Zing</td><td>3.4</td></tr><tr><td></td><td></td><td>80h to FFh</td><td>Reserved</td><td></td></tr>
+<tr><td>0000 00b</td><td>01b</td><td>01h</td><td>Ding</td><td>3.1</td></tr><tr><td>0000 01b</td><td>10b</td><td>02h</td><td>Dong</td><td>3.2</td></tr><tr><td>0000 10b</td><td>00b</td><td>04h</td><td>Ring1</td><td>3.3</td></tr><tr><td>0000 11b</td><td>00b</td><td>x</td><td>Zing</td><td>3.4</td></tr><tr><td>0001 00b</td><td>01b</td><td>08h</td><td>Foo Migrate</td><td>3.5</td></tr><tr><td></td><td></td><td>80h to FFh</td><td>Reserved</td><td></td></tr>
 </table>
 
 
@@ -285,7 +285,76 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 14: Ring - Command Dword 14 and Command Dword 15</h3>
+<h3>Figure 14: Foo Migrate - Command Dword 10</h3>
+<p>Subject: command_dword, name: Foo Migrate, lower: 10, upper: 10. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:08</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Select</td>
+  <td>SEL</td>
+  <td>The operation.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 15: Foo Pause - Command Dword 11</h3>
+<p>Subject: command_dword, name: Foo Pause, lower: 11, upper: 11. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Pause Time</td>
+  <td>FPT</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 16: Foo Go Management Operation - Command Dword 11</h3>
+<p>Subject: command_dword, name: Foo Go Management Operation, lower: 11, upper: 11. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Foo Go Speed</td>
+  <td>FGS</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 17: Ring - Command Dword 14 and Command Dword 15</h3>
 <p>Subject: command_dword, name: Ring, lower: 14, upper: 15. Shape: layout.</p>
 
 <table>
@@ -305,7 +374,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 15: Ring - Command Dword 11</h3>
+<h3>Figure 18: Ring - Command Dword 11</h3>
 <p>Subject: command_dword, name: Ring, lower: 11, upper: 11. Shape: layout.</p>
 
 <table>
@@ -325,7 +394,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 16: Ring - Command Dword 10</h3>
+<h3>Figure 19: Ring - Command Dword 10</h3>
 <p>Subject: command_dword, name: Ring, lower: 10, upper: 10. Shape: layout.</p>
 
 <table>
@@ -345,7 +414,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 17: Zap - Command Dword 10</h3>
+<h3>Figure 20: Zap - Command Dword 10</h3>
 <p>Subject: command_dword, name: Zap, lower: 10, upper: 10. Shape: layout.</p>
 
 <table>
@@ -365,7 +434,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 18: Status Code - Generic Command Status Values, Foobar Command Set</h3>
+<h3>Figure 21: Status Code - Generic Command Status Values, Foobar Command Set</h3>
 <p>Subject: status_values, name: Status Code, qualifier: Generic Command, scope: Foobar Command Set. Shape: value.</p>
 
 
@@ -376,7 +445,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 19: Opcodes for Admin Commands</h3>
+<h3>Figure 22: Opcodes for Admin Commands</h3>
 <p>Subject: opcodes, name: Admin. Shape: opcode.</p>
 
 
@@ -387,7 +456,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 20: Admin - Foo Command Support Requirements</h3>
+<h3>Figure 23: Admin - Foo Command Support Requirements</h3>
 <p>Subject: requirements, name: Admin, qualifier: Foo Command. Shape: opcode.</p>
 
 
@@ -398,7 +467,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 21: I/O Controller - Foobar Command Set Support</h3>
+<h3>Figure 24: I/O Controller - Foobar Command Set Support</h3>
 <p>Subject: requirements, name: I/O Controller, qualifier: Foobar Command Set. Shape: requirement.</p>
 
 
@@ -409,7 +478,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 22: Identify - CNS Values</h3>
+<h3>Figure 25: Identify - CNS Values</h3>
 <p>Subject: cns_values, name: Identify. Shape: value.</p>
 
 
@@ -420,7 +489,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 23: Command Dword 11 - CNS Specific Identifier</h3>
+<h3>Figure 26: Command Dword 11 - CNS Specific Identifier</h3>
 <p>Subject: command_dword, lower: 11, upper: 11, qualifier: CNS Specific Identifier. Shape: layout.</p>
 
 <table>
@@ -449,7 +518,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 24: Command Dword 0</h3>
+<h3>Figure 27: Command Dword 0</h3>
 <p>Subject: command_dword, lower: 0, upper: 0. Shape: layout.</p>
 
 <table>
@@ -469,7 +538,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 25: Foo Get - Log Specific Identifier</h3>
+<h3>Figure 28: Foo Get - Log Specific Identifier</h3>
 <p>Subject: other, name: Foo Get - Log Specific Identifier. Shape: layout.</p>
 
 <table>
@@ -489,7 +558,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 26: Get Log Page - Log Page Identifiers</h3>
+<h3>Figure 29: Get Log Page - Log Page Identifiers</h3>
 <p>Subject: log_page_identifiers, name: Get Log Page. Shape: value.</p>
 
 
@@ -500,7 +569,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 27: Feature Identifiers - Foobar Command Set</h3>
+<h3>Figure 30: Feature Identifiers - Foobar Command Set</h3>
 <p>Subject: feature_identifiers, name: Foobar Command Set. Shape: value.</p>
 
 
@@ -511,7 +580,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 28: Foo Config - Command Dword 11</h3>
+<h3>Figure 31: Foo Config - Command Dword 11</h3>
 <p>Subject: command_dword, name: Foo Config, lower: 11, upper: 11. Shape: layout.</p>
 
 <table>
@@ -540,7 +609,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 29: Foo Feature Requirements</h3>
+<h3>Figure 32: Foo Feature Requirements</h3>
 <p>Subject: requirements, name: Foo Feature. Shape: value.</p>
 
 
@@ -551,7 +620,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 30: Foobar Command Set Specification Version Descriptor Field Values</h3>
+<h3>Figure 33: Foobar Command Set Specification Version Descriptor Field Values</h3>
 <p>Subject: other, name: Foobar Command Set Specification Version Descriptor Field Values. Shape: table.</p>
 
 
@@ -562,7 +631,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 31: Foo Statistics Data Structure</h3>
+<h3>Figure 34: Foo Statistics Data Structure</h3>
 <p>Subject: data_structure, name: Foo Statistics. Shape: layout.</p>
 
 <table>
@@ -623,7 +692,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 32: Identify - Foo Namespace Data Structure, Foobar Command Set Specific</h3>
+<h3>Figure 35: Identify - Foo Namespace Data Structure, Foobar Command Set Specific</h3>
 <p>Subject: data_structure, name: Identify - Foo Namespace, qualifier: Foobar Command Set Specific. Shape: layout.</p>
 
 <table>
@@ -643,7 +712,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 33: FB Format Data Structure</h3>
+<h3>Figure 36: FB Format Data Structure</h3>
 <p>Subject: data_structure, name: FB Format. Shape: layout.</p>
 
 <table>
@@ -663,7 +732,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 34: Foo Statistics Log Page</h3>
+<h3>Figure 37: Foo Statistics Log Page</h3>
 <p>Subject: log_page, name: Foo Statistics. Shape: layout.</p>
 
 <table>
@@ -683,7 +752,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 35: Example Foo Element returned by Foo Statistics Log Page</h3>
+<h3>Figure 38: Example Foo Element returned by Foo Statistics Log Page</h3>
 <p>Subject: example. Shape: layout.</p>
 
 <table>
@@ -703,7 +772,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 36: Foo - Create Queue Specific</h3>
+<h3>Figure 39: Foo - Create Queue Specific</h3>
 <p>Subject: other, name: Foo - Create Queue Specific. Shape: layout.</p>
 
 <table>
@@ -732,7 +801,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 37: PRP Entry - Foo Layout</h3>
+<h3>Figure 40: PRP Entry - Foo Layout</h3>
 <p>Subject: other, name: PRP Entry - Foo Layout. Shape: layout.</p>
 
 <table>
@@ -761,7 +830,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 38: Foo - Management Operation Specific</h3>
+<h3>Figure 41: Foo - Management Operation Specific</h3>
 <p>Subject: other, name: Foo - Management Operation Specific. Shape: layout.</p>
 
 <table>
@@ -781,7 +850,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 39: Foo Report Data for Foo Zones</h3>
+<h3>Figure 42: Foo Report Data for Foo Zones</h3>
 <p>Subject: other, name: Foo Report Data for Foo Zones. Shape: layout.</p>
 
 <table>
@@ -801,7 +870,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 40: Foo Element Types</h3>
+<h3>Figure 43: Foo Element Types</h3>
 <p>Subject: other, name: Foo Element Types. Shape: value.</p>
 
 
@@ -812,7 +881,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 41: Foo Acronym definitions</h3>
+<h3>Figure 44: Foo Acronym definitions</h3>
 <p>Subject: other, name: Foo Acronym definitions. Shape: value.</p>
 
 
@@ -823,7 +892,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 42: Asynchronous Event Information - Foo Status</h3>
+<h3>Figure 45: Asynchronous Event Information - Foo Status</h3>
 <p>Subject: other, name: Asynchronous Event Information - Foo Status. Shape: value.</p>
 
 
@@ -834,7 +903,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 43: Status Code - Foo Error Values</h3>
+<h3>Figure 46: Status Code - Foo Error Values</h3>
 <p>Subject: status_values, qualifier: Foo Error. Shape: value.</p>
 
 
@@ -845,7 +914,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 44: Foo Management - Host Software Specified Fields</h3>
+<h3>Figure 47: Foo Management - Host Software Specified Fields</h3>
 <p>Subject: other, name: Foo Management - Host Software Specified Fields. Shape: layout.</p>
 
 <table>
@@ -865,7 +934,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 45: Offset 10h: FOOCAP - Foo Capabilities</h3>
+<h3>Figure 48: Offset 10h: FOOCAP - Foo Capabilities</h3>
 <p>Subject: register, name: FOOCAP - Foo Capabilities, offset: 10h. Shape: layout.</p>
 
 <table>
@@ -894,7 +963,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 46: Foo Get - Foo Specific Fields</h3>
+<h3>Figure 49: Foo Get - Foo Specific Fields</h3>
 <p>Subject: other, name: Foo Get - Foo Specific Fields. Shape: layout.</p>
 
 <table>
@@ -914,7 +983,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 47: Foo Submission Queue Entry</h3>
+<h3>Figure 50: Foo Submission Queue Entry</h3>
 <p>Subject: other, name: Foo Submission Queue Entry. Shape: layout.</p>
 
 <table>
@@ -934,7 +1003,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 48: Foo Descriptor</h3>
+<h3>Figure 51: Foo Descriptor</h3>
 <p>Subject: other, name: Foo Descriptor. Shape: layout.</p>
 
 <table>
@@ -954,7 +1023,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 49: Completion Queue Entry Layout - Foo</h3>
+<h3>Figure 52: Completion Queue Entry Layout - Foo</h3>
 <p>Subject: other, name: Completion Queue Entry Layout - Foo. Shape: layout.</p>
 
 <table>
@@ -974,7 +1043,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 50: Foo Property Definition</h3>
+<h3>Figure 53: Foo Property Definition</h3>
 <p>Subject: other, name: Foo Property Definition. Shape: table.</p>
 
 
@@ -985,7 +1054,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 51: Foo Event Data Format (Event Type 02h)</h3>
+<h3>Figure 54: Foo Event Data Format (Event Type 02h)</h3>
 <p>Subject: other, name: Foo Event Data Format (Event Type 02h). Shape: layout.</p>
 
 <table>
@@ -1005,7 +1074,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 52: RPMB - Foo Write Flow</h3>
+<h3>Figure 55: RPMB - Foo Write Flow</h3>
 <p>Subject: other, name: RPMB - Foo Write Flow. Shape: table.</p>
 
 
@@ -1016,7 +1085,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 53: Foo State Transition Conditions</h3>
+<h3>Figure 56: Foo State Transition Conditions</h3>
 <p>Subject: other, name: Foo State Transition Conditions. Shape: transition.</p>
 
 
@@ -1027,7 +1096,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 54: Foo Response</h3>
+<h3>Figure 57: Foo Response</h3>
 <p>Subject: other, name: Foo Response. Shape: layout.</p>
 
 <table>
@@ -1047,7 +1116,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 55: Foo Attributes Entry</h3>
+<h3>Figure 58: Foo Attributes Entry</h3>
 <p>Subject: other, name: Foo Attributes Entry. Shape: layout.</p>
 
 <table>
@@ -1067,7 +1136,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 56: Additional Hardware Error Information - Foo</h3>
+<h3>Figure 59: Additional Hardware Error Information - Foo</h3>
 <p>Subject: other, name: Additional Hardware Error Information - Foo. Shape: layout.</p>
 
 <table>
@@ -1087,7 +1156,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 57: Foo Request Fields</h3>
+<h3>Figure 60: Foo Request Fields</h3>
 <p>Subject: other, name: Foo Request Fields. Shape: layout.</p>
 
 <table>
@@ -1107,7 +1176,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 58: NVMe Management Foo - NVMe Management Dword 0</h3>
+<h3>Figure 61: NVMe Management Foo - NVMe Management Dword 0</h3>
 <p>Subject: management_dword, name: NVMe Management Foo, lower: 0, upper: 0. Shape: layout.</p>
 
 <table>
@@ -1127,7 +1196,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 59: Foo - PCIe Request Dword 1</h3>
+<h3>Figure 62: Foo - PCIe Request Dword 1</h3>
 <p>Subject: pcie_request_dword, name: Foo, lower: 1, upper: 1. Shape: layout.</p>
 
 <table>
@@ -1147,7 +1216,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 60: Foo Request PDU (FooReq)</h3>
+<h3>Figure 63: Foo Request PDU (FooReq)</h3>
 <p>Subject: other, name: Foo Request PDU (FooReq). Shape: layout.</p>
 
 <table>
@@ -1167,7 +1236,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 61: Foo to Bar Mapping Table</h3>
+<h3>Figure 64: Foo to Bar Mapping Table</h3>
 <p>Subject: other, name: Foo to Bar Mapping Table. Shape: layout.</p>
 
 <table>
@@ -1187,7 +1256,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 62: Bar Data Structure</h3>
+<h3>Figure 65: Bar Data Structure</h3>
 <p>Subject: data_structure, name: Bar. Shape: layout.</p>
 
 <table>
@@ -1271,7 +1340,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 63: Supported Foo Operations</h3>
+<h3>Figure 66: Supported Foo Operations</h3>
 <p>Subject: other, name: Supported Foo Operations. Shape: opcode.</p>
 
 
@@ -1282,7 +1351,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 64: Foo Get - Command Specific Status Values, Foo Get</h3>
+<h3>Figure 67: Foo Get - Command Specific Status Values, Foo Get</h3>
 <p>Subject: status_values, name: Foo Get, qualifier: Command Specific, scope: Foo Get. Shape: value.</p>
 
 
@@ -1293,7 +1362,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 65: Completion Queue Entry Dword 0 when Foo is set to 1b</h3>
+<h3>Figure 68: Completion Queue Entry Dword 0 when Foo is set to 1b</h3>
 <p>Subject: completion_dword, lower: 0, upper: 0, condition: Foo is set to 1b. Shape: layout.</p>
 
 <table>
@@ -1313,7 +1382,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 66: Foo Set - Command Dword 10 - Foobar Command Set Specific Fields</h3>
+<h3>Figure 69: Foo Set - Command Dword 10 - Foobar Command Set Specific Fields</h3>
 <p>Subject: command_dword, name: Foo Set, lower: 10, upper: 10, qualifier: Foobar Command Set Specific Fields. Shape: layout.</p>
 
 <table>
@@ -1333,7 +1402,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 67: Offset 20h: BARCTL - Bar Control</h3>
+<h3>Figure 70: Offset 20h: BARCTL - Bar Control</h3>
 <p>Subject: register, name: BARCTL - Bar Control, offset: 20h. Shape: layout.</p>
 
 <table>
@@ -1362,7 +1431,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 68: Directive Types</h3>
+<h3>Figure 71: Directive Types</h3>
 <p>Subject: other, name: Directive Types. Shape: value.</p>
 
 
@@ -1373,7 +1442,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 69: Bar - Directive Operations</h3>
+<h3>Figure 72: Bar - Directive Operations</h3>
 <p>Subject: other, name: Bar - Directive Operations. Shape: value.</p>
 
 
@@ -1384,7 +1453,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 70: Bar Reset - Command Dword 12</h3>
+<h3>Figure 73: Bar Reset - Command Dword 12</h3>
 <p>Subject: command_dword, name: Bar Reset, lower: 12, upper: 12. Shape: layout.</p>
 
 <table>
@@ -1413,7 +1482,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 71: Bar Directive - Bar Report Data Structure</h3>
+<h3>Figure 74: Bar Directive - Bar Report Data Structure</h3>
 <p>Subject: data_structure, name: Bar Directive - Bar Report. Shape: layout.</p>
 
 <table>
@@ -1433,7 +1502,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 72: Foo Command Support Requirements</h3>
+<h3>Figure 75: Foo Command Support Requirements</h3>
 <p>Subject: requirements, qualifier: Foo Command. Shape: opcode.</p>
 
 
@@ -1444,7 +1513,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 73: Foo Numbered Layout</h3>
+<h3>Figure 76: Foo Numbered Layout</h3>
 <p>Subject: other, name: Foo Numbered Layout. Shape: layout.</p>
 
 <table>
@@ -1464,7 +1533,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 74: Foo Indented Layout</h3>
+<h3>Figure 77: Foo Indented Layout</h3>
 <p>Subject: other, name: Foo Indented Layout. Shape: layout.</p>
 
 <table>
@@ -1484,7 +1553,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 75: Foo Wrapped Layout</h3>
+<h3>Figure 78: Foo Wrapped Layout</h3>
 <p>Subject: other, name: Foo Wrapped Layout. Shape: layout.</p>
 
 <table>
@@ -1504,7 +1573,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 76: Foo Joined Layout</h3>
+<h3>Figure 79: Foo Joined Layout</h3>
 <p>Subject: other, name: Foo Joined Layout. Shape: layout.</p>
 
 <table>
@@ -1524,7 +1593,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 77: Foo Joining Layout</h3>
+<h3>Figure 80: Foo Joining Layout</h3>
 <p>Subject: other, name: Foo Joining Layout. Shape: layout.</p>
 
 <table>
@@ -1544,7 +1613,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 78: Foo Address Data Structure</h3>
+<h3>Figure 81: Foo Address Data Structure</h3>
 <p>Subject: data_structure, name: Foo Address. Shape: layout.</p>
 
 <table>
@@ -1600,7 +1669,7 @@ th { background-color: #f2f2f2; }
 
 
 
-<h3>Figure 79: Foo Overview</h3>
+<h3>Figure 82: Foo Overview</h3>
 <p>Subject: other, name: Foo Overview. Shape: table.</p>
 
 
@@ -1617,17 +1686,17 @@ th { background-color: #f2f2f2; }
 
 <li class="note">Figure 5: note caption-dash: Caption dash not spaced: 'Ding -Command Dword 14 and Command Dword 15'</li>
 
-<li class="note">Figure 62: note range-symbolic: Range not a number: 'N+3:N'</li>
+<li class="note">Figure 65: note range-symbolic: Range not a number: 'N+3:N'</li>
 
-<li class="note">Figure 62: note range-symbolic: Range not a number: 'n/a'</li>
+<li class="note">Figure 65: note range-symbolic: Range not a number: 'n/a'</li>
 
-<li class="note">Figure 62: note range-symbolic: Range not a number: 'NOTE 1'</li>
+<li class="note">Figure 65: note range-symbolic: Range not a number: 'NOTE 1'</li>
 
-<li class="note">Figure 62: note range-symbolic: Range not a number: 'NOTE 1'</li>
+<li class="note">Figure 65: note range-symbolic: Range not a number: 'NOTE 1'</li>
 
-<li class="note">Figure 62: note field-name: Field without a name: 'Ignored by the controller'</li>
+<li class="note">Figure 65: note field-name: Field without a name: 'Ignored by the controller'</li>
 
-<li class="note">Figure 72: note header-rows: Header of more than one row</li>
+<li class="note">Figure 75: note header-rows: Header of more than one row</li>
 
 </ul>
 </body>

@@ -86,7 +86,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 
 <h3>Ring, opcode 04h</h3>
 
-<p>Dwords 14:15 (figure 14)</p>
+<p>Dwords 14:15 (figure 17)</p>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -94,7 +94,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<p>Dwords 11:11 (figure 15)</p>
+<p>Dwords 11:11 (figure 18)</p>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -102,11 +102,22 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<p>Dwords 10:10 (figure 16)</p>
+<p>Dwords 10:10 (figure 19)</p>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
 <tr><td>31:00</td><td>Ring Count</td><td>RCNT</td></tr>
+</table>
+
+
+
+<h3>Foo Migrate, opcode 08h</h3>
+
+<p>Dwords 10:10 (figure 14)</p>
+
+<table>
+<tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
+<tr><td>31:08</td><td>Reserved</td><td></td></tr><tr><td>07:00</td><td>Select</td><td>SEL</td></tr>
 </table>
 
 
@@ -119,7 +130,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 
 <h3>Foo Set, opcode C1h</h3>
 
-<p>Dwords 10:10 (figure 66)</p>
+<p>Dwords 10:10 (figure 69)</p>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -160,7 +171,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Command Dword 11 - CNS Specific Identifier (command_dword, figure 23)</h3>
+<h3>Command Dword 11 - CNS Specific Identifier (command_dword, figure 26)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -168,7 +179,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Command Dword 0 (command_dword, figure 24)</h3>
+<h3>Command Dword 0 (command_dword, figure 27)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -176,7 +187,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Get - Log Specific Identifier (other, figure 25)</h3>
+<h3>Foo Get - Log Specific Identifier (other, figure 28)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -184,7 +195,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Statistics (data_structure, figure 31)</h3>
+<h3>Foo Statistics (data_structure, figure 34)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -192,7 +203,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Identify - Foo Namespace (data_structure, figure 32)</h3>
+<h3>Identify - Foo Namespace (data_structure, figure 35)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -200,7 +211,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>FB Format (data_structure, figure 33)</h3>
+<h3>FB Format (data_structure, figure 36)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -208,7 +219,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Statistics (log_page, figure 34)</h3>
+<h3>Foo Statistics (log_page, figure 37)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -216,7 +227,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Example Foo Element returned by Foo Statistics Log Page (example, figure 35)</h3>
+<h3>Example Foo Element returned by Foo Statistics Log Page (example, figure 38)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -224,7 +235,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo - Create Queue Specific (other, figure 36)</h3>
+<h3>Foo - Create Queue Specific (other, figure 39)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -232,7 +243,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>PRP Entry - Foo Layout (other, figure 37)</h3>
+<h3>PRP Entry - Foo Layout (other, figure 40)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -240,7 +251,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo - Management Operation Specific (other, figure 38)</h3>
+<h3>Foo - Management Operation Specific (other, figure 41)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -248,7 +259,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Report Data for Foo Zones (other, figure 39)</h3>
+<h3>Foo Report Data for Foo Zones (other, figure 42)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -256,7 +267,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Management - Host Software Specified Fields (other, figure 44)</h3>
+<h3>Foo Management - Host Software Specified Fields (other, figure 47)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -264,7 +275,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>FOOCAP - Foo Capabilities (register, figure 45)</h3>
+<h3>FOOCAP - Foo Capabilities (register, figure 48)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -272,7 +283,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Get - Foo Specific Fields (other, figure 46)</h3>
+<h3>Foo Get - Foo Specific Fields (other, figure 49)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -280,7 +291,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Submission Queue Entry (other, figure 47)</h3>
+<h3>Foo Submission Queue Entry (other, figure 50)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -288,7 +299,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Descriptor (other, figure 48)</h3>
+<h3>Foo Descriptor (other, figure 51)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -296,7 +307,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Completion Queue Entry Layout - Foo (other, figure 49)</h3>
+<h3>Completion Queue Entry Layout - Foo (other, figure 52)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -304,7 +315,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Event Data Format (Event Type 02h) (other, figure 51)</h3>
+<h3>Foo Event Data Format (Event Type 02h) (other, figure 54)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -312,7 +323,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Response (other, figure 54)</h3>
+<h3>Foo Response (other, figure 57)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -320,7 +331,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Attributes Entry (other, figure 55)</h3>
+<h3>Foo Attributes Entry (other, figure 58)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -328,7 +339,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Additional Hardware Error Information - Foo (other, figure 56)</h3>
+<h3>Additional Hardware Error Information - Foo (other, figure 59)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -336,7 +347,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Request Fields (other, figure 57)</h3>
+<h3>Foo Request Fields (other, figure 60)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -344,7 +355,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Request PDU (FooReq) (other, figure 60)</h3>
+<h3>Foo Request PDU (FooReq) (other, figure 63)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -352,7 +363,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo to Bar Mapping Table (other, figure 61)</h3>
+<h3>Foo to Bar Mapping Table (other, figure 64)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -360,7 +371,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Bar (data_structure, figure 62)</h3>
+<h3>Bar (data_structure, figure 65)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -368,7 +379,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Completion Queue Entry Dword 0 when Foo is set to 1b (completion_dword, figure 65)</h3>
+<h3>Completion Queue Entry Dword 0 when Foo is set to 1b (completion_dword, figure 68)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -376,7 +387,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>BARCTL - Bar Control (register, figure 67)</h3>
+<h3>BARCTL - Bar Control (register, figure 70)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -384,7 +395,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Bar Directive - Bar Report (data_structure, figure 71)</h3>
+<h3>Bar Directive - Bar Report (data_structure, figure 74)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -392,7 +403,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Numbered Layout (other, figure 73)</h3>
+<h3>Foo Numbered Layout (other, figure 76)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -400,7 +411,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Indented Layout (other, figure 74)</h3>
+<h3>Foo Indented Layout (other, figure 77)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -408,7 +419,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Wrapped Layout (other, figure 75)</h3>
+<h3>Foo Wrapped Layout (other, figure 78)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -416,7 +427,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Joined Layout (other, figure 76)</h3>
+<h3>Foo Joined Layout (other, figure 79)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -424,7 +435,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Joining Layout (other, figure 77)</h3>
+<h3>Foo Joining Layout (other, figure 80)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>
@@ -432,7 +443,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 </table>
 
 
-<h3>Foo Address (data_structure, figure 78)</h3>
+<h3>Foo Address (data_structure, figure 81)</h3>
 
 <table>
 <tr><th>Range</th><th>Name</th><th>Acronym</th></tr>

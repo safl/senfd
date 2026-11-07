@@ -61,6 +61,7 @@ FIGURES = [
                 # Errata: an opcode that is not a value, and the ranges of the
                 # reserved opcodes, which are none
                 ("0000 11b", "00b", "x", "Zing", "3.4"),
+                ("0001 00b", "01b", "08h", "Foo Migrate", "3.5"),
                 ("", "", "80h to FFh", "Reserved", ""),
             ],
         },
@@ -117,6 +118,37 @@ FIGURES = [
     ),
     (f"Dong {DASH} Data Buffer", {"header": FIELD, "rows": [("511:00", "Bar Data")]}),
     (f"Dong {DASH} Data", {"header": FIELD, "rows": [("03:00", "Bar Size (BSZ)")]}),
+    # A command whose field selects its operations, the values in a table of
+    # the field's description, each operation with its own dwords; the value
+    # named as a command is no operation, its dwords the command's
+    (
+        f"Foo Migrate {DASH} Command Dword 10",
+        dword(
+            ("31:08", "Reserved"),
+            (
+                "07:00",
+                (
+                    "Select (SEL): The operation.",
+                    {
+                        "header": ("Value", "M/O", "Management Operation", "Reference"),
+                        "rows": [
+                            ("0h", "M", "Foo Pause", "3.5.1"),
+                            ("1h", "O", "Foo Go", "3.5.2"),
+                            ("2h", "O", "Ding", "3.1"),
+                        ],
+                    },
+                ),
+            ),
+        ),
+    ),
+    (
+        f"Foo Pause {DASH} Command Dword 11",
+        dword(("31:00", "Foo Pause Time (FPT)")),
+    ),
+    (
+        f"Foo Go Management Operation {DASH} Command Dword 11",
+        dword(("31:00", "Foo Go Speed (FGS)")),
+    ),
     # Errata: a field beyond the bits of its dwords, an acronym that is not
     # one, and bits of no field
     (
