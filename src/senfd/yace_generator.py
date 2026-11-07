@@ -5,9 +5,9 @@ model
 For each command it writes a struct of its 16 submission queue dwords, an
 integer each, or one of 64 bits for the pairs the model has fields across, and
 the masks of its fields, named by the specification's acronyms and documented
-with their figure, in the form **yace** links masks to fields by; its opcode;
-and a function making a command of it, declared in the header and defined in
-a source for the project to build. **yace** then parses the header as any
+with their figure, in the form **yace** links masks to fields by; its opcode,
+in the enum of those of its command set; and a function making a command of
+it, declared in the header and defined in a source for the project to build. **yace** then parses the header as any
 other, so the pretty-printers, the bindings and the checks apply to it.
 
     yace --generate senfd --generator-option senfd.prefix=spec \\
@@ -17,6 +17,9 @@ The options are 'spec', the merged specification document (by default the
 one in the cache, as for senfd-query), 'prefix' of every name, by default
 "spec", and 'commands', a comma separated list of command sets, as "nvm", or
 commands of them, as "nvm:write", by default all.
+
+The identifiers of the features and of the log pages, and the status codes of
+each document by their type, are enums too.
 
 It writes the data structures and log pages of the model as well, a packed
 struct each, named by its document and its name, of its fields at their
@@ -37,13 +40,16 @@ from dataclasses import dataclass
 from dataclasses import field as default
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import senfd.query
 from senfd.documents.spec import (
     Bits,
     Command,
     Dwords,
+    Entry,
+    Feature,
+    LogPage,
     Source,
     SpecDocument,
     Structure,
@@ -364,6 +370,37 @@ def layout_of(structure: Structure, element_of) -> Tuple[List[Member], List[str]
     return members, left
 
 
+def number_of(entry: Entry) -> Optional[int]:
+    """The number 'entry' is the value of, if it is one and not a range"""
+
+    typed = entry.typed.get(entry.value_column)
+    if typed is not None and typed.lower is not None:
+        return typed.lower if typed.lower == typed.upper else None
+    match = re.match(r"^\s*([0-9A-Fa-f]+)h\s*$", entry.value)
+    return int(match[1], 16) if match else None
+
+
+def enum_lines(name: str, doc: str, constants: List[Tuple[str, int, str]]) -> List[str]:
+    """The enum 'name' of 'constants', each the name, the value and the doc;
+    a name given again is left out if of the same value, else suffixed by its
+    value"""
+
+    body: List[str] = []
+    seen: Dict[str, int] = {}
+    for constant, value, what in constants:
+        if seen.get(constant) == value:
+            continue
+        if constant in seen:
+            constant = f"{constant}_{value:X}H"
+            if constant in seen:
+                continue
+        seen[constant] = value
+        body.append(f"\t{constant} = 0x{value:x}, ///< {what}")
+    if not body:
+        return []
+    return ["/**", f" * {doc}", " */", f"enum {name} {{", *body, "};", ""]
+
+
 class SpecHeaders:
     """Writes the spec header of the commands of the model, and the source of
     the functions making them"""
@@ -525,6 +562,77 @@ class SpecHeaders:
             write(structure)
         return lines
 
+    def write_enums(self, spec: SpecDocument, stem: str) -> List[str]:
+        """The enums of the opcodes of each command set, of the identifiers of
+        the features and of the log pages, and of the status codes of each
+        document by their type"""
+
+        lines: List[str] = []
+        upper = identifier(stem)
+        opcodes: Dict[str, List[Tuple[str, int, str]]] = {}
+        for set_key, command in self.commands(spec):
+            name = identifier(f"{stem}_{set_key}_{alias(command.name)}")
+            opcodes.setdefault(set_key, []).append(
+                (
+                    f"{name}_OPCODE",
+                    command.opcode,
+                    f"{command.name} ({senfd.query.cite(command.source)})",
+                )
+            )
+        for set_key, constants in opcodes.items():
+            lines += enum_lines(
+                f"{stem}_{set_key}_opcode",
+                f"The opcodes of the {spec.command_sets[set_key].name} commands",
+                constants,
+            )
+        identified: List[Tuple[str, List[Union[Feature, LogPage]]]] = [
+            ("feature", list(spec.features.values())),
+            ("log_page", list(spec.log_pages.values())),
+        ]
+        for what, items in identified:
+            constants = [
+                (
+                    f"{upper}_{identifier(what)}_{identifier(item.name)}",
+                    item.identifier,
+                    f"{item.name} ({senfd.query.cite(item.source)})",
+                )
+                for item in sorted(items, key=lambda i: i.identifier)
+            ]
+            lines += enum_lines(
+                f"{stem}_{what}_identifier",
+                f"The identifiers of the {what.replace('_', ' ')}s",
+                constants,
+            )
+        statuses: Dict[Tuple[str, str], List[Tuple[str, int, str]]] = {}
+        for values in spec.values:
+            if (
+                values.kind != "status_values"
+                or (values.name or "Status Code") != "Status Code"
+                or not values.qualifier
+            ):
+                continue
+            doc = document_key(values.source.document)
+            key = (doc, values.qualifier)
+            name = identifier(f"{stem}_{doc}_{alias(values.qualifier)}_status")
+            for entry in values.entries:
+                value = number_of(entry)
+                if value is None or not entry.name or alias(entry.name) == "reserved":
+                    continue
+                statuses.setdefault(key, []).append(
+                    (
+                        f"{name}_{identifier(entry.name)}",
+                        value,
+                        f"{entry.name} ({senfd.query.cite(values.source)})",
+                    )
+                )
+        for (doc, qualifier), constants in statuses.items():
+            lines += enum_lines(
+                f"{stem}_{doc}_{alias(qualifier)}_status",
+                f"The status codes of the type {qualifier}",
+                constants,
+            )
+        return lines
+
     def generate(self):
         path = self.options.get("spec")
         spec = senfd.query.load(Path(path) if path else None)
@@ -552,17 +660,12 @@ class SpecHeaders:
             f"{stem}_{set_key}_{alias(command.name)}"
             for set_key, command in self.commands(spec)
         }
+        header += self.write_enums(spec, stem)
         header += self.write_structures(spec, stem, taken)
 
         for set_key, command in self.commands(spec):
             struct = f"{stem}_{set_key}_{alias(command.name)}"
             upper = identifier(struct)
-            header += [
-                f"/** {command.name}, {spec.command_sets[set_key].name} command, opcode "
-                f"{command.opcode:02X}h ({senfd.query.cite(command.source)}) */",
-                f"#define {upper}_OPCODE 0x{command.opcode:02x}",
-                "",
-            ]
             fields: List[str] = []
             masks: List[Tuple[str, int, str]] = []
             for member, lower, last, ctype in members_of(command):

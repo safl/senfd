@@ -102,6 +102,10 @@ The options are ``spec``, the merged model, by default the one in the cache,
 them, as ``nvm`` or ``nvm:write``, or ``none``. ``senfd-header <output>
 [key=value ...]`` writes the same without **yace**.
 
+The opcodes of each command set, the identifiers of the features and of the
+log pages, and the status codes of each document by their type are enums, as
+``spec_nvm_opcode`` and ``spec_base_generic_command_status``.
+
 It writes the data structures and log pages too, each a packed struct of its
 fields at their offsets, named by the document and the structure, as
 ``spec_base_identify_controller``. Fields named by their index, as "Power State
