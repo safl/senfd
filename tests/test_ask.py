@@ -112,3 +112,72 @@ def test_the_command_line_answers_a_question(capsys):
     spec = str(Path("example") / "output" / "merged.spec.document.json")
     assert senfd.ask.main(["--spec", spec, "opcode", "of", "ding"]) == 0
     assert "opcode 01h" in capsys.readouterr().out
+
+
+def test_the_language_model_is_asked_for_a_lookup_by_its_schema():
+    import json
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    asked = {}
+
+    class Server(BaseHTTPRequestHandler):
+        def do_POST(self):
+            asked.update(
+                json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            )
+            chosen = {"query": "command", "argument": "ding", "dword": 10}
+            body = json.dumps(
+                {"choices": [{"message": {"content": json.dumps(chosen)}}]}
+            )
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(body.encode())
+
+        def log_message(self, *args):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Server)
+    threading.Thread(target=server.handle_request, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_port}"
+    chosen = senfd.ask.choose(url, [{"role": "user", "content": "FCNT?"}])
+    server.server_close()
+    assert str(chosen) == "command('ding', dword=10)"
+    schema = asked["response_format"]["json_schema"]["schema"]
+    assert schema == senfd.ask.SCHEMA and asked["temperature"] == 0
+
+
+def test_without_the_extra_questions_are_read_a_line_at_a_time(
+    spec, monkeypatch, capsys
+):
+    import builtins
+
+    lines = iter(["opcode of ding"])
+
+    def given(prompt=""):
+        try:
+            return next(lines)
+        except StopIteration:
+            raise EOFError
+
+    monkeypatch.setattr(builtins, "input", given)
+    real = builtins.__import__
+
+    def without_the_extra(name, *args, **kwargs):
+        if name.startswith(("prompt_toolkit", "rich")):
+            raise ImportError(name)
+        return real(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", without_the_extra)
+    assert senfd.ask.interact(spec) == 0
+    out = capsys.readouterr().out
+    assert "Ask about a command" in out and "opcode 01h" in out
+
+
+def test_a_command_named_with_its_command_set_is_the_command(
+    spec, vocabulary, monkeypatch
+):
+    choosing(monkeypatch, senfd.ask.Understood("command", "Foobar Ding", 10))
+    text, tried = senfd.ask.respond(spec, "What is FCNT of Ding?", vocabulary, "x")
+    assert "| 15:00 | Foo Count | FCNT |" in text
+    assert tried == ["command('Ding', dword=10)"]
