@@ -87,10 +87,12 @@ about the specification with a tool call rather than by reading the documents:
 Spec headers, by yace
 ~~~~~~~~~~~~~~~~~~~~~
 
-senfd is a generator for **yace**: it writes the spec header of the commands
-of the model, a struct of each command's dwords with the masks of its fields,
-named by the specification's acronyms and citing their figures, and the
-function making a command, for **yace** to parse as any header, so its
+senfd is a generator for **yace**: it writes a spec header for each document
+of the model, named by the document's abbreviation, as ``spec_base.h``,
+``spec_nvm.h``, ``spec_kv.h``, ``spec_zns.h`` and ``spec_tcp.h``, each standing
+on its own. Of each command it writes a struct of its dwords, with the masks
+of its fields named by the specification's acronyms and citing their figures,
+and the function making it, for **yace** to parse as any header, so its
 pretty-printers, bindings and checks apply:
 
 .. code-block:: bash
@@ -104,9 +106,12 @@ them, as ``nvm`` or ``nvm:write``, or ``none``. ``senfd-header <output>
 
 The opcodes of each command set, the identifiers of the features and of the
 log pages, and the status codes of each document by their type are enums, as
-``spec_nvm_opcode`` and ``spec_base_generic_command_status``.
+``spec_nvm_opcode``, ``spec_base_feature_identifier`` and
+``spec_base_generic_command_status``.
 
-It writes the data structures and log pages too, each a packed struct of its
+It writes the layouts of bytes too, but examples and buffers of data: the
+data structures, the log pages and those of no named kind, as the PDUs of the
+transports, each a packed struct of its
 fields at their offsets, named by the document and the structure, as
 ``spec_base_identify_controller``. Fields named by their index, as "Power State
 0 Descriptor" to "Power State 31 Descriptor", are an array, and entries as many

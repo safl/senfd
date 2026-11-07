@@ -1,14 +1,19 @@
 """
-A generator for **yace**: the spec header of commands and structures, from the
-model
+A generator for **yace**: the spec headers of commands and structures, from
+the model, a header for each document
+
+It writes a header for each document of the model, named by the document's
+abbreviation, as spec_base.h, spec_nvm.h, spec_kv.h, spec_zns.h and
+spec_tcp.h, and a source of the functions it declares. Each stands on its own:
+nothing in one refers to another.
 
 For each command it writes a struct of its 16 submission queue dwords, an
 integer each, or one of 64 bits for the pairs the model has fields across, and
 the masks of its fields, named by the specification's acronyms and documented
 with their figure, in the form **yace** links masks to fields by; its opcode,
 in the enum of those of its command set; and a function making a command of
-it, declared in the header and defined in a source for the project to build. **yace** then parses the header as any
-other, so the pretty-printers, the bindings and the checks apply to it.
+it. **yace** then parses the headers as any other, so the pretty-printers, the
+bindings and the checks apply to them.
 
     yace --generate senfd --generator-option senfd.prefix=spec \\
          --generator-option senfd.commands=nvm --emit capi python
@@ -16,18 +21,20 @@ other, so the pretty-printers, the bindings and the checks apply to it.
 The options are 'spec', the merged specification document (by default the
 one in the cache, as for senfd-query), 'prefix' of every name, by default
 "spec", and 'commands', a comma separated list of command sets, as "nvm", or
-commands of them, as "nvm:write", by default all.
+commands of them, as "nvm:write", by default all, or "none".
 
 The identifiers of the features and of the log pages, and the status codes of
 each document by their type, are enums too.
 
-It writes the data structures and log pages of the model as well, a packed
-struct each, named by its document and its name, of its fields at their
-offsets, the bytes no field has reserved, with the masks of the fields' bits.
-The option 'structures' names others, as for 'commands', by their name or that
-of their document and theirs, as "base:identify_controller", or is "none";
-'flexible', if "1", makes the entries following a struct a flexible array,
-which yace reports, rather than a line of its doc.
+It writes the layouts of bytes of the model as well, but those of examples and
+buffers of data: the data structures, the log pages, and those of no named
+kind, as the PDUs of the transports. Each is a packed struct, named by its
+document and its name, of its fields at their offsets, the bytes no field has
+reserved, with the masks of the fields' bits. The option 'structures' names
+others, as for 'commands', by their name or that of their document and
+theirs, as "base:identify_controller", or is "none"; 'flexible', if "1", makes
+the entries following a struct a flexible array, which yace reports, rather
+than a line of its doc.
 
 A dword described otherwise for each of conditions, as CDW13 of Write is, is
 given the masks of its description of no condition, else those of its first;
@@ -62,8 +69,10 @@ POINTERS = {(6, 9): "Data Pointer (DPTR)"}
 # The C type of a field of as many bytes; one of any other size is of bytes
 TYPES = {1: "uint8_t", 2: "uint16_t", 4: "uint32_t", 8: "uint64_t"}
 
-# The kinds of structure written unless the option 'structures' says otherwise
-KINDS = ("data_structure", "log_page")
+# The kinds of structure written unless the option 'structures' says otherwise:
+# those of bytes but an example or a buffer of data, so the layouts of no named
+# kind too, as the PDUs of the transports
+SKIPPED = ("example", "data_buffer", "status_values")
 
 # A field named by its index among fields alike, as "Power State 0 Descriptor"
 INDEXED = re.compile(r"^(?P<head>.+?)\s+(?P<index>\d[\d,]*)(?P<tail>\s+\D.*)?$")
@@ -171,17 +180,40 @@ def masks_of(
     return masks
 
 
-def document_key(document: str) -> str:
-    """The document by the alias of its short name, as "base" """
+# The documents and command sets by the abbreviations the specifications use
+ABBREVIATIONS = {
+    "key_value": "kv",
+    "zoned_namespace": "zns",
+    "subsystem_local_memory": "slm",
+    "computational_programs": "cp",
+    "management_interface": "mi",
+    "pci_express_transport": "pcie",
+    "rdma_transport": "rdma",
+    "tcp_transport": "tcp",
+    "pcie_commands_using_an_out_of_band_mechanism": "pcie_commands",
+}
 
-    return alias(re.sub(r"\s+[\d.]+$", "", senfd.query.document_name(document)))
+
+def document_key(document: str) -> str:
+    """The document by the alias of its short name, or its abbreviation, as
+    "base" or "kv"; the key of the header of what it describes"""
+
+    key = alias(re.sub(r"\s+[\d.]+$", "", senfd.query.document_name(document)))
+    return ABBREVIATIONS.get(key, key)
+
+
+def set_key_of(key: str) -> str:
+    """A command set by its abbreviation, as "kv" of "key_value", if it has one"""
+
+    return ABBREVIATIONS.get(key, key)
 
 
 def structure_name(structure: Structure) -> str:
-    """The name of 'structure' without what it is of, "Identify Controller" of
-    "Identify - Identify Controller" """
+    """The name of 'structure' without what it is of nor its abbreviation,
+    "Identify Controller" of "Identify - Identify Controller", "PDU Common
+    Header" of "PDU Common Header (CH)" """
 
-    return structure.name.rsplit(" - ", 1)[-1]
+    return re.sub(r"\s*\([^)]*\)$", "", structure.name.rsplit(" - ", 1)[-1])
 
 
 def size_of(structure: Structure) -> Optional[int]:
@@ -434,12 +466,12 @@ class SpecHeaders:
                 if not wanted or any(
                     w in (set_key, f"{set_key}:{cmd_key}") for w in wanted
                 ):
-                    chosen.append((set_key, command))
+                    chosen.append((set_key_of(set_key), command))
         return chosen
 
     def structures(self, spec: SpecDocument) -> List[Structure]:
-        """The structures asked for: of the kinds of KINDS unless 'structures'
-        names them, by their alias or that of their document and theirs, as
+        """The structures asked for: of bytes and of no kind of SKIPPED, unless
+        'structures' names them, by their alias or that of their document and theirs, as
         "base:identify_controller", or is "none" """
 
         wanted = [w.strip() for w in self.options.get("structures", "").split(",") if w]
@@ -453,16 +485,18 @@ class SpecHeaders:
             doc = document_key(structure.source.document)
             if (
                 not wanted
-                and structure.kind in KINDS
+                and structure.kind not in SKIPPED
                 or key in wanted
                 or f"{doc}:{key}" in wanted
             ):
                 chosen.append(structure)
         return chosen
 
-    def write_structures(self, spec: SpecDocument, stem: str, taken: set) -> List[str]:
+    def write_structures(
+        self, spec: SpecDocument, stem: str, taken: set, out: Dict[str, List[str]]
+    ) -> None:
         """The structs of the structures asked for, and of those their arrays
-        are of, each before the structs having it"""
+        are of, each before the structs having it, into 'out' by document"""
 
         by_name: Dict[Tuple[str, str], List[Structure]] = {}
         for structure in spec.structures:
@@ -473,7 +507,6 @@ class SpecHeaders:
                 )
                 by_name.setdefault(key, []).append(structure)
         flexible = self.options.get("flexible", "0") not in ("0", "", "no", "false")
-        lines: List[str] = []
         written: Dict[int, str] = {}
         layouts: Dict[Tuple[str, ...], str] = {}
 
@@ -543,6 +576,7 @@ class SpecHeaders:
                 count = "" if m.count is None else f"[{m.count or ''}]"
                 body.append(f"\t{m.ctype} {m.name}{count}; ///< {m.doc}, {where}{see}")
                 masks += these
+            lines = out.setdefault(doc, [])
             doc_lines = [
                 "/**",
                 f" * {structure.name} ({senfd.query.cite(structure.source)})",
@@ -570,49 +604,59 @@ class SpecHeaders:
 
         for structure in self.structures(spec):
             write(structure)
-        return lines
 
-    def write_enums(self, spec: SpecDocument, stem: str) -> List[str]:
+    def write_enums(
+        self, spec: SpecDocument, stem: str, out: Dict[str, List[str]]
+    ) -> None:
         """The enums of the opcodes of each command set, of the identifiers of
         the features and of the log pages, and of the status codes of each
-        document by their type"""
+        document by their type, into 'out' by the document of each"""
 
-        lines: List[str] = []
         upper = identifier(stem)
-        opcodes: Dict[str, List[Tuple[str, int, str]]] = {}
+        opcodes: Dict[Tuple[str, str], List[Tuple[str, int, str]]] = {}
+        names = {set_key_of(k): s.name for k, s in spec.command_sets.items()}
         for set_key, command in self.commands(spec):
             name = identifier(f"{stem}_{set_key}_{alias(command.name)}")
-            opcodes.setdefault(set_key, []).append(
+            doc = document_key(command.source.document)
+            opcodes.setdefault((doc, set_key), []).append(
                 (
                     f"{name}_OPCODE",
                     command.opcode,
                     f"{command.name} ({senfd.query.cite(command.source)})",
                 )
             )
-        for set_key, constants in opcodes.items():
-            lines += enum_lines(
-                f"{stem}_{set_key}_opcode",
-                f"The opcodes of the {spec.command_sets[set_key].name} commands",
-                constants,
+        for (doc, set_key), constants in opcodes.items():
+            out.setdefault(doc, []).extend(
+                enum_lines(
+                    f"{stem}_{set_key}_opcode",
+                    f"The opcodes of the {names[set_key]} commands",
+                    constants,
+                )
             )
         identified: List[Tuple[str, List[Union[Feature, LogPage]]]] = [
             ("feature", list(spec.features.values())),
             ("log_page", list(spec.log_pages.values())),
         ]
         for what, items in identified:
-            constants = [
-                (
-                    f"{upper}_{identifier(what)}_{identifier(item.name)}",
-                    item.identifier,
-                    f"{item.name} ({senfd.query.cite(item.source)})",
+            by_doc: Dict[str, List[Tuple[str, int, str]]] = {}
+            for item in sorted(items, key=lambda i: i.identifier):
+                doc = document_key(item.source.document)
+                by_doc.setdefault(doc, []).append(
+                    (
+                        f"{upper}_{doc.upper()}_{identifier(what)}_"
+                        f"{identifier(item.name)}",
+                        item.identifier,
+                        f"{item.name} ({senfd.query.cite(item.source)})",
+                    )
                 )
-                for item in sorted(items, key=lambda i: i.identifier)
-            ]
-            lines += enum_lines(
-                f"{stem}_{what}_identifier",
-                f"The identifiers of the {what.replace('_', ' ')}s",
-                constants,
-            )
+            for doc, constants in by_doc.items():
+                out.setdefault(doc, []).extend(
+                    enum_lines(
+                        f"{stem}_{doc}_{what}_identifier",
+                        f"The identifiers of the {what.replace('_', ' ')}s",
+                        constants,
+                    )
+                )
         statuses: Dict[Tuple[str, str], List[Tuple[str, int, str]]] = {}
         described: Dict[Tuple[str, str], str] = {}
         for values in spec.values:
@@ -653,42 +697,28 @@ class SpecHeaders:
                     )
                 )
         for (doc, what), constants in statuses.items():
-            lines += enum_lines(
-                f"{stem}_{doc}_{what}", described[(doc, what)], constants
+            out.setdefault(doc, []).extend(
+                enum_lines(f"{stem}_{doc}_{what}", described[(doc, what)], constants)
             )
-        return lines
 
     def generate(self):
         path = self.options.get("spec")
         spec = senfd.query.load(Path(path) if path else None)
-        prefix = self.options.get("prefix", "spec")
-        stem = alias(prefix)
-        guard = f"{identifier(prefix)}_H"
+        stem = alias(self.options.get("prefix", "spec"))
 
-        header: List[str] = [
-            "/**",
-            f" * The commands and data structures of the NVMe specifications, by {stem}",
-            " *",
-            " * Written by senfd from its model of the specifications; each name and",
-            " * mask is as the figure it cites gives it.",
-            " *",
-            f" * @file {stem}.h",
-            " */",
-            f"#ifndef {guard}",
-            f"#define {guard}",
-            "",
-            "#include <stdint.h>",
-            "",
-        ]
-        source: List[str] = [f'#include "{stem}.h"', "", "#include <string.h>", ""]
+        enums: Dict[str, List[str]] = {}
+        structs: Dict[str, List[str]] = {}
+        commands: Dict[str, List[str]] = {}
+        sources: Dict[str, List[str]] = {}
         taken = {
             f"{stem}_{set_key}_{alias(command.name)}"
             for set_key, command in self.commands(spec)
         }
-        header += self.write_enums(spec, stem)
-        header += self.write_structures(spec, stem, taken)
+        self.write_enums(spec, stem, enums)
+        self.write_structures(spec, stem, taken, structs)
 
         for set_key, command in self.commands(spec):
+            doc = document_key(command.source.document)
             struct = f"{stem}_{set_key}_{alias(command.name)}"
             upper = identifier(struct)
             fields: List[str] = []
@@ -714,16 +744,17 @@ class SpecHeaders:
                 see = f", see {upper}_{identifier(member)}_*" if these else ""
                 fields.append(f"\t{ctype} {member}; ///< {what}{see}")
                 masks += these
-            header += [
+            lines = commands.setdefault(doc, [])
+            lines += [
                 f"/** The submission queue entry of {command.name} */",
                 f"struct {struct} {{",
                 *fields,
                 "};",
                 "",
             ]
-            for name, value, doc in masks:
-                header += [f"/** {doc} */", f"#define {name} 0x{value:x}"]
-            header += [
+            for name, value, text in masks:
+                lines += [f"/** {text} */", f"#define {name} 0x{value:x}"]
+            lines += [
                 "",
                 "/**",
                 f" * Make 'cmd' the command {command.name}: its opcode in Command",
@@ -735,22 +766,52 @@ class SpecHeaders:
                 f"{struct}_init(struct {struct} *cmd);",
                 "",
             ]
-            source += [
-                "void",
-                f"{struct}_init(struct {struct} *cmd)",
-                "{",
-                "\tmemset(cmd, 0, sizeof(*cmd));",
-                f"\tcmd->cdw0 = {upper}_OPCODE;",
-                "}",
+            sources.setdefault(doc, []).extend(
+                [
+                    "void",
+                    f"{struct}_init(struct {struct} *cmd)",
+                    "{",
+                    "\tmemset(cmd, 0, sizeof(*cmd));",
+                    f"\tcmd->cdw0 = {upper}_OPCODE;",
+                    "}",
+                    "",
+                ]
+            )
+
+        headers: List[Path] = []
+        written: List[Path] = []
+        for doc in dict.fromkeys([*enums, *structs, *commands]):
+            name = f"{stem}_{doc}"
+            guard = f"{identifier(name)}_H"
+            text = [
+                "/**",
+                f" * What the {doc} specification defines, by {stem}",
+                " *",
+                " * Written by senfd from its model of the specifications; each name",
+                " * and mask is as the figure it cites gives it.",
+                " *",
+                f" * @file {name}.h",
+                " */",
+                f"#ifndef {guard}",
+                f"#define {guard}",
+                "",
+                "#include <stdint.h>",
+                "",
+                *enums.get(doc, []),
+                *structs.get(doc, []),
+                *commands.get(doc, []),
+                f"#endif /* {guard} */",
                 "",
             ]
-
-        header += [f"#endif /* {guard} */", ""]
-        header_path = self.output / f"{stem}.h"
-        source_path = self.output / f"{stem}.c"
-        header_path.write_text("\n".join(header), encoding="utf-8")
-        source_path.write_text("\n".join(source), encoding="utf-8")
-        return generated([header_path], [source_path])
+            path = self.output / f"{name}.h"
+            path.write_text("\n".join(text), encoding="utf-8")
+            headers.append(path)
+            if doc in sources:
+                path = self.output / f"{name}.c"
+                source = [f'#include "{name}.h"', "", "#include <string.h>", ""]
+                path.write_text("\n".join(source + sources[doc]), encoding="utf-8")
+                written.append(path)
+        return generated(headers, written)
 
 
 def main(argv: Optional[List[str]] = None) -> int:

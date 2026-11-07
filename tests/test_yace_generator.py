@@ -10,14 +10,20 @@ from senfd.yace_generator import SpecHeaders, main
 SPEC = Path("example") / "output" / "merged.spec.document.json"
 
 
+def example(paths):
+    """Of the files written, that of the example document"""
+
+    (path,) = [p for p in paths if p.stem.endswith("_example")]
+    return path
+
+
 @pytest.fixture
 def header(tmp_path):
     """The spec header of the Foobar commands of the example"""
 
     options = {"spec": str(SPEC), "prefix": "foo_spec", "commands": "foobar"}
     wrote = SpecHeaders(tmp_path, options).generate()
-    (path,) = wrote.headers
-    (source,) = wrote.sources
+    path, source = example(wrote.headers), example(wrote.sources)
     return path.read_text(encoding="utf-8"), source.read_text(encoding="utf-8")
 
 
@@ -52,7 +58,7 @@ def test_the_function_making_a_command_is_declared_and_defined(header):
 
 def test_only_the_commands_asked_for_are_written(tmp_path):
     options = {"spec": str(SPEC), "commands": "foobar:ring"}
-    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    path = example(SpecHeaders(tmp_path, options).generate().headers)
     text = path.read_text(encoding="utf-8")
     assert "struct spec_foobar_ring {" in text
     assert "struct spec_foobar_ding {" not in text
@@ -60,7 +66,7 @@ def test_only_the_commands_asked_for_are_written(tmp_path):
 
 def test_the_header_is_written_without_yace_too(tmp_path, capsys):
     assert main([str(tmp_path), f"spec={SPEC}", "commands=foobar:ding"]) == 0
-    assert (tmp_path / "senfd" / "spec.h").exists()
+    assert (tmp_path / "senfd" / "spec_example.h").exists()
     assert main([]) == 1
 
 
@@ -72,13 +78,13 @@ def test_yace_takes_the_header_in_its_strict_subset(tmp_path):
     if shutil.which("cc") is None and shutil.which("gcc") is None:
         pytest.skip("no C compiler")
     options = {"spec": str(SPEC), "prefix": "foo_spec", "commands": "foobar"}
-    (path,) = SpecHeaders(tmp_path / "gen", options).generate().headers
+    paths = SpecHeaders(tmp_path / "gen", options).generate().headers
     proc = subprocess.run(
         [
             sys.executable,
             "-m",
             "yace",
-            str(path),
+            *map(str, paths),
             "--output",
             str(tmp_path),
             "--strict",
@@ -87,7 +93,9 @@ def test_yace_takes_the_header_in_its_strict_subset(tmp_path):
         text=True,
     )
     assert proc.returncode == 0, proc.stderr
-    assert (tmp_path / "foo_spec.status").read_text().endswith("0 diagnostics\n")
+    assert (
+        (tmp_path / f"{paths[0].stem}.status").read_text().endswith("0 diagnostics\n")
+    )
 
 
 @pytest.fixture
@@ -95,7 +103,7 @@ def structures(tmp_path):
     """The spec header of the data structures of the example"""
 
     options = {"spec": str(SPEC), "prefix": "foo_spec", "commands": "none"}
-    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    path = example(SpecHeaders(tmp_path, options).generate().headers)
     return path.read_text(encoding="utf-8")
 
 
@@ -144,7 +152,7 @@ def test_the_bytes_of_a_field_are_no_masks_of_its_bits(structures):
 
 def test_entries_are_a_flexible_array_when_asked_for(tmp_path):
     options = {"spec": str(SPEC), "commands": "none", "flexible": "1"}
-    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    path = example(SpecHeaders(tmp_path, options).generate().headers)
     text = path.read_text(encoding="utf-8")
     assert "\tstruct spec_example_foo_entry foo_entry[]; ///< Foo Entry" in text
 
@@ -158,22 +166,22 @@ def test_of_a_union_the_first_alternative_is_the_member(structures):
 
 def test_only_the_structures_asked_for_are_written(tmp_path):
     options = {"spec": str(SPEC), "commands": "none", "structures": "example:fb_format"}
-    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    path = example(SpecHeaders(tmp_path, options).generate().headers)
     text = path.read_text(encoding="utf-8")
     assert "struct __attribute__((packed)) spec_example_fb_format {" in text
     assert "foo_statistics" not in text
     options["structures"] = "none"
-    (path,) = SpecHeaders(tmp_path, options).generate().headers
+    path = example(SpecHeaders(tmp_path, options).generate().headers)
     assert "struct __attribute__((packed))" not in path.read_text(encoding="utf-8")
 
 
 def test_the_identifiers_and_status_codes_are_enums(structures):
-    assert "enum foo_spec_feature_identifier {" in structures
-    assert "\tFOO_SPEC_FEATURE_FOO_CONFIG = 0xc0, ///< Foo Config (example" in (
+    assert "enum foo_spec_example_feature_identifier {" in structures
+    assert "\tFOO_SPEC_EXAMPLE_FEATURE_FOO_CONFIG = 0xc0, ///< Foo Config (example" in (
         structures
     )
-    assert "enum foo_spec_log_page_identifier {" in structures
-    assert "\tFOO_SPEC_LOG_PAGE_FOO_EVENTS = 0xc1," in structures
+    assert "enum foo_spec_example_log_page_identifier {" in structures
+    assert "\tFOO_SPEC_EXAMPLE_LOG_PAGE_FOO_EVENTS = 0xc1," in structures
     # The status codes by the document and the type of status they are of
     assert "enum foo_spec_example_generic_command_status {" in structures
     assert "\tFOO_SPEC_EXAMPLE_GENERIC_COMMAND_STATUS_FOO_INVALID = 0xc0," in structures
@@ -211,3 +219,35 @@ def test_an_index_is_read_with_its_thousands_separated():
 
     field = Bits(unit="bytes", range="1:0", name="Foo Identifier 65,535")
     assert (index_of(field), base_of(field)) == (65535, "Foo Identifier")
+
+
+def test_each_document_has_a_header_and_a_source_of_its_own(tmp_path):
+    options = {"spec": str(SPEC), "prefix": "foo_spec"}
+    wrote = SpecHeaders(tmp_path, options).generate()
+    assert sorted(p.name for p in wrote.headers) == [
+        "foo_spec_example.h",
+        "foo_spec_invalid.h",
+    ]
+    # Only a document with commands has functions to define
+    assert [p.name for p in wrote.sources] == ["foo_spec_example.c"]
+    text = wrote.headers[0].read_text(encoding="utf-8")
+    assert "#ifndef FOO_SPEC_EXAMPLE_H" in text
+
+
+def test_a_document_is_named_by_its_abbreviation():
+    from senfd.yace_generator import document_key, set_key_of
+
+    title = "NVM Express Key Value Command Set Specification, Revision 1-2"
+    assert document_key(title) == "kv"
+    assert document_key("NVM Express TCP Transport Specification, Revision 1-1") == (
+        "tcp"
+    )
+    assert (set_key_of("zoned_namespace"), set_key_of("nvm")) == ("zns", "nvm")
+
+
+def test_a_layout_of_no_named_kind_is_written_without_its_abbreviation(
+    structures,
+):
+    assert "struct __attribute__((packed)) foo_spec_example_foo_request_pdu {" in (
+        structures
+    )
