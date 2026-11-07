@@ -188,3 +188,33 @@ def test_verbose_gives_the_values_a_field_takes(spec):
     lines = senfd.query.command(spec, "foo migrate", 10, verbose=True)
     assert "      = 0h Foo Pause" in lines
     assert any(line.startswith("operation Foo Pause, SEL=00h") for line in lines)
+
+
+def test_markdown_gives_the_fields_as_a_table_under_where_they_are(spec):
+    lines = senfd.query.command(spec, "ding", 10, markdown=True)
+    assert lines[0].startswith("### Ding: Foobar command, opcode 01h [example")
+    assert "**cdw10 [example, 1.2, Figure 2, page 2]**" in lines
+    at = lines.index("| Bits | Name | Acronym |")
+    assert lines[at + 1 :] == [
+        "|---|---|---|",
+        "| 31:16 | Reserved |  |",
+        "| 15:00 | Foo Count | FCNT |",
+    ]
+
+
+def test_markdown_names_a_field_within_another_by_both_and_its_values(spec):
+    lines = senfd.query.structure(spec, "Foo Entry", markdown=True)
+    assert "| Bytes | Name | Acronym |" in lines
+    assert any(line.startswith("| ") and "| FEP." in line for line in lines)
+    lines = senfd.query.command(spec, "foo migrate", 10, verbose=True, markdown=True)
+    assert any("Values: 0h Foo Pause" in line for line in lines)
+
+
+def test_a_cell_keeps_a_table_a_table():
+    assert senfd.query.cell("a | b\n c") == "a \\| b c"
+
+
+def test_the_command_line_gives_markdown(spec_path, capsys):
+    argv = ["--spec", str(spec_path), "--markdown", "structure", "Bar"]
+    assert senfd.query.main(argv) == 0
+    assert "| Bytes | Name | Acronym |" in capsys.readouterr().out
