@@ -89,7 +89,9 @@ class FromEnrichedDocument(Converter):
         document = ModelDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
 
-        enriched = EnrichedFigureDocument.model_validate_json(path.read_text())
+        enriched = EnrichedFigureDocument.model_validate_json(
+            path.read_text(encoding="utf-8")
+        )
 
         errors += FromEnrichedDocument.extract_command_set(document, enriched)
 

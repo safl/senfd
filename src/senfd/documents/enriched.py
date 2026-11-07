@@ -1088,7 +1088,9 @@ class FromFigureDocument(Converter):
 
         errors = []
 
-        figure_document = FigureDocument.model_validate_json(path.read_text())
+        figure_document = FigureDocument.model_validate_json(
+            path.read_text(encoding="utf-8")
+        )
         skip_patterns = args.skip_figures
 
         document = EnrichedFigureDocument()

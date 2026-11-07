@@ -95,7 +95,7 @@ class SkipPatterns:
         self.skip_figures: List[SkipElement] = []
 
         if list_path:
-            text = list_path.read_text()
+            text = list_path.read_text(encoding="utf-8")
             config = tomli.loads(text)
             patterns = config["skip"]
 
