@@ -23,6 +23,7 @@ all = ["senfd[dev]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
+senfd-query = "senfd.query:main"
 
 [build-system]
 requires = ["setuptools>=42", "wheel"]
