@@ -8,7 +8,7 @@ from senfd.skiplist import MultipleClassifierMatchException
 
 SKIP = """
 [[skip]]
-regex = ".*Data Pointer$"
+regex = ".*\\\\bData Pointer$"
 matches = {matches}
 description = "Not used here"
 """

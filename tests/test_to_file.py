@@ -53,3 +53,30 @@ def test_the_example_outputs_are_those_senfd_makes(tmp_path):
         assert json.loads(made.read_text(encoding="utf-8")) == json.loads(
             expected.read_text(encoding="utf-8")
         ), f"{expected} is not what senfd makes; regenerate it with 'make version'"
+
+
+def test_the_example_is_the_one_the_toolbox_writes(tmp_path):
+    """example/example.docx is written by toolbox/example_docx.py; edit the
+    script rather than the document"""
+
+    import json
+    import runpy
+    import sys
+    from argparse import Namespace
+    from pathlib import Path
+
+    import senfd.pipeline
+
+    path = tmp_path / "docx" / "example.docx"
+    path.parent.mkdir()
+    argv, sys.argv = sys.argv, ["example_docx.py", str(path)]
+    try:
+        runpy.run_path("toolbox/example_docx.py", run_name="__main__")
+    finally:
+        sys.argv = argv
+    senfd.pipeline.process(path, tmp_path, Namespace(skip_figures=None))
+
+    name = "example.plain.figure.document.json"
+    made = json.loads((tmp_path / name).read_text(encoding="utf-8"))
+    expected = Path("example/output") / name
+    assert made == json.loads(expected.read_text(encoding="utf-8"))
