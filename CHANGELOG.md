@@ -10,6 +10,52 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.7.0
+
+The data model says what each value is rather than its text, and holds the
+structure behind the fields. The values of requirement, yes/no and
+identifier columns are typed, as a level, a flag, an identifier or a range,
+with their footnotes, or as a note, a reference, reserved or vendor specific,
+and a value of no form its column holds is an erratum. Fields sharing bits
+are the alternatives of a union. A field has the values it takes, and a field
+selecting operations, as the select field of Migration Send, gives each
+operation its dwords. A table of values has the scope its caption confines it
+to, so the status codes of I/O commands and of Fabrics commands are told
+apart. A register whose layout is a format it shares with others, as the
+version register, is named by the section describing it.
+
+`senfd-query --markdown` gives the fields of a command, feature, log page or
+structure as a Markdown table, for an answer shown to a person, and a command
+found by a search says its opcode.
+
+`senfd-ask` answers a question as an expert would, at once: names, acronyms
+and the words of questions complete as they are typed, from where a name
+starts in the question and with its kind shown, each answer is a table
+citing its figure, and an answer not mentioning every term of the question
+that names something is withheld as not known. With `--llm URL`, a language
+model served by llama.cpp reads the question and chooses the lookup,
+constrained by a schema to a query and its argument, and writes nothing of
+the answer. It is the extra `ask`.
+
+The session of `senfd-ask` is made for someone who does not yet know how to
+ask: it opens with the questions it answers in a menu, completes each part
+of one by what comes next, the fields of the very dword asked of after
+"is", colours what it recognises, says at the bottom how the question is
+read so far above the keys that do something at that moment, ends an
+answer asked of a field by saying where the field is, and keeps the
+questions asked for the next session. `senfd.ask` is a package of one
+module a step a question passes through.
+
+The documentation says what the data model is for, with recordings of
+`senfd-ask` and a benchmark against frontier language models. The
+benchmark is kept in `benchmark/`, a cijoe workflow with the record of its
+run, for anyone holding the documents to repeat. The sources follow the
+REUSE specification, checked by pre-commit, and the tests fail below 95%
+coverage.
+
+Writing headers from the data model is left to the project consuming it, as
+xNVMe does with a generator run by yace; senfd makes the data model.
+
 ## 0.6.0
 
 The model holds only values that are what their kind must be. An acronym that
