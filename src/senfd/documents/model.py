@@ -54,24 +54,42 @@ class FromEnrichedDocument(Converter):
                     name=entry["command_name"],
                 )
 
-        # Process SQE figures
-        for item in (sqe for sqe in enriched.command_sqe_dword):
-            for command_set in document.command_sets.values():
-                cmd_alias = senfd.models.Command.alias_from_name(item.command_name)
-                if not (command := command_set.commands.get(cmd_alias, None)):
-                    continue
-
-                command.sqe.append(
-                    senfd.models.CommandDwordLowerUpper(
-                        command_alias=cmd_alias,
-                        lower=item.command_dword,
-                        upper=item.command_dword,
-                        nbytes=4,
-                        fields=[
-                            senfd.models.Bits(**entry) for entry in item.grid.items()
-                        ],
-                    )
-                )
+        # Process SQE figures; the pointers are at the dwords that the common
+        # command format puts them at, as their figures do not say. A row
+        # without bits heads the rows below it, as "Fabrics Specific" does
+        sqes = (
+            [
+                (f, f.command_dword, f.command_dword, f.condition)
+                for f in enriched.command_sqe_dword
+            ]
+            + [
+                (f, f.command_dword_lower, f.command_dword_upper, None)
+                for f in enriched.command_sqe_dword_lower_upper
+            ]
+            + [(f, 4, 5, None) for f in enriched.command_sqe_metadata_pointer]
+            + [(f, 6, 9, None) for f in enriched.command_sqe_data_pointer]
+        )
+        for item, lower, upper, condition in sqes:
+            cmd_alias = senfd.models.Command.alias_from_name(item.command_name)
+            sqe = senfd.models.CommandDwordLowerUpper(
+                command_alias=cmd_alias,
+                lower=lower,
+                upper=upper,
+                nbytes=4 * (upper - lower + 1),
+                condition=condition,
+                fields=[
+                    senfd.models.Bits(**entry)
+                    for entry in item.grid.items()
+                    if str(entry["lower"]).strip().isdigit()
+                ],
+            )
+            commands = [
+                command
+                for command_set in document.command_sets.values()
+                if (command := command_set.commands.get(cmd_alias, None))
+            ]
+            for command in commands:
+                command.sqe.append(sqe)
 
         # Process CQE figures
 
