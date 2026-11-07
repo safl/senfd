@@ -10,6 +10,18 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.4.0
+
+The example document is written by `toolbox/example_docx.py` and holds a
+figure of every category, and a test fails when a category has none. The
+general command status category is dropped, as no figure could land in it.
+
+The model gives a command its dword pairs, its data and metadata pointers,
+and the condition a dword is described for, and the dwords that another
+document describes. The merged model combines a command set listed by more
+than one document, and no longer merges in a merged model left in the output
+folder by an earlier run.
+
 ## 0.3.0
 
 Figures are enriched by their table's grid as well as by their caption: a
