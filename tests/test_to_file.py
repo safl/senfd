@@ -11,7 +11,7 @@ def test_to_file_without_a_path(tmp_path):
     os.chdir(tmp_path)
 
     path = to_file(CONTENT, FILENAME)
-    back = path.read_text()
+    back = path.read_text(encoding="utf-8")
 
     os.chdir(orig)
     assert back == CONTENT
@@ -19,13 +19,13 @@ def test_to_file_without_a_path(tmp_path):
 
 def test_to_file_with_a_dirpath(tmp_path):
     path = to_file(CONTENT, FILENAME, tmp_path)
-    back = path.read_text()
+    back = path.read_text(encoding="utf-8")
 
     assert back == CONTENT
 
 
 def test_to_file_with_a_filepath(tmp_path):
     path = to_file(CONTENT, FILENAME, tmp_path / FILENAME)
-    back = path.read_text()
+    back = path.read_text(encoding="utf-8")
 
     assert back == CONTENT

@@ -64,7 +64,7 @@ def to_file(content: str, filename: str, path: Optional[Path] = None):
     if path.is_dir():
         path = path / filename
 
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
 
     return path
 
