@@ -30,7 +30,15 @@ server = MCPServer(name="senfd", instructions=INSTRUCTIONS, version=senfd.__vers
 
 @lru_cache(maxsize=1)
 def spec(path: Optional[Path] = None) -> SpecDocument:
-    return senfd.query.load(path)
+    path = path or senfd.query.default_spec_path()
+    try:
+        return senfd.query.load(path)
+    except FileNotFoundError:
+        raise RuntimeError(
+            f"No model of the specification at {path}; make it with "
+            f"'senfd <documents.docx> --output {path.parent}', or point "
+            "SENFD_SPEC at one"
+        ) from None
 
 
 @server.tool(structured_output=False)

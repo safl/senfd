@@ -242,6 +242,18 @@
                     "default": null,
                     "title": "Condition"
                 },
+                "qualifier": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Qualifier"
+                },
                 "fields": {
                     "items": {
                         "$ref": "#/$defs/Bits"
@@ -593,6 +605,20 @@
             "title": "Dwords",
             "type": "object"
         },
+        "structures": {
+            "items": {
+                "$ref": "#/$defs/Structure"
+            },
+            "title": "Structures",
+            "type": "array"
+        },
+        "values": {
+            "items": {
+                "$ref": "#/$defs/Values"
+            },
+            "title": "Values",
+            "type": "array"
+        },
         "features": {
             "additionalProperties": {
                 "$ref": "#/$defs/Feature"
@@ -607,19 +633,15 @@
             "title": "Log Pages",
             "type": "object"
         },
-        "structures": {
-            "items": {
-                "$ref": "#/$defs/Structure"
+        "unassigned": {
+            "additionalProperties": {
+                "items": {
+                    "$ref": "#/$defs/Dwords"
+                },
+                "type": "array"
             },
-            "title": "Structures",
-            "type": "array"
-        },
-        "values": {
-            "items": {
-                "$ref": "#/$defs/Values"
-            },
-            "title": "Values",
-            "type": "array"
+            "title": "Unassigned",
+            "type": "object"
         },
         "diagnostics": {
             "items": {
