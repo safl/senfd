@@ -789,5 +789,5 @@
 [47.85, "o", "?"]
 [47.885, "o", "\""]
 [48.285, "o", "\r\n"]
-[48.485, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40mcommand('get log page')\u001b[0m                                                                         \r\n\r\nNot in the model; what was found does not mention write, hyperdrive, so this is not known. \u001b[1;36;40mhelp\u001b[0m says what can \r\nbe asked.                                                                                                     \r\n"]
+[48.485, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40mcommand('write', dword=12)\u001b[0m                                                                      \r\n\r\nNot in the data model; what was found does not mention hyperdrive, so this is not known. \u001b[1;36;40mhelp\u001b[0m says what can be\r\nasked.                                                                                                        \r\n"]
 [50.405, "o", "\u001b[1;32m$\u001b[0m "]
