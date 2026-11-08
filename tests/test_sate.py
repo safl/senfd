@@ -795,3 +795,34 @@ def test_a_feature_is_found_by_the_field_it_holds(spec, vocabulary):
 
 def test_a_generic_word_is_no_term_in_its_plural_either():
     assert phrasing.terms("Which feature sets the foo levels?") == ["foo", "level"]
+
+
+def test_an_answer_opens_with_a_rule_naming_the_question_and_pages_when_tall(
+    monkeypatch,
+):
+    import contextlib
+    import io
+
+    from rich.console import Console
+
+    paged = []
+
+    @contextlib.contextmanager
+    def pager(self, pager=None, styles=False, links=False):
+        paged.append(styles)
+        yield
+
+    monkeypatch.setattr(Console, "pager", pager)
+    out = io.StringIO()
+    console = Console(file=out, width=60, height=12, force_terminal=False)
+    short = "| Bits | Name |\n|---|---|\n| 30 | Force Unit Access |"
+    senfd.sate.session.show(console, "which bit is FUA", short, "right")
+    assert "which bit is FUA" in out.getvalue().splitlines()[0] and not paged
+    rows = "\n".join(
+        f"| {n} | field {n} with a description long enough to wrap the line |"
+        for n in range(8)
+    )
+    tall = "| Bits | Name |\n|---|---|\n" + rows + "\n> FUA is bit 30"
+    senfd.sate.session.show(console, "cdw12 of write", tall, "right")
+    assert paged == [True]
+    assert "FUA is bit 30" in out.getvalue()  # Said again after the pager
