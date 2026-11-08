@@ -156,9 +156,6 @@ class Vocabulary:
         names = self.commands | self.features | self.log_pages | self.structures
         return WORDS + sorted(names, key=str.lower) + sorted(self.acronyms)
 
-    def is_command(self, name: str) -> bool:
-        return alias(name) in {alias(c) for c in self.commands}
-
 
 def words_of(text: str) -> str:
     """'text' as lowercase words, each between spaces, for whole-word matching"""

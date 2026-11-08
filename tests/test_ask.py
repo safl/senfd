@@ -364,3 +364,126 @@ def test_a_field_acronym_that_is_a_register_s_too_is_of_the_structure_named(
         "What is the FOOCAP field of the Foo Descriptor structure?", vocabulary
     )
     assert str(understood) == "structure('Foo Descriptor')"
+
+
+@pytest.mark.parametrize(
+    "question, understood, shows",
+    [
+        ("help", "help('')", "| a command, with its dwords |"),
+        ("section 1.2", "section('1.2')", "- example 1.2 Ding command"),
+        ("errata", "errata('')", "Command Zing: opcode is not a value"),
+        ("search FCNT", "search('fcnt')", "15:00 Foo Count (FCNT)"),
+        ("FCNT", "acronym('FCNT')", "15:00 Foo Count (FCNT)"),
+        ("C0h", "identifier('c0h')", "### Feature C0h Foo Config"),
+        ("structure foo descriptor", "structure('foo descriptor')", "**Foo Descriptor"),
+        (
+            "log page foo events",
+            "log_page('foo events')",
+            "### Log page C1h Foo Events",
+        ),
+        ("feature foo config", "feature('foo config')", "### Feature C0h Foo Config"),
+        # Part of a name, of no kind the question says, is looked up by name
+        ("joined layout", "name('joined layout')", "**Foo Joined Layout"),
+    ],
+)
+def test_each_form_of_question_is_answered_by_its_lookup(
+    spec, vocabulary, question, understood, shows
+):
+    text, tried = senfd.ask.respond(spec, question, vocabulary)
+    assert tried == [understood]
+    assert shows in text
+
+
+@pytest.mark.parametrize(
+    "choice, shown",
+    [
+        (senfd.ask.Understood("structure", "foo entry"), False),
+        (senfd.ask.Understood("structure", "foo descriptor"), True),
+    ],
+)
+def test_a_lookup_by_name_is_of_the_thing_the_question_names(
+    spec, vocabulary, monkeypatch, choice, shown
+):
+    choosing(monkeypatch, *[choice] * 3)
+    text, _ = senfd.ask.respond(
+        spec, "What is the Foo Descriptor structure?", vocabulary, llm="x"
+    )
+    assert ("so this is not known" not in text) == shown
+
+
+def session_answering(monkeypatch, *typed):
+    """Have senfd-ask's prompt read 'typed', as if at a terminal, and keep the
+    session it makes"""
+
+    import prompt_toolkit
+    from prompt_toolkit.input import create_pipe_input
+    from prompt_toolkit.output import DummyOutput
+
+    made = []
+    real = prompt_toolkit.PromptSession
+
+    def session(*args, **kwargs):
+        pipe = stack.enter_context(create_pipe_input())
+        for line in typed:
+            pipe.send_text(line + "\r")
+        pipe.close()
+        made.append(real(*args, input=pipe, output=DummyOutput(), **kwargs))
+        return made[-1]
+
+    import contextlib
+
+    stack = contextlib.ExitStack()
+    monkeypatch.setattr(prompt_toolkit, "PromptSession", session)
+    return made, stack
+
+
+def test_the_session_answers_each_question_until_the_input_ends(
+    spec, monkeypatch, capsys
+):
+    made, stack = session_answering(monkeypatch, "opcode of ding", "", "C0h")
+    with stack:
+        assert senfd.ask.interact(spec) == 0
+    out = capsys.readouterr().out
+    assert "Ask about a command" in out
+    assert "Ding: Foobar command, opcode 01h" in out
+    assert "Feature C0h Foo Config" in out
+
+
+def test_the_session_completes_the_names_of_the_model(spec, monkeypatch, capsys):
+    from prompt_toolkit.document import Document
+
+    made, stack = session_answering(monkeypatch)
+    with stack:
+        senfd.ask.interact(spec)
+    assert "Ask about a command" in capsys.readouterr().out
+    completer = made[0].completer
+    offered = [c.text for c in completer.get_completions(Document("Foo Sta"), None)]
+    assert "Foo Statistics" in offered
+
+
+def test_without_a_question_the_command_line_opens_the_session(monkeypatch, capsys):
+    made, stack = session_answering(monkeypatch, "opcode of ding")
+    model = str(Path("example") / "output" / "merged.spec.document.json")
+    with stack:
+        assert senfd.ask.main(["--spec", model]) == 0
+    assert "opcode 01h" in capsys.readouterr().out
+
+
+def test_a_register_named_by_one_generic_word_is_not_spotted_by_it():
+    vocabulary = senfd.ask.Vocabulary(structures={"CMD - Command"})
+    assert senfd.ask.spot("Which command is it?", vocabulary) is None
+    assert senfd.ask.spot("What is the CMD - Command register?", vocabulary) == (
+        "register",
+        "CMD",
+    )
+
+
+def test_a_section_is_asked_for_by_its_number(spec, vocabulary):
+    text, tried = senfd.ask.respond(spec, "section 1", vocabulary)
+    assert tried == ["section('1')"]
+    assert "- example 1.2 Ding command" in text
+
+
+def test_an_opcode_asked_of_a_word_of_several_commands_is_not_known(spec, vocabulary):
+    text, _ = senfd.ask.respond(spec, "opcode of foo directive", vocabulary)
+    assert "the question names several commands rather than one" in text
