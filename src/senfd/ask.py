@@ -36,15 +36,18 @@ printed as Markdown.
 
 import argparse
 import json
+import os
 import re
 import sys
+import time
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
+import senfd
 import senfd.query
-from senfd.documents.spec import Bits, SpecDocument, alias
+from senfd.documents.spec import Bits, Dwords, SpecDocument, alias
 
 HELP = """\
 **Ask about a command, a feature, a log page, a structure, a register or a field.**
@@ -60,7 +63,8 @@ HELP = """\
 | a section | `section 5.2.6` |
 | what the documents may have wrong | `errata`, `errata nvm` |
 
-Press Tab to complete a name or an acronym, `help` for this, Ctrl-D to leave.
+Tab completes a name or an acronym, `?` shows the questions to ask, `help` or
+F1 this, and Ctrl-D leaves.
 """
 
 WORDS = [
@@ -80,15 +84,30 @@ WORDS = [
     "help",
 ]
 
+# The common questions, as typed and as shown with what goes in them
+QUESTIONS = [
+    ("what is the opcode of ", "what is the opcode of <command>?"),
+    ("which bit of cdw", "which bit of cdw<N> of <command> is <acronym>?"),
+    ("which bits of cdw", "which bits of cdw<N> of <command> are <acronym>?"),
+    ("what are the fields of the ", "what are the fields of the <structure>?"),
+    ("which feature is ", "which feature is <name or identifier>?"),
+    ("which log page is ", "which log page is <name or identifier>?"),
+]
+
 # The words after which a question names a thing of one kind
 KINDS_AFTER = [
-    (re.compile(r"log page", re.I), "log page"),
-    (re.compile(r"feature", re.I), "feature"),
-    (re.compile(r"structure", re.I), "structure"),
-    (re.compile(r"(opcode|cdw\d+|dword \d+) of", re.I), "command"),
+    (re.compile(r"log page(?: is)? $", re.I), "log page"),
+    (re.compile(r"feature(?: is)? $", re.I), "feature"),
+    (re.compile(r"(?:structure|fields of(?: the)?) $", re.I), "structure"),
+    (re.compile(r"(?:opcode|cdw\d+|dword \d+) of $", re.I), "command"),
+    (re.compile(r"\b(?:is|are) $", re.I), "acronym"),
 ]
-KIND_WORDS = re.compile(
-    r"(log page|feature|structure|(?:opcode|cdw\d+|dword \d+) of) $", re.I
+
+# The words of questions, as the input line shows them recognised
+QUESTION_WORDS = re.compile(
+    r"\b(?:opcode of|(?:cdw|dword ?)\d+(?: of)?|feature|log page|structure|"
+    r"register|section|search|errata|help)\b",
+    re.I,
 )
 
 # The words a question may be phrased in, and that name nothing
@@ -127,54 +146,84 @@ class Vocabulary:
     structures: Set[str] = field(default_factory=set)
     acronyms: Set[str] = field(default_factory=set)
     registers: Set[str] = field(default_factory=set)
+    # The acronyms of the fields of a thing, by its name in lowercase and, of
+    # a command or a feature, a dword of it, in the order of its figures
+    fields: Dict[Tuple[str, Optional[int]], List[str]] = field(default_factory=dict)
+    pattern: Optional[re.Pattern] = field(
+        default=None, init=False, repr=False, compare=False
+    )
 
     @classmethod
     def of(cls, spec: SpecDocument) -> "Vocabulary":
         vocabulary = cls()
 
-        def acronyms(fields: Iterable[Bits]):
+        def acronyms(fields: Iterable[Bits], *of: Tuple[str, Optional[int]]):
             for f in fields:
                 if f.acronym:
                     vocabulary.acronyms.add(f.acronym)
-                acronyms(f.fields)
+                    for key in of:
+                        known = vocabulary.fields.setdefault(key, [])
+                        if f.acronym not in known:
+                            known.append(f.acronym)
+                acronyms(f.fields, *of)
+
+        def dwords(name: str, sqe: List[Dwords], cqe: List[Dwords]):
+            for d in sqe:
+                numbers = [(name.lower(), n) for n in range(d.lower, d.upper + 1)]
+                acronyms(d.fields, *numbers, (name.lower(), None))
+            for d in cqe:
+                acronyms(d.fields, (name.lower(), None))
 
         for command_set in spec.command_sets.values():
             for cmd in command_set.commands.values():
                 vocabulary.commands.add(cmd.name)
-                for d in [*cmd.sqe, *cmd.cqe]:
-                    acronyms(d.fields)
+                dwords(cmd.name, cmd.sqe, cmd.cqe)
                 for operation in cmd.operations:
-                    for d in [*operation.sqe, *operation.cqe]:
-                        acronyms(d.fields)
+                    dwords(cmd.name, operation.sqe, operation.cqe)
         for f in spec.features.values():
             vocabulary.features.add(f.name)
-            for d in [*f.sqe, *f.cqe]:
-                acronyms(d.fields)
+            dwords(f.name, f.sqe, f.cqe)
         vocabulary.log_pages.update(p.name for p in spec.log_pages.values())
         for s in spec.structures:
             vocabulary.structures.add(s.name)
-            acronyms(s.fields)
             # A register is asked for by its acronym, "CC" of "CC - ..."
             head, dash, _ = s.name.partition(" - ")
             if dash and head.isupper():
                 vocabulary.acronyms.add(head)
                 vocabulary.registers.add(head)
+                acronyms(s.fields, (s.name.lower(), None), (head.lower(), None))
+            else:
+                acronyms(s.fields, (s.name.lower(), None))
         return vocabulary
 
-    def completions(self, typed: str, most: int = 40) -> List[Tuple[str, int, str]]:
-        """What completes 'typed', as (text, start, kind), 'start' counting back
-        from its end
+    def completions(
+        self, typed: str, most: int = 40
+    ) -> List[Tuple[str, int, str, str]]:
+        """What completes 'typed', as (text, start, kind, shown), 'start'
+        counting back from its end and 'shown' what the menu shows
 
-        A name completes from where it starts in the question, so "opcode of
-        zone app" completes to Zone Append, and a register also by its name,
-        as "controller sta" to Controller Status. After the words of a kind,
-        as "log page " or "opcode of ", names of that kind come first, and are
-        offered before a letter of them is typed. Then the most words matched
-        come first, then the words of questions, commands, features, log
-        pages, structures and acronyms, and the shorter name before the
-        longer; a word typed in capitals, as "FU", is completed by acronyms
-        before names."""
+        A question begun, as "which b", completes to the common questions it
+        may be, shown with what goes in them, as "which bit of cdw<N> of
+        <command> is <acronym>?". A name completes from where it starts in
+        the question, so "opcode of zone app" completes to Zone Append, and a
+        register also by its name, as "controller sta" to Controller Status.
+        After the words of a kind, as "log page ", "opcode of " or "is ",
+        names of that kind come first, and are offered before a letter of
+        them is typed; after "is", the acronyms of the fields of what the
+        question asks of come first, in the order of its figure. Then the most words matched come first, then the words
+        of questions, commands, features, log pages, structures and acronyms,
+        and the shorter name before the longer; a word typed in capitals, as
+        "FU", is completed by acronyms before names."""
 
+        if not typed.strip():  # What can be asked, to someone who does not know
+            return [(text, 0, "question", shown) for text, shown in QUESTIONS] + [
+                (word, 0, "form", word) for word in WORDS
+            ]
+        questions = [
+            (text, -len(typed), "question", shown)
+            for text, shown in QUESTIONS
+            if text.startswith(typed.lower()) and text != typed
+        ]
         kinds = [
             ("", WORDS),
             ("command", sorted(self.commands)),
@@ -183,28 +232,80 @@ class Vocabulary:
             ("structure", sorted(self.structures)),
             ("acronym", sorted(self.acronyms)),
         ]
+
+        def wanted(before: str) -> str:
+            return next((k for w, k in KINDS_AFTER if w.search(before)), "")
+
+        def asked_of(before: str) -> Dict[str, int]:
+            """The acronyms of the fields of what 'before' asks of, by order"""
+
+            if wanted(before) != "acronym":
+                return {}
+            understood = understand(before, self)
+            name = understood.argument.lower()
+            known = self.fields.get((name, understood.dword))
+            known = known or self.fields.get((name, None), [])
+            return {acronym: i for i, acronym in enumerate(known)}
+
         starts = [i for i in range(len(typed)) if i == 0 or typed[i - 1] == " "]
-        tails = [typed[i:] for i in starts if typed[i:].strip()]
-        after = KIND_WORDS.search(typed[: len(typed) - len(typed.split(" ")[-1])])
-        wanted = next((k for w, k in KINDS_AFTER if after and w.match(after[0])), "")
-        if wanted and not typed.split(" ")[-1]:
-            tails.append("")
-        found: Dict[str, Tuple[bool, int, int, int, str, int, str]] = {}
+        # A word of no meaning alone, as "of", completes nothing by itself
+        splits = [
+            (typed[i:], typed[:i])
+            for i in starts
+            if typed[i:].strip() and typed[i:].strip().lower() not in GENERIC
+        ]
+        if wanted(typed) and typed.endswith(" "):
+            splits.append(("", typed))
+        tails = [(tail, wanted(before), asked_of(before)) for tail, before in splits]
+        found: Dict[str, Tuple[int, bool, int, int, int, str, int, str]] = {}
         for rank, (kind, names) in enumerate(kinds):
             for name in names:
                 head, dash, rest = name.partition(" - ")
                 for text in (name, rest) if dash and rest else (name,):
-                    for tail in tails:  # Longest first
+                    for tail, want, of in tails:  # Longest first
                         if text.lower().startswith(tail.lower()) and text != tail:
                             capitals = len(tail) > 1 and tail.isupper()
                             first = -1 if capitals and kind == "acronym" else rank
                             words = -tail.count(" ")
-                            key = (kind != wanted, words, first, len(text), text)
-                            if text not in found or key < found[text][:5]:
+                            mine = (
+                                of.get(text, len(of)) if kind == "acronym" else len(of)
+                            )
+                            key = (mine, kind != want, words, first, len(text), text)
+                            if text not in found or key < found[text][:6]:
                                 found[text] = (*key, len(tail), kind)
                             break
-        ranked = sorted(found.values())[:most]
-        return [(text, -length, kind) for *_, text, length, kind in ranked]
+        ranked = sorted(found.values())[: max(most - len(questions), 0)]
+        named = [(text, -length, kind, text) for *_, text, length, kind in ranked]
+        return questions + named
+
+    def recognised(self, text: str) -> List[Tuple[int, int, str]]:
+        """The words of 'text' that are the words of questions, names or
+        acronyms of the data model, as (start, end, kind), the longest name
+        first"""
+
+        if self.pattern is None:
+            names = self.commands | self.features | self.log_pages | self.structures
+            names |= {n.partition(" - ")[2] for n in self.structures} - {""}
+            names = {n for n in names if n.lower() not in GENERIC | {"command"}}
+            ordered = sorted(names, key=len, reverse=True)
+            self.pattern = re.compile(
+                r"(?<![\w-])(?:" + "|".join(map(re.escape, ordered)) + r")(?![\w-])",
+                re.I,
+            )
+        spans: List[Tuple[int, int, str]] = []
+
+        def free(start: int, end: int) -> bool:
+            return all(end <= s or start >= e for s, e, _ in spans)
+
+        for m in QUESTION_WORDS.finditer(text):
+            spans.append((m.start(), m.end(), "word"))
+        for m in self.pattern.finditer(text):
+            if free(m.start(), m.end()):
+                spans.append((m.start(), m.end(), "name"))
+        for m in re.finditer(r"[A-Za-z][A-Za-z0-9.]*", text):
+            if m[0] in self.acronyms and free(m.start(), m.end()):
+                spans.append((m.start(), m.end(), "acronym"))
+        return sorted(spans)
 
 
 def words_of(text: str) -> str:
@@ -603,13 +704,57 @@ def reply(
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
 ) -> str:
-    try:
-        text, _ = respond(spec, question, vocabulary, llm)
-    except (OSError, ValueError, KeyError, IndexError) as exc:
-        if llm is None:
-            raise
-        return f"The language model at {llm} did not choose a lookup: {exc}"
-    return text
+    return exchange(spec, question, vocabulary, llm)[0]
+
+
+CITED = re.compile(r"^(?:###|\*\*)\s*(.*?)\s*(\[[^\]]*\])\**\s*$")
+
+
+def focused(question: str, markdown: str, most: int = 3) -> str:
+    """'markdown' with the rows of the fields 'question' asks of, by acronym
+    or by name, in bold, and ending in a line saying where each is, citing
+    its figure, as "> **FUA**, Force Unit Access, is bit 30 of cdw12 of Write
+    [NVM 1.3, 3.3.6, Figure 71, page 54]" """
+
+    asked = {w.upper() for w in re.findall(r"[A-Za-z][A-Za-z0-9.]*", question)}
+    asked -= {w.upper() for w in FILLER.findall(question) if w}
+    spoken = words_of(question)
+    title, label, cite, unit = "", "", "", "bits"
+    lines, found = [], []
+    for line in markdown.split("\n"):
+        cited = CITED.match(line)
+        if cited and line.startswith("###"):
+            title, label = cited[1].split(":")[0], ""
+        elif cited:
+            label, cite = re.sub(r",\s*(bits|bytes)$", "", cited[1]), cited[2]
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if line.startswith("|") and cells[0] in ("Bits", "Bytes"):
+            unit = cells[0].lower()
+        elif line.startswith("|") and len(cells) == 3 and cells[0][:1].isdigit():
+            where, name, acronym = cells
+            if acronym.upper() in asked or (
+                name.count(" ") and words_of(name) in spoken
+            ):
+                line = "| " + " | ".join(f"**{c}**" if c else c for c in cells) + " |"
+                one = unit[:-1] if ":" not in where else unit
+                of = (
+                    f"{label} of {title}"
+                    if label.split(" ")[0][:3]
+                    in (
+                        "cdw",
+                        "cqe",
+                    )
+                    and title
+                    else label or title
+                )
+                said = f"**{acronym}**, {name}," if acronym else f"**{name}**"
+                found.append(f"{said} is {one} {where} of {of} {cite}")
+        lines.append(line)
+    if not found:
+        return markdown
+    more = f" And {len(found) - most} more." if len(found) > most else ""
+    said = "\n>\n".join(f"> {line}" for line in found[:most]) + more
+    return "\n".join(lines) + "\n\n" + said
 
 
 def respond(
@@ -749,12 +894,22 @@ def choose(url: str, messages: List[dict]) -> Understood:
     )
 
 
-def interact(spec: SpecDocument, llm: Optional[str] = None) -> int:
+def interact(
+    spec: SpecDocument, llm: Optional[str] = None, source: Optional[Path] = None
+) -> int:
+    """Ask questions of 'spec', each answered as it is asked, until the input
+    ends; 'source' is the file it was read from, shown at the start"""
+
     vocabulary = Vocabulary.of(spec)
     try:
         from prompt_toolkit import PromptSession
+        from prompt_toolkit.application import run_in_terminal
         from prompt_toolkit.completion import Completer, Completion
-        from prompt_toolkit.history import InMemoryHistory
+        from prompt_toolkit.filters import Condition
+        from prompt_toolkit.history import FileHistory, InMemoryHistory
+        from prompt_toolkit.key_binding import KeyBindings
+        from prompt_toolkit.lexers import Lexer
+        from prompt_toolkit.styles import Style
         from rich.console import Console
         from rich.markdown import Markdown
     except ImportError:
@@ -767,31 +922,166 @@ def interact(spec: SpecDocument, llm: Optional[str] = None) -> int:
             print(reply(spec, question, vocabulary, llm))
 
     console = Console()
+    console.print(f"[bold]senfd-ask {senfd.__version__}[/bold]  {holds(vocabulary)}")
+    shown = str(source or senfd.query.default_spec_path())
+    console.print(f"[dim]{shown.replace(str(Path.home()), '~', 1)}[/dim]")
     console.print(Markdown(HELP))
 
     class Names(Completer):
         def get_completions(self, document, complete_event):
             typed = document.text_before_cursor
-            for text, start, kind in vocabulary.completions(typed):
-                yield Completion(text, start, display_meta=kind)
+            for text, start, kind, shown in vocabulary.completions(typed):
+                yield Completion(text, start, display=shown, display_meta=kind)
 
+    class Recognised(Lexer):
+        def lex_document(self, document):
+            def line(number):
+                text = document.lines[number]
+                fragments, at = [], 0
+                for start, end, kind in vocabulary.recognised(text):
+                    fragments += [
+                        ("", text[at:start]),
+                        (f"class:{kind}", text[start:end]),
+                    ]
+                    at = end
+                return fragments + [("", text[at:])]
+
+            return line
+
+    keys = KeyBindings()
+    empty = Condition(lambda: not session.default_buffer.text)
+
+    @keys.add("?", filter=empty)
+    def questions(event):
+        """'?' on an empty line: the menu of the questions to ask"""
+        event.current_buffer.start_completion(select_first=False)
+
+    @keys.add("f1")
+    def forms(event):
+        """F1: the forms a question can take, with examples"""
+        run_in_terminal(lambda: console.print(Markdown(HELP)))
+
+    vocabulary.recognised("")  # Ready before the first key
     session: PromptSession = PromptSession(
         completer=Names(),
         complete_while_typing=True,
-        history=InMemoryHistory(),
-        bottom_toolbar=(
-            f" {len(vocabulary.commands)} commands, {len(vocabulary.features)} "
-            f"features, {len(vocabulary.log_pages)} log pages, "
-            f"{len(vocabulary.structures)} structures. Tab completes; help."
+        history=history(FileHistory, InMemoryHistory),
+        lexer=Recognised(),
+        key_bindings=keys,
+        style=Style.from_dict(
+            {
+                "word": "ansicyan",
+                "name": "bold ansigreen",
+                "acronym": "bold ansiyellow",
+                "bottom-toolbar": "noreverse bg:ansiblack ansiwhite",
+                "bottom-toolbar.reading": "bold",
+                "bottom-toolbar.keys": "ansibrightblack",
+            }
         ),
+        bottom_toolbar=lambda: bar(session.default_buffer.text, vocabulary, llm),
     )
+    first = True
     while True:
         try:
-            question = session.prompt("ask> ")
+            question = session.prompt(
+                "ask> ",
+                pre_run=(lambda: session.default_buffer.start_completion())
+                if first
+                else None,
+            )
         except (EOFError, KeyboardInterrupt):
             return 0
+        first = False
         if question.strip():
-            console.print(Markdown(reply(spec, question, vocabulary, llm)))
+            markdown, status = exchange(spec, question, vocabulary, llm)
+            console.print(Markdown(markdown))
+            console.print(f"[dim]{status}[/dim]", highlight=False)
+
+
+KEYS = " Tab complete | ? questions | Up, Down history | F1 forms | Ctrl-D leave"
+
+
+def bar(
+    text: str, vocabulary: Vocabulary, llm: Optional[str] = None
+) -> List[Tuple[str, str]]:
+    """The two lines at the bottom of the session: how the question typed so
+    far is read, and the keys"""
+
+    return [
+        ("class:bottom-toolbar.reading", reading(text, vocabulary, llm)),
+        ("", "\n"),
+        ("class:bottom-toolbar.keys", KEYS + (f" | --llm {llm}" if llm else "")),
+    ]
+
+
+def holds(vocabulary: Vocabulary) -> str:
+    return (
+        f"{len(vocabulary.commands)} commands, {len(vocabulary.features)} "
+        f"features, {len(vocabulary.log_pages)} log pages, "
+        f"{len(vocabulary.structures)} structures"
+    )
+
+
+def reading(text: str, vocabulary: Vocabulary, llm: Optional[str] = None) -> str:
+    """What the bottom of the session shows: how the question typed so far is
+    read, what kind of name comes next in it, or, before one is begun, what
+    can be asked of"""
+
+    if not text.strip():
+        return f" Ask of {holds(vocabulary)}"
+    after = text if text.endswith(" ") else text + " "
+    kind = next((k for w, k in KINDS_AFTER if w.search(after)), "")
+    if kind:
+        article = "an" if kind[0] in "aeiou" else "a"
+        return f" Next, {article} {kind}: Tab lists them"
+    understood = understand(text, vocabulary)
+    if llm:
+        return (
+            f" By its words, read as {understood}; the language model reads it at Enter"
+        )
+    return f" Read as {understood}"
+
+
+def exchange(
+    spec: SpecDocument,
+    question: str,
+    vocabulary: Vocabulary,
+    llm: Optional[str] = None,
+) -> Tuple[str, str]:
+    """The answer to 'question', and a line saying how it was found: what it
+    was read as, by how many lookups, in how long, citing how many figures"""
+
+    began = time.perf_counter()
+    try:
+        text, tried = respond(spec, question, vocabulary, llm)
+    except (OSError, ValueError, KeyError, IndexError) as exc:
+        if llm is None:
+            raise
+        return f"The language model at {llm} did not choose a lookup: {exc}", ""
+    took = (time.perf_counter() - began) * 1000
+    figures = len(set(re.findall(r"\[[^\]]*Figure \d+[^\]]*\]", text)))
+    lookups = f"{len(tried)} lookup" + ("s" if len(tried) != 1 else "")
+    chosen = ", chosen by the language model" if llm else ""
+    found = f"cites {figures} figure" + ("s" if figures != 1 else "")
+    if "this is not known" in text:
+        found = "not known"
+    status = (
+        f"read as {tried[-1] if tried else 'nothing'} | {lookups}{chosen} | "
+        f"{took:.1f} ms | {found}"
+    )
+    return focused(question, text), status
+
+
+def history(file_history, memory_history):
+    """The questions asked before, kept in the cache beside the data model;
+    in memory only where that cannot be written"""
+
+    cache = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
+    try:
+        (cache / "senfd").mkdir(parents=True, exist_ok=True)
+        return file_history(str(cache / "senfd" / "ask-history"))
+    except OSError:
+        return memory_history()
 
 
 def show(markdown: str, raw: bool = False) -> None:
@@ -839,7 +1129,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             args.raw,
         )
         return 0
-    return interact(spec, args.llm)
+    return interact(spec, args.llm, args.spec)
 
 
 if __name__ == "__main__":

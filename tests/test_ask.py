@@ -69,7 +69,7 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
 
 
 def offered(vocabulary, typed):
-    return [text for text, _, _ in vocabulary.completions(typed, most=1000)]
+    return [text for text, _, _, _ in vocabulary.completions(typed, most=1000)]
 
 
 def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
@@ -77,6 +77,7 @@ def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
         "Foo Statistics",
         -len("foo sta"),
         "log page",
+        "Foo Statistics",
     )
     assert offered(vocabulary, "What is foo cap")[0] == "Foo Capabilities"
 
@@ -104,9 +105,86 @@ def test_names_complete_before_acronyms_unless_typed_in_capitals(vocabulary):
     ],
 )
 def test_after_the_words_of_a_kind_its_names_come_first(vocabulary, typed, kind):
-    kinds = [k for _, _, k in vocabulary.completions(typed, most=1000)]
+    kinds = [k for _, _, k, _ in vocabulary.completions(typed, most=1000)]
     asked = kinds.count(kind)
     assert asked >= 2 and kinds[:asked] == [kind] * asked
+
+
+def test_with_nothing_typed_the_questions_to_ask_are_offered(vocabulary):
+    offered = vocabulary.completions("")
+    shown = [s for _, _, kind, s in offered if kind == "question"]
+    assert shown == [s for _, s in senfd.ask.QUESTIONS]
+    assert [t for t, _, kind, _ in offered if kind == "form"] == senfd.ask.WORDS
+
+
+def test_a_question_begun_completes_to_the_questions_it_may_be(vocabulary):
+    text, start, kind, shown = vocabulary.completions("which b")[0]
+    assert (text, start, kind) == ("which bit of cdw", -7, "question")
+    assert shown == "which bit of cdw<N> of <command> is <acronym>?"
+
+
+def test_after_is_the_acronyms_of_what_is_asked_of_come_first(vocabulary):
+    assert offered(vocabulary, "which bits of cdw10 of Ding are ")[0] == "FCNT"
+    assert offered(vocabulary, "which bits of FOOCAP are ")[0] == "FL"
+
+
+def test_the_words_names_and_acronyms_of_a_question_are_recognised(vocabulary):
+    text = "Which bits of cdw10 of the Ding command are FCNT?"
+    assert [(text[s:e], kind) for s, e, kind in vocabulary.recognised(text)] == [
+        ("cdw10 of", "word"),
+        ("Ding", "name"),
+        ("FCNT", "acronym"),
+    ]
+
+
+def test_the_field_asked_of_is_said_and_its_row_marked(spec, vocabulary):
+    for question in (
+        "Which bits of cdw10 of Ding are FCNT?",
+        "Which bits of cdw10 of Ding are the foo count?",
+    ):
+        text = senfd.ask.reply(spec, question, vocabulary)
+        assert "| **15:00** | **Foo Count** | **FCNT** |" in text
+        assert text.endswith(
+            "> **FCNT**, Foo Count, is bits 15:00 of cdw10 of Ding "
+            "[example, 1.2, Figure 2, page 2]"
+        )
+    assert "is bits" not in senfd.ask.reply(spec, "cdw10 of ding", vocabulary)
+
+
+def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):
+    assert senfd.ask.reading("", vocabulary).startswith(" Ask of 8 commands")
+    assert senfd.ask.reading("which bits of cdw10 of Ding", vocabulary) == (
+        " Read as command('Ding', dword=10)"
+    )
+    assert "language model" in senfd.ask.reading("ding", vocabulary, llm="x")
+
+
+@pytest.mark.parametrize(
+    "typed, next",
+    [
+        ("which bit of cdw10 of", " Next, a command: Tab lists them"),
+        ("which bit of cdw10 of Ding is ", " Next, an acronym: Tab lists them"),
+        ("log page ", " Next, a log page: Tab lists them"),
+    ],
+)
+def test_the_bottom_line_says_what_comes_next(vocabulary, typed, next):
+    assert senfd.ask.reading(typed, vocabulary) == next
+
+
+def test_an_answer_says_how_it_was_found(spec, vocabulary):
+    _, status = senfd.ask.exchange(spec, "cdw10 of ding", vocabulary)
+    read, lookups, took, cites = status.split(" | ")
+    assert read == "read as command('Ding', dword=10)"
+    assert lookups == "1 lookup"
+    assert took.endswith(" ms")
+    assert cites == "cites 2 figures"
+    _, status = senfd.ask.exchange(spec, "teleport", vocabulary)
+    assert status.endswith(" | not known")
+
+
+def test_a_word_of_no_meaning_alone_completes_nothing(vocabulary):
+    assert offered(vocabulary, "which bit of cdw10 of") == ["cdw10 of "]
+    assert offered(vocabulary, "the hyperdrive of") == []
 
 
 def test_what_is_typed_out_is_not_offered_again(vocabulary):
@@ -500,6 +578,38 @@ def test_the_session_completes_the_names_of_the_model(spec, monkeypatch, capsys)
     shown = list(completer.get_completions(Document("opcode of Foo Sta"), None))
     assert (shown[0].text, shown[0].start_position) == ("Foo Statistics", -7)
     assert shown[0].display_meta_text == "log page"
+
+
+def test_the_session_shows_what_it_recognises_and_how_it_reads(
+    spec, vocabulary, monkeypatch, capsys
+):
+    from prompt_toolkit.document import Document
+
+    made, stack = session_answering(monkeypatch)
+    with stack:
+        senfd.ask.interact(spec, source=Path("model.json"))
+    out = capsys.readouterr().out
+    assert "senfd-ask" in out and "8 commands" in out and "model.json" in out
+    session = made[0]
+    fragments = session.lexer.lex_document(Document("cdw10 of Ding"))(0)
+    assert ("class:name", "Ding") in fragments
+    shown = "".join(text for _, text in session.bottom_toolbar())
+    assert "Ask of 8 commands" in shown and "Tab complete |" in shown
+    typed = "".join(text for _, text in senfd.ask.bar("cdw10 of Ding", vocabulary))
+    assert "Read as command('Ding', dword=10)" in typed
+    assert session.key_bindings.get_bindings_for_keys(("?",))
+    assert session.key_bindings.get_bindings_for_keys(("f1",))
+
+
+def test_the_questions_asked_are_kept_for_the_next_session(
+    spec, monkeypatch, capsys, tmp_path
+):
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path))
+    made, stack = session_answering(monkeypatch, "opcode of ding")
+    with stack:
+        senfd.ask.interact(spec)
+    capsys.readouterr()
+    assert "opcode of ding" in (tmp_path / "senfd" / "ask-history").read_text()
 
 
 def test_without_a_question_the_command_line_opens_the_session(monkeypatch, capsys):

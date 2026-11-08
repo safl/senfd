@@ -21,13 +21,27 @@ colleague:
    ask> log page 1Fh
    ask> FUA
 
-Names, acronyms and the words of questions complete as you type, with Tab,
-from what the data model holds: every command, feature, log page, structure
-and register, and every field's acronym, each shown with its kind. A name
-completes from where it starts, so "opcode of zone app" completes to Zone
-Append; after "log page", "feature" or "opcode of", names of that kind come
-first; and a word typed in capitals is completed by acronyms. ``help`` lists
-the forms a question can take.
+The session is made for someone who does not yet know how to ask. It opens
+with the questions it can answer in a menu, ``what is the opcode of
+<command>?``, ``which bit of cdw<N> of <command> is <acronym>?`` and the
+others, and ``?`` on an empty line opens that menu again. Each part of a
+question then completes as you type, with Tab, from what the data model
+holds, each completion shown with its kind: after "opcode of", the
+commands; after "log page", the log pages; and after "which bit of cdw12 of
+Write is", the acronyms of the fields of that dword, in the order of its
+figure. A name completes from where it starts, so "zone app" completes to
+Zone Append, and a word typed in capitals is completed by acronyms.
+
+The words of the question it recognises, names and acronyms are coloured
+as you type them, and the line at the bottom says how the question is read
+so far, ``Read as command('Write', dword=12)``, or what kind of name comes
+next in it, above the keys: Tab, ``?``, Up and Down for the questions asked
+before, kept between sessions, F1 for the forms of a question with examples,
+and Ctrl-D to leave. An answer asked of a field ends by saying where that
+field is, citing its figure, as "**FUA**, Force Unit Access, is bit 30 of
+cdw12 of Write [NVM 1.3, 3.3.6, Figure 71, page 54]", with its row marked in
+the table above, and under each answer a line says what the question was
+read as, by how many lookups, in how long, and how many figures it cites.
 
 .. raw:: html
 
