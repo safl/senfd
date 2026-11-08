@@ -60,8 +60,9 @@ that one data model:
   coding agent the data model as tools, and ``senfd-ask --llm`` has a small
   language model, free, on your own CPU, choose the lookup and write nothing
   of the answer.
-* **Code generated from the figures**, as xNVMe's specification headers are:
-  structs, masks, opcodes, constructors and registers, citing their figures.
+* **Code generated from the figures**, as a generator proposed to xNVMe writes
+  its specification headers: structs, masks, opcodes, constructors and
+  registers, citing their figures.
 * **A linter of the documents**: what does not read as data is listed, with
   its figure and page, for the authors to fix.
 

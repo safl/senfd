@@ -31,10 +31,11 @@ From that one data model, today:
   the :ref:`benchmark <sec-benchmark>`, Llama 3.1 8B on a CPU answered 30 of
   30 right, for free, where Claude Opus 5.5 told to answer got 4.7 wrong on
   average.
-* **Code generated from the figures.** xNVMe writes its specification headers
-  from the data model: structs, masks, opcodes, constructors and registers,
-  one header per document, every member citing its figure. A revision of a
-  document is a regenerated header and a diff to review.
+* **Code generated from the figures.** A generator proposed to xNVMe writes
+  its specification headers from the data model: structs, masks, opcodes,
+  constructors and registers, one header per document, every member citing
+  its figure. A revision of a document is then a regenerated header and a
+  diff to review.
 * **A linter of the documents.** Reading the figures as data checks them:
   values not of their column's kind, fields beyond their dwords, figures of no
   known shape and captions not of the form, each listed with its figure and
