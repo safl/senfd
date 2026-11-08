@@ -125,6 +125,25 @@ member of NVM Express, their ``.docx``. It runs on the eleven documents
 ratified in 2026, from Base 2.4 to the TCP transport, in about a minute from
 the .docx and a few minutes from the PDFs.
 
+Prior art
+---------
+
+senfd is the third tool of its line. `nvme-lint
+<https://github.com/linux-nvme/nvme-lint>`_ (2022) checked the figures of
+the published PDFs with rules over tables found on the page; `Spex
+<https://github.com/SamsungDS/Spex>`_ (2023) read the ``.docx`` instead and
+extracted the figures to JSON under a schema, with the lint as part of it.
+senfd was a change of direction: no rule for each kind of figure, but one
+plain markup for every figure, rows of cells, from which the figures are
+normalised and the data behind them structured. Linting is then a side
+effect, since to read a figure as data is to check it, and no format is
+forced, since the markup is all a reader has to produce, which is how the
+``.docx`` and the PDF come to the same data model. Above all the goal moved,
+from checks tossed at the documents to an NVMe data model, which is useful
+where a lint is not: an expert to ask, tools for a coding agent, a driver's
+headers, two revisions compared by their facts. The `documentation
+<https://safl.dk/senfd/prior-art/>`_ says more.
+
 On what terms the documents are read
 ------------------------------------
 
