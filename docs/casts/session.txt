@@ -1,0 +1,4 @@
+cdw10 of sanit\t
+Which bit of CDW12 of Write is FU\t
+feature num\t
+Which bit of Write enables the hyperdrive?
