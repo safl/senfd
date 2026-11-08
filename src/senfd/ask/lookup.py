@@ -6,33 +6,47 @@
 A question's reading looked up in the data model, as Markdown
 """
 
-from typing import List, Optional
+import re
+from dataclasses import replace
+from typing import List
 
 import senfd.query
-from senfd.ask.grounding import nothing
 from senfd.ask.phrasing import HELP
 from senfd.ask.reading import Understood, spot
 from senfd.ask.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
 
 
-def answer(
-    spec: SpecDocument,
-    understood: Understood,
-    vocabulary: Optional[Vocabulary] = None,
-) -> List[str]:
-    """The Markdown answering 'understood'; a command named with more than its
-    name, as "Admin Track Send", is the command its name names"""
+def nothing(lines: List[str]) -> bool:
+    """Whether 'lines' say that a lookup found nothing"""
 
-    if understood.query == "command" and vocabulary is not None:
-        lines = senfd.query.command(
-            spec, understood.argument, understood.dword, markdown=True
-        )
-        named = spot(understood.argument, vocabulary)
-        if nothing(lines) and named and named[0] == "command":
-            understood.argument = named[1]
-        else:
-            return lines
+    return not lines or lines[0].startswith(("No ", "Nothing named", "Give "))
+
+
+def ambiguous(lines: List[str]) -> bool:
+    """Whether 'lines' list what a name matches rather than answer, as
+    "92 structures; be more specific" """
+
+    return bool(lines) and bool(re.match(r"\d+ [a-z ]+; be more specific", lines[0]))
+
+
+def resolved(
+    spec: SpecDocument, understood: Understood, vocabulary: Vocabulary
+) -> Understood:
+    """'understood', or, of a command named with more than its name, as
+    "Admin Track Send", the command its name names"""
+
+    if understood.query != "command":
+        return understood
+    lines = senfd.query.command(spec, understood.argument, understood.dword)
+    named = spot(understood.argument, vocabulary)
+    if nothing(lines) and named and named[0] == "command":
+        return replace(understood, argument=named[1])
+    return understood
+
+
+def answer(spec: SpecDocument, understood: Understood) -> List[str]:
+    """The Markdown answering 'understood'"""
 
     q = senfd.query
     found: List[str]

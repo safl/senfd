@@ -9,7 +9,7 @@ query and its argument, as served by llama.cpp's llama-server
 
 import json
 import urllib.request
-from typing import List
+from typing import Dict, List
 
 from senfd.ask.reading import Understood
 
@@ -54,7 +54,7 @@ SCHEMA = {
 }
 
 
-def choose(url: str, messages: List[dict]) -> Understood:
+def choose(url: str, messages: List[Dict[str, str]]) -> Understood:
     """The lookup a language model at 'url' chooses, constrained to SCHEMA"""
 
     body = {

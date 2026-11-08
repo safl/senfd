@@ -12,12 +12,72 @@ import time
 from typing import List, Optional, Tuple
 
 from senfd.ask import language_model
-from senfd.ask.grounding import SEVERAL, ambiguous, elsewhere, nothing, unmentioned
-from senfd.ask.lookup import answer
-from senfd.ask.phrasing import FILLER, terms, words_of
-from senfd.ask.reading import spot, understand
+from senfd.ask.grounding import SEVERAL, elsewhere, unmentioned
+from senfd.ask.lookup import ambiguous, answer, nothing, resolved
+from senfd.ask.phrasing import FILLER, acronyms_of, terms, words_of
+from senfd.ask.reading import Understood, spot, understand
 from senfd.ask.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
+
+
+# A lookup tried: what the question was read as, or chosen as, and its answer
+Attempt = Tuple[Understood, List[str]]
+
+
+def by_words(
+    spec: SpecDocument, question: str, vocabulary: Vocabulary
+) -> List[Attempt]:
+    """The lookup 'question' is read as, by its words, names and acronyms"""
+
+    understood = resolved(spec, understand(question, vocabulary), vocabulary)
+    return [(understood, answer(spec, understood))]
+
+
+def by_language_model(
+    spec: SpecDocument, question: str, vocabulary: Vocabulary, llm: str, tries: int
+) -> List[Attempt]:
+    """The lookups a language model at 'llm' chooses for 'question': it is
+    told what is wrong with an answer, and chooses again, 'tries' times at
+    most"""
+
+    attempts: List[Attempt] = []
+    messages = [
+        {"role": "system", "content": language_model.SYSTEM},
+        {"role": "user", "content": question},
+    ]
+    for _ in range(tries):
+        chosen = language_model.choose(llm, messages)
+        if chosen.query == "unknown":
+            attempts.append((chosen, []))
+            break
+        understood = resolved(spec, chosen, vocabulary)
+        lines = answer(spec, understood)
+        attempts.append((understood, lines))
+        wrong = what_is_wrong(question, understood, lines, vocabulary)
+        if not wrong:
+            break
+        messages.append({"role": "assistant", "content": understood.json()})
+        messages.append({"role": "user", "content": wrong + "; choose another."})
+    return attempts
+
+
+def what_is_wrong(
+    question: str, understood: Understood, lines: List[str], vocabulary: Vocabulary
+) -> str:
+    """What is wrong with 'lines' as the answer to 'question', said to a
+    language model, or "" where nothing is"""
+
+    if nothing(lines) or ambiguous(lines):
+        return lines[0] if lines else "Nothing was found"
+    other = elsewhere(question, understood, lines, vocabulary)
+    if other == SEVERAL:
+        return "The question names several commands, not one"
+    if other:
+        return f"The question is about {other}, the answer is not"
+    missing = unmentioned(question, lines)
+    if missing:
+        return f"The answer does not mention {', '.join(missing)}"
+    return ""
 
 
 def respond(
@@ -27,43 +87,19 @@ def respond(
     llm: Optional[str] = None,
     tries: int = 3,
 ) -> Tuple[str, List[str]]:
-    """The answer to 'question', and what it was understood as, each try"""
+    """The answer to 'question', and what it was understood as, each try. An
+    answer about other than what the question asks of, or not mentioning
+    what it names, is withheld as not known."""
 
     if llm is None:
-        understood = understand(question, vocabulary)
-        if understood.query == "help":
-            return "\n".join(answer(spec, understood)), [str(understood)]
-        attempts = [(understood, answer(spec, understood, vocabulary))]
+        attempts = by_words(spec, question, vocabulary)
     else:
-        attempts = []
-        messages = [
-            {"role": "system", "content": language_model.SYSTEM},
-            {"role": "user", "content": question},
-        ]
-        for _ in range(tries):
-            understood = language_model.choose(llm, messages)
-            if understood.query == "unknown":
-                attempts.append((understood, []))
-                break
-            lines = answer(spec, understood, vocabulary)
-            attempts.append((understood, lines))
-            missing = unmentioned(question, lines)
-            other = elsewhere(question, understood, lines, vocabulary)
-            if not (nothing(lines) or ambiguous(lines) or missing or other):
-                break
-            if nothing(lines) or ambiguous(lines):
-                feedback = lines[0] if lines else "Nothing was found"
-            elif other == SEVERAL:
-                feedback = "The question names several commands, not one"
-            elif other:
-                feedback = f"The question is about {other}, the answer is not"
-            else:
-                feedback = f"The answer does not mention {', '.join(missing)}"
-            messages.append({"role": "assistant", "content": understood.json()})
-            messages.append({"role": "user", "content": feedback + "; choose another."})
-
+        attempts = by_language_model(spec, question, vocabulary, llm, tries)
     understood, lines = attempts[-1]
     tried = [str(u) for u, _ in attempts]
+    if understood.query == "help":
+        return "\n".join(lines), tried
+
     missing = unmentioned(question, lines) if lines else []
     other = elsewhere(question, understood, lines, vocabulary) if lines else None
     # A language model's choice is grounded by what the question names
@@ -72,6 +108,7 @@ def respond(
     )
     if llm is not None and ambiguous(lines):
         lines = []
+    said = f"_Understood as `{understood}`_\n\n"
     if (
         nothing(lines)
         or missing
@@ -87,12 +124,9 @@ def respond(
             why = f"; what was found does not mention {', '.join(missing)}"
         else:
             why = ""
-        return (
-            f"_Understood as `{understood}`_\n\n"
-            f"Not in the data model{why}, so this is not known. "
-            "`help` says what can be asked."
-        ), tried
-    return f"_Understood as `{understood}`_\n\n" + "\n".join(lines), tried
+        not_known = f"Not in the data model{why}, so this is not known. "
+        return said + not_known + "`help` says what can be asked.", tried
+    return said + "\n".join(lines), tried
 
 
 def exchange(
@@ -100,9 +134,12 @@ def exchange(
     question: str,
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
+    said_as: bool = True,
 ) -> Tuple[str, str]:
     """The answer to 'question', and a line saying how it was found: what it
-    was read as, by how many lookups, in how long, citing how many figures"""
+    was read as, by how many lookups, in how long, citing how many figures.
+    Without 'said_as', the answer does not open by saying what the question
+    was read as, which the line says too."""
 
     began = time.perf_counter()
     try:
@@ -122,6 +159,8 @@ def exchange(
         f"read as {tried[-1] if tried else 'nothing'} | {lookups}{chosen} | "
         f"{took:.1f} ms | {found}"
     )
+    if not said_as:
+        text = re.sub(r"^_Understood as `[^`]*`_\n\n", "", text)
     return focused(question, text), status
 
 
@@ -131,6 +170,8 @@ def reply(
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
 ) -> str:
+    """The answer to 'question', as Markdown, opening with what it was read as"""
+
     return exchange(spec, question, vocabulary, llm)[0]
 
 
@@ -153,10 +194,8 @@ def focused(question: str, markdown: str, most: int = 3) -> str:
     figure, as "> **FUA**, Force Unit Access, is bit 30 of cdw12 of Write
     [NVM 1.3, 3.3.6, Figure 71, page 54]"; of at most 'most' fields"""
 
-    words = re.findall(r"[A-Za-z][A-Za-z0-9.]*", question)
-    acronyms = {w.upper() for w in words} - {
-        w.upper() for w in FILLER.findall(question)
-    }
+    filler = {w.upper() for w in FILLER.findall(question)}
+    acronyms = {word.upper() for _, _, word in acronyms_of(question)} - filler
     spoken = words_of(question)
     title, label, cite, unit = "", "", "", "bits"
     lines, said = [], []

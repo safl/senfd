@@ -20,15 +20,16 @@ def show(markdown: str, raw: bool = False) -> None:
     """Print 'markdown' rendered, where the extra 'ask' is installed and not
     'raw', else as it is"""
 
-    try:
-        if raw:
-            raise ImportError
-        from rich.console import Console
-        from rich.markdown import Markdown
-    except ImportError:
-        print(markdown)
-        return
-    Console().print(Markdown(markdown))
+    if not raw:
+        try:
+            from rich.console import Console
+            from rich.markdown import Markdown
+        except ImportError:
+            pass
+        else:
+            Console().print(Markdown(markdown))
+            return
+    print(markdown)
 
 
 def plain(spec: SpecDocument, llm: Optional[str] = None) -> int:

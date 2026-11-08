@@ -100,8 +100,11 @@ class Vocabulary:
         register also by its name, and no name that is a generic word"""
 
         names = self.commands | self.features | self.log_pages | self.structures
-        names |= {n.partition(" - ")[2] for n in self.structures} - {""}
-        names = {n for n in names if n.lower() not in GENERIC | {"command"}}
+        for name in self.structures:  # A register also by its name, as spot reads
+            head, dash, rest = name.partition(" - ")
+            if dash and head.isupper() and rest:
+                names.add(rest)
+        names = {n for n in names if n.lower() not in GENERIC}
         ordered = sorted(names, key=len, reverse=True)
         if not ordered:
             return re.compile(r"(?!)")  # Matches nothing

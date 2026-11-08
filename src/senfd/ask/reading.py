@@ -143,7 +143,9 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
             return Understood(query, rest)
     if capitals:
         return Understood("acronym", capitals[0])
-    return Understood("name", rest or lower)
+    if not rest:  # Nothing that names anything, as "[" or "what is the"
+        return Understood("help")
+    return Understood("name", rest)
 
 
 def command_named(question: str, vocabulary: Vocabulary) -> Optional[str]:

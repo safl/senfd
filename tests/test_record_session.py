@@ -37,11 +37,14 @@ def record_session():
 
 def test_each_line_is_typed_into_a_terminal_and_the_input_ends(record_session):
     command = [sys.executable, "-c", ASKING]
-    events = record_session.events_of(command, ["one", "a\\tb"], dict(os.environ))
+    events = record_session.events_of(
+        command, ["one", "a\\tb", "two\\rthree"], dict(os.environ)
+    )
     text = "".join(t for _, t in events)
     assert f"tty {record_session.WIDTH}" in text
     assert "got 'one'" in text
     assert "got 'a\\tb'" in text  # '\t' in the script is a press of Tab
+    assert "got 'two'" in text and "got 'three'" in text  # '\r' one of Enter
     assert text.rstrip().endswith("bye")
     times = [at for at, _ in events]
     assert times == sorted(times)
