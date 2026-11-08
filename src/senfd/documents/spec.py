@@ -660,6 +660,10 @@ def kinds_of(column: str, values: "Values") -> Optional[set]:
     return None
 
 
+# A kind of value, as an author reads it
+KIND_WORDS = {"flag": "a flag", "identifier": "an identifier", "level": "a level"}
+
+
 def type_values(values: "Values") -> List["Erratum"]:
     """Type the values of the columns of a known kind of 'values', and the
     errata of those of no form their column holds"""
@@ -680,8 +684,9 @@ def type_values(values: "Values") -> List["Erratum"]:
                     Erratum(
                         code="value",
                         message=(
-                            f"'{text}' of column {column} is not "
-                            + " or ".join(sorted(kinds))
+                            f"'{text}' in the column "
+                            f'"{column.replace("_", " ")}" is not '
+                            + " or ".join(KIND_WORDS[k] for k in sorted(kinds))
                         ),
                         found=text,
                         source=values.source,

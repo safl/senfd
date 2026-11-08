@@ -98,6 +98,15 @@ def errata(document: str = "") -> str:
     return "\n".join(senfd.query.errata(spec(), document))
 
 
+@server.tool(structured_output=False)
+def lint(document: str = "") -> str:
+    """What reading the figures as data found: candidate errata for the
+    authors, figures of no shape senfd models, worked examples, and dwords no
+    command claims; 'document' as "Base" or "NVM" narrows them"""
+
+    return "\n".join(senfd.query.lint(spec(), document))
+
+
 def main() -> int:
     server.run("stdio")
     return 0

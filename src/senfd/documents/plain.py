@@ -199,9 +199,10 @@ def sections_of(
                         errors.append(
                             senfd.errors.Error(
                                 message=(
-                                    f"Section '{text}' counted as "
-                                    f"{sections.current[0]}, the table of "
-                                    f"contents has {number}"
+                                    f"Section '{text}': the headings before it "
+                                    f"count {sections.current[0]}, the table of "
+                                    f"contents has {number}; numbered as the "
+                                    "table of contents"
                                 )
                             )
                         )
@@ -339,7 +340,10 @@ class FromDocx(Converter):
                     errors.append(
                         senfd.errors.TableError(
                             table_nr=table_nr,
-                            message="Caption not on the form; 'Figure X: lorem ipsum'",
+                            message=(
+                                "Table with no caption of the form "
+                                "'Figure N: title'; its first cell is quoted"
+                            ),
                             caption=caption or rows[0].cells[0].text.strip(),
                         )
                     )

@@ -10,6 +10,7 @@ authors = [
     { name = "Simon A. F. Lund", email = "os@safl.dk" }
 ]
 license = { text = "LGPL-2.1-only" }
+requires-python = ">=3.10"
 dependencies = [
     "jinja2",
     "pydantic",

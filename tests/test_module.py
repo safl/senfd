@@ -22,7 +22,7 @@ def test_the_errors_of_an_invalid_document_are_reported(tmp_path):
     assert [e.message for e in errors] == [
         "Table wrapped in a table of one cell; unwrapped",
         "Table of 2 figures, by the captions in its rows; split",
-        "Section 'Data Structures' counted as 3, the table of contents has 4",
+        "Section 'Data Structures': the headings before it count 3, the table of contents has 4; numbered as the table of contents",
     ]
     errors = senfd.pipeline.process(invalid, tmp_path, Namespace(skip_figures=None))
     assert {type(e).__name__ for e in errors} >= {"TableError", "TableOfFiguresError"}
