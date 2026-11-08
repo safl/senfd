@@ -12,6 +12,7 @@ borders beside its text, and an empty cell with no border above it continues
 the cell above it.
 """
 
+import re
 from collections import defaultdict
 from typing import Dict, List, NamedTuple, Optional, Sequence, Set, Tuple
 
@@ -27,6 +28,21 @@ from senfd.tables import Cell, Row, Table
 # rule separates its rows to say: the padding of a cell, with room to spare,
 # but less than the margin a change bar is drawn in
 PADDING = 12
+
+
+# A range of bytes or bits wrapped inside its lower number by a narrow column
+WRAPPED = re.compile(r"^(\d+):(\d*)\n(\d+)$")
+
+
+def unwrapped(text: str) -> str:
+    """'text' with a range that a narrow column wrapped inside its lower
+    number, "1795:179" over "2", made one again; the lower number of a range
+    is no longer than the upper, which tells it from two numbers"""
+
+    match = WRAPPED.match(text.strip())
+    if match and len(match[2] + match[3]) <= len(match[1]):
+        return f"{match[1]}:{match[2]}{match[3]}"
+    return text
 
 
 class Read(NamedTuple):
@@ -179,6 +195,7 @@ def read_cell(
         for leaf in paragraph:
             used[pages.number(leaf.page)].add(leaf.mcid)
     text, boxes = pages.text(found)
+    text = unwrapped(text)
     tables = []
     for element, page in inner_tables:
         for paragraph in paragraphs(element, page):

@@ -25,7 +25,7 @@ from senfd.errors import Error, FigureDuplicateNumberError
 from senfd.pdf.pages import Pages
 from senfd.pdf.tables import table_of
 from senfd.pdf.tree import HEADINGS, paragraphs, rows, walk
-from senfd.tables import Row, Table
+from senfd.tables import Cell, Row, Table
 
 CAPTION = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)$", re.S)
 ENTRY = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)\s*\.*\s*(\d+)$", re.S)
@@ -143,25 +143,34 @@ def heading(row: Row) -> List[str]:
     return [c.text for c in row.cells if c.merged is None and c.text.strip()]
 
 
+def last_cell(row: Row) -> Cell:
+    """The last cell of 'row' as read: the first of the columns it spans,
+    which holds its text and the tables nested in it"""
+
+    at = len(row.cells) - 1
+    while at > 0 and row.cells[at].merged == "left":
+        at -= 1
+    return row.cells[at]
+
+
 def carried(row: Row) -> bool:
     """Whether 'row', the first after a page break, is the rest of the row
-    before it, broken across the page: only its last cell has text"""
+    before it, broken across the page: only its last cell has anything, text
+    or a table nested in it"""
 
     texts = own(row)
-    return (
-        len(texts) > 1
-        and texts[-1].strip() != ""
-        and not any(text.strip() for text in texts[:-1])
-    )
+    if len(texts) < 2 or any(text.strip() for text in texts[:-1]):
+        return False
+    return texts[-1].strip() != "" or bool(last_cell(row).tables)
 
 
-def joined(figure: Figure, table: Table) -> None:
-    """'table' as the rows of 'figure' going on past a page break, without
+def extended(previous: Table, table: Table) -> None:
+    """'table' as the rows of 'previous' going on past a page break, without
     the caption and header rows it repeats, and with a row broken across the
-    page joined again"""
+    page joined again, its text and the tables nested in it, which go on the
+    same way"""
 
-    assert figure.table is not None
-    heads = [heading(row) for row in figure.table.rows[: HEADER_ROWS + 1]]
+    heads = [heading(row) for row in previous.rows[: HEADER_ROWS + 1]]
     skip = 0
     for row in table.rows:
         if skip < len(heads) and heading(row) in heads:
@@ -169,15 +178,29 @@ def joined(figure: Figure, table: Table) -> None:
         else:
             break
     rest = table.rows[skip:]
-    if rest and figure.table.rows and carried(rest[0]):
-        cells = figure.table.rows[-1].cells
+    if rest and previous.rows and carried(rest[0]):
+        cells = previous.rows[-1].cells
         start = len(cells) - 1
         while start > 0 and cells[start].merged == "left":
             start -= 1
-        for cell in cells[start:]:
-            cell.text = f"{cell.text}\n{rest[0].cells[-1].text}"
+        more = last_cell(rest[0])
+        if more.text.strip():
+            for cell in cells[start:]:
+                cell.text = f"{cell.text}\n{more.text}"
+        for nested in more.tables:
+            if cells[start].tables:
+                extended(cells[start].tables[-1], nested)
+            else:
+                cells[start].tables.append(nested)
         rest = rest[1:]
-    figure.table.rows += rest
+    previous.rows += rest
+
+
+def joined(figure: Figure, table: Table) -> None:
+    """'table' as the rows of 'figure' going on past a page break"""
+
+    assert figure.table is not None
+    extended(figure.table, table)
 
 
 def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
