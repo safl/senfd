@@ -14,9 +14,9 @@ makes that header a thing to generate: from the figures, with the
 specification's own names, each member citing the figure it is from.
 
 senfd makes the data model and leaves writing code from it to the project that
-consumes it, which knows its conventions. For **xNVMe**, a generator proposed
-to it, ``toolbox/xnvme_spec_headers.py``, and not yet part of xNVMe, does so,
-run by `yace
+consumes it, which knows its conventions. For **xNVMe**, an early prototype
+does so, ``toolbox/xnvme_spec_headers.py``, parked while senfd and yace were
+made ready for it, run by `yace
 <https://github.com/safl/yace>`_, which parses what the generator writes as
 any C header and holds it to a C subset every binding target can take. From
 the 2026 documents it writes one header per document, eleven in all:
@@ -47,7 +47,7 @@ the 2026 documents it writes one header per document, eleven in all:
 yace parses the 1871 entities of the eleven headers with no diagnostics, and
 the generated sources compile warning-free. A revision of a document is then
 a regenerated header and a diff to review, with the figure of every change
-cited in it. The proposed change adds a page to xNVMe's contributor
+cited in it. The prototype comes with a page of xNVMe's contributor
 documentation, "Producing the spec headers", giving the procedure.
 
 The data model is JSON validated by a :ref:`schema <sec-schema>`, so a
