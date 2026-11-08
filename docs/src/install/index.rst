@@ -36,7 +36,10 @@ the file ``SENFD_SPEC`` names. The documents are the ratified specifications,
 as the PDFs `NVM Express <https://nvmexpress.org/specifications/>`_ publishes
 for anyone to download, or as the ``.docx`` its members hold. A PDF must keep
 the structure of its tables, as NVM Express's do, being exported from Word
-with its document structure tags; one without is refused.
+with its document structure tags; one without is refused. A PDF published
+with its tracked changes shown reads as the document with them taken: the
+deletions struck through are left out, the insertions kept, as a ``.docx``
+reads.
 
 .. note::
   senfd reads ``.docx`` with python-docx, whose lxml installs as a prebuilt
