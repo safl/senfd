@@ -20,7 +20,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 from senfd.documents.spec import value_names as senfd_value_names
 from senfd.documents.spec import (
@@ -413,6 +413,18 @@ def section(spec: SpecDocument, key: str) -> List[str]:
     return head + lines if lines else [f"No section '{key}'"]
 
 
+def section_order(section: Optional[str]) -> List[Tuple[int, int, str]]:
+    """A section number as it sorts: "5.2.10" after "5.2.9", and an annex,
+    "A.1", after the numbered sections"""
+
+    if not section:
+        return []
+    return [
+        (0, int(part), "") if part.isdigit() else (1, 0, part)
+        for part in section.split(".")
+    ]
+
+
 def errata(
     spec: SpecDocument, document: str = "", none: Optional[List[str]] = None
 ) -> List[str]:
@@ -427,7 +439,7 @@ def errata(
     found.sort(
         key=lambda e: (
             e.source.document,
-            [int(p) if p.isdigit() else p for p in (e.source.section or "").split(".")],
+            section_order(e.source.section),
             e.source.figure_nr,
         )
     )
