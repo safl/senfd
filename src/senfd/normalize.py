@@ -17,10 +17,10 @@ from typing import Dict, List, Optional, Tuple
 
 from pydantic import BaseModel
 
-from senfd.documents.base import TRANSLATION_TABLE
+from senfd.documents.base import TRANSLATION_TABLE, Model
 
 
-class Diagnostic(BaseModel):
+class Diagnostic(Model):
     """
     Something about a figure that senfd normalised, or could not make sense of
 
@@ -29,9 +29,13 @@ class Diagnostic(BaseModel):
     """
 
     figure_nr: Optional[int] = None
+    """The number of the figure, where it is known"""
     severity: str
+    """'note' or 'warning'"""
     code: str
+    """What kind it is, as "figure-not-modelled" or 'dwords-unassigned'"""
     message: str
+    """What was found, with the document and the figure, said for a person"""
 
 
 def note(code: str, message: str) -> Diagnostic:

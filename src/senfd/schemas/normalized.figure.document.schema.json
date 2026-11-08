@@ -13,17 +13,21 @@
                         }
                     ],
                     "default": null,
+                    "description": "The number of the figure, where it is known",
                     "title": "Figure Nr"
                 },
                 "severity": {
+                    "description": "'note' or 'warning'",
                     "title": "Severity",
                     "type": "string"
                 },
                 "code": {
+                    "description": "What kind it is, as \"figure-not-modelled\" or 'dwords-unassigned'",
                     "title": "Code",
                     "type": "string"
                 },
                 "message": {
+                    "description": "What was found, with the document and the figure, said for a person",
                     "title": "Message",
                     "type": "string"
                 }
@@ -37,13 +41,16 @@
             "type": "object"
         },
         "DocumentMeta": {
+            "description": "Who made the document and of what",
             "properties": {
                 "version": {
                     "default": "0.8.0",
+                    "description": "The version of senfd that made it",
                     "title": "Version",
                     "type": "string"
                 },
                 "stem": {
+                    "description": "The name of the document it is of, \"merged\" for the merged one",
                     "title": "Stem",
                     "type": "string"
                 }
@@ -422,7 +429,8 @@
     },
     "properties": {
         "meta": {
-            "$ref": "#/$defs/DocumentMeta"
+            "$ref": "#/$defs/DocumentMeta",
+            "description": "The version of senfd that made the document, and what it is of"
         },
         "figures": {
             "items": {

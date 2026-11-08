@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
 from jinja2 import Environment, PackageLoader, select_autoescape
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 import senfd.schemas
 import senfd.tables
@@ -80,12 +80,22 @@ def strip_all_suffixes(file_path):
     return p.name
 
 
-class DocumentMeta(BaseModel):
+class Model(BaseModel):
+    """A model whose fields' docstrings are their descriptions in its schema"""
+
+    model_config = ConfigDict(use_attribute_docstrings=True)
+
+
+class DocumentMeta(Model):
+    """Who made the document and of what"""
+
     version: str = senfd.__version__
+    """The version of senfd that made it"""
     stem: str = Field(default_factory=str)
+    """The name of the document it is of, "merged" for the merged one"""
 
 
-class Document(BaseModel):
+class Document(Model):
     """
     Base document - providing functionality for describing and persisting documents
 
@@ -99,6 +109,7 @@ class Document(BaseModel):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "document.html.jinja2"
 
     meta: DocumentMeta = Field(default_factory=DocumentMeta)
+    """The version of senfd that made the document, and what it is of"""
 
     @classmethod
     def schema_filename(cls) -> str:
