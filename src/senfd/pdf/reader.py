@@ -153,7 +153,7 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 if entry:
                     entries[int(entry[1])] = int(entry[3])
             elif node.name == "/Table":
-                found, _ = table_of(pages, rows(node.element, node.page))
+                found, _ = table_of(pages, rows(node.element, node.page), errors)
                 if not found:
                     continue
                 table = Table(table_nr=0, rows=found)
