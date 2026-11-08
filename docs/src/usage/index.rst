@@ -57,8 +57,8 @@ from the documents you have, into the cache:
    senfd path/to/specs/*.docx --output ~/.cache/senfd
 
 Then ask, and each answer cites where it came from, the document, the
-section, the figure and the page, as ``[Base 2.2, 5.1.10, Figure 190, page
-195]``:
+section, the figure and the page, as ``[Base 2.4, 5.2.13, Figure 203, page
+213]``:
 
 .. code-block:: bash
 
@@ -67,14 +67,16 @@ section, the figure and the page, as ``[Base 2.2, 5.1.10, Figure 190, page
    senfd-query log-page 02h
    senfd-query structure "Controller Status"
    senfd-query search FUA
-   senfd-query section 5.1.25
+   senfd-query section 5.2.6
    senfd-query errata Base
+   senfd-query lint
 
 A value that is not what its kind must be, as a range beyond the dwords it is
 of or an acronym that is not one, is left out of the data model and is an
 erratum, as are bits of a command's dwords that no figure gives a field;
 ``errata`` lists them, each with where it is, for the documents to be
-corrected.
+corrected, and ``lint`` lists them with what senfd could not read as data;
+see :ref:`the linter <sec-linting>`.
 
 ``--spec`` or the environment variable ``SENFD_SPEC`` points at another merged
 data model, and ``--verbose`` gives the descriptions too. ``--markdown`` gives
