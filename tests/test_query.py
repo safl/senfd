@@ -214,6 +214,18 @@ def test_markdown_names_a_field_within_another_by_both_and_its_values(spec):
     assert any("Values: 0h Foo Pause" in line for line in lines)
 
 
+def test_markdown_gives_the_bits_of_a_byte_a_column_of_their_own(spec):
+    # A table of bytes with bits within one of them has a Bits column; the bits
+    # stand in it with nothing under Bytes, and the bytes with nothing under Bits
+    lines = senfd.query.structure(spec, "Foo Statistics", markdown=True)
+    assert "| Bytes | Bits | Name | Acronym |" in lines
+    assert "|  | 7:1 | Reserved |  |" in lines
+    assert "|  | 0 | Foo On | FATTR.FON |" in lines
+    byte = next(line for line in lines if "| FATTR |" in line)
+    assert byte.split("|")[2].strip() == ""  # Nothing under Bits for the byte
+    assert byte.split("|")[1].strip()  # Its range under Bytes
+
+
 def test_a_cell_keeps_a_table_a_table():
     assert senfd.query.cell("a | b\n c") == "a \\| b c"
 

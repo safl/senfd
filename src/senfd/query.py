@@ -87,11 +87,30 @@ def cell(text: str) -> str:
     return " ".join(text.split()).replace("|", "\\|")
 
 
+def units_within(fields: List[Bits], unit: str) -> List[str]:
+    """The units of the fields within 'fields' that are not 'unit', as the
+    bits of a byte in a table of bytes, in the order met"""
+
+    found: List[str] = []
+    for field in fields:
+        if field.unit != unit and field.unit not in found:
+            found.append(field.unit)
+        for within in units_within(field.fields, unit):
+            if within not in found:
+                found.append(within)
+    return found
+
+
 def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> List[str]:
     """The fields as a Markdown table; a field within another is named by both
-    acronyms, as "PRINFO.PRACT", and a heading of fields is a row of its own"""
+    acronyms, as "PRINFO.PRACT". Where fields within others are of another
+    unit, as the bits of a byte in a table of bytes, that unit is a column of
+    its own, beside the table's, and a field's range stands in the column of
+    its unit, the other left empty: the bits of a byte read under Bits with
+    nothing under Bytes. A heading of fields is a row of its own."""
 
-    head = ["Bits" if unit == "bits" else "Bytes", "Name", "Acronym"]
+    units = [unit] + units_within(fields, unit)
+    head = [u.title() for u in units] + ["Name", "Acronym"]
     head += ["Description"] if verbose else []
     lines = ["| " + " | ".join(head) + " |", "|" + "---|" * len(head)]
 
@@ -99,10 +118,9 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
         section = None
         for field in fields:
             if field.section != section and field.section:
-                blank = [""] * (len(head) - 2)
-                yield (
-                    "| | **" + cell(field.section) + "** | " + " | ".join(blank) + " |"
-                )
+                cells = [""] * len(head)
+                cells[len(units)] = "**" + cell(field.section) + "**"
+                yield "| " + " | ".join(cells) + " |"
             section = field.section
             acronym = field.acronym or ""
             path = f"{parent}.{acronym}" if parent and acronym else acronym
@@ -111,7 +129,9 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
                 if field.union is not None
                 else ""
             )
-            row = [field.range, cell((field.name or "") + either), cell(path)]
+            where = ["" for _ in units]
+            where[units.index(field.unit) if field.unit in units else 0] = field.range
+            row = where + [cell((field.name or "") + either), cell(path)]
             if verbose:
                 text = (field.description or "").split("\n")[0][:160]
                 values = [
