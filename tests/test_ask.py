@@ -32,6 +32,7 @@ def vocabulary(spec):
         ("Which bits of FOOCAP are there?", "register('FOOCAP')"),
         ("What is the foo statistics log page?", "log_page('Foo Statistics')"),
         ("What does section 1.2 describe?", "section('1.2')"),
+        ("Is there a log page about foo, and what is its id?", "log_page('foo')"),
         ("errata", "errata('')"),
         ("help", "help('')"),
     ],
@@ -61,6 +62,7 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
         "write",
         "fua",
     ]
+    assert senfd.ask.terms("hey, what FID does ding use?") == ["ding"]
     assert senfd.ask.unmentioned("Where is the hyperdrive?", ["| 30 | FUA |"]) == [
         "hyperdrive"
     ]
