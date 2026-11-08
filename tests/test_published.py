@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+import tomllib
 from pathlib import Path
 
 import senfd.published
@@ -13,8 +14,7 @@ BASE = "NVM Express Base Specification, Revision 2-4 Ratified 2026-07-31"
 
 
 def test_the_published_documents_are_those_the_tests_read():
-    loads = senfd.published.tomllib.loads  # tomllib, or tomli on Python 3.10
-    tested = {d["sha256"]: d for d in loads(MANIFEST.read_text())["document"]}
+    tested = {d["sha256"]: d for d in tomllib.loads(MANIFEST.read_text())["document"]}
     published = {d["sha256"]: d for d in senfd.published.documents()}
     assert set(tested) == set(published)
     for sha256, document in tested.items():
