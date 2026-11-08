@@ -48,7 +48,11 @@ Each answer is the answer of a query of the model, rendered as a table, with
 the figure it cites. An answer is shown only when it mentions every term of
 the question that names something. Ask for the bit of Write that "enables the
 hyperdrive" and the answer is that it is not known, not the fields of Write
-that were found for the question's other words.
+that were found for the question's other words. And an answer is shown only
+when it is about what the question names: asked for the opcode of Read, the
+answer must be Read, not Memory Read or Copy, whose names or fields mention
+it; asked for the opcode of "Track", a word of several commands' names, the
+answer is that it is not known.
 
 With a language model, for free, on your own hardware
 -----------------------------------------------------

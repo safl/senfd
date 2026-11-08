@@ -192,3 +192,118 @@ def test_an_answer_is_rendered_where_it_can_be(capsys):
     assert "Force Unit Access" in out and "|---|" not in out
     senfd.ask.show("| a |", raw=True)
     assert capsys.readouterr().out == "| a |\n"
+
+
+@pytest.mark.parametrize(
+    "question, choices",
+    [
+        ("What is the opcode of Foo Set?", ["Foo Get"] * 3),
+        ("Which fields are in CDW10 of Ding?", ["Dong"] * 3),
+        # Named by a word of several commands' names, it names none of them
+        ("What is the opcode of Foo Directive?", ["Foo Directive Send"] * 3),
+    ],
+)
+def test_a_language_model_choosing_another_command_is_not_shown(
+    spec, vocabulary, monkeypatch, question, choices
+):
+    choosing(monkeypatch, *(senfd.ask.Understood("command", c) for c in choices))
+    text, tried = senfd.ask.respond(spec, question, vocabulary, llm="x")
+    assert "so this is not known" in text
+    assert len(tried) == 3
+
+
+def test_a_language_model_told_it_chose_another_command_may_choose_again(
+    spec, vocabulary, monkeypatch
+):
+    told = choosing(
+        monkeypatch,
+        senfd.ask.Understood("command", "Foo Get"),
+        senfd.ask.Understood("command", "foo set"),
+    )
+    text, tried = senfd.ask.respond(
+        spec, "What is the opcode of Foo Set?", vocabulary, llm="x"
+    )
+    assert "### Foo Set" in text
+    assert told[-1].startswith("The question is about Foo Set")
+
+
+def test_a_register_the_model_lacks_is_said_to_the_language_model(
+    spec, vocabulary, monkeypatch
+):
+    told = choosing(
+        monkeypatch,
+        senfd.ask.Understood("register", "NOPE"),
+        senfd.ask.Understood("register", "foocap"),
+    )
+    text, _ = senfd.ask.respond(spec, "What is FOOCAP?", vocabulary, llm="x")
+    assert told[-1].startswith("No register NOPE")
+    assert "FOOCAP - Foo Capabilities" in text
+
+
+def test_a_list_of_what_a_name_matches_is_no_answer_to_a_language_model(
+    spec, vocabulary, monkeypatch
+):
+    choosing(monkeypatch, *[senfd.ask.Understood("structure", "foo")] * 3)
+    text, _ = senfd.ask.respond(spec, "What is the foo?", vocabulary, llm="x")
+    assert "so this is not known" in text
+
+
+def test_a_question_without_terms_grounds_no_choice_of_a_language_model(
+    spec, vocabulary, monkeypatch
+):
+    choosing(monkeypatch, senfd.ask.Understood("command", "ding"))
+    text, _ = senfd.ask.respond(spec, "What is the opcode?", vocabulary, llm="x")
+    assert "so this is not known" in text
+
+
+def test_a_name_of_generic_words_is_spotted():
+    vocabulary = senfd.ask.Vocabulary(commands={"Set Features"})
+    assert senfd.ask.spot("What is the opcode of Set Features?", vocabulary) == (
+        "command",
+        "Set Features",
+    )
+
+
+@pytest.mark.parametrize(
+    "question, expected",
+    [
+        ("feature 0x07", ["07h"]),
+        ("What is CSTS.RDY?", ["csts", "rdy"]),
+        ("Which bit is FUA, at offset 3?", ["fua"]),
+        ("What is the opcode of Ding in NVMe 2.0?", ["ding"]),
+    ],
+)
+def test_the_terms_of_a_question_are_what_an_answer_must_mention(question, expected):
+    assert senfd.ask.terms(question) == expected
+
+
+def test_mentioning_is_of_whole_words():
+    assert senfd.ask.unmentioned("opcode of format", ["Information"]) == ["format"]
+
+
+@pytest.mark.parametrize(
+    "question, understood",
+    [
+        ("What is the opcode of Ding in NVMe 2.0?", "command('Ding')"),
+        ("opcode of migrate", "command('Foo Migrate')"),
+        ("What is FOOCAP of Ding?", "register('FOOCAP')"),
+    ],
+)
+def test_a_question_asking_for_an_opcode_is_of_a_command(
+    vocabulary, question, understood
+):
+    assert str(senfd.ask.understand(question, vocabulary)) == understood
+
+
+def test_a_language_model_not_answering_is_said_so(spec, vocabulary, monkeypatch):
+    def unreachable(url, messages):
+        raise OSError("connection refused")
+
+    monkeypatch.setattr(senfd.ask, "choose", unreachable)
+    text = senfd.ask.reply(spec, "opcode of ding", vocabulary, "http://nowhere")
+    assert text.startswith("The language model at http://nowhere did not choose")
+
+
+def test_a_model_not_there_is_said_so(capsys):
+    assert senfd.ask.main(["--spec", "/no/such/model.json", "opcode of ding"]) == 1
+    assert "no model to answer from" in capsys.readouterr().err
