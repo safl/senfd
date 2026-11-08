@@ -1,0 +1,134 @@
+{
+ "lane": "frontier claude-sonnet-5-5 allowed",
+ "kind": "value",
+ "model": "claude-sonnet-5-5",
+ "mode": "allowed",
+ "run": 1,
+ "system": "You answer a closed-book quiz about the NVMe specifications from memory only. You have no tools. Reply with only a JSON object.",
+ "prompt": "Give each answer as the NVMe specification would write it: an opcode or identifier in hexadecimal (as \"3Dh\"), a bit as a number (as \"30\"), a range of bits as \"upper:lower\" (as \"29:26\"), a byte offset as a number. If you do not know, or are guessing, answer \"unknown\" rather than a guess; a wrong answer counts against you more than \"unknown\". Add a confidence of high, medium or low to each. Reply with only a JSON object, keys the question numbers as strings, each value an object {\"answer\": \"...\", \"confidence\": \"...\"}.\n\n1. What is the opcode of the NVM Command Set Write command?\n2. What is the opcode of the Admin Identify command?\n3. Which bit of Command Dword 12 of the Write command is Force Unit Access (FUA)?\n4. What is the Feature Identifier of Number of Queues?\n5. What is the Log Page Identifier of SMART / Health Information?\n6. What is the opcode of the Zoned Namespace Zone Append command?\n7. At which byte offset of the Identify Controller data structure is Maximum Data Transfer Size (MDTS)?\n8. At which offset is the Controller Configuration (CC) register?\n9. What is the opcode of the Admin Track Send command?\n10. What is the opcode of the Admin Migration Send command?\n11. What is the opcode of the Admin Controller Data Queue command?\n12. What is the opcode of the Admin Sanitize Namespace command?\n13. What is the opcode of the Admin Cross-Controller Reset command?\n14. What is the opcode of the Admin Memory Range Set Management command?\n15. What is the opcode of the Key Value Command Set Exist command?\n16. What is the Feature Identifier of Power Limit?\n17. What is the Feature Identifier of Rate Limiting?\n18. What is the Feature Identifier of Flexible Data Placement Events?\n19. What is the Log Page Identifier of Rotational Media Information?\n20. What is the Log Page Identifier of Lost Host Communication?\n21. What is the Log Page Identifier of Reachability Groups?\n22. Which bits of Command Dword 12 of the NVM Write command are Protection Information (PRINFO)?\n23. Which bit of Command Dword 12 of the NVM Write command is Storage Tag Check (STC)?\n24. Which bit of Command Dword 10 of the Sanitize command is Enter Media Verification State (EMVS)?\n25. Which bit of Command Dword 10 of the Sanitize command is Purge Required (PREQ)?\n26. Which bits of Command Dword 11 of the Temperature Threshold feature are Temperature Threshold Hysteresis (TMPTHH)?\n27. Which bit of the Controller Configuration (CC) register is Controller Ready Independent of Media Enable (CRIME)?\n28. Which bit of the Controller Status (CSTS) register is Shutdown Type (ST)?\n29. Which bits of Command Dword 10 of Get Log Page are Number of Dwords Lower (NUMDL)?\n30. Which bits of Command Dword 13 of Zone Append are Directive Specific (DSPEC), when CETYPE is cleared to 0h?",
+ "result": "```json\n{\n\"1\":{\"answer\":\"01h\",\"confidence\":\"high\"},\n\"2\":{\"answer\":\"06h\",\"confidence\":\"high\"},\n\"3\":{\"answer\":\"30\",\"confidence\":\"high\"},\n\"4\":{\"answer\":\"07h\",\"confidence\":\"high\"},\n\"5\":{\"answer\":\"02h\",\"confidence\":\"high\"},\n\"6\":{\"answer\":\"7Dh\",\"confidence\":\"high\"},\n\"7\":{\"answer\":\"77\",\"confidence\":\"high\"},\n\"8\":{\"answer\":\"14h\",\"confidence\":\"high\"},\n\"9\":{\"answer\":\"11h\",\"confidence\":\"medium\"},\n\"10\":{\"answer\":\"41h\",\"confidence\":\"medium\"},\n\"11\":{\"answer\":\"45h\",\"confidence\":\"medium\"},\n\"12\":{\"answer\":\"84h\",\"confidence\":\"medium\"},\n\"13\":{\"answer\":\"38h\",\"confidence\":\"medium\"},\n\"14\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"15\":{\"answer\":\"14h\",\"confidence\":\"medium\"},\n\"16\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"17\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"18\":{\"answer\":\"1Eh\",\"confidence\":\"medium\"},\n\"19\":{\"answer\":\"16h\",\"confidence\":\"low\"},\n\"20\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"21\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"22\":{\"answer\":\"29:26\",\"confidence\":\"high\"},\n\"23\":{\"answer\":\"25\",\"confidence\":\"low\"},\n\"24\":{\"answer\":\"10\",\"confidence\":\"medium\"},\n\"25\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"26\":{\"answer\":\"unknown\",\"confidence\":\"low\"},\n\"27\":{\"answer\":\"24\",\"confidence\":\"medium\"},\n\"28\":{\"answer\":\"6\",\"confidence\":\"low\"},\n\"29\":{\"answer\":\"31:16\",\"confidence\":\"high\"},\n\"30\":{\"answer\":\"31:16\",\"confidence\":\"medium\"}\n}\n```",
+ "answers": {
+  "1": {
+   "answer": "01h",
+   "confidence": "high"
+  },
+  "2": {
+   "answer": "06h",
+   "confidence": "high"
+  },
+  "3": {
+   "answer": "30",
+   "confidence": "high"
+  },
+  "4": {
+   "answer": "07h",
+   "confidence": "high"
+  },
+  "5": {
+   "answer": "02h",
+   "confidence": "high"
+  },
+  "6": {
+   "answer": "7Dh",
+   "confidence": "high"
+  },
+  "7": {
+   "answer": "77",
+   "confidence": "high"
+  },
+  "8": {
+   "answer": "14h",
+   "confidence": "high"
+  },
+  "9": {
+   "answer": "11h",
+   "confidence": "medium"
+  },
+  "10": {
+   "answer": "41h",
+   "confidence": "medium"
+  },
+  "11": {
+   "answer": "45h",
+   "confidence": "medium"
+  },
+  "12": {
+   "answer": "84h",
+   "confidence": "medium"
+  },
+  "13": {
+   "answer": "38h",
+   "confidence": "medium"
+  },
+  "14": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "15": {
+   "answer": "14h",
+   "confidence": "medium"
+  },
+  "16": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "17": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "18": {
+   "answer": "1Eh",
+   "confidence": "medium"
+  },
+  "19": {
+   "answer": "16h",
+   "confidence": "low"
+  },
+  "20": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "21": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "22": {
+   "answer": "29:26",
+   "confidence": "high"
+  },
+  "23": {
+   "answer": "25",
+   "confidence": "low"
+  },
+  "24": {
+   "answer": "10",
+   "confidence": "medium"
+  },
+  "25": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "26": {
+   "answer": "unknown",
+   "confidence": "low"
+  },
+  "27": {
+   "answer": "24",
+   "confidence": "medium"
+  },
+  "28": {
+   "answer": "6",
+   "confidence": "low"
+  },
+  "29": {
+   "answer": "31:16",
+   "confidence": "high"
+  },
+  "30": {
+   "answer": "31:16",
+   "confidence": "medium"
+  }
+ },
+ "cost_usd": 0.022752,
+ "seconds": 12.65
+}

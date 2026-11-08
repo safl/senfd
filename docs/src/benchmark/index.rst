@@ -14,7 +14,7 @@ one exact answer, an opcode, an identifier, a bit or a byte offset. Eight are
 long-standing facts; the rest are commands, features, log pages and fields
 that the revisions ratified in 2026 added or moved.
 
-.. list-table:: 2026-11-08, 30 questions; a frontier lane is the mean of three runs
+.. list-table:: 2026-11-09, 30 questions; a frontier lane is the mean of three runs
    :header-rows: 1
    :widths: 46 10 10 10 24
 
@@ -32,49 +32,50 @@ that the revisions ratified in 2026 added or moved.
      - **30**
      - **0**
      - 0
-     - free, 2.7 s a question
+     - free, 3.3 s a question
    * - ``sate --llm``, Llama 3.2 1B (Q4_K_M), CPU only
      - 18
      - **0**
      - 12
-     - free, 1.1 s a question
+     - free, 1.7 s a question
    * - Claude Opus 5.5, from memory, "unknown" allowed
      - 23
-     - 0.7
-     - 6.3
-     - USD 0.12 a run
-   * - Claude Opus 5.5, from memory, answer required
-     - 25.3
-     - 4.7
      - 0
-     - USD 0.17 a run
-   * - Claude Sonnet 5.5, from memory, "unknown" allowed
-     - 20.7
-     - 2.3
      - 7
-     - USD 0.07 a run
+     - USD 0.14 a run
+   * - Claude Opus 5.5, from memory, answer required
+     - 25.7
+     - 4.3
+     - 0
+     - USD 0.16 a run
+   * - Claude Sonnet 5.5, from memory, "unknown" allowed
+     - 20.3
+     - 2.3
+     - 7.3
+     - USD 0.06 a run
    * - Claude Sonnet 5.5, from memory, answer required
-     - 22.3
-     - 7.7
+     - 22.7
+     - 7.3
      - 0
      - USD 0.07 a run
 
 Asked to answer, as a chat does, a frontier model states wrong opcodes,
 identifiers and bits as confidently as right ones: Opus gave Sanitize
-Namespace the opcodes 82h, 82h and 83h in its three runs, where the figure
-says 8Ch, and Sonnet 84h, the opcode of Sanitize, twice, and 8Dh. Allowed to
+Namespace the opcodes 83h and 85h in two of its three runs, where the figure
+says 8Ch, and Sonnet 84h, the opcode of Sanitize, in all three. Allowed to
 say "unknown", they say it of what they do not know and still miss. A
 frontier lane is the mean of three runs, and the means move between runs of
-the workflow: earlier runs, on older senfds, had Sonnet told to answer 10.7
-and 6.3 wrong rather than 7.7. Their
+the workflow: earlier runs, on older senfds, had Sonnet told to answer 10.7,
+6.3 and 7.7 wrong rather than 7.3. Their
 training predates the documents, which is the point: what a language model
 knows is the revisions it was trained on, and the specifications move on.
 
-The run of 2026-11-08 made its data model from the ``.docx`` of the eleven
-documents. The CI job of every change makes the data model from the PDFs NVM
-Express publishes and has ``sate`` answer the same 30 questions from it,
-failing unless every one is right; it has been 30 of 30 since the PDFs were
-first read.
+The run of 2026-11-09 made its data model from the PDFs NVM Express
+publishes, so anyone can repeat it; the run of 2026-11-08, kept beside it,
+made it from the ``.docx`` of the same documents and found the same. The CI
+job of every change makes the data model from the public PDFs and has
+``sate`` answer the same 30 questions from it, failing unless every one is
+right.
 
 A small language model on a CPU, used as ``sate --llm`` uses it, cannot
 make the same mistake. It chooses the lookup, constrained to a query and its
@@ -100,9 +101,9 @@ answers, never correctness.
        <span style="color:#cf222e">wrong in red</span>,
        <span style="color:#6e7781">unknown in grey</span>. Under each answer
        of <code>sate</code>, what the question was understood as and the
-       time it took. <a href="../_static/benchmark/report-2026-11-08.html">Open
+       time it took. <a href="../_static/benchmark/report-2026-11-09.html">Open
        it on its own page.</a></p>
-       <iframe src="../_static/benchmark/report-2026-11-08.html"
+       <iframe src="../_static/benchmark/report-2026-11-09.html"
                style="width:100%; height:42rem; border:1px solid #d0d7de"></iframe>
      </div>
      <div class="bench-panel" id="bench-panel-method">
