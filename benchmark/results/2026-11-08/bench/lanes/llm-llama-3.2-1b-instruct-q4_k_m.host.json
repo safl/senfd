@@ -7,6 +7,6 @@
  "threads": 16,
  "context": 8192,
  "server": "version: 0.6.0-dev (build 1, commit 1bb2b9f)\nbuilt with GNU 15.2.0 for Linux x86_64",
- "cpu": "CPU(s):                                  64\nModel name:                              AMD EPYC 7532 32-Core Processor\nCPU(s) scaling MHz:                      54%",
+ "cpu": "CPU(s):                                  64\nModel name:                              AMD EPYC 7532 32-Core Processor\nCPU(s) scaling MHz:                      56%",
  "gpu": "none; llama-server run with no GPU offload"
 }

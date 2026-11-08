@@ -39,34 +39,34 @@ that the revisions ratified in 2026 added or moved.
      - 12
      - free, 1.1 s a question
    * - Claude Opus 5.5, from memory, "unknown" allowed
-     - 22.3
-     - 0
-     - 7.7
-     - USD 0.14 a run
+     - 23
+     - 0.7
+     - 6.3
+     - USD 0.12 a run
    * - Claude Opus 5.5, from memory, answer required
      - 25.3
      - 4.7
      - 0
-     - USD 0.13 a run
+     - USD 0.17 a run
    * - Claude Sonnet 5.5, from memory, "unknown" allowed
-     - 22
-     - 1.7
-     - 6.3
-     - USD 0.05 a run
+     - 20.7
+     - 2.3
+     - 7
+     - USD 0.07 a run
    * - Claude Sonnet 5.5, from memory, answer required
-     - 23.7
-     - 6.3
+     - 22.3
+     - 7.7
      - 0
-     - USD 0.06 a run
+     - USD 0.07 a run
 
 Asked to answer, as a chat does, a frontier model states wrong opcodes,
 identifiers and bits as confidently as right ones: Opus gave Sanitize
-Namespace a different opcode in each of its three runs, 85h, 32h and 82h,
-where the figure says 8Ch, and Sonnet gave it 84h, the opcode of Sanitize,
-twice with high confidence. Allowed to say "unknown", they say it of what
-they do not know and still miss. A frontier lane is the mean of three runs,
-and the means move between runs of the workflow: an earlier run, on an older
-senfd, had Sonnet told to answer 10.7 wrong rather than 6.3. Their
+Namespace the opcodes 82h, 82h and 83h in its three runs, where the figure
+says 8Ch, and Sonnet 84h, the opcode of Sanitize, twice, and 8Dh. Allowed to
+say "unknown", they say it of what they do not know and still miss. A
+frontier lane is the mean of three runs, and the means move between runs of
+the workflow: earlier runs, on older senfds, had Sonnet told to answer 10.7
+and 6.3 wrong rather than 7.7. Their
 training predates the documents, which is the point: what a language model
 knows is the revisions it was trained on, and the specifications move on.
 

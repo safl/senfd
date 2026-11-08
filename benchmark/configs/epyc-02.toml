@@ -17,7 +17,7 @@ hostname = "epyc-02"
 
 [senfd]
 repo = "https://github.com/safl/senfd"
-commit = "6f85cc2b2cd167783b9dfe8d5d673bce4a4dc21b"
+commit = "d270c48b4652e531d051f26f8559f4546c44480d"
 python = "3.12"
 
 [spec]

@@ -3,13 +3,13 @@
   "runs": [
    {
     "right": 22,
-    "wrong": 0,
-    "unknown": 8
+    "wrong": 2,
+    "unknown": 6
    },
    {
-    "right": 22,
+    "right": 24,
     "wrong": 0,
-    "unknown": 8
+    "unknown": 6
    },
    {
     "right": 23,
@@ -18,12 +18,12 @@
    }
   ],
   "mean": {
-   "right": 22.3,
-   "wrong": 0,
-   "unknown": 7.7
+   "right": 23,
+   "wrong": 0.7,
+   "unknown": 6.3
   },
-  "seconds_per_question": 0.903,
-  "cost_usd": 0.1365392
+  "seconds_per_question": 0.624,
+  "cost_usd": 0.1161792
  },
  "claude-opus-5-5, answer required": {
   "runs": [
@@ -48,45 +48,45 @@
    "wrong": 4.7,
    "unknown": 0
   },
-  "seconds_per_question": 0.747,
-  "cost_usd": 0.127422
+  "seconds_per_question": 0.917,
+  "cost_usd": 0.166762
  },
  "claude-sonnet-5-5, unknown allowed": {
   "runs": [
    {
-    "right": 23,
-    "wrong": 1,
+    "right": 21,
+    "wrong": 3,
     "unknown": 6
    },
    {
-    "right": 22,
-    "wrong": 1,
-    "unknown": 7
+    "right": 19,
+    "wrong": 2,
+    "unknown": 9
    },
    {
-    "right": 21,
-    "wrong": 3,
+    "right": 22,
+    "wrong": 2,
     "unknown": 6
    }
   ],
   "mean": {
-   "right": 22,
-   "wrong": 1.7,
-   "unknown": 6.3
+   "right": 20.7,
+   "wrong": 2.3,
+   "unknown": 7
   },
-  "seconds_per_question": 0.491,
-  "cost_usd": 0.05415640000000001
+  "seconds_per_question": 0.551,
+  "cost_usd": 0.0646364
  },
  "claude-sonnet-5-5, answer required": {
   "runs": [
    {
-    "right": 22,
-    "wrong": 8,
+    "right": 24,
+    "wrong": 6,
     "unknown": 0
    },
    {
-    "right": 26,
-    "wrong": 4,
+    "right": 20,
+    "wrong": 10,
     "unknown": 0
    },
    {
@@ -96,12 +96,12 @@
    }
   ],
   "mean": {
-   "right": 23.7,
-   "wrong": 6.3,
+   "right": 22.3,
+   "wrong": 7.7,
    "unknown": 0
   },
-  "seconds_per_question": 0.579,
-  "cost_usd": 0.0630378
+  "seconds_per_question": 0.509,
+  "cost_usd": 0.0654178
  },
  "llm-llama-3.1-8b-instruct-q4_k_m": {
   "runs": [
@@ -116,7 +116,7 @@
    "wrong": 0,
    "unknown": 0
   },
-  "seconds_per_question": 2.741,
+  "seconds_per_question": 2.655,
   "cost_usd": 0
  },
  "llm-llama-3.2-1b-instruct-q4_k_m": {
@@ -132,7 +132,7 @@
    "wrong": 0,
    "unknown": 12
   },
-  "seconds_per_question": 1.064,
+  "seconds_per_question": 1.057,
   "cost_usd": 0
  },
  "senfd-ask": {
