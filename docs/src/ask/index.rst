@@ -23,8 +23,17 @@ colleague:
 
 Names, acronyms and the words of questions complete as you type, with Tab,
 from what the data model holds: every command, feature, log page, structure
-and register, and every field's acronym. ``help`` lists the forms a question
-can take. Given a question on the command line, it answers that and leaves:
+and register, and every field's acronym, each shown with its kind. A name
+completes from where it starts, so "opcode of zone app" completes to Zone
+Append; after "log page", "feature" or "opcode of", names of that kind come
+first; and a word typed in capitals is completed by acronyms. ``help`` lists
+the forms a question can take.
+
+.. raw:: html
+
+   <div id="cast-session"></div>
+
+Given a question on the command line, it answers that and leaves:
 
 .. code-block:: console
 
@@ -100,7 +109,7 @@ few lines rather than by reading the documents:
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
    <script>
-     for (const [id, cast] of [["cast-lookups", "lookups"], ["cast-llm", "llm"]]) {
+     for (const [id, cast] of [["cast-session", "session"], ["cast-lookups", "lookups"], ["cast-llm", "llm"]]) {
        AsciinemaPlayer.create(`../_static/casts/${cast}.cast`, document.getElementById(id),
          {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
           poster: "npt:0:12"});
