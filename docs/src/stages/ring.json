@@ -12,6 +12,7 @@
         "document": "example",
         "figure_nr": 18,
         "page_nr": 18,
+        "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
       }
@@ -42,6 +43,7 @@
         "document": "example",
         "figure_nr": 19,
         "page_nr": 19,
+        "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
       }
@@ -72,6 +74,7 @@
         "document": "example",
         "figure_nr": 20,
         "page_nr": 20,
+        "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
       }
@@ -88,6 +91,7 @@
     "document": "example",
     "figure_nr": 1,
     "page_nr": 1,
+    "pdf_page": null,
     "section": "1.1",
     "section_title": "Foobar Commands"
   }

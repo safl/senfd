@@ -18,7 +18,13 @@ from typing import ClassVar, Dict, List, Optional, Tuple
 
 from pydantic import Field
 
-from senfd.documents.base import Converter, Document, Model, strip_all_suffixes
+from senfd.documents.base import (
+    DocumentMeta,
+    Converter,
+    Document,
+    Model,
+    strip_all_suffixes,
+)
 from senfd.documents.normalized import (
     Layout,
     LayoutField,
@@ -40,6 +46,9 @@ class Source(Model):
     """The number of the figure"""
     page_nr: Optional[int] = None
     """The page the figure is on, by the document's table of figures"""
+    pdf_page: Optional[int] = None
+    """The page the figure is on in the PDF, counted from the file's first
+    page, where the document was read from a PDF; a link opens it there"""
     section: Optional[str] = None
     """The number of the section the figure is in, as '3.1.4.1'"""
     section_title: Optional[str] = None
@@ -327,6 +336,9 @@ class SpecDocument(Document):
     """What senfd normalised, or could not read as data"""
     errata: List[Erratum] = Field(default_factory=list)
     """The candidate errata of the documents"""
+    documents: Dict[str, DocumentMeta] = Field(default_factory=dict)
+    """The documents the data model is of, by name, each with the file it
+    was made from and the file's SHA-256, by which a published one is known"""
 
 
 def document_name(document: str) -> str:
@@ -343,7 +355,9 @@ def document_name(document: str) -> str:
 
 
 def cite(source: Source) -> str:
-    """Where 'source' is, as "Base 2.2, 5.1.10, Figure 190, page 195" """
+    """Where 'source' is, as "Base 2.2, 5.1.10, Figure 190, page 195", and
+    where it was read from a PDF, the page of the file too, as "page 195,
+    PDF page 220", which is where a link to the file opens"""
 
     parts = [document_name(source.document)]
     if source.section:
@@ -351,7 +365,40 @@ def cite(source: Source) -> str:
     parts.append(f"Figure {source.figure_nr}")
     if source.page_nr:
         parts.append(f"page {source.page_nr}")
+    if source.pdf_page:
+        parts.append(f"PDF page {source.pdf_page}")
     return ", ".join(parts)
+
+
+CITED = re.compile(
+    r"\[([^\[\]]+?, (?:[^\[\]]*?, )?Figure \d+(?:, page \d+)?(?:, PDF page (\d+))?)\]"
+)
+
+
+def linked(document: "SpecDocument", lines: List[str]) -> List[str]:
+    """'lines' of Markdown with each citation made a link to the published
+    PDF of its document, at the page cited, where the document is one NVM
+    Express publishes, known by the SHA-256 of the file it was read from"""
+
+    from senfd.published import url_of
+
+    urls = {
+        document_name(name): url_of(meta.sha256)
+        for name, meta in document.documents.items()
+        if meta.sha256
+    }
+    if not any(urls.values()):
+        return list(lines)
+
+    def link(match: "re.Match[str]") -> str:
+        cited = match.group(1)
+        url = urls.get(cited.split(", ")[0])
+        if not url:
+            return match.group(0)
+        page = match.group(2)
+        return f"[{cited}]({url}#page={page})" if page else f"[{cited}]({url})"
+
+    return [CITED.sub(link, line) for line in lines]
 
 
 def dwords_named(key: str, dwords: "Dwords") -> str:
@@ -583,6 +630,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         document=stem,
         figure_nr=figure.figure_nr,
         page_nr=figure.page_nr,
+        pdf_page=figure.pdf_page,
         section=figure.section,
         section_title=figure.section_title,
     )
@@ -1353,6 +1401,9 @@ class FromNormalizedDocument(Converter):
         )
         document = SpecDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
+        document.meta.file = normalized.meta.file
+        document.meta.sha256 = normalized.meta.sha256
+        document.documents[document.meta.stem] = document.meta.model_copy()
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)
         return resolve(document), []
@@ -1368,6 +1419,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
     merged = SpecDocument()
     merged.meta.stem = "merged"
     for document in (d.model_copy(deep=True) for d in documents):
+        merged.documents.update(document.documents)
         for key, command_set in document.command_sets.items():
             into = merged.command_sets.setdefault(
                 key, CommandSet(name=command_set.name)

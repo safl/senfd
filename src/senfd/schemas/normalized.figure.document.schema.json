@@ -53,6 +53,32 @@
                     "description": "The name of the document it is of, \"merged\" for the merged one",
                     "title": "Stem",
                     "type": "string"
+                },
+                "file": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The name of the file the document was made from, as given",
+                    "title": "File"
+                },
+                "sha256": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The SHA-256 of that file, by which a published document is known",
+                    "title": "Sha256"
                 }
             },
             "title": "DocumentMeta",
@@ -184,6 +210,18 @@
                     ],
                     "default": null,
                     "title": "Page Nr"
+                },
+                "pdf_page": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Pdf Page"
                 },
                 "section": {
                     "anyOf": [

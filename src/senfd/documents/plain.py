@@ -43,6 +43,9 @@ class Figure(BaseModel):
     description: str  # The part of figure caption without the "Fig X:" prefix
 
     page_nr: Optional[int] = None
+    # The page the figure is on in the PDF, counted from the file's first
+    # page; only where it was read from a PDF
+    pdf_page: Optional[int] = None
     # The number and title of the section the figure is in, as "5.2.4"
     section: Optional[str] = None
     section_title: Optional[str] = None

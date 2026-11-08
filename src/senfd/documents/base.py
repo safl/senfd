@@ -93,6 +93,10 @@ class DocumentMeta(Model):
     """The version of senfd that made it"""
     stem: str = Field(default_factory=str)
     """The name of the document it is of, "merged" for the merged one"""
+    file: Optional[str] = None
+    """The name of the file the document was made from, as given"""
+    sha256: Optional[str] = None
+    """The SHA-256 of that file, by which a published document is known"""
 
 
 class Document(Model):

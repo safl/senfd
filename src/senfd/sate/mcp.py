@@ -21,6 +21,7 @@ from mcp.server.mcpserver import MCPServer
 
 import senfd
 import senfd.query
+from senfd.documents.spec import linked
 from senfd.documents.spec import SpecDocument
 
 INSTRUCTIONS = (
@@ -59,28 +60,28 @@ def command(name: str, dword: Optional[int] = None, verbose: bool = False) -> st
     """A command's opcode and its submission queue dwords with their fields,
     and completion queue dwords; 'dword' gives one dword only, as 12 for CDW12"""
 
-    return "\n".join(senfd.query.command(spec(), name, dword, verbose))
+    return "\n".join(linked(spec(), senfd.query.command(spec(), name, dword, verbose)))
 
 
 @tool
 def feature(key: str, verbose: bool = False) -> str:
     """A feature by its identifier, as "07h", or name, with its dwords"""
 
-    return "\n".join(senfd.query.feature(spec(), key, verbose))
+    return "\n".join(linked(spec(), senfd.query.feature(spec(), key, verbose)))
 
 
 @tool
 def log_page(key: str, verbose: bool = False) -> str:
     """A log page by its identifier, as "02h", or name, with its structure"""
 
-    return "\n".join(senfd.query.log_page(spec(), key, verbose))
+    return "\n".join(linked(spec(), senfd.query.log_page(spec(), key, verbose)))
 
 
 @tool
 def structure(name: str, verbose: bool = False) -> str:
     """A data structure or register by name, with its fields"""
 
-    return "\n".join(senfd.query.structure(spec(), name, verbose))
+    return "\n".join(linked(spec(), senfd.query.structure(spec(), name, verbose)))
 
 
 @tool
@@ -88,7 +89,7 @@ def search(text: str) -> str:
     """Fields by acronym or name, and commands, features, log pages and
     structures by name, each with where it is"""
 
-    return "\n".join(senfd.query.search(spec(), text))
+    return "\n".join(linked(spec(), senfd.query.search(spec(), text)))
 
 
 @tool
@@ -96,7 +97,7 @@ def section(key: str) -> str:
     """What a section of the specification describes, by its number, as
     "5.1.25", with its subsections, or by a word of its title"""
 
-    return "\n".join(senfd.query.section(spec(), key))
+    return "\n".join(linked(spec(), senfd.query.section(spec(), key)))
 
 
 @tool
@@ -104,7 +105,7 @@ def errata(document: str = "") -> str:
     """Candidate errata of the documents, values that are not what their kind
     must be, each with where it is; 'document' as "Base" or "NVM" narrows them"""
 
-    return "\n".join(senfd.query.errata(spec(), document))
+    return "\n".join(linked(spec(), senfd.query.errata(spec(), document)))
 
 
 @tool
@@ -113,7 +114,7 @@ def lint(document: str = "") -> str:
     authors, figures of no shape senfd models, worked examples, and dwords no
     command claims; 'document' as "Base" or "NVM" narrows them"""
 
-    return "\n".join(senfd.query.lint(spec(), document))
+    return "\n".join(linked(spec(), senfd.query.lint(spec(), document)))
 
 
 def main(argv: Optional[List[str]] = None) -> int:

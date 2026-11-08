@@ -278,6 +278,8 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     figure_nr=number,
                     caption=caption,
                     description=match[2].strip(),
+                    page_nr=None,
+                    pdf_page=min(extent) + 1 if extent else None,
                     section=where.number,
                     section_title=where.title,
                     table=table,

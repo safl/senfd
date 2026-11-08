@@ -17,7 +17,7 @@ from senfd.sate.lookup import ambiguous, answer, nothing, resolved
 from senfd.sate.phrasing import FILLER, acronyms_of, terms, words_of
 from senfd.sate.reading import Understood, spot, understand
 from senfd.sate.vocabulary import Vocabulary
-from senfd.documents.spec import SpecDocument
+from senfd.documents.spec import linked, SpecDocument
 
 
 # A lookup tried: what the question was read as, or chosen as, and its answer
@@ -30,7 +30,7 @@ def by_words(
     """The lookup 'question' is read as, by its words, names and acronyms"""
 
     understood = resolved(spec, understand(question, vocabulary), vocabulary)
-    return [(understood, answer(spec, understood))]
+    return [(understood, linked(spec, answer(spec, understood)))]
 
 
 def by_language_model(
@@ -51,7 +51,7 @@ def by_language_model(
             attempts.append((chosen, []))
             break
         understood = resolved(spec, chosen, vocabulary)
-        lines = answer(spec, understood)
+        lines = linked(spec, answer(spec, understood))
         attempts.append((understood, lines))
         wrong = what_is_wrong(question, understood, lines, vocabulary)
         if not wrong:

@@ -24,6 +24,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 from senfd.documents.spec import value_names as senfd_value_names
 from senfd.documents.spec import (
+    linked,
     Bits,
     Command,
     Dwords,
@@ -581,7 +582,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         lines = lint(spec, args.document)
     else:
         lines = search(spec, args.text)
-    print("\n".join(lines))
+    print("\n".join(linked(spec, lines) if args.markdown else lines))
     return 0
 
 
