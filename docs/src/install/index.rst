@@ -22,7 +22,7 @@ The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
   rich; without it, ``senfd-ask`` reads a question a line and prints Markdown.
 * ``mcp``, the MCP server ``senfd-mcp``.
 
-Then make the model, once, from the documents you have:
+Then make the data model, once, from the documents you have:
 
 .. code-block:: console
 

@@ -9,11 +9,11 @@ Code from the figures
 
 Every NVMe driver, tool, emulator and test suite carries a header of the
 specification, transcribed by hand, with names its transcriber chose, and
-lagging each revision by as long as the transcription takes. The model makes
-that header a thing to generate: from the figures, with the specification's
-own names, each member citing the figure it is from.
+lagging each revision by as long as the transcription takes. The data model
+makes that header a thing to generate: from the figures, with the
+specification's own names, each member citing the figure it is from.
 
-senfd makes the model and leaves writing code from it to the project that
+senfd makes the data model and leaves writing code from it to the project that
 consumes it, which knows its conventions. **xNVMe** does so with a generator
 of its own, ``toolbox/xnvme_spec_headers.py``, run by `yace
 <https://github.com/safl/yace>`_, which parses what the generator writes as
@@ -49,7 +49,7 @@ a regenerated header and a diff to review, with the figure of every change
 cited in it. xNVMe's contributor documentation, "Producing the spec headers",
 gives the procedure.
 
-The model is JSON validated by a :ref:`schema <sec-schema>`, so a generator
-for another language, another project's conventions or another tool, an
-emulator's command decoder or a test suite's expectations, reads the same
+The data model is JSON validated by a :ref:`schema <sec-schema>`, so a
+generator for another language, another project's conventions or another tool,
+an emulator's command decoder or a test suite's expectations, reads the same
 facts from the same file.

@@ -27,11 +27,11 @@ Place yourself in the root of the repository and run:
    :language: bash
 
 This extracts the figures of the ``.docx`` file, their captions and tables,
-into a ``FigureDocument``; normalises each into a ``NormalizedFigureDocument``,
-by the shape of its table and the subject of its caption, with diagnostics
-saying what was normalised; and makes the model of the specification of it, a
-``SpecDocument``. The ``SpecDocument`` of every document given is merged into
-``merged.spec.document.json``.
+into a ``FigureDocument``; normalises each into a
+``NormalizedFigureDocument``, by the shape of its table and the subject of its
+caption, with diagnostics saying what was normalised; and makes the data model
+of the specification of it, a ``SpecDocument``. The ``SpecDocument`` of every
+document given is merged into ``merged.spec.document.json``.
 
 For all of the output files then they are stored in the directory pointed to
 by ``--output``, in this case ``/tmp/foo``, each named by the input-document
@@ -49,8 +49,8 @@ the :ref:`schema <sec-schema>` section.
 Query
 ~~~~~
 
-The merged model answers questions about the specification. Make it once, from
-the documents you have, into the cache:
+The merged data model answers questions about the specification. Make it once,
+from the documents you have, into the cache:
 
 .. code-block:: bash
 
@@ -71,14 +71,15 @@ section, the figure and the page, as ``[Base 2.2, 5.1.10, Figure 190, page
    senfd-query errata Base
 
 A value that is not what its kind must be, as a range beyond the dwords it is
-of or an acronym that is not one, is left out of the model and is an erratum,
-as are bits of a command's dwords that no figure gives a field; ``errata``
-lists them, each with where it is, for the documents to be corrected.
+of or an acronym that is not one, is left out of the data model and is an
+erratum, as are bits of a command's dwords that no figure gives a field;
+``errata`` lists them, each with where it is, for the documents to be
+corrected.
 
-``--spec`` or the environment variable ``SENFD_SPEC`` points at another
-merged model, and ``--verbose`` gives the descriptions too. ``--markdown``
-gives the fields of a command, feature, log page or structure as a Markdown
-table, for an answer shown to a reader.
+``--spec`` or the environment variable ``SENFD_SPEC`` points at another merged
+data model, and ``--verbose`` gives the descriptions too. ``--markdown`` gives
+the fields of a command, feature, log page or structure as a Markdown table,
+for an answer shown to a reader.
 
 The same queries are the tools of an MCP server, ``senfd-mcp``, installed with
 ``pip install senfd[mcp]``. Registered with an agent, it answers a question

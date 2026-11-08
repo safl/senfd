@@ -45,17 +45,21 @@ senfd: the NVMe specifications, as data
     :target: https://safl.dk/senfd/ask/
     :alt: MCP server
 
-**senfd** reads the ratified NVMe specification documents and makes a model of
-them: every command with its dwords and fields, every data structure,
-register, feature, log page and table of values, each fact citing the
-document, section, figure and page it is from. From that one model:
+**senfd** reads the ratified NVMe specification documents and makes a data
+model of them: every command with its dwords and fields, every data
+structure, register, feature, log page and table of values, each fact citing
+the document, section, figure and page it is from. It is a data model, not a
+language model: JSON validated by a schema, with nothing in it trained or
+generated, and the same documents give the same data model every time. From
+that one data model:
 
 * **Precise answers, at once**, with ``senfd-query`` and ``senfd-ask``, the
   expert to ask, which completes names as you type and answers in
   milliseconds, citing the figure.
 * **Language models that cannot make NVMe facts up**: ``senfd-mcp`` gives a
-  coding agent the model as tools, and ``senfd-ask --llm`` has a small model,
-  free, on your own CPU, choose the lookup and write nothing of the answer.
+  coding agent the data model as tools, and ``senfd-ask --llm`` has a small
+  language model, free, on your own CPU, choose the lookup and write nothing
+  of the answer.
 * **Code generated from the figures**, as xNVMe's specification headers are:
   structs, masks, opcodes, constructors and registers, citing their figures.
 * **A linter of the documents**: what does not read as data is listed, with
@@ -78,4 +82,5 @@ nor anything made from them is part of senfd, whose tests and examples use
 synthetic documents of its own.
 
 See the `documentation <https://safl.dk/senfd/>`_ for the commands,
-the benchmark against frontier models, and the schema of the model.
+the benchmark against frontier language models, and the schema of the data
+model.

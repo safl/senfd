@@ -11,7 +11,7 @@ Each line of the script is typed at a prompt, a key at a time, run, and its
 output shown as it was printed; a line starting with '#' is typed as a
 comment and not run. The timing is made up, a fixed pace of typing and a
 pause after each output, so a recording is the same each time it is made
-from the same model, and needs no terminal to make:
+from the same data model, and needs no terminal to make:
 
     toolbox/record_cast.py docs/casts/lookups.sh docs/_static/casts/lookups.cast
 """

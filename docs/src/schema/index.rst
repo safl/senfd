@@ -12,7 +12,7 @@ Senfd has the following documents:
 * FigureDocument, the figures of a document as their tables are
 * NormalizedFigureDocument, each figure by the shape of its table and the
   subject of its caption
-* SpecDocument, the model of the specification
+* SpecDocument, the data model of the specification
 
 Their **JSON** representation is validated against a **JSON** schema. Links to
 the schema files and the schemas themselves, in verbatim, are provided in the
