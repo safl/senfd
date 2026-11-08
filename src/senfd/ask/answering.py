@@ -125,7 +125,7 @@ def respond(
         else:
             why = ""
         not_known = f"Not in the data model{why}, so this is not known. "
-        return said + not_known + "`help` says what can be asked.", tried
+        return said + not_known + "`senfd-ask help` says what can be asked.", tried
     return said + "\n".join(lines), tried
 
 

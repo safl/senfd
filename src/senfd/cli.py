@@ -11,9 +11,10 @@ Produces normalised figure documents and a model of the specification, as
 """
 
 import json
+import sys
 from argparse import ArgumentParser, Namespace, RawTextHelpFormatter
 from pathlib import Path
-from typing import List
+from typing import List, Optional, Tuple
 
 import senfd
 import senfd.pipeline
@@ -21,8 +22,10 @@ import senfd.query
 import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
-from senfd.documents.spec import SpecDocument, merge
+from senfd.documents.plain import FigureDocument
+from senfd.documents.spec import SpecDocument, document_name, merge
 from senfd.errors import Error
+from senfd.normalize import Diagnostic
 
 PARSEARGS_EPILOG = """\
 Senfd
@@ -66,7 +69,10 @@ def parse_args() -> Namespace:
     """Return command-line arguments"""
 
     parser = ArgumentParser(
-        description="Semantically organize and enrich figures",
+        description=(
+            "Make the data model of NVMe specification documents, .docx, and say "
+            "what reading them found; senfd-query lint lists it"
+        ),
         epilog=PARSEARGS_EPILOG,
         formatter_class=RawTextHelpFormatter,
     )
@@ -113,17 +119,23 @@ def main() -> int:
 
     if args.dump_schema:
         for docclass in get_document_classes():
-            docclass.to_schema_file(args.output)
+            print(docclass.to_schema_file(args.output))
         return 0
 
-    errors_of_documents = 0
+    missing = [str(path) for path in args.document if not path.is_file()]
+    if missing:
+        print(f"senfd: no such document: {', '.join(missing)}", file=sys.stderr)
+        return 1
+
+    found: List[Diagnostic] = []
     for path in sorted(args.document):
         args.output.mkdir(parents=True, exist_ok=True)
 
         errors = senfd.pipeline.process(path, args.output, args)
         # Named as every other output of the document is, "2-4" of "2.4"
-        to_log_file(errors, path.stem.replace(".", "-"), args.output)
-        errors_of_documents += len(errors)
+        stem = path.stem.replace(".", "-")
+        to_log_file(errors, stem, args.output)
+        found += document_errors(errors, stem, args.output)
 
     specs = [
         SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
@@ -132,27 +144,88 @@ def main() -> int:
     ]
     if specs:
         spec = merge(specs)
+        spec.diagnostics += found
         written = spec.to_json_file(args.output / spec.json_filename())
-        print(summary(spec, len(args.document), errors_of_documents, written))
+        print(summary(spec, len(args.document), written))
 
     return 0
 
 
-def summary(spec: SpecDocument, documents: int, errors: int, written: Path) -> str:
-    """What a run made of the documents, and what of them to look at"""
+def document_errors(errors: List[Error], stem: str, output: Path) -> List[Diagnostic]:
+    """The errors of reading the document of 'stem', each said with the document
+    and where in it, by the figure a table follows, as diagnostics of the data
+    model"""
+
+    name = document_name(stem)
+    plain = output / f"{stem}{FigureDocument.SUFFIX_JSON}"
+    after: List[Tuple[int, int, Optional[int]]] = []
+    if plain.exists():
+        figures = FigureDocument.model_validate_json(plain.read_text(encoding="utf-8"))
+        after = sorted(
+            (f.table.table_nr, f.figure_nr, f.page_nr)
+            for f in figures.figures
+            if f.table is not None
+        )
+
+    def where(error: Error) -> str:
+        figure_nr = getattr(error, "figure_nr", None)
+        table_nr = getattr(error, "table_nr", None)
+        entry_nr = getattr(error, "tof_entry_nr", None)
+        if figure_nr is not None:
+            return f"Figure {figure_nr}"
+        if table_nr is not None:
+            before = [a for a in after if a[0] < table_nr]
+            if not before:
+                return "a table before the first figure"
+            _, nr, page = before[-1]
+            return f"the table after Figure {nr}" + (f", page {page}" if page else "")
+        if entry_nr is not None:
+            return f"entry {entry_nr} of the table of figures"
+        return ""
+
+    found = []
+    for error in errors:
+        at = where(error)
+        # A cell quoted by its first line, as a caption is one
+        caption = (getattr(error, "caption", "") or "").strip().split("\n")[0]
+        caption = caption if len(caption) <= 80 else caption[:77].rstrip() + "..."
+        said = error.message + (f": '{caption}'" if caption else "")
+        found.append(
+            Diagnostic(
+                severity="warning",
+                code="document-error",
+                message=f"{name}, {at}: {said}" if at else f"{name}: {said}",
+            )
+        )
+    return found
+
+
+def plural(n: int, one: str, many: str = "") -> str:
+    return f"{n} {one if n == 1 else many or one + 's'}"
+
+
+def summary(spec: SpecDocument, documents: int, written: Path) -> str:
+    """What a run made of the documents, and what of them to look at, with the
+    command listing it for the data model just written"""
+
+    def counted(code: str) -> int:
+        return sum(d.code == code for d in spec.diagnostics)
 
     commands = sum(len(s.commands) for s in spec.command_sets.values())
-    errata = [line for line in senfd.query.errata(spec) if line != "No errata"]
-    unmodelled = sum(d.code == "figure-not-modelled" for d in spec.diagnostics)
+    errata = senfd.query.errata(spec, none=[])
     unassigned = sum(len(d) for d in spec.unassigned.values())
+    default = written.resolve() == senfd.query.default_spec_path().resolve()
+    spec_option = "" if default else f" --spec {written}"
     return (
         f"{documents} document{'s' if documents != 1 else ''} into {written}: "
         f"{commands} commands, {len(spec.features)} features, "
-        f"{len(spec.log_pages)} log pages and {len(spec.structures)} structures. "
-        f"To look at: {len(errata)} candidate errata (senfd-query errata), "
-        f"{unmodelled} figure{'s' if unmodelled != 1 else ''} not modelled and "
-        f"{unassigned} unassigned dwords "
-        f"(senfd-query lint), and {errors} document errors (*.error.log)."
+        f"{len(spec.log_pages)} log pages and {len(spec.structures)} structures.\n"
+        f"For the authors: {plural(len(errata), 'candidate erratum', 'candidate errata')}"
+        f" and {plural(counted('document-error'), 'document error')}. "
+        f"For senfd, or the figures: "
+        f"{plural(counted('figure-not-modelled'), 'figure')} not modelled and "
+        f"{plural(unassigned, 'unassigned dwords', 'unassigned dwords')}.\n"
+        f"List them: senfd-query{spec_option} lint"
     )
 
 

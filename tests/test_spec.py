@@ -115,12 +115,11 @@ def test_a_command_of_two_command_sets_has_the_dwords_of_both(tmp_path):
 def test_dwords_of_no_command_are_a_diagnostic(tmp_path):
     spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
 
-    codes = {
-        d.message.split("'")[1]
-        for d in spec.diagnostics
-        if d.code == "dwords-unassigned"
-    }
-    assert "zap" in codes
+    said = [d.message for d in spec.diagnostics if d.code == "dwords-unassigned"]
+    assert "example, 1.2, Figure 21, page 21: dwords 10:10 of zap, of no command" in (
+        "\n".join(said)
+    )
+    assert "zap" in spec.unassigned
 
 
 def test_the_merged_specification_is_written_by_the_command_line(tmp_path, monkeypatch):
@@ -471,3 +470,25 @@ def test_fields_named_by_their_index_keep_their_offsets_with_rows_left_out(
         ("Foo Slot 7 Descriptor", 224, 255),
     ]
     assert [f.acronym for f in results.fields] == ["FRC", "FFL", "FR1", "FR2", "FR5"]
+
+
+def test_a_range_of_identifiers_may_give_the_h_once():
+    typed = senfd.documents.spec.typed_of("86 to BFh")
+    assert (typed.kind, typed.lower, typed.upper) == ("identifier", 0x86, 0xBF)
+
+
+def test_a_column_of_sentences_is_text_whatever_its_name():
+    values = senfd.documents.spec.Values(
+        kind="requirements",
+        columns=["field", "size_requirement"],
+        entries=[
+            senfd.documents.spec.Entry(
+                value=f"F{n}",
+                value_column="field",
+                columns={"size_requirement": "The bytes of the output of the hash"},
+            )
+            for n in range(3)
+        ],
+        source=senfd.documents.spec.Source(document="example", figure_nr=1),
+    )
+    assert senfd.documents.spec.type_values(values) == []

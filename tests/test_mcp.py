@@ -61,7 +61,7 @@ def test_a_missing_model_is_said_to_the_client(tmp_path, monkeypatch):
 
     monkeypatch.setenv("SENFD_SPEC", str(tmp_path / "missing.json"))
     senfd.mcp_server.spec.cache_clear()
-    with pytest.raises(RuntimeError, match="No model of the specification at"):
+    with pytest.raises(RuntimeError, match="No data model of the specification at"):
         senfd.mcp_server.command("ding")
     senfd.mcp_server.spec.cache_clear()
 
