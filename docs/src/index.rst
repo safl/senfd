@@ -29,7 +29,8 @@ From that one data model, today:
   nothing of the answer. Frontier language models asked from memory invent
   opcodes and bits of recent revisions; senfd's answers are the figures'. In
   the :ref:`benchmark <sec-benchmark>`, Llama 3.1 8B on a CPU answered 30 of
-  30 right, for free, where Claude Opus 5.5 told to answer got 5 wrong.
+  30 right, for free, where Claude Opus 5.5 told to answer got 4.7 wrong on
+  average.
 * **Code generated from the figures.** xNVMe writes its specification headers
   from the data model: structs, masks, opcodes, constructors and registers,
   one header per document, every member citing its figure. A revision of a

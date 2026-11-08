@@ -11,7 +11,7 @@
     "command('write', dword=12)"
    ],
    "answer": "_Understood as `command('write', dword=12)`_\n\n### Write: NVM command, opcode 01h [NVM 1.3, 3.3, Figure 22, page 27]\n\n**cdw12 [NVM 1.3, 3.3.6, Figure 71, page 54]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31 | Limited Retry | LR |\n| 30 | Force Unit Access | FUA |\n| 29:26 | Protection Information | PRINFO |\n| 25 | Reserved |  |\n| 24 | Storage Tag Check | STC |\n| 23:20 | Directive Type | DTYPE |\n| 19:16 | Command Extension Type | CETYPE |\n| 15:00 | Number of Logical Blocks | NLB |",
-   "seconds": 1.42
+   "seconds": 1.414
   },
   {
    "id": 2,
@@ -20,7 +20,7 @@
     "command('Identify')"
    ],
    "answer": "_Understood as `command('Identify')`_\n\n### Identify: Admin command, opcode 06h [Base 2.4, 5, Figure 143, page 176]\n\n**cdw6-9 [Base 2.4, 5.2.14.1, Figure 332, page 334]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 127:00 | Data Pointer | DPTR |\n\n**cdw10 [Base 2.4, 5.2.14.1, Figure 333, page 335]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Controller Identifier | CNTID |\n| 15:08 | Reserved |  |\n| 07:00 | Controller or Namespace Structure | CNS |\n\n**cdw11 [Base 2.4, 5.2.14.1, Figure 334, page 335]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:24 | Command Set Identifier | CSI |\n| 23:16 | Reserved |  |\n| 15:00 | CNS Specific Identifier | CNSSID |\n\n**cdw14 [Base 2.4, 5.2.14.1, Figure 335, page 335]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:07 | Reserved |  |\n| 06:00 | UUID Index | UIDX |",
-   "seconds": 0.724
+   "seconds": 0.725
   },
   {
    "id": 3,
@@ -29,8 +29,8 @@
     "command('dword', dword=12)",
     "unknown('dword')"
    ],
-   "answer": "_Understood as `unknown('dword')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.247
+   "answer": "_Understood as `unknown('dword')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.246
   },
   {
    "id": 4,
@@ -39,7 +39,7 @@
     "feature('Number of Queues')"
    ],
    "answer": "_Understood as `feature('Number of Queues')`_\n\n### Feature 07h Number of Queues [Base 2.4, 3.1.3.6, Figure 32, page 50]\n\n**cdw11 [Base 2.4, 5.2.30.1.5, Figure 472, page 463]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Number of I/O Completion Queues Requested | NCQR |\n| 15:00 | Number of I/O Submission Queues Requested | NSQR |\n\n**cqe dw0 [Base 2.4, 5.2.30.1.5, Figure 473, page 464]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Number of I/O Completion Queues Allocated | NCQA |\n| 15:00 | Number of I/O Submission Queues Allocated | NSQA |",
-   "seconds": 0.703
+   "seconds": 0.705
   },
   {
    "id": 5,
@@ -48,7 +48,7 @@
     "log_page('SMART / Health Information')"
    ],
    "answer": "_Understood as `log_page('SMART / Health Information')`_\n\n### Log page 02h SMART / Health Information [Base 2.4, 5.2.13, Figure 209, page 215]\n\n**SMART / Health Information, bytes [Base 2.4, 5.2.13.1.3, Figure 213, page 220]**\n\n| Bytes | Name | Acronym |\n|---|---|---|\n| 00 | Critical Warning | CW |\n| 7 | Reserved |  |\n| 6 | Indeterminate Personality State | CW.IPS |\n| 5 | Persistent Memory Region Read-Only | CW.PMRRO |\n| 4 | Volatile Memory Backup Failed | CW.VMBF |\n| 3 | All Media Read-Only | CW.AMRO |\n| 2 | NVM Subsystem Degraded Reliability | CW.NDR |\n| 1 | Temperature Threshold Condition | CW.TTC |\n| 0 | Available Spare Capacity Below Threshold | CW.ASCBT |\n| 02:01 | Composite Temperature | CTEMP |\n| 03 | Available Spare | AVSP |\n| 04 | Available Spare Threshold | AVSPT |\n| 05 | Percentage Used | PUSED |\n| 06 | Endurance Group Critical Warning Summary | EGCWS |\n| 7:4 | Reserved |  |\n| 3 | Endurance Group Read-Only | EGCWS.EGRO |\n| 2 | Endurance Group Degraded Reliability | EGCWS.EGDR |\n| 1 | Reserved |  |\n| 0 | Endurance Group Available Spare Capacity Below Threshold | EGCWS.EGASCBT |\n| 07 | Informative Warning | INFW |\n| 7:1 | Reserved |  |\n| 0 | Voltage Log Threshold Warning | INFW.VLTHW |\n| 31:08 | Reserved |  |\n| 47:32 | Data Units Read | DUR |\n| 63:48 | Data Units Written | DUW |\n| 79:64 | Host Read Commands | HRC |\n| 95:80 | Host Write Commands | HWC |\n| 111:96 | Controller Busy Time | CBT |\n| 127:112 | Power Cycles | PWRC |\n| 143:128 | Power On Hours | POH |\n| 159:144 | Unexpected Power Losses | UPL |\n| 175:160 | Media and Data Integrity Errors | MDIE |\n| 191:176 | Number of Error Information Log Entries | NEILE |\n| 195:192 | Warning Composite Temperature Time | WCTT |\n| 199:196 | Critical Composite Temperature Time | CCTT |\n| 201:200 | Temperature Sensor 1 | TSEN1 |\n| 203:202 | Temperature Sensor 2 | TSEN2 |\n| 205:204 | Temperature Sensor 3 | TSEN3 |\n| 207:206 | Temperature Sensor 4 | TSEN4 |\n| 209:208 | Temperature Sensor 5 | TSEN5 |\n| 211:210 | Temperature Sensor 6 | TSEN6 |\n| 213:212 | Temperature Sensor 7 | TSEN7 |\n| 215:214 | Temperature Sensor 8 | TSEN8 |\n| 219:216 | Thermal Management Temperature 1 Transition Count | TMT1TC |\n| 223:220 | Thermal Management Temperature 2 Transition Count | TMT2TC |\n| 227:224 | Total Time For Thermal Management Temperature 1 | TTTMT1 |\n| 231:228 | Total Time For Thermal Management Temperature 2 | TTTMT2 |\n| 239:232 | Operational Lifetime Energy Consumed | OLEC |\n| 243:240 | Interval Power Measurement | IPM |\n| 31:24 | Reserved |  |\n| 23:20 | Power Measurement Type | IPM.PMT |\n| 19:18 | Reserved |  |\n| 17:16 | Interval Power Measurement Scale | IPM.IPMS |\n| 15:00 | Interval Power Measurement Value | IPM.IPMV |\n| 511:244 | Reserved |  |",
-   "seconds": 0.768
+   "seconds": 0.773
   },
   {
    "id": 6,
@@ -57,16 +57,18 @@
     "command('Zone Append')"
    ],
    "answer": "_Understood as `command('Zone Append')`_\n\n### Zone Append: Zoned Namespace command, opcode 7Dh [Zoned Namespace 1.5, 3.2, Figure 12, page 20]\n\n**cdw2-3 [Zoned Namespace 1.5, 3.4.1, Figure 24, page 25]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 63:48 | Reserved |  |\n| 47:00 | Logical Block Tags Upper | LBTU |\n\n**cdw4-5 [Zoned Namespace 1.5, 3.4.1, Figure 22, page 25]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 63:00 | Metadata Pointer | MPTR |\n\n**cdw6-9 [Zoned Namespace 1.5, 3.4.1, Figure 23, page 25]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 127:00 | Data Pointer | DPTR |\n\n**cdw10-11 [Zoned Namespace 1.5, 3.4.1, Figure 25, page 25]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 63:00 | Zone Start Logical Block Address | ZSLBA |\n\n**cdw12 [Zoned Namespace 1.5, 3.4.1, Figure 26, page 25]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31 | Limited Retry | LR |\n| 30 | Force Unit Access | FUA |\n| 29:26 | Protection Information | PRINFO |\n| 25 | Protection Information Remap | PIREMAP |\n| 24 | Storage Tag Check | STC |\n| 23:20 | Directive Type | DTYPE |\n| 19:16 | Command Extension Type | CETYPE |\n| 15:00 | Number of Logical Blocks | NLB |\n\n**cdw13 if CETYPE is cleared to 0h [Zoned Namespace 1.5, 3.4.1, Figure 27, page 26]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Directive Specific | DSPEC |\n| 15:00 | Reserved |  |\n\n**cdw13 if CETYPE is non-zero [Zoned Namespace 1.5, 3.4.1, Figure 28, page 26]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Directive Specific | DSPEC |\n| 15:00 | Command Extension Value | CEV |\n\n**cdw14 [Zoned Namespace 1.5, 3.4.1, Figure 29, page 26]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Logical Block Tags Lower | LBTL |\n\n**cdw15 [Zoned Namespace 1.5, 3.4.1, Figure 30, page 26]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Logical Block Application Tag Mask | LBATM |\n| 15:00 | Logical Block Application Tag | LBAT |",
-   "seconds": 0.717
+   "seconds": 0.722
   },
   {
    "id": 7,
    "question": "At which byte offset of the Identify Controller data structure is Maximum Data Transfer Size (MDTS)?",
    "tried": [
+    "search('MDTS')",
+    "search('MDTS')",
     "search('MDTS')"
    ],
-   "answer": "_Understood as `search('MDTS')`_\n\n- Identify - Identify Controller [Base 2.4, 5.2.14.2.1, Figure 338, page 338]: 77 Maximum Data Transfer Size (MDTS)\n- Identify - Identify Controller [Base 2.4, 5.2.14.2.1, Figure 338, page 338]: 16 MDTS and Size Limits Exclude Metadata (MEM)\n- Reference Exported Controller Configuration State [NVM 1.3, 5.4.1.1, Figure 189, page 157]: 77 Maximum Data Transfer Size (MDTS)",
-   "seconds": 0.719
+   "answer": "_Understood as `search('MDTS')`_\n\nNot in the data model; what was found is not about Identify Controller, so this is not known. `help` says what can be asked.",
+   "seconds": 1.607
   },
   {
    "id": 8,
@@ -75,7 +77,7 @@
     "register('CC')"
    ],
    "answer": "_Understood as `register('CC')`_\n\n\n**CC - Controller Configuration at offset 14h, bits [Base 2.4, 3.1.4.5, Figure 41, page 60]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:25 | Reserved |  |\n| 24 | Controller Ready Independent of Media Enable | CRIME |\n| 23:20 | I/O Completion Queue Entry Size | IOCQES |\n| 19:16 | I/O Submission Queue Entry Size | IOSQES |\n| 15:14 | Shutdown Notification | SHN |\n| 13:11 | Arbitration Mechanism Selected | AMS |\n| 10:07 | Memory Page Size | MPS |\n| 06:04 | I/O Command Set Selected | CSS |\n| 03:01 | Reserved |  |\n| 00 | Enable | EN |\n\n**CC - Class Code at offset 09h, bits [NVMe over PCIe Transport 1.4, 3.8.1.5, Figure 15, page 18]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 23:16 | Base Class Code | BCC |\n| 15:08 | Sub Class Code | SCC |\n| 07:00 | Programming Interface | PI |",
-   "seconds": 0.717
+   "seconds": 0.724
   },
   {
    "id": 9,
@@ -84,7 +86,7 @@
     "command('Track Send')"
    ],
    "answer": "_Understood as `command('Track Send')`_\n\n### Track Send: Admin command, opcode 3Dh [Base 2.4, 5, Figure 143, page 176]\n\n**cdw10 [Base 2.4, 5.2.32, Figure 561, page 519]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Management Operation Specific | MOS |\n| 15:08 | Reserved |  |\n| 07:00 | Select | SEL |\n\n#### operation Log User Data Changes, SEL=00h [Base 2.4, 5.2.32, Figure 561, page 519]\n\n**cdw11 [Base 2.4, 5.2.32.1.1, Figure 563, page 520]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Controller Data Queue Identifier | CDQID |\n\n#### operation Track Memory Changes, SEL=01h [Base 2.4, 5.2.32, Figure 561, page 519]\n\n**cdw11 [Base 2.4, 5.2.32.1.2, Figure 565, page 521]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Controller Identifier | CNTLID |\n\n**cqe dw0 [Base 2.4, 5.2.32.1.2, Figure 568, page 523]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Memory Range Tracking Granularity | MRTG |\n\n**cqe dw1 [Base 2.4, 5.2.32.1.2, Figure 569, page 523]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Number of Memory Range Tracking Descriptors | NMRTD |",
-   "seconds": 0.762
+   "seconds": 0.766
   },
   {
    "id": 10,
@@ -93,7 +95,7 @@
     "command('Migration Send')"
    ],
    "answer": "_Understood as `command('Migration Send')`_\n\n### Migration Send: Admin command, opcode 41h [Base 2.4, 5, Figure 143, page 176]\n\n**cdw10 [Base 2.4, 5.2.21, Figure 421, page 430]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Management Operation Specific | MOS |\n| 15:08 | Reserved |  |\n| 07:00 | Select | SEL |\n\n**cdw14 [Base 2.4, 5.2.21, Figure 422, page 430]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:07 | Reserved |  |\n| 06:00 | UUID Index | UIDX |\n\n#### operation Suspend, SEL=00h [Base 2.4, 5.2.21, Figure 421, page 430]\n\n**cdw11 [Base 2.4, 5.2.21.2.1, Figure 423, page 431]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31 | Delete User Data Migration Queue | DUDMQ |\n| 30:24 | Reserved |  |\n| 23:16 | Suspend Type | STYPE |\n| 15:00 | Controller Identifier | CNTLID |\n\n#### operation Resume, SEL=01h [Base 2.4, 5.2.21, Figure 421, page 430]\n\n**cdw11 [Base 2.4, 5.2.21.2.2, Figure 424, page 433]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Controller Identifier | CNTLID |\n\n#### operation Set Controller State, SEL=02h [Base 2.4, 5.2.21, Figure 421, page 430]\n\n**cdw11 [Base 2.4, 5.2.21.2.3, Figure 427, page 434]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:24 | Controller State UUID Index | CSUUIDI |\n| 23:16 | Controller State Version Index | CSVI |\n| 15:00 | Controller Identifier | CNTLID |\n\n**cdw12 [Base 2.4, 5.2.21.2.3, Figure 428, page 434]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Controller State Offset Lower | CSOL |\n\n**cdw13 [Base 2.4, 5.2.21.2.3, Figure 429, page 434]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Controller State Offset Upper | CSOU |\n\n**cdw15 [Base 2.4, 5.2.21.2.3, Figure 430, page 434]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Number of Dwords | NUMD |\n\n#### operation Set Exported NVM Subsystem State, SEL=03h [Base 2.4, 5.2.21, Figure 421, page 430]\n\n**cdw11 [Base 2.4, 5.2.21.2.4, Figure 437, page 440]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Exported NVM Subsystem Identifier | ESUBID |\n| 15:08 | Reserved |  |\n| 07:00 | Exported NVM Subsystem Template Index | ENSTI |\n\n**cdw12 [Base 2.4, 5.2.21.2.4, Figure 438, page 440]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Exported NVM Subsystem State Offset Lower | ENSSOL |\n\n**cdw13 [Base 2.4, 5.2.21.2.4, Figure 439, page 441]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Exported NVM Subsystem State Offset Upper | ENSSOU |\n\n**cdw15 [Base 2.4, 5.2.21.2.4, Figure 440, page 441]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Number of Dwords | NUMD |",
-   "seconds": 0.685
+   "seconds": 0.689
   },
   {
    "id": 11,
@@ -102,7 +104,7 @@
     "command('Controller Data Queue')"
    ],
    "answer": "_Understood as `command('Controller Data Queue')`_\n\n### Controller Data Queue: Admin command, opcode 45h [Base 2.4, 5, Figure 143, page 176]\n\n**cdw10 [Base 2.4, 5.2.5, Figure 167, page 196]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Management Operation Specific | MOS |\n| 15:08 | Reserved |  |\n| 07:00 | Select | SEL |\n\n**cdw11 [Base 2.4, 5.2.30.1.24, Figure 508, page 482]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31 | Enable Tail Pointer Trigger | ETPT |\n| 30:16 | Reserved |  |\n| 15:00 | Controller Data Queue Identifier | CDQID |\n\n**cdw12 [Base 2.4, 5.2.30.1.24, Figure 509, page 482]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Head Pointer | HP |\n\n**cdw13 [Base 2.4, 5.2.30.1.24, Figure 510, page 482]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Tail Pointer Trigger | TPT |\n\n**cqe dw0 [Base 2.4, 5.2.5.2, Figure 174, page 198]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Controller Data Queue Identifier | CDQID |\n\n#### operation Create Controller Data Queue, SEL=00h [Base 2.4, 5.2.5, Figure 167, page 196]\n\n**cdw11 [Base 2.4, 5.2.5.1.1, Figure 169, page 197]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Create Queue Specific | CQS |\n| 15:01 | Reserved |  |\n| 00 | Physically Contiguous | PC |\n\n**cdw12 [Base 2.4, 5.2.5.1.1, Figure 170, page 197]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Controller Data Queue Size | CDQSIZE |\n\n#### operation Delete Controller Data Queue, SEL=01h [Base 2.4, 5.2.5, Figure 167, page 196]\n\n**cdw11 [Base 2.4, 5.2.5.1.2, Figure 173, page 198]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:16 | Reserved |  |\n| 15:00 | Controller Data Queue Identifier | CDQID |",
-   "seconds": 0.744
+   "seconds": 0.746
   },
   {
    "id": 12,
@@ -111,7 +113,7 @@
     "command('Sanitize Namespace')"
    ],
    "answer": "_Understood as `command('Sanitize Namespace')`_\n\n### Sanitize Namespace: Admin command, opcode 8Ch [Base 2.4, 5, Figure 143, page 176]\n\n**cdw10 [Base 2.4, 5.2.27, Figure 454, page 451]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:11 | Reserved |  |\n| 10 | Enter Media Verification State | EMVS |\n| 09:05 | Reserved |  |\n| 04 | Purge Required | PREQ |\n| 03 | Allow Unrestricted Sanitize Exit | AUSE |\n| 02:00 | Sanitize Action | SANACT |",
-   "seconds": 0.786
+   "seconds": 0.794
   },
   {
    "id": 13,
@@ -120,7 +122,7 @@
     "command('Cross-Controller Reset')"
    ],
    "answer": "_Understood as `command('Cross-Controller Reset')`_\n\n### Cross-Controller Reset: Admin command, opcode 38h [Base 2.4, 5, Figure 143, page 176]\n\n**cdw10 [Base 2.4, 5.4.1, Figure 591, page 533]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:24 | Reserved |  |\n| 23:16 | Controller Instance Uniquifer | CIU |\n| 15:00 | Impacted Controller ID | ICID |\n\n**cdw12 [Base 2.4, 5.4.1, Figure 592, page 533]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Controller Instance Random Number Lower | CIRNL |\n\n**cdw13 [Base 2.4, 5.4.1, Figure 593, page 533]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:00 | Controller Instance Random Number Upper | CIRNU |",
-   "seconds": 0.734
+   "seconds": 0.731
   },
   {
    "id": 14,
@@ -139,8 +141,8 @@
     "search('Key Value Command Set Exist')",
     "search('Key Value Command Set Exist')"
    ],
-   "answer": "_Understood as `search('Key Value Command Set Exist')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.63
+   "answer": "_Understood as `search('Key Value Command Set Exist')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.638
   },
   {
    "id": 16,
@@ -149,7 +151,7 @@
     "feature('Power Limit')"
    ],
    "answer": "_Understood as `feature('Power Limit')`_\n\n### Feature 23h Power Limit [Base 2.4, 3.1.3.6, Figure 32, page 50]\n\n**cdw13 [Base 2.4, 5.2.30.1.26, Figure 520, page 493]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:18 | Reserved |  |\n| 17:16 | Power Limit Scale | PLS |\n| 15:00 | Power Limit Value | PLV |",
-   "seconds": 0.701
+   "seconds": 0.709
   },
   {
    "id": 17,
@@ -167,7 +169,7 @@
     "feature('Flexible Data Placement Events')"
    ],
    "answer": "_Understood as `feature('Flexible Data Placement Events')`_\n\n### Feature 1Eh Flexible Data Placement Events [Base 2.4, 3.1.3.6, Figure 32, page 50]\n\n**cdw11 [Base 2.4, 5.2.30.1.22, Figure 502, page 479]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:24 | Reserved |  |\n| 23:16 | Number of FDP Event Types | NOET |\n| 15:00 | Placement Handle | PHNDL |\n\n**cqe dw0 [Base 2.4, 5.2.30.1.22, Figure 501, page 479]**\n\n| Bits | Name | Acronym |\n|---|---|---|\n| 31:08 | Reserved |  |\n| 07:00 | Number of FDP Event Types | NOET |",
-   "seconds": 0.714
+   "seconds": 0.716
   },
   {
    "id": 19,
@@ -176,7 +178,7 @@
     "log_page('rotational media information')"
    ],
    "answer": "_Understood as `log_page('rotational media information')`_\n\n### Log page 16h Rotational Media Information [Base 2.4, 3.1.3.5, Figure 31, page 48]\n\n**Rotational Media Information, bytes [Base 2.4, 5.2.13.1.22, Figure 281, page 283]**\n\n| Bytes | Name | Acronym |\n|---|---|---|\n| 1:0 | Endurance Group Identifier | ENDGID |\n| 3:2 | Number of Actuators | NUMA |\n| 5:4 | Nominal Rotational Speed | NRS |\n| 7:6 | Reserved |  |\n| 11:8 | Spinup Count | SPINC |\n| 15:12 | Failed Spinup Count | FSPINC |\n| 19:16 | Load Count | LDC |\n| 23:20 | Failed Load Count | FLDC |\n| 511:24 | Reserved |  |",
-   "seconds": 0.757
+   "seconds": 0.759
   },
   {
    "id": 20,
@@ -185,7 +187,7 @@
     "log_page('lost host communication')"
    ],
    "answer": "_Understood as `log_page('lost host communication')`_\n\n### Log page 1Fh Lost Host Communication [Base 2.4, 3.1.3.5, Figure 31, page 48]\n\n**Lost Host Communication, bytes [Base 2.4, 5.2.13.3.2, Figure 316, page 322]**\n\n| Bytes | Name | Acronym |\n|---|---|---|\n| | **Header** |  |\n| 01:00 | Number of Entries | NE |\n| 07:02 | Reserved |  |\n| | **Lost Host Communication Entry List** |  |\n| 15:08 | Lost Host Communication Entry 0 | LHCE0 |\n| 23:16 | Lost Host Communication Entry 1 | LHCE1 |\n| 4095:4088 | Lost Host Communication Entry 510 | LHCE510 |",
-   "seconds": 0.734
+   "seconds": 0.743
   },
   {
    "id": 21,
@@ -194,7 +196,7 @@
     "log_page('reachability groups')"
    ],
    "answer": "_Understood as `log_page('reachability groups')`_\n\n### Log page 1Ah Reachability Groups [Base 2.4, 3.1.3.5, Figure 31, page 48]\n\n**Reachability Groups, bytes [Base 2.4, 5.2.13.1.25, Figure 286, page 286]**\n\n| Bytes | Name | Acronym |\n|---|---|---|\n| | **Header** |  |\n| 07:00 | Change Count | CHNGC |\n| 09:08 | Number of Reachability Group Descriptors | NRGD |\n| 15:10 | Reserved |  |\n| | **Reachability Group Descriptor List** |  |\n| n:16 | Reachability Group Descriptor 0 |  |\n| m:n+1 | Reachability Group Descriptor 1 |  |\n| x:y | Reachability Group Descriptor NRGD-1 |  |",
-   "seconds": 0.774
+   "seconds": 0.776
   },
   {
    "id": 22,
@@ -204,8 +206,8 @@
     "command('12')",
     "command('12')"
    ],
-   "answer": "_Understood as `command('12')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.485
+   "answer": "_Understood as `command('12')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.489
   },
   {
    "id": 23,
@@ -215,8 +217,8 @@
     "command('12')",
     "command('12')"
    ],
-   "answer": "_Understood as `command('12')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.464
+   "answer": "_Understood as `command('12')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.47
   },
   {
    "id": 24,
@@ -226,8 +228,8 @@
     "command('dword')",
     "command('dword')"
    ],
-   "answer": "_Understood as `command('dword')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.627
+   "answer": "_Understood as `command('dword')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.637
   },
   {
    "id": 25,
@@ -237,8 +239,8 @@
     "command('dword')",
     "command('dword')"
    ],
-   "answer": "_Understood as `command('dword')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.615
+   "answer": "_Understood as `command('dword')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.614
   },
   {
    "id": 26,
@@ -248,17 +250,19 @@
     "command('11')",
     "command('11')"
    ],
-   "answer": "_Understood as `command('11')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.504
+   "answer": "_Understood as `command('11')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.51
   },
   {
    "id": 27,
    "question": "Which bit of the Controller Configuration (CC) register is Controller Ready Independent of Media Enable (CRIME)?",
    "tried": [
+    "search('CRIME')",
+    "search('CRIME')",
     "search('CRIME')"
    ],
-   "answer": "_Understood as `search('CRIME')`_\n\n- CC - Controller Configuration [Base 2.4, 3.1.4.5, Figure 41, page 60]: 24 Controller Ready Independent of Media Enable (CRIME)\n- Additional Hardware Error Information for Controller Ready Timeout Exceeded errors [Base 2.4, 5.2.13.1.14.2.5, Figure 246, page 257]: 0 Controller Ready Independent of Media Enable (CRIME)",
-   "seconds": 0.705
+   "answer": "_Understood as `search('CRIME')`_\n\nNot in the data model; what was found is not about CC, so this is not known. `help` says what can be asked.",
+   "seconds": 1.582
   },
   {
    "id": 28,
@@ -268,8 +272,8 @@
     "feature('CSTS')",
     "log_page('CSTS')"
    ],
-   "answer": "_Understood as `log_page('CSTS')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.577
+   "answer": "_Understood as `log_page('CSTS')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.579
   },
   {
    "id": 29,
@@ -278,8 +282,8 @@
     "command('dword', dword=10)",
     "unknown('dword')"
    ],
-   "answer": "_Understood as `unknown('dword')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.213
+   "answer": "_Understood as `unknown('dword')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.214
   },
   {
    "id": 30,
@@ -289,8 +293,8 @@
     "command('13')",
     "command('13')"
    ],
-   "answer": "_Understood as `command('13')`_\n\nNot in the model, so this is not known. `help` says what can be asked.",
-   "seconds": 1.479
+   "answer": "_Understood as `command('13')`_\n\nNot in the data model, so this is not known. `help` says what can be asked.",
+   "seconds": 1.481
   }
  ]
 }
