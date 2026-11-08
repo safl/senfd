@@ -826,3 +826,40 @@ def test_an_answer_opens_with_a_rule_naming_the_question_and_pages_when_tall(
     senfd.sate.session.show(console, "cdw12 of write", tall, "right")
     assert paged == [True]
     assert "FUA is bit 30" in out.getvalue()  # Said again after the pager
+
+
+@pytest.mark.parametrize(
+    "question, understood",
+    [
+        ("describe cdw10 of ding", "command('Ding', dword=10, describe=True)"),
+        ("explain FOOCAP", "register('FOOCAP', describe=True)"),
+        ("describe feature C0h", "feature('c0h', describe=True)"),
+        (
+            "Describe the foo statistics log page",
+            "log_page('Foo Statistics', describe=True)",
+        ),
+        ("describe", "help('', describe=True)"),
+    ],
+)
+def test_a_question_led_by_describe_asks_for_the_descriptions_too(
+    vocabulary, question, understood
+):
+    assert str(senfd.sate.understand(question, vocabulary)) == understood
+
+
+def test_an_answer_asked_to_describe_gives_the_descriptions(spec, vocabulary):
+    text, tried = senfd.sate.respond(spec, "describe cdw10 of ding", vocabulary)
+    assert tried == ["command('Ding', dword=10, describe=True)"]
+    assert "| Bits | Name | Acronym | Description |" in text
+    assert "| 15:00 | Foo Count | FCNT | How many. |" in text
+    plain, _ = senfd.sate.respond(spec, "cdw10 of ding", vocabulary)
+    assert "Description" not in plain and "How many" not in plain
+    structure, _ = senfd.sate.respond(spec, "explain FOOCAP", vocabulary)
+    assert "| Description |" in structure
+
+
+def test_describe_is_a_form_offered_and_told_of():
+    assert "describe " in phrasing.WORDS
+    assert "`describe cdw12 of write`" in phrasing.HELP
+    assert phrasing.QUESTION_WORDS.search("explain CSTS") is not None
+    assert "explain" in phrasing.GENERIC

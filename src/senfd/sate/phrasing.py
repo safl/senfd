@@ -22,6 +22,7 @@ HELP = """\
 | what an identifier is | `1Fh` |
 | a structure or a register | `structure identify controller`, `CC`, `CSTS` |
 | a field, everywhere it is | `FUA`, `search storage tag` |
+| any of these with the descriptions | `describe cdw12 of write`, `explain CSTS` |
 | a section | `section 5.2.6` |
 | what the documents may have wrong | `errata`, `errata nvm` |
 
@@ -31,6 +32,7 @@ F1 this, and Ctrl-D leaves.
 
 
 WORDS = [
+    "describe ",
     "opcode of ",
     "cdw10 of ",
     "cdw11 of ",
@@ -71,8 +73,8 @@ KINDS_AFTER = [
 
 # The words of questions, as the input line shows them recognised
 QUESTION_WORDS = re.compile(
-    r"\b(?:opcode of|(?:cdw|dword ?)\d+(?: of)?|feature|log page|structure|"
-    r"register|section|search|errata|help)\b",
+    r"\b(?:describe|explain|opcode of|(?:cdw|dword ?)\d+(?: of)?|feature|log page|"
+    r"structure|register|section|search|errata|help)\b",
     re.I,
 )
 
@@ -107,7 +109,8 @@ GENERIC = set(
     bit bits field fields byte bytes offset command commands register registers
     structure structures data log page pages feature features identifier
     identifiers opcode opcodes dword dwords value values set select selects
-    selected describe describes described mean means stand stands name named
+    selected describe describes described explain explains explained mean means
+    stand stands name named
     called contain contains have has ask asks enable enables entry entries
     specification spec nvme nvm express admin section sections errata erratum
     id ids fid lid opc hey hi hello thanks thank you i we my our need want know
