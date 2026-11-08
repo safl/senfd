@@ -863,3 +863,21 @@ def test_describe_is_a_form_offered_and_told_of():
     assert "`describe cdw12 of write`" in phrasing.HELP
     assert phrasing.QUESTION_WORDS.search("explain CSTS") is not None
     assert "explain" in phrasing.GENERIC
+
+
+def test_after_the_words_of_a_kind_only_names_of_that_kind_are_offered():
+    from senfd.sate.completion import completions
+    from senfd.sate.vocabulary import Vocabulary
+
+    vocabulary = Vocabulary(
+        features={"Timestamp", "Power Management"},
+        structures={"Timestamp Change Event Format (Event Type 03h)"},
+    )
+    offered = completions(vocabulary, "which feature is Timest")
+    assert [(o.text, o.kind) for o in offered] == [("Timestamp", "feature")]
+    # The name typed whole leaves nothing to offer, so Enter asks of it, and
+    # takes no longer name of another kind
+    assert completions(vocabulary, "which feature is Timestamp") == []
+    # Asked of a structure, the figure of the event is what is offered
+    offered = completions(vocabulary, "structure Timestamp")
+    assert [o.kind for o in offered] == ["structure"]
