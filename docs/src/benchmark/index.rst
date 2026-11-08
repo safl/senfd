@@ -4,8 +4,8 @@
 
 .. _sec-benchmark:
 
-Benchmark: frontier models and senfd
-====================================
+Benchmark: frontier language models and senfd
+=============================================
 
 **Fast, accurate answers, for free, on your own hardware, free of frontier
 fees and frontier hallucinations.** That is a claim, so here is the
@@ -64,16 +64,16 @@ identifiers and bits as confidently as right ones: Opus gave Sanitize
 Namespace the opcode 85h in all three runs, where the figure says 8Ch, and
 Sonnet put Purge Required at bit 13 of CDW10, where it is bit 11. Allowed to
 say "unknown", they say it of what they do not know and still miss. Their
-training predates the documents, which is the point: what a model knows is
-the revisions it was trained on, and the specifications move on.
+training predates the documents, which is the point: what a language model
+knows is the revisions it was trained on, and the specifications move on.
 
-A small model on a CPU, used as ``senfd-ask --llm`` uses it, cannot make the
-same mistake. It chooses the lookup, constrained to a query and its
-argument, and the answer is what the lookup found in the model of the
-documents, with the figure it cites. The 8 billion parameter model chose
-well for every question. The 1 billion parameter model chose badly for ten,
-the questions of a dword's bits, and said of those that they are not known:
-a weaker model costs answers, never correctness.
+A small language model on a CPU, used as ``senfd-ask --llm`` uses it, cannot
+make the same mistake. It chooses the lookup, constrained to a query and its
+argument, and the answer is what the lookup found in senfd's data model of the
+documents, with the figure it cites. The 8 billion parameter language model
+chose well for every question. The 1 billion parameter language model chose
+badly for ten, the questions of a dword's bits, and said of those that they
+are not known: a weaker language model costs answers, never correctness.
 
 .. raw:: html
 
@@ -101,10 +101,10 @@ a weaker model costs answers, never correctness.
        <code>claude -p --safe-mode --tools ''</code>, three times in each of
        two modes: allowed to say "unknown", with a wrong answer counting
        against it, and told to answer every question, as a chat does.</p>
-       <p>The local lanes ran <code>llama-server</code> of llama.cpp on an
-       AMD EPYC 7532, 16 threads and no GPU offload, with the models as
-       published, Q4_K_M, checked by their SHA-256. <code>senfd-ask</code>
-       ran from a pinned commit of senfd, against the model it made of the
+       <p>The local lanes ran <code>llama-server</code> of llama.cpp on an AMD
+       EPYC 7532, 16 threads and no GPU offload, with the language models as
+       published, Q4_K_M, checked by their SHA-256. <code>senfd-ask</code> ran
+       from a pinned commit of senfd, against the data model it made of the
        eleven documents ratified in 2026, the documents checked by their
        SHA-256 too.</p>
        <p>An answer of <code>senfd-ask</code> is right when a line of it
@@ -116,13 +116,13 @@ a weaker model costs answers, never correctness.
        <p>The benchmark is a <a href="https://cijoe.readthedocs.io/">cijoe</a>
        workflow, kept with the transcripts of every run in the
        <code>nvme-spec-model</code> repository: the questions and their
-       answers, the steps, and a configuration naming the documents, the
-       senfd commit, the machine and the models. The documents are not in
+       answers, the steps, and a configuration naming the documents, the senfd
+       commit, the machine and the language models. The documents are not in
        it; bring your own.</p>
        <pre>cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/$(date +%F)</pre>
        <p>It records what it ran on and with, makes a virtual environment of
-       the pinned senfd, makes the model of the documents, runs every lane,
-       and writes the report above. A run takes about seven minutes.</p>
+       the pinned senfd, makes the data model of the documents, runs every
+       lane, and writes the report above. A run takes about seven minutes.</p>
      </div>
    </div>
    <style>
@@ -141,8 +141,8 @@ What it does not show
 ---------------------
 
 The questions are of facts with one answer, which a lookup answers and a
-model's memory may not. They are not questions of how to use a feature, or
-why, where a frontier model's reasoning is worth its fee; given
+language model's memory may not. They are not questions of how to use a
+feature, or why, where a frontier model's reasoning is worth its fee; given
 ``senfd-mcp`` as tools, it has the facts as well. Nor are 30 questions every
-question: what ``senfd-ask`` does not understand, it says it does not know,
-so the cost of a question it cannot read is an answer, not a wrong one.
+question: what ``senfd-ask`` does not understand, it says it does not know, so
+the cost of a question it cannot read is an answer, not a wrong one.

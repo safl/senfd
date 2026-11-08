@@ -8,7 +8,8 @@ Ask the expert
 ==============
 
 ``senfd-ask`` answers questions about the specifications as an expert would,
-at once, and only from the model. Ask it as you would ask a colleague:
+at once, and only from senfd's data model. Ask it as you would ask a
+colleague:
 
 .. code-block:: console
 
@@ -21,9 +22,9 @@ at once, and only from the model. Ask it as you would ask a colleague:
    ask> FUA
 
 Names, acronyms and the words of questions complete as you type, with Tab,
-from what the model holds: every command, feature, log page, structure and
-register, and every field's acronym. ``help`` lists the forms a question can
-take. Given a question on the command line, it answers that and leaves:
+from what the data model holds: every command, feature, log page, structure
+and register, and every field's acronym. ``help`` lists the forms a question
+can take. Given a question on the command line, it answers that and leaves:
 
 .. code-block:: console
 
@@ -38,21 +39,21 @@ How a question is understood
 
 No language model is involved. A question is read by its words, as "opcode
 of", "cdw12 of", "feature", "log page" or "section"; by an identifier, as
-``1Fh``; and by the names and acronyms of the model it names, the longest
+``1Fh``; and by the names and acronyms of the data model it names, the longest
 first, so "the controller status register" is ``CSTS`` and "dword 13 of Zone
 Append" is that dword of that command. Each answer starts by saying what the
 question was understood as, ``command('Zone Append', dword=13)``, so a
 question understood otherwise than meant shows at once.
 
-Each answer is the answer of a query of the model, rendered as a table, with
-the figure it cites. An answer is shown only when it mentions every term of
-the question that names something. Ask for the bit of Write that "enables the
-hyperdrive" and the answer is that it is not known, not the fields of Write
-that were found for the question's other words. And an answer is shown only
-when it is about what the question names: asked for the opcode of Read, the
-answer must be Read, not Memory Read or Copy, whose names or fields mention
-it; asked for the opcode of "Track", a word of several commands' names, the
-answer is that it is not known.
+Each answer is the answer of a query of the data model, rendered as a table,
+with the figure it cites. An answer is shown only when it mentions every term
+of the question that names something. Ask for the bit of Write that "enables
+the hyperdrive" and the answer is that it is not known, not the fields of
+Write that were found for the question's other words. And an answer is shown
+only when it is about what the question names: asked for the opcode of Read,
+the answer must be Read, not Memory Read or Copy, whose names or fields
+mention it; asked for the opcode of "Track", a word of several commands'
+names, the answer is that it is not known.
 
 With a language model, for free, on your own hardware
 -----------------------------------------------------
@@ -70,13 +71,13 @@ The language model chooses the lookup and nothing else. Its output is
 constrained, by a JSON schema the server turns into a grammar, to the name of
 a query and its argument; the answer shown is what the query found. It writes
 no part of the answer, so it can state no field, bit or opcode that is not in
-the figures. When a lookup finds nothing, or nothing mentioning the
-question's terms, it is told so and chooses again, three times at most, and
-then the answer is that it is not known. A model of 8 billion parameters on
-a CPU is enough, as the :ref:`benchmark <sec-benchmark>` shows; no GPU, no
-service and no fee. A smaller model chooses worse, and what it cannot find it
-says is not known: the model of 1 billion parameters answers fewer of the
-questions, and none of them wrongly.
+the figures. When a lookup finds nothing, or nothing mentioning the question's
+terms, it is told so and chooses again, three times at most, and then the
+answer is that it is not known. A language model of 8 billion parameters on a
+CPU is enough, as the :ref:`benchmark <sec-benchmark>` shows; no GPU, no
+service and no fee. A smaller language model chooses worse, and what it cannot
+find it says is not known: the language model of 1 billion parameters answers
+fewer of the questions, and none of them wrongly.
 
 .. raw:: html
 

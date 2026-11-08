@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 """
-Ask the model questions, interactively, as of an expert who answers at once
+Ask the data model questions, interactively, as of an expert who answers at once
 
     senfd-ask
     > opcode of zone append
@@ -13,20 +13,20 @@ Ask the model questions, interactively, as of an expert who answers at once
 
 A question is understood without a language model: by its words, as "opcode
 of", "cdw12 of", "feature", "log page" or "section", by an identifier, as
-"1Fh", or by an acronym or a name the model has. Each answer says what the
+"1Fh", or by an acronym or a name the data model has. Each answer says what the
 question was understood as, so a question understood otherwise than meant
-shows, and is the answer of a query of the model, with the figures it cites.
+shows, and is the answer of a query of the data model, with the figures it cites.
 Names, acronyms and the words of questions complete as they are typed.
 
 An answer is shown only when it mentions every term of the question that
-names something, so a question of something the model does not have is
+names something, so a question of something the data model does not have is
 answered by saying so, rather than with what was found for its other words.
 
 With ``--llm URL``, a language model served there, as by llama.cpp's
 ``llama-server``, understands the question instead. Its output is
 constrained, by a JSON schema, to the name of a query and its argument; it
 writes no part of the answer, so it can state no field, bit or opcode the
-model does not have. A lookup that finds nothing, or nothing mentioning the
+data model does not have. A lookup that finds nothing, or nothing mentioning the
 question's terms, is said to it, and it chooses again, three times at most.
 
 The prompt and the rendering are of the extra 'ask', ``pip install
@@ -90,7 +90,7 @@ FILLER = re.compile(
 
 @dataclass
 class Understood:
-    """A question as a query of the model: its name and its arguments"""
+    """A question as a query of the data model: its name and its arguments"""
 
     query: str
     argument: str = ""
@@ -108,7 +108,7 @@ class Understood:
 
 @dataclass
 class Vocabulary:
-    """The names and acronyms of the model, which a question may name"""
+    """The names and acronyms of the data model, which a question may name"""
 
     commands: Set[str] = field(default_factory=set)
     features: Set[str] = field(default_factory=set)
@@ -166,7 +166,7 @@ def words_of(text: str) -> str:
 def spot(
     question: str, vocabulary: Vocabulary, only: Optional[str] = None
 ) -> Optional[Tuple[str, str]]:
-    """The longest name of the model the question names, with its kind, or of
+    """The longest name of the data model the question names, with its kind, or of
     the kind 'only'; a register by its name, as "controller status" of
     "CSTS - Controller Status" """
 
@@ -517,7 +517,7 @@ GENERIC = set(
 def terms(question: str) -> List[str]:
     """The terms of 'question' that name something, without a plural's 's'"""
 
-    # "0x07" is "07h", as the model writes it; "CSTS.RDY" is CSTS and RDY; and
+    # "0x07" is "07h", as the data model writes it; "CSTS.RDY" is CSTS and RDY; and
     # "NVMe 2.0" is a revision, not a section the answer must mention
     question = re.sub(REVISION, "", question)
     question = re.sub(
@@ -631,7 +631,7 @@ def respond(
             why = ""
         return (
             f"_Understood as `{understood}`_\n\n"
-            f"Not in the model{why}, so this is not known. "
+            f"Not in the data model{why}, so this is not known. "
             "`help` says what can be asked."
         ), tried
     return f"_Understood as `{understood}`_\n\n" + "\n".join(lines), tried
@@ -760,7 +760,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--spec",
         type=Path,
         default=None,
-        help=f"The merged model (default: {senfd.query.default_spec_path()})",
+        help=f"The merged data model (default: {senfd.query.default_spec_path()})",
     )
     parser.add_argument(
         "--raw", action="store_true", help="Print an answer as Markdown, unrendered"
@@ -775,7 +775,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         spec = senfd.query.load(args.spec)
     except OSError as exc:
-        print(f"senfd-ask: no model to answer from: {exc}", file=sys.stderr)
+        print(f"senfd-ask: no data model to answer from: {exc}", file=sys.stderr)
         return 1
     if args.question:
         show(

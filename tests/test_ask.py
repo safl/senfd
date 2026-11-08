@@ -306,7 +306,7 @@ def test_a_language_model_not_answering_is_said_so(spec, vocabulary, monkeypatch
 
 def test_a_model_not_there_is_said_so(capsys):
     assert senfd.ask.main(["--spec", "/no/such/model.json", "opcode of ding"]) == 1
-    assert "no model to answer from" in capsys.readouterr().err
+    assert "no data model to answer from" in capsys.readouterr().err
 
 
 @pytest.mark.parametrize(

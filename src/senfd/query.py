@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 """
-Answers to questions about the specification, from its merged model
+Answers to questions about the specification, from its merged data model
 
 Each answer is a few lines of text, saying the figure of the document it came
 from, so that it can be checked against the specification. Given 'markdown',
 the fields of an answer are a table of them instead, for an answer shown to a
-reader rather than read by an agent. The model is the
+reader rather than read by an agent. The data model is the
 merged specification document that senfd writes, by default in the cache:
 
     senfd *.docx --output ~/.cache/senfd
@@ -447,7 +447,7 @@ def errata(spec: SpecDocument, document: str = "") -> List[str]:
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Answer questions about the specification from its model"
+        description="Answer questions about the specification from its data model"
     )
     parser.add_argument(
         "--spec",
