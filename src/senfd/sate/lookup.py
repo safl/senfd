@@ -73,24 +73,32 @@ def holding(spec: SpecDocument, kind: str, words: str, most: int = 3) -> List[st
 
 def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     """The Markdown answering 'understood'; a feature or a log page not named
-    by its argument, by the fields named by it"""
+    by its argument, by the fields named by it; with the fields' descriptions
+    where the question asked for them"""
 
     q = senfd.query
+    describe = understood.describe
     if understood.query in ("feature", "log_page"):
         by = q.feature if understood.query == "feature" else q.log_page
-        lines = by(spec, understood.argument, markdown=True)
+        lines = by(spec, understood.argument, verbose=describe, markdown=True)
         if nothing(lines):
             keys = holding(spec, understood.query, understood.argument)
-            held = [line for key in keys for line in by(spec, key, markdown=True)]
+            held = [
+                line
+                for key in keys
+                for line in by(spec, key, verbose=describe, markdown=True)
+            ]
             return held or lines
         return lines
     found: List[str]
     if understood.query == "help":
         return [str(line) for line in HELP.splitlines()]
     if understood.query == "command":
-        return q.command(spec, understood.argument, understood.dword, markdown=True)
+        return q.command(
+            spec, understood.argument, understood.dword, verbose=describe, markdown=True
+        )
     if understood.query == "structure":
-        return q.structure(spec, understood.argument, markdown=True)
+        return q.structure(spec, understood.argument, verbose=describe, markdown=True)
     if understood.query == "section":
         return bullets(q.section(spec, understood.argument))
     if understood.query == "errata":
@@ -100,8 +108,8 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     if understood.query == "identifier":
         found = []
         for lines in (
-            q.feature(spec, understood.argument, markdown=True),
-            q.log_page(spec, understood.argument, markdown=True),
+            q.feature(spec, understood.argument, verbose=describe, markdown=True),
+            q.log_page(spec, understood.argument, verbose=describe, markdown=True),
         ):
             if not nothing(lines):
                 found += lines + [""]
@@ -110,16 +118,16 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
         found = []
         for s in spec.structures:
             if s.name.lower().startswith(understood.argument.lower() + " - "):
-                found += q.lines_of_structure(s, False, markdown=True)
+                found += q.lines_of_structure(s, describe, markdown=True)
         return found or [f"No register {understood.argument}"]
     if understood.query == "acronym":
         return bullets(q.search(spec, understood.argument))
     # A name: what has it, a command first, then a structure, else where it is
     for lines in (
-        q.command(spec, understood.argument, markdown=True),
-        q.structure(spec, understood.argument, markdown=True),
-        q.feature(spec, understood.argument, markdown=True),
-        q.log_page(spec, understood.argument, markdown=True),
+        q.command(spec, understood.argument, verbose=describe, markdown=True),
+        q.structure(spec, understood.argument, verbose=describe, markdown=True),
+        q.feature(spec, understood.argument, verbose=describe, markdown=True),
+        q.log_page(spec, understood.argument, verbose=describe, markdown=True),
     ):
         if not nothing(lines):
             return lines

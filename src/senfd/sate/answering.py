@@ -8,6 +8,7 @@ said, with where the fields asked of are
 """
 
 import re
+from dataclasses import replace
 import time
 from typing import List, Optional, Tuple
 
@@ -15,7 +16,7 @@ from senfd.sate import language_model
 from senfd.sate.grounding import SEVERAL, elsewhere, unmentioned
 from senfd.sate.lookup import ambiguous, answer, nothing, resolved
 from senfd.sate.phrasing import FILLER, acronyms_of, terms, words_of
-from senfd.sate.reading import Understood, spot, understand
+from senfd.sate.reading import Understood, described, spot, understand
 from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import linked, SpecDocument
 
@@ -47,6 +48,8 @@ def by_language_model(
     ]
     for _ in range(tries):
         chosen = language_model.choose(llm, messages)
+        if described(question)[0]:
+            chosen = replace(chosen, describe=True)
         if chosen.query == "unknown":
             attempts.append((chosen, []))
             break

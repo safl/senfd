@@ -8,7 +8,7 @@ A question read by its words, names and acronyms, as the query answering it
 
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import List, Optional, Tuple
 
 from senfd.sate.phrasing import ASKS_COMMAND, DWORD, GENERIC, terms, words_of
@@ -22,10 +22,13 @@ class Understood:
     query: str
     argument: str = ""
     dword: Optional[int] = None
+    describe: bool = False
+    """Whether the answer gives the fields' descriptions too"""
 
     def __str__(self) -> str:
         dword = f", dword={self.dword}" if self.dword is not None else ""
-        return f"{self.query}({self.argument!r}{dword})"
+        describe = ", describe=True" if self.describe else ""
+        return f"{self.query}({self.argument!r}{dword}{describe})"
 
     def json(self) -> str:
         return json.dumps(
@@ -68,9 +71,30 @@ def spot(
     return query, argument
 
 
+# A question asking for the descriptions too, as "describe cdw12 of write"
+DESCRIBE = re.compile(r"^(?:describe|explain)\b[\s:,-]*", re.I)
+
+
+def described(text: str) -> Tuple[bool, str]:
+    """Whether 'text' asks for the descriptions, by its first word, and the
+    question after that word"""
+
+    match = DESCRIBE.match(text)
+    return (True, text[match.end() :]) if match else (False, text)
+
+
 def understand(question: str, vocabulary: Vocabulary) -> Understood:
     """'question' as the query answering it: by its words where it is phrased
-    as a query, as "feature 07h", else by the names and acronyms it names"""
+    as a query, as "feature 07h", else by the names and acronyms it names;
+    led by "describe" or "explain", with the fields' descriptions"""
+
+    describe, text = described(" ".join(question.strip().split()))
+    understood = read_question(text, vocabulary)
+    return replace(understood, describe=True) if describe else understood
+
+
+def read_question(question: str, vocabulary: Vocabulary) -> Understood:
+    """'question' as the query answering it, see understand()"""
 
     text = " ".join(question.strip().split())
     lower = text.lower().rstrip("?").strip()
