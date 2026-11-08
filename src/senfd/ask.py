@@ -180,7 +180,8 @@ def spot(question: str, vocabulary: Vocabulary) -> Optional[Tuple[str, str]]:
     for rank, (kind, names) in enumerate(kinds):
         for name in names:
             head, dash, rest = name.partition(" - ")
-            for form in {name, rest} if dash else {name}:
+            # A register is named by its name, a caption not by its qualifier
+            for form in {name, rest} if dash and head.isupper() else {name}:
                 key = words_of(form)
                 if not set(key.split()) - GENERIC:
                     continue  # As "Command" of "CMD - Command", it names nothing
@@ -245,9 +246,17 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
         return Understood("register", registers[0])
     if named:
         return Understood(named[0], named[1])
+    # A feature or log page named by part of its name, as "a log page for
+    # rotational media", is looked up by the rest of the question's terms
+    rest = " ".join(terms(text))
+    for word, query in (
+        (r"\blog ?pages?\b", "log_page"),
+        (r"\bfeatures?\b", "feature"),
+    ):
+        if re.search(word, lower) and rest:
+            return Understood(query, rest)
     if capitals:
         return Understood("acronym", capitals[0])
-    rest = " ".join(terms(text))
     return Understood("name", rest or lower)
 
 
@@ -340,6 +349,8 @@ GENERIC = set(
     selected describe describes described mean means stand stands name named
     called contain contains have has ask asks enable enables entry entries
     specification spec nvme nvm express admin section sections errata erratum
+    id ids fid lid opc hey hi hello thanks thank you i we my our need want know
+    find just also any
     """.split()
 )
 
