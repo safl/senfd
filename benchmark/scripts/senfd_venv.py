@@ -33,7 +33,7 @@ import bench  # noqa: E402
 def main(args, cijoe):
     repo, commit = cijoe.getconf("senfd.repo"), cijoe.getconf("senfd.commit")
     venv = bench.workdir(cijoe) / "venv"
-    spec = shlex.quote(f"senfd[sate] @ git+{repo}@{commit}")
+    spec = shlex.quote(f"senfd[sate,pdf] @ git+{repo}@{commit}")
     for cmd in (
         f"rm -rf {venv}",
         f"uv venv -q -p {cijoe.getconf('senfd.python', '3.12')} {venv}",
