@@ -26,8 +26,8 @@ Express, Inc. to make the data model or make use of it.**
 **And yet, see what it gets right.** Asked 30 questions with one exact
 answer each, mostly about what the revisions ratified in 2026 added or moved,
 ``sate`` answered **all 30 right**, in 4 ms each, for free, and so did
-Llama 3.1 8B on a CPU choosing its lookups, in 2.7 s each. Claude Opus 5.5
-and Sonnet 5.5, from memory and told to answer, got **4.7 and 7.7 wrong** on
+Llama 3.1 8B on a CPU choosing its lookups, in 3.3 s each. Claude Opus 5.5
+and Sonnet 5.5, from memory and told to answer, got **4.3 and 7.3 wrong** on
 average, stated as surely as the right ones. The :ref:`benchmark
 <sec-benchmark>` shows every answer.
 
@@ -64,7 +64,7 @@ From that one data model, today:
   nothing of the answer. Frontier language models asked from memory invent
   opcodes and bits of recent revisions; senfd's answers are the figures'. In
   the :ref:`benchmark <sec-benchmark>`, Llama 3.1 8B on a CPU answered 30 of
-  30 right, for free, where Claude Opus 5.5 told to answer got 4.7 wrong on
+  30 right, for free, where Claude Opus 5.5 told to answer got 4.3 wrong on
   average.
 * **Code generated from the figures.** An early prototype for xNVMe writes
   its specification headers from the data model: structs, masks, opcodes,

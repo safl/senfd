@@ -70,9 +70,9 @@ what the revisions ratified in 2026 added or moved:
 * ``sate``, by the words of the question: **30 of 30 right**, in 4 ms
   each, for free.
 * ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **30 of 30
-  right**, in 2.7 s each, for free, on your own hardware.
-* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **4.7 and
-  7.7 wrong** on average, stated as surely as the right ones, at USD 0.17
+  right**, in 3.3 s each, for free, on your own hardware.
+* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **4.3 and
+  7.3 wrong** on average, stated as surely as the right ones, at USD 0.16
   and 0.07 a run.
 
 The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
