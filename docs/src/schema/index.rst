@@ -26,8 +26,11 @@ The data model
 The SpecDocument is the data model; ``merged.spec.document.json`` merges
 those of every document given. Its parts:
 
-* ``meta``: the version of senfd that made it, and the name of the document
-  it is of, ``merged`` for the merged one.
+* ``meta``: the version of senfd that made it, the name of the document it
+  is of, ``merged`` for the merged one, and the file it was made from with
+  that file's SHA-256, by which a published document is known.
+* ``documents``: the documents the data model is of, by name, each with its
+  file and SHA-256, so the merged one knows every document in it.
 * ``command_sets``: each command set by its name, with its commands. A
   command has its ``opcode``, its submission queue entry dwords ``sqe`` and
   completion queue entry dwords ``cqe``, and its ``operations``, what it
@@ -52,7 +55,8 @@ share bits, and the ``values`` it takes. A value of a table of a known kind
 is ``typed`` as what it is: a requirement level, a flag, an identifier or a
 range, a note, a reference, reserved or vendor specific. Every part has a
 ``source``: the document, the section and its title, the figure and the
-page.
+page, and, where the document was read from a PDF, the page of the file,
+``pdf_page``, where a link to the PDF opens.
 
 The schema is versioned with senfd, and changes in a release are said in its
 changelog. It is a starting point for a data model of the specifications, not

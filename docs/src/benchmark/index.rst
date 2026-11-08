@@ -70,6 +70,12 @@ and 6.3 wrong rather than 7.7. Their
 training predates the documents, which is the point: what a language model
 knows is the revisions it was trained on, and the specifications move on.
 
+The run of 2026-11-08 made its data model from the ``.docx`` of the eleven
+documents. The CI job of every change makes the data model from the PDFs NVM
+Express publishes and has ``sate`` answer the same 30 questions from it,
+failing unless every one is right; it has been 30 of 30 since the PDFs were
+first read.
+
 A small language model on a CPU, used as ``sate --llm`` uses it, cannot
 make the same mistake. It chooses the lookup, constrained to a query and its
 argument, and the answer is what the lookup found in senfd's data model of the
