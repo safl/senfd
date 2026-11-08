@@ -23,6 +23,7 @@ mcp = ["mcp>=2"]
 ask = ["prompt_toolkit>=3", "rich>=13"]
 dev = [
     "mcp>=2",
+    "pyte",
     "pytest",
     "pytest-cov",
 ]

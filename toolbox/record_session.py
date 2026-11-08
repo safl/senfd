@@ -12,7 +12,7 @@ of the script is typed into it a key at a time, then Enter; '\\t' in a line
 is a press of Tab. What the program draws is recorded as it draws it, so its
 completion menus show. The timing is made up, as by record_cast.py, a fixed
 pace of typing and a pause after each answer; at the end of the script the
-input ends, as by Ctrl-D:
+input ends, as by Ctrl-D. It needs pyte, of the extra 'dev':
 
     toolbox/record_session.py "senfd-ask" docs/casts/session.txt \\
         docs/_static/casts/session.cast
@@ -31,14 +31,18 @@ import time
 from pathlib import Path
 from typing import List, Tuple
 
+import pyte
+
 TYPING = 0.08  # Seconds a key
 PAUSE = 2.4  # Seconds after an answer, for reading it
 WIDTH, HEIGHT = 110, 32
 
 
-def drawn(fd: int, quiet: float, longest: float) -> str:
+def drawn(fd: int, screen, quiet: float, longest: float) -> str:
     """What the program draws, until it has drawn nothing for 'quiet' seconds
-    or 'longest' seconds have gone"""
+    or 'longest' seconds have gone; 'screen' follows it, as a terminal would,
+    and answers what the program asks of the terminal, as where its cursor
+    is, which prompt_toolkit asks before drawing its bottom toolbar"""
 
     out = b""
     end = time.monotonic() + longest
@@ -53,6 +57,7 @@ def drawn(fd: int, quiet: float, longest: float) -> str:
         if not chunk:
             break
         out += chunk
+        screen.feed(chunk)
     return out.decode("utf-8", "replace")
 
 
@@ -61,6 +66,9 @@ def events_of(command: List[str], script: List[str], env: dict):
     if pid == 0:
         os.execvpe(command[0], command, env)
     fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", HEIGHT, WIDTH, 0, 0))
+    terminal = pyte.Screen(WIDTH, HEIGHT)
+    terminal.write_process_input = lambda answer: os.write(fd, answer.encode())
+    screen = pyte.ByteStream(terminal)
 
     events: List[Tuple[float, str]] = []
     at = 0.5
@@ -71,16 +79,16 @@ def events_of(command: List[str], script: List[str], env: dict):
             events.append((at, text))
         at += after
 
-    show(drawn(fd, 1.5, 30), 1.5)  # Until it waits for a question
+    show(drawn(fd, screen, 1.5, 30), 1.5)  # Until it waits for a question
     for line in script:
         for key in line.replace("\\t", "\t"):
             os.write(fd, key.encode())
-            show(drawn(fd, 0.15, 5), TYPING if key != "\t" else 1.4)
+            show(drawn(fd, screen, 0.15, 5), TYPING if key != "\t" else 1.4)
         os.write(fd, b"\r")
-        text = drawn(fd, 0.5, 120)
+        text = drawn(fd, screen, 0.5, 120)
         show(text, PAUSE + min(text.count("\n"), 30) * 0.08)
     os.write(fd, b"\x04")
-    show(drawn(fd, 0.3, 5), 0.5)
+    show(drawn(fd, screen, 0.3, 5), 0.5)
     os.waitpid(pid, 0)
     return events
 
@@ -103,7 +111,6 @@ def main() -> int:
         COLUMNS=str(WIDTH),
         LINES=str(HEIGHT),
         TERM="xterm-256color",
-        PROMPT_TOOLKIT_NO_CPR="1",  # Nothing answers its cursor position requests
     )
     header = {"version": 2, "width": WIDTH, "height": HEIGHT, "title": args.title}
     args.cast.parent.mkdir(parents=True, exist_ok=True)
