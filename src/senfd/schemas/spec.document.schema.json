@@ -13,6 +13,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "The name of the field, as 'Force Unit Access'",
                     "title": "Name"
                 },
                 "acronym": {
@@ -25,9 +26,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "Its acronym, as \"FUA\"; None where it has none or the document's is not\none, which is then an erratum",
                     "title": "Acronym"
                 },
                 "unit": {
+                    "description": "What the range counts: \"bits\" or 'bytes'",
                     "title": "Unit",
                     "type": "string"
                 },
@@ -41,6 +44,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "The upper bound of the range, inclusive",
                     "title": "Upper"
                 },
                 "lower": {
@@ -53,14 +57,17 @@
                         }
                     ],
                     "default": null,
+                    "description": "The lower bound of the range",
                     "title": "Lower"
                 },
                 "range": {
+                    "description": "The range as the document writes it, as \"29:26\" or '03:00'",
                     "title": "Range",
                     "type": "string"
                 },
                 "description": {
                     "default": "",
+                    "description": "The text of the field's description",
                     "title": "Description",
                     "type": "string"
                 },
@@ -74,16 +81,19 @@
                         }
                     ],
                     "default": null,
+                    "description": "The heading of a row of the figure that groups fields, as the fields\nunder it are of",
                     "title": "Section"
                 },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "The figure's other columns of the field, by their keys, as \"reset\" or\n'type'",
                     "title": "Columns",
                     "type": "object"
                 },
                 "fields": {
+                    "description": "The fields within this one, as its description lays them out",
                     "items": {
                         "$ref": "#/$defs/Bits"
                     },
@@ -100,6 +110,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of fields sharing bits, the union of the layout they are of",
                     "title": "Union"
                 },
                 "alternative": {
@@ -112,9 +123,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of fields sharing bits, which fields go together, as an IPv4 address\nand the reserved bits after it, against an IPv6 address of the same\nbytes",
                     "title": "Alternative"
                 },
                 "values": {
+                    "description": "The values the field takes, as the table in its description gives\nthem",
                     "items": {
                         "$ref": "#/$defs/Entry"
                     },
@@ -130,16 +143,20 @@
             "type": "object"
         },
         "Command": {
+            "description": "A command, by its opcode, with its dwords and its operations",
             "properties": {
                 "name": {
+                    "description": "The name of the command, as 'Write'",
                     "title": "Name",
                     "type": "string"
                 },
                 "opcode": {
+                    "description": "The opcode",
                     "title": "Opcode",
                     "type": "integer"
                 },
                 "sqe": {
+                    "description": "The dwords of its submission queue entry that its figures lay out",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -147,6 +164,7 @@
                     "type": "array"
                 },
                 "cqe": {
+                    "description": "The dwords of its completion queue entry that its figures lay out",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -154,6 +172,7 @@
                     "type": "array"
                 },
                 "operations": {
+                    "description": "What it does for the values of its selecting fields, if it has any",
                     "items": {
                         "$ref": "#/$defs/Operation"
                     },
@@ -164,11 +183,13 @@
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "The opcode table's other columns of the command, by their keys",
                     "title": "Columns",
                     "type": "object"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The opcode table listing the command"
                 }
             },
             "required": [
@@ -180,8 +201,10 @@
             "type": "object"
         },
         "CommandSet": {
+            "description": "The commands of an opcode table, as Admin or NVM",
             "properties": {
                 "name": {
+                    "description": "The name of the command set",
                     "title": "Name",
                     "type": "string"
                 },
@@ -189,6 +212,7 @@
                     "additionalProperties": {
                         "$ref": "#/$defs/Command"
                     },
+                    "description": "Its commands, by their names as keys, as 'zone_append'",
                     "title": "Commands",
                     "type": "object"
                 }
@@ -212,17 +236,21 @@
                         }
                     ],
                     "default": null,
+                    "description": "The number of the figure, where it is known",
                     "title": "Figure Nr"
                 },
                 "severity": {
+                    "description": "'note' or 'warning'",
                     "title": "Severity",
                     "type": "string"
                 },
                 "code": {
+                    "description": "What kind it is, as \"figure-not-modelled\" or 'dwords-unassigned'",
                     "title": "Code",
                     "type": "string"
                 },
                 "message": {
+                    "description": "What was found, with the document and the figure, said for a person",
                     "title": "Message",
                     "type": "string"
                 }
@@ -236,13 +264,16 @@
             "type": "object"
         },
         "DocumentMeta": {
+            "description": "Who made the document and of what",
             "properties": {
                 "version": {
                     "default": "0.8.0",
+                    "description": "The version of senfd that made it",
                     "title": "Version",
                     "type": "string"
                 },
                 "stem": {
+                    "description": "The name of the document it is of, \"merged\" for the merged one",
                     "title": "Stem",
                     "type": "string"
                 }
@@ -254,10 +285,12 @@
             "description": "The dwords 'lower' to 'upper' of a command, and their fields",
             "properties": {
                 "lower": {
+                    "description": "The first dword, as 10 of CDW10",
                     "title": "Lower",
                     "type": "integer"
                 },
                 "upper": {
+                    "description": "The last dword, the same as 'lower' for one dword",
                     "title": "Upper",
                     "type": "integer"
                 },
@@ -271,6 +304,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Where the figure lays the dwords out only under a condition, the\ncondition, as 'CETYPE is cleared to 0h'",
                     "title": "Condition"
                 },
                 "qualifier": {
@@ -283,9 +317,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "What the caption says the dwords are of, as 'NVM Command Set Specific\nFields'",
                     "title": "Qualifier"
                 },
                 "fields": {
+                    "description": "The fields of the dwords, the bits counted across them",
                     "items": {
                         "$ref": "#/$defs/Bits"
                     },
@@ -293,7 +329,8 @@
                     "type": "array"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure laying them out"
                 }
             },
             "required": [
@@ -308,11 +345,13 @@
             "description": "A row of a table of values, as a status value or a log page identifier;\n'typed' has the values of its columns of a known kind as what they are",
             "properties": {
                 "value": {
+                    "description": "The value, as the document writes it, as '1Fh'",
                     "title": "Value",
                     "type": "string"
                 },
                 "value_column": {
                     "default": "",
+                    "description": "The key of the column holding the value",
                     "title": "Value Column",
                     "type": "string"
                 },
@@ -326,10 +365,12 @@
                         }
                     ],
                     "default": null,
+                    "description": "The name the row gives the value",
                     "title": "Name"
                 },
                 "description": {
                     "default": "",
+                    "description": "The text of the row's description",
                     "title": "Description",
                     "type": "string"
                 },
@@ -337,6 +378,7 @@
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "The row's other columns, by their keys",
                     "title": "Columns",
                     "type": "object"
                 },
@@ -344,6 +386,7 @@
                     "additionalProperties": {
                         "$ref": "#/$defs/Typed"
                     },
+                    "description": "The values of the row's columns of a known kind, by their keys",
                     "title": "Typed",
                     "type": "object"
                 }
@@ -358,20 +401,24 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
+                    "description": "What kind it is, as \"value\", \"acronym\", \"range-outside\",\n\"range-reversed\", \"opcode\" or 'gap'",
                     "title": "Code",
                     "type": "string"
                 },
                 "message": {
+                    "description": "What is wrong, said for a person",
                     "title": "Message",
                     "type": "string"
                 },
                 "found": {
                     "default": "",
+                    "description": "The text found in the figure",
                     "title": "Found",
                     "type": "string"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure it is in"
                 }
             },
             "required": [
@@ -386,10 +433,12 @@
             "description": "A feature, by its identifier, and the dwords of the commands setting and\ngetting it that are described for it",
             "properties": {
                 "identifier": {
+                    "description": "The feature identifier, as 7 of 07h",
                     "title": "Identifier",
                     "type": "integer"
                 },
                 "name": {
+                    "description": "The name of the feature, as 'Number of Queues'",
                     "title": "Name",
                     "type": "string"
                 },
@@ -397,10 +446,12 @@
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "The feature identifier table's other columns of it, by their keys, as\nits requirements",
                     "title": "Columns",
                     "type": "object"
                 },
                 "sqe": {
+                    "description": "The submission queue entry dwords described for it",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -408,6 +459,7 @@
                     "type": "array"
                 },
                 "cqe": {
+                    "description": "The completion queue entry dwords described for it",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -415,7 +467,8 @@
                     "type": "array"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The feature identifier table listing it"
                 }
             },
             "required": [
@@ -430,10 +483,12 @@
             "description": "A log page, by its identifier, and the structure laying it out",
             "properties": {
                 "identifier": {
+                    "description": "The log page identifier, as 2 of 02h",
                     "title": "Identifier",
                     "type": "integer"
                 },
                 "name": {
+                    "description": "The name of the log page, as 'SMART / Health Information'",
                     "title": "Name",
                     "type": "string"
                 },
@@ -441,6 +496,7 @@
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "The log page identifier table's other columns of it, by their keys",
                     "title": "Columns",
                     "type": "object"
                 },
@@ -453,10 +509,12 @@
                             "type": "null"
                         }
                     ],
-                    "default": null
+                    "default": null,
+                    "description": "The structure laying it out, where a figure is known for it"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The log page identifier table listing it"
                 }
             },
             "required": [
@@ -471,6 +529,7 @@
             "description": "What a command does for the values of its selecting fields, as a directive\noperation of Directive Receive by its directive type (DTYPE) and operation\n(DOPER), with the dwords and the structures of that operation",
             "properties": {
                 "name": {
+                    "description": "The name of the operation",
                     "title": "Name",
                     "type": "string"
                 },
@@ -478,10 +537,12 @@
                     "additionalProperties": {
                         "type": "integer"
                     },
+                    "description": "The values of the command's fields selecting it, by acronym, as\n{\"DTYPE\": 0, \"DOPER\": 1}",
                     "title": "Selectors",
                     "type": "object"
                 },
                 "sqe": {
+                    "description": "The submission queue entry dwords of the operation",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -489,6 +550,7 @@
                     "type": "array"
                 },
                 "cqe": {
+                    "description": "The completion queue entry dwords of the operation",
                     "items": {
                         "$ref": "#/$defs/Dwords"
                     },
@@ -496,6 +558,7 @@
                     "type": "array"
                 },
                 "structures": {
+                    "description": "The names of the structures the operation transfers",
                     "items": {
                         "type": "string"
                     },
@@ -503,7 +566,8 @@
                     "type": "array"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure listing the operation"
                 }
             },
             "required": [
@@ -517,10 +581,12 @@
             "description": "Where something came from: the document, the figure, the page the\nfigure is on, and the section it is in, by number and title",
             "properties": {
                 "document": {
+                    "description": "The document, by the name of its file, as 'NVM Express Base\nSpecification, Revision 2-4 Ratified 2026-08-21'",
                     "title": "Document",
                     "type": "string"
                 },
                 "figure_nr": {
+                    "description": "The number of the figure",
                     "title": "Figure Nr",
                     "type": "integer"
                 },
@@ -534,6 +600,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "The page the figure is on, by the document's table of figures",
                     "title": "Page Nr"
                 },
                 "section": {
@@ -546,6 +613,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "The number of the section the figure is in, as '3.1.4.1'",
                     "title": "Section"
                 },
                 "section_title": {
@@ -558,6 +626,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "The title of that section",
                     "title": "Section Title"
                 }
             },
@@ -572,14 +641,17 @@
             "description": "A layout of fields that is no command's dwords: a data structure, a log\npage, a register or anything else a figure lays out",
             "properties": {
                 "name": {
+                    "description": "The name its caption gives, as 'CC - Controller Configuration'",
                     "title": "Name",
                     "type": "string"
                 },
                 "kind": {
+                    "description": "What its caption says it is, as \"data_structure\", \"log_page\" or\n\"register\", or 'other'",
                     "title": "Kind",
                     "type": "string"
                 },
                 "unit": {
+                    "description": "What its fields' ranges count: \"bits\" or 'bytes'",
                     "title": "Unit",
                     "type": "string"
                 },
@@ -593,6 +665,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "What the caption says it is of, as 'Log Specific Field'",
                     "title": "Qualifier"
                 },
                 "offset": {
@@ -605,9 +678,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a register, its offset, as '14h'",
                     "title": "Offset"
                 },
                 "fields": {
+                    "description": "Its fields",
                     "items": {
                         "$ref": "#/$defs/Bits"
                     },
@@ -615,6 +690,7 @@
                     "type": "array"
                 },
                 "notes": {
+                    "description": "The notes of the figure",
                     "items": {
                         "type": "string"
                     },
@@ -622,7 +698,8 @@
                     "type": "array"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure laying it out"
                 }
             },
             "required": [
@@ -638,6 +715,7 @@
             "description": "A value of a table as what it is: a requirement \"level\" (M, O, P, NR, R),\na yes or no \"flag\", an \"identifier\" or a range of them, a \"note\" it is\ngiven by, a \"reference\" to another specification, or \"reserved\" or\n\"vendor_specific\"; with the footnotes marked on it",
             "properties": {
                 "kind": {
+                    "description": "Which of those it is",
                     "title": "Kind",
                     "type": "string"
                 },
@@ -651,6 +729,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a level, the level",
                     "title": "Level"
                 },
                 "flag": {
@@ -663,6 +742,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a flag, whether yes",
                     "title": "Flag"
                 },
                 "lower": {
@@ -675,6 +755,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of an identifier, it, or the first of a range",
                     "title": "Lower"
                 },
                 "upper": {
@@ -687,6 +768,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a range of identifiers, the last",
                     "title": "Upper"
                 },
                 "note": {
@@ -699,6 +781,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a note, its number",
                     "title": "Note"
                 },
                 "reference": {
@@ -711,9 +794,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "Of a reference, the specification referred to",
                     "title": "Reference"
                 },
                 "footnotes": {
+                    "description": "The numbers of the footnotes marked on the value",
                     "items": {
                         "type": "integer"
                     },
@@ -731,6 +816,7 @@
             "description": "A table of values, by the kind of its caption and what it names; the\nscope is what the caption confines it to, as \"I/O Commands\" ",
             "properties": {
                 "kind": {
+                    "description": "What its caption says it is, as \"status_values\", \"requirements\" or\n\"log_page_identifiers\", or 'other'",
                     "title": "Kind",
                     "type": "string"
                 },
@@ -744,6 +830,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "What the caption names, as the command or field the values are of",
                     "title": "Name"
                 },
                 "qualifier": {
@@ -756,6 +843,7 @@
                         }
                     ],
                     "default": null,
+                    "description": "What else the caption says they are of",
                     "title": "Qualifier"
                 },
                 "scope": {
@@ -768,9 +856,11 @@
                         }
                     ],
                     "default": null,
+                    "description": "What the caption confines them to, as 'I/O Commands'",
                     "title": "Scope"
                 },
                 "columns": {
+                    "description": "The keys of its columns",
                     "items": {
                         "type": "string"
                     },
@@ -778,6 +868,7 @@
                     "type": "array"
                 },
                 "entries": {
+                    "description": "Its rows",
                     "items": {
                         "$ref": "#/$defs/Entry"
                     },
@@ -785,7 +876,8 @@
                     "type": "array"
                 },
                 "source": {
-                    "$ref": "#/$defs/Source"
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure holding the table"
                 }
             },
             "required": [
@@ -796,14 +888,17 @@
             "type": "object"
         }
     },
+    "description": "The data model of the specification, of one document or, merged, of\nseveral",
     "properties": {
         "meta": {
-            "$ref": "#/$defs/DocumentMeta"
+            "$ref": "#/$defs/DocumentMeta",
+            "description": "The version of senfd that made the document, and what it is of"
         },
         "command_sets": {
             "additionalProperties": {
                 "$ref": "#/$defs/CommandSet"
             },
+            "description": "The command sets of the opcode tables, by their names as keys",
             "title": "Command Sets",
             "type": "object"
         },
@@ -814,10 +909,12 @@
                 },
                 "type": "array"
             },
+            "description": "The dwords of every figure, by the name its caption gives, as read",
             "title": "Dwords",
             "type": "object"
         },
         "structures": {
+            "description": "Every layout that is no command's dwords",
             "items": {
                 "$ref": "#/$defs/Structure"
             },
@@ -825,6 +922,7 @@
             "type": "array"
         },
         "values": {
+            "description": "The tables of values",
             "items": {
                 "$ref": "#/$defs/Values"
             },
@@ -835,6 +933,7 @@
             "additionalProperties": {
                 "$ref": "#/$defs/Feature"
             },
+            "description": "The features, by their names as keys",
             "title": "Features",
             "type": "object"
         },
@@ -842,6 +941,7 @@
             "additionalProperties": {
                 "$ref": "#/$defs/LogPage"
             },
+            "description": "The log pages, by their names as keys",
             "title": "Log Pages",
             "type": "object"
         },
@@ -852,10 +952,12 @@
                 },
                 "type": "array"
             },
+            "description": "The dwords no command, feature or operation claims, by the name their\ncaption gives",
             "title": "Unassigned",
             "type": "object"
         },
         "diagnostics": {
+            "description": "What senfd normalised, or could not read as data",
             "items": {
                 "$ref": "#/$defs/Diagnostic"
             },
@@ -863,6 +965,7 @@
             "type": "array"
         },
         "errata": {
+            "description": "The candidate errata of the documents",
             "items": {
                 "$ref": "#/$defs/Erratum"
             },

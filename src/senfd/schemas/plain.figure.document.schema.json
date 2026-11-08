@@ -34,13 +34,16 @@
             "type": "object"
         },
         "DocumentMeta": {
+            "description": "Who made the document and of what",
             "properties": {
                 "version": {
                     "default": "0.8.0",
+                    "description": "The version of senfd that made it",
                     "title": "Version",
                     "type": "string"
                 },
                 "stem": {
+                    "description": "The name of the document it is of, \"merged\" for the merged one",
                     "title": "Stem",
                     "type": "string"
                 }
@@ -153,7 +156,8 @@
     },
     "properties": {
         "meta": {
-            "$ref": "#/$defs/DocumentMeta"
+            "$ref": "#/$defs/DocumentMeta",
+            "description": "The version of senfd that made the document, and what it is of"
         },
         "figures": {
             "items": {

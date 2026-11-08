@@ -16,9 +16,9 @@ from argparse import Namespace
 from pathlib import Path
 from typing import ClassVar, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from senfd.documents.base import Converter, Document, strip_all_suffixes
+from senfd.documents.base import Converter, Document, Model, strip_all_suffixes
 from senfd.documents.normalized import (
     Layout,
     LayoutField,
@@ -29,55 +29,83 @@ from senfd.errors import Error
 from senfd.normalize import Diagnostic, note, warning
 
 
-class Source(BaseModel):
+class Source(Model):
     """Where something came from: the document, the figure, the page the
     figure is on, and the section it is in, by number and title"""
 
     document: str
+    """The document, by the name of its file, as 'NVM Express Base
+    Specification, Revision 2-4 Ratified 2026-08-21'"""
     figure_nr: int
+    """The number of the figure"""
     page_nr: Optional[int] = None
+    """The page the figure is on, by the document's table of figures"""
     section: Optional[str] = None
+    """The number of the section the figure is in, as '3.1.4.1'"""
     section_title: Optional[str] = None
+    """The title of that section"""
 
 
-class Bits(BaseModel):
+class Bits(Model):
     """
     A field of bits or bytes; 'upper' and 'lower' are None where the document
     gives the range by a formula, which 'range' then holds
     """
 
     name: Optional[str] = None
+    """The name of the field, as 'Force Unit Access'"""
     acronym: Optional[str] = None
+    """Its acronym, as "FUA"; None where it has none or the document's is not
+    one, which is then an erratum"""
     unit: str
+    """What the range counts: "bits" or 'bytes'"""
     upper: Optional[int] = None
+    """The upper bound of the range, inclusive"""
     lower: Optional[int] = None
+    """The lower bound of the range"""
     range: str
+    """The range as the document writes it, as "29:26" or '03:00'"""
     description: str = ""
+    """The text of the field's description"""
     section: Optional[str] = None
+    """The heading of a row of the figure that groups fields, as the fields
+    under it are of"""
     columns: Dict[str, str] = Field(default_factory=dict)
+    """The figure's other columns of the field, by their keys, as "reset" or
+    'type'"""
     fields: List["Bits"] = Field(default_factory=list)
-    # Fields sharing bits are alternatives of one union: 'union' numbers the
-    # union of the layout the field is of, 'alternative' the fields that go
-    # together, as an IPv4 address and the reserved bits after it, or an IPv6
-    # address of the same bytes
+    """The fields within this one, as its description lays them out"""
     union: Optional[int] = None
+    """Of fields sharing bits, the union of the layout they are of"""
     alternative: Optional[int] = None
-    # The values the field takes, as the table in its description gives them
+    """Of fields sharing bits, which fields go together, as an IPv4 address
+    and the reserved bits after it, against an IPv6 address of the same
+    bytes"""
     values: List["Entry"] = Field(default_factory=list)
+    """The values the field takes, as the table in its description gives
+    them"""
 
 
-class Dwords(BaseModel):
+class Dwords(Model):
     """The dwords 'lower' to 'upper' of a command, and their fields"""
 
     lower: int
+    """The first dword, as 10 of CDW10"""
     upper: int
+    """The last dword, the same as 'lower' for one dword"""
     condition: Optional[str] = None
+    """Where the figure lays the dwords out only under a condition, the
+    condition, as 'CETYPE is cleared to 0h'"""
     qualifier: Optional[str] = None
+    """What the caption says the dwords are of, as 'NVM Command Set Specific
+    Fields'"""
     fields: List[Bits] = Field(default_factory=list)
+    """The fields of the dwords, the bits counted across them"""
     source: Source
+    """The figure laying them out"""
 
 
-class Operation(BaseModel):
+class Operation(Model):
     """
     What a command does for the values of its selecting fields, as a directive
     operation of Directive Receive by its directive type (DTYPE) and operation
@@ -85,45 +113,74 @@ class Operation(BaseModel):
     """
 
     name: str
+    """The name of the operation"""
     selectors: Dict[str, int] = Field(default_factory=dict)
+    """The values of the command's fields selecting it, by acronym, as
+    {"DTYPE": 0, "DOPER": 1}"""
     sqe: List[Dwords] = Field(default_factory=list)
+    """The submission queue entry dwords of the operation"""
     cqe: List[Dwords] = Field(default_factory=list)
+    """The completion queue entry dwords of the operation"""
     structures: List[str] = Field(default_factory=list)
+    """The names of the structures the operation transfers"""
     source: Source
+    """The figure listing the operation"""
 
 
-class Command(BaseModel):
+class Command(Model):
+    """A command, by its opcode, with its dwords and its operations"""
+
     name: str
+    """The name of the command, as 'Write'"""
     opcode: int
+    """The opcode"""
     sqe: List[Dwords] = Field(default_factory=list)
+    """The dwords of its submission queue entry that its figures lay out"""
     cqe: List[Dwords] = Field(default_factory=list)
+    """The dwords of its completion queue entry that its figures lay out"""
     operations: List[Operation] = Field(default_factory=list)
+    """What it does for the values of its selecting fields, if it has any"""
     columns: Dict[str, str] = Field(default_factory=dict)
+    """The opcode table's other columns of the command, by their keys"""
     source: Source
+    """The opcode table listing the command"""
 
 
-class CommandSet(BaseModel):
+class CommandSet(Model):
+    """The commands of an opcode table, as Admin or NVM"""
+
     name: str
+    """The name of the command set"""
     commands: Dict[str, Command] = Field(default_factory=dict)
+    """Its commands, by their names as keys, as 'zone_append'"""
 
 
-class Structure(BaseModel):
+class Structure(Model):
     """
     A layout of fields that is no command's dwords: a data structure, a log
     page, a register or anything else a figure lays out
     """
 
     name: str
+    """The name its caption gives, as 'CC - Controller Configuration'"""
     kind: str
+    """What its caption says it is, as "data_structure", "log_page" or
+    "register", or 'other'"""
     unit: str
+    """What its fields' ranges count: "bits" or 'bytes'"""
     qualifier: Optional[str] = None
+    """What the caption says it is of, as 'Log Specific Field'"""
     offset: Optional[str] = None
+    """Of a register, its offset, as '14h'"""
     fields: List[Bits] = Field(default_factory=list)
+    """Its fields"""
     notes: List[str] = Field(default_factory=list)
+    """The notes of the figure"""
     source: Source
+    """The figure laying it out"""
 
 
-class Typed(BaseModel):
+class Typed(Model):
     """
     A value of a table as what it is: a requirement "level" (M, O, P, NR, R),
     a yes or no "flag", an "identifier" or a range of them, a "note" it is
@@ -132,63 +189,97 @@ class Typed(BaseModel):
     """
 
     kind: str
+    """Which of those it is"""
     level: Optional[str] = None
+    """Of a level, the level"""
     flag: Optional[bool] = None
+    """Of a flag, whether yes"""
     lower: Optional[int] = None
+    """Of an identifier, it, or the first of a range"""
     upper: Optional[int] = None
+    """Of a range of identifiers, the last"""
     note: Optional[int] = None
+    """Of a note, its number"""
     reference: Optional[str] = None
+    """Of a reference, the specification referred to"""
     footnotes: List[int] = Field(default_factory=list)
+    """The numbers of the footnotes marked on the value"""
 
 
-class Entry(BaseModel):
+class Entry(Model):
     """A row of a table of values, as a status value or a log page identifier;
     'typed' has the values of its columns of a known kind as what they are"""
 
     value: str
+    """The value, as the document writes it, as '1Fh'"""
     value_column: str = ""
+    """The key of the column holding the value"""
     name: Optional[str] = None
+    """The name the row gives the value"""
     description: str = ""
+    """The text of the row's description"""
     columns: Dict[str, str] = Field(default_factory=dict)
+    """The row's other columns, by their keys"""
     typed: Dict[str, Typed] = Field(default_factory=dict)
+    """The values of the row's columns of a known kind, by their keys"""
 
 
-class Values(BaseModel):
+class Values(Model):
     """A table of values, by the kind of its caption and what it names; the
     scope is what the caption confines it to, as "I/O Commands" """
 
     kind: str
+    """What its caption says it is, as "status_values", "requirements" or
+    "log_page_identifiers", or 'other'"""
     name: Optional[str] = None
+    """What the caption names, as the command or field the values are of"""
     qualifier: Optional[str] = None
+    """What else the caption says they are of"""
     scope: Optional[str] = None
+    """What the caption confines them to, as 'I/O Commands'"""
     columns: List[str] = Field(default_factory=list)
+    """The keys of its columns"""
     entries: List[Entry] = Field(default_factory=list)
+    """Its rows"""
     source: Source
+    """The figure holding the table"""
 
 
-class Feature(BaseModel):
+class Feature(Model):
     """A feature, by its identifier, and the dwords of the commands setting and
     getting it that are described for it"""
 
     identifier: int
+    """The feature identifier, as 7 of 07h"""
     name: str
+    """The name of the feature, as 'Number of Queues'"""
     columns: Dict[str, str] = Field(default_factory=dict)
+    """The feature identifier table's other columns of it, by their keys, as
+    its requirements"""
     sqe: List[Dwords] = Field(default_factory=list)
+    """The submission queue entry dwords described for it"""
     cqe: List[Dwords] = Field(default_factory=list)
+    """The completion queue entry dwords described for it"""
     source: Source
+    """The feature identifier table listing it"""
 
 
-class LogPage(BaseModel):
+class LogPage(Model):
     """A log page, by its identifier, and the structure laying it out"""
 
     identifier: int
+    """The log page identifier, as 2 of 02h"""
     name: str
+    """The name of the log page, as 'SMART / Health Information'"""
     columns: Dict[str, str] = Field(default_factory=dict)
+    """The log page identifier table's other columns of it, by their keys"""
     structure: Optional[Structure] = None
+    """The structure laying it out, where a figure is known for it"""
     source: Source
+    """The log page identifier table listing it"""
 
 
-class Erratum(BaseModel):
+class Erratum(Model):
     """
     Something of a figure that is not what its kind of value must be, as a
     range beyond the dword it is of, left out of the model; or fields that do
@@ -197,32 +288,45 @@ class Erratum(BaseModel):
     """
 
     code: str
+    """What kind it is, as "value", "acronym", "range-outside",
+    "range-reversed", "opcode" or 'gap'"""
     message: str
+    """What is wrong, said for a person"""
     found: str = ""
+    """The text found in the figure"""
     source: Source
+    """The figure it is in"""
 
 
 class SpecDocument(Document):
+    """The data model of the specification, of one document or, merged, of
+    several"""
+
     SUFFIX_JSON: ClassVar[str] = ".spec.document.json"
     SUFFIX_HTML: ClassVar[str] = ".spec.document.html"
 
     FILENAME_SCHEMA: ClassVar[str] = "spec.document.schema.json"
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "spec.document.html.jinja2"
 
-    # What the figures describe: the commands of the opcode tables, the dwords
-    # by the name their captions give, the structures and the tables of values
     command_sets: Dict[str, CommandSet] = Field(default_factory=dict)
+    """The command sets of the opcode tables, by their names as keys"""
     dwords: Dict[str, List[Dwords]] = Field(default_factory=dict)
+    """The dwords of every figure, by the name its caption gives, as read"""
     structures: List[Structure] = Field(default_factory=list)
+    """Every layout that is no command's dwords"""
     values: List[Values] = Field(default_factory=list)
-
-    # What resolve() makes of them: the dwords and operations of the commands,
-    # the features and log pages, and the dwords of none of them
+    """The tables of values"""
     features: Dict[str, Feature] = Field(default_factory=dict)
+    """The features, by their names as keys"""
     log_pages: Dict[str, LogPage] = Field(default_factory=dict)
+    """The log pages, by their names as keys"""
     unassigned: Dict[str, List[Dwords]] = Field(default_factory=dict)
+    """The dwords no command, feature or operation claims, by the name their
+    caption gives"""
     diagnostics: List[Diagnostic] = Field(default_factory=list)
+    """What senfd normalised, or could not read as data"""
     errata: List[Erratum] = Field(default_factory=list)
+    """The candidate errata of the documents"""
 
 
 def without_footnote(name: str) -> str:
