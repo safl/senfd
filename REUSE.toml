@@ -8,6 +8,7 @@ path = [
     "LICENSE",
     "docs/_static/**",
     "docs/_templates/**",
+    "docs/casts/**",
     "docs/poetry.lock",
     "docs/src/**/*.cmd",
     "docs/src/**/*.out",
