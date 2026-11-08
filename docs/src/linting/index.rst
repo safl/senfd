@@ -12,31 +12,34 @@ every value it types, either takes the form its kind must have or is
 reported, with the document, section, figure and page it is on, so the
 author of a document goes straight to what to fix. A run of ``senfd`` ends
 by saying how many of each it found, and ``senfd-query lint``, or the MCP
-tool ``lint``, lists them, the authors' apart from senfd's:
+tool ``lint``, lists them, the authors' first, each citing the document and
+the figure:
 
-**Candidate errata**, for the authors, also listed by ``senfd-query
-errata``: a value that is not of its column's kind, as a footnote marker
-run into a flag; a field whose bits lie beyond the dwords that hold it; an
-acronym that is not one; bits of a command's dwords that no figure gives a
-field. The same value in many rows of a figure is one erratum, said once
-with the number of rows.
+**Candidate errata**, the authors', also listed by ``senfd-query errata``: a
+value that is not of its column's kind, as a footnote marker run into a
+flag; a field whose bits lie beyond the dwords that hold it; an acronym that
+is not one; bits of a command's dwords that no figure gives a field. The
+same value in many rows of a figure is one erratum, said once with the
+number of rows. A column of sentences is read as text whatever its name.
 
-**Figures of no shape senfd models**: a figure that either does not follow
-the conventions of the others or is of a shape senfd does not model yet.
-Worked examples are listed apart, since they are not data. Figures known
-not to be data, by their captions, can be left out of a run with
-``--skip-figures`` and a skip list; ``skiplists/`` in the repository holds
-those of the ratified documents.
+**Document errors**, the authors': a table with no caption of the form
+"Figure N: title", a table wrapped in a table of one cell, a table holding
+the rows of two figures, an entry of the table of figures not of its form,
+and a section whose number in the headings differs from the table of
+contents. Each says the document and the figure it follows; the errors are
+also in each document's ``.error.log``.
 
-**Unassigned dwords**: a figure of a command's dwords that no command,
-feature or operation claims, by the name its caption gives. Either senfd
-does not yet know what the caption names, or the caption names it otherwise
-than the figure defining it.
+**Figures of no shape senfd models**, senfd's or the figure's: a figure that
+either does not follow the conventions of the others or is of a shape senfd
+does not model yet. Worked examples are listed apart, since they are not
+data. Figures known not to be data, by their captions, can be left out of a
+run with ``--skip-figures`` and a skip list; ``skiplists/`` in the
+repository holds those of the ratified documents.
 
-**Document errors**, in each document's ``.error.log``: a table with no
-caption of the form "Figure N: title", a table wrapped in a table of one
-cell, a table holding the rows of two figures, and a section whose number
-in the headings differs from the table of contents.
+**Unassigned dwords**, senfd's or the caption's: a figure of a command's
+dwords that no command, feature or operation claims, by the name its
+caption gives. Either senfd does not yet know what the caption names, or the
+caption names it otherwise than the figure defining it.
 
 .. code-block:: console
 
@@ -46,9 +49,9 @@ in the headings differs from the table of contents.
 
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
-On the eleven documents ratified in 2026 senfd reports 4 candidate errata,
-in 8 values, 24 figures it does not model and 15 worked examples, 19
-unassigned dwords and 13 document errors.
+On the eleven documents ratified in 2026 senfd reports 2 candidate errata
+and 12 document errors for the authors, and 24 figures it does not model,
+15 worked examples and 19 unassigned dwords.
 The ratified documents are consistent by this measure; the value is in
 running senfd on every draft, where it takes a minute and checks every
 figure the same way, and in keeping each revision as consistent as the last.

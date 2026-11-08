@@ -1,13 +1,41 @@
-usage: senfd [-h] [--output OUTPUT] [--dump-schema] [--version] [document ...]
+usage: senfd [-h] [--output OUTPUT] [--dump-schema]
+             [--skip-figures SKIP_FIGURES] [--version]
+             [document ...]
 
-Semantically organize and enrich figures
+Make the data model of NVMe specification documents, .docx, and say what reading them found; senfd-query lint lists it
 
 positional arguments:
-  document         path to one or more document(s)
+  document              path to one or more document(s)
 
 options:
-  -h, --help       show this help message and exit
-  --output OUTPUT  directory where the output will be saved
-  --dump-schema    dump schema(s) and exit
-  --version        print the version and exit
+  -h, --help            show this help message and exit
+  --output OUTPUT       directory where the output will be saved
+  --dump-schema         dump schema(s) and exit
+  --skip-figures SKIP_FIGURES
+                        Path to toml file that contains list of figure classifiers to skip
+  --version             print the version and exit
 
+Senfd
+=====
+
+The --skip-figures flag specifies a path to a TOML file containing a list of
+figures to be skipped during processing.
+
+The TOML file must follow this format:
+
+[[skip]]
+regex = "^Decimal.and.Binary.Units$"
+matches = 1
+description = ""
+
+[[skip]]
+regex = "^Byte, Word, and Dword Relationships$"
+matches = 1
+description = ""
+
+Each entry under [[skip]] consists of:
+  - regex: A regular expression matching the figure description.
+  - matches: The expected number of occurrences of this figure in the document.
+  - description: An optional text field describing the reason for skipping.
+
+This allows flexible and pattern-based skipping of figures during execution.
