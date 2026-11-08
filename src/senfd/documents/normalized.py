@@ -71,6 +71,7 @@ class NormalizedFigure(BaseModel):
     figure_nr: int
     caption: str
     page_nr: Optional[int] = None
+    pdf_page: Optional[int] = None
     section: Optional[str] = None
     section_title: Optional[str] = None
     subject: Subject
@@ -421,6 +422,7 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         figure_nr=figure.figure_nr,
         caption=caption,
         page_nr=figure.page_nr,
+        pdf_page=figure.pdf_page,
         section=figure.section,
         section_title=figure.section_title,
         subject=parse_caption(caption),
@@ -500,6 +502,8 @@ class FromFigureDocument(Converter):
         )
         document = NormalizedFigureDocument()
         document.meta.stem = strip_all_suffixes(path.stem)
+        document.meta.file = figure_document.meta.file
+        document.meta.sha256 = figure_document.meta.sha256
 
         skip_patterns = SkipPatterns(
             getattr(args, "skip_figures", None), figure_document.figures

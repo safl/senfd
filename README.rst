@@ -85,7 +85,8 @@ What it is
 **N**\ ormalizes their **F**\ igures, and makes a structured **D**\ ata model
 of them: every command with its dwords and fields, every data structure,
 register, feature, log page and table of values, each fact citing the
-document, section, figure and page it is from. It is a data model, not a
+document, section, figure and page it is from, and linking to that page of
+the PDF where NVM Express publishes it. It is a data model, not a
 language model: JSON validated by a schema, with nothing in it trained or
 generated, and the same documents give the same data model every time. It
 reads the specifications as NVM Express publishes them, as PDF, or as the

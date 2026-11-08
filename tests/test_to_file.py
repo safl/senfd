@@ -82,5 +82,17 @@ def test_the_example_is_the_one_the_toolbox_writes(tmp_path):
 
     name = "example.plain.figure.document.json"
     made = json.loads((tmp_path / name).read_text(encoding="utf-8"))
-    expected = Path("example/output") / name
-    assert made == json.loads(expected.read_text(encoding="utf-8"))
+    expected = json.loads((Path("example/output") / name).read_text(encoding="utf-8"))
+    # The document knows the file it was made from, through every stage; the
+    # file written here is not byte for byte the committed one, so its hash
+    # is checked against itself and left out of the comparison
+    import hashlib
+
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    assert (made["meta"]["file"], made["meta"]["sha256"]) == ("example.docx", digest)
+    spec = json.loads(
+        (tmp_path / "example.spec.document.json").read_text(encoding="utf-8")
+    )
+    assert spec["documents"]["example"]["sha256"] == digest
+    made["meta"]["sha256"] = expected["meta"]["sha256"]
+    assert made == expected

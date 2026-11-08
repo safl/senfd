@@ -198,6 +198,8 @@ def test_a_published_pdf_reads_as_its_figures(public, tmp_path):
     # of figures, as the .docx gives them
     assert all(f.section for f in figures.figures)
     assert all(f.page_nr for f in figures.figures)
+    # And the page of the file, which a link to the PDF opens at
+    assert all(f.pdf_page for f in figures.figures)
     write = public.made(path, tmp_path)["command_sets"]["nvm"]["commands"]["write"]
     cdw12 = next(d for d in write["sqe"] if d["lower"] == 12)
     fua = next(f for f in cdw12["fields"] if f.get("acronym") == "FUA")
