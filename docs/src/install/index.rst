@@ -5,18 +5,32 @@
 .. _sec-install:
 
 Install
--------
+=======
 
-The tool is implemented in Python, distributed via `pypi
-<https://pypi.org/project/senfd/>`_ and exercised from the 
-:ref:`command-line <sec-usage>`, thus `pipx <https://pipx.pypa.io/stable/>`_ does a
-great job at creating a virtual-environment for it and an entry-point to the
-command-line utility.
+senfd is a Python package, on `PyPI <https://pypi.org/project/senfd/>`_, tested
+on Python 3.10 to 3.12. `pipx <https://pipx.pypa.io/stable/>`_ installs it with
+its commands in a virtual environment of its own:
 
-Thus, install it, using `pipx <https://pipx.pypa.io/stable/>`_, using like so::
+.. code-block:: console
 
-  pipx install senfd
+   $ pipx install "senfd[ask,mcp]"
+
+The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
+
+* ``ask``, the prompt and rendering of ``senfd-ask``, by prompt_toolkit and
+  rich; without it, ``senfd-ask`` reads a question a line and prints Markdown.
+* ``mcp``, the MCP server ``senfd-mcp``.
+
+Then make the model, once, from the documents you have:
+
+.. code-block:: console
+
+   $ senfd ~/specs/*.docx --output ~/.cache/senfd
+
+``senfd-query``, ``senfd-ask`` and ``senfd-mcp`` read it from there, or from
+the file ``SENFD_SPEC`` names. The documents are the ratified specifications
+as ``.docx``, from `NVM Express <https://nvmexpress.org/specifications/>`_.
 
 .. note::
-  ``pipx`` does not install the system libraries ``libxml2`` and ``libxslt``
-  that the tool depends upon, so ensure that you have these installed.
+  senfd reads ``.docx`` with python-docx, which needs the system libraries
+  ``libxml2`` and ``libxslt``; pipx does not install them.
