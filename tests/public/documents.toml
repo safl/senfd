@@ -1,0 +1,139 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+# The specifications NVM Express publishes as PDF, by address and SHA-256,
+# which the tests download into a cache and never distribute; and what senfd
+# makes of each, which a change to senfd or to a document shows against.
+
+[[document]]
+name = "Base 2.4"
+file = "NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf"
+sha256 = "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd"
+commands = 57
+features = 51
+log_pages = 48
+structures = 346
+errata = 9
+not_modelled = 34
+
+[[document]]
+name = "Boot 1.4"
+file = "NVM-Express-Boot-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Boot-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+sha256 = "3156845b05ee6f153788d60bb14e0a376b4c29e03dba527e3706f16c2b79baec"
+commands = 0
+features = 0
+log_pages = 0
+structures = 19
+errata = 0
+not_modelled = 3
+
+[[document]]
+name = "Computational Programs Command Set 1.3"
+file = "NVM-Express-Computational-Programs-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Computational-Programs-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+sha256 = "d0934ca1ccdab34803caad1bdfeef3d2f0225fd558112d7d473a805d1b46a4e9"
+commands = 1
+features = 0
+log_pages = 5
+structures = 14
+errata = 1
+not_modelled = 0
+
+[[document]]
+name = "Key Value Command Set 1.4"
+file = "NVM-Express-Key-Value-Command-Set-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Key-Value-Command-Set-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+sha256 = "8f3162a2e3587c406c1d30ae907229c1bb48650a4ee2bc4739c20d3fb2bfc77e"
+commands = 5
+features = 1
+log_pages = 2
+structures = 9
+errata = 0
+not_modelled = 0
+
+[[document]]
+name = "Management Interface 2.2"
+file = "NVM-Express-Management-Interface-Specification-Revision-2.2-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Management-Interface-Specification-Revision-2.2-Ratified-2026.07.31.pdf"
+sha256 = "1aad98ccb9daf9a23b0dcca2c12fde7c99b5bd1bb542cf928af740cd53261817"
+commands = 22
+features = 0
+log_pages = 53
+structures = 72
+errata = 1
+not_modelled = 6
+
+[[document]]
+name = "NVM Command Set 1.3"
+file = "NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+sha256 = "a5c192fe239777c3c7a70417c16317fcfc24445a8cd72832286651ce76cefc4b"
+commands = 8
+features = 6
+log_pages = 8
+structures = 58
+errata = 2
+not_modelled = 8
+
+[[document]]
+name = "NVMe over PCIe Transport 1.4"
+file = "NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf"
+sha256 = "2f6dc41d529c03e0596219fb2a734221ba3261837e14bab61168cde5a3226c30"
+commands = 0
+features = 0
+log_pages = 1
+structures = 60
+errata = 0
+not_modelled = 1
+
+[[document]]
+name = "NVMe over RDMA Transport 1.3"
+file = "NVM-Express-NVMe-over-RDMA-Transport-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-NVMe-over-RDMA-Transport-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+sha256 = "30b2b53cd52b2f90737389566ae3d26d1892e93d2eef7edd3e5c8a7146490293"
+commands = 0
+features = 0
+log_pages = 0
+structures = 4
+errata = 0
+not_modelled = 0
+
+[[document]]
+name = "NVMe over TCP Transport 1.3"
+file = "NVM-Express-NVMe-over-TCP-Transport-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-NVMe-over-TCP-Transport-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+sha256 = "d429112b0a3056197968cfb7c96a6cc5a0283f895e8085e965a2474107ea944b"
+commands = 0
+features = 0
+log_pages = 0
+structures = 14
+errata = 0
+not_modelled = 0
+
+[[document]]
+name = "Subsystem Local Memory Command Set 1.3"
+file = "NVM-Express-Subsystem-Local-Memory-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Subsystem-Local-Memory-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf"
+sha256 = "94296b1015fcb518372dca008d00910932ffec1dd70a520d8bced6a0c00095fa"
+commands = 4
+features = 0
+log_pages = 3
+structures = 6
+errata = 0
+not_modelled = 0
+
+[[document]]
+name = "Zoned Namespace Command Set 1.5"
+file = "NVM-Express-Zoned-Namespace-Command-Set-Specification-Revision-1.5-Ratified-2026.07.31.pdf"
+url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Zoned-Namespace-Command-Set-Specification-Revision-1.5-Ratified-2026.07.31.pdf"
+sha256 = "9301812b6da1228658d4975d9f6b8fa25f258e9d6e4def011bf2fe4c9812ff16"
+commands = 3
+features = 0
+log_pages = 1
+structures = 11
+errata = 1
+not_modelled = 2

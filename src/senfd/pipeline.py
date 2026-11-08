@@ -8,12 +8,13 @@ from typing import List, Type
 
 from senfd.documents.base import Converter
 from senfd.documents.normalized import FromFigureDocument as FromPlainDocument
-from senfd.documents.plain import FromDocx
+from senfd.documents.plain import FromDocx, FromPdf
 from senfd.documents.spec import FromNormalizedDocument
 from senfd.errors import Error
 
 CONVERTERS: List[Type[Converter]] = [
     FromDocx,
+    FromPdf,
     FromPlainDocument,
     FromNormalizedDocument,
 ]

@@ -71,6 +71,15 @@ jobs:
         name: documents-enriched-${{ matrix.os }}-${{ matrix.python-version }}
         path: output
 
+    # The specifications NVM Express publishes, which some tests read: kept
+    # in this repository's Actions cache, which only its workflows restore,
+    # and never uploaded
+    - name: Cache the public specifications
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/senfd/public
+        key: public-documents-${{ hashFiles('tests/public/documents.toml') }}
+
     - name: Run -- tests
       run: |
         make test
@@ -90,3 +99,37 @@ jobs:
         # The reporter is downloaded on every run; when that fails, the build
         # has not. Coverage is enforced by the tests' --cov-fail-under.
         fail-on-error: false
+
+  # The data model of every specification NVM Express publishes, made from its
+  # PDF and compared with what tests/public/documents.toml says senfd makes of
+  # it. The documents and the data model stay in this job: nothing is uploaded.
+  public-documents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - name: Grab source
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install senfd, to read PDFs
+      run: |
+        python -m pip install ".[pdf]"
+
+    - name: Cache the public specifications
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/senfd/public
+        key: public-documents-${{ hashFiles('tests/public/documents.toml') }}
+
+    - name: Fetch the public specifications, checked by their SHA-256
+      run: |
+        python toolbox/public_documents.py fetch
+
+    - name: Make the data model of each, and compare
+      run: |
+        python toolbox/public_documents.py check
+
