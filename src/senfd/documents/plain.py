@@ -5,7 +5,7 @@
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
 import docx
 import docx.text.paragraph
@@ -246,8 +246,192 @@ def text_of_paragraph(element) -> str:
     return "".join(parts)
 
 
-def text_of_cell(docx_cell) -> str:
-    return "\n".join(text_of_paragraph(p._p) for p in docx_cell.paragraphs)
+# The bullets of the Symbol font, as the PDF of the document shows them
+BULLETS = {"\uf0b7": "\u2022"}
+ROMAN = (
+    (1000, "m"),
+    (900, "cm"),
+    (500, "d"),
+    (400, "cd"),
+    (100, "c"),
+    (90, "xc"),
+    (50, "l"),
+    (40, "xl"),
+    (10, "x"),
+    (9, "ix"),
+    (5, "v"),
+    (4, "iv"),
+    (1, "i"),
+)
+
+
+def numbered(number: int, fmt: str) -> str:
+    """'number' written as Word writes a numbering of the format 'fmt': as
+    letters, a, z, aa, as roman numerals, or as digits"""
+
+    if fmt in ("lowerLetter", "upperLetter"):
+        letter = chr(ord("a") + (number - 1) % 26) * ((number - 1) // 26 + 1)
+        return letter.upper() if fmt == "upperLetter" else letter
+    if fmt in ("lowerRoman", "upperRoman"):
+        numerals, rest = "", number
+        for value, numeral in ROMAN:
+            while rest >= value:
+                numerals, rest = numerals + numeral, rest - value
+        return numerals.upper() if fmt == "upperRoman" else numerals
+    return str(number)
+
+
+class Numbering:
+    """The labels Word shows before the paragraphs of a document's lists,
+    "1.", "a)" or a bullet, which the document holds nowhere as text: they
+    are counted from its numbering definitions, in the order of the
+    paragraphs, a list going on wherever its paragraphs are, each list its
+    own count. Found in 'labels', by the paragraph element."""
+
+    def __init__(self, document):
+        root = document.part.numbering_part.element
+        self.nums = {n.get(f"{W}numId"): n for n in root.findall(f"{W}num")}
+        self.abstract = {
+            a.get(f"{W}abstractNumId"): a for a in root.findall(f"{W}abstractNum")
+        }
+        self.styles = {
+            s.get(f"{W}styleId"): s
+            for s in document.styles.element.findall(f"{W}style")
+        }
+        self.counters: Dict[str, Dict[int, int]] = {}
+        self.labels: Dict[Any, str] = {}
+        for paragraph in document.element.body.iter(f"{W}p"):
+            if any(a.tag.endswith("}Fallback") for a in paragraph.iterancestors()):
+                continue
+            numbering = self.numbering_of(paragraph)
+            if numbering is not None:
+                label = self.label(*numbering)
+                if label:
+                    self.labels[paragraph] = label
+
+    def style_numbering(self, style_id: Optional[str], depth: int = 0):
+        """The numbering a style gives its paragraphs, its own or that of the
+        style it is based on"""
+
+        style = self.styles.get(style_id) if style_id else None
+        if style is None or depth > 12:
+            return None
+        pPr = style.find(f"{W}pPr")
+        numPr = pPr.find(f"{W}numPr") if pPr is not None else None
+        if numPr is not None:
+            return numPr
+        based = style.find(f"{W}basedOn")
+        return (
+            self.style_numbering(based.get(f"{W}val"), depth + 1)
+            if based is not None
+            else None
+        )
+
+    def numbering_of(self, paragraph) -> Optional[Tuple[str, int]]:
+        """The list a paragraph is in and its level in it, by its own
+        numbering or, for what that leaves unsaid, its style's; None where it
+        is in no list"""
+
+        pPr = paragraph.find(f"{W}pPr")
+        own = pPr.find(f"{W}numPr") if pPr is not None else None
+        style = pPr.find(f"{W}pStyle") if pPr is not None else None
+        styled = (
+            self.style_numbering(style.get(f"{W}val")) if style is not None else None
+        )
+        num = level = None
+        for numPr in (own, styled):
+            if numPr is None:
+                continue
+            if num is None:
+                num = numPr.find(f"{W}numId")
+            if level is None:
+                level = numPr.find(f"{W}ilvl")
+        if num is None or num.get(f"{W}val") in (None, "0"):
+            return None
+        return num.get(f"{W}val"), int(level.get(f"{W}val")) if level is not None else 0
+
+    def level(self, num_id: str, ilvl: int):
+        """The definition of level 'ilvl' of list 'num_id', the list's own
+        where it overrides the level, else its abstract numbering's, and the
+        number the list starts the level over at, where it says"""
+
+        num = self.nums.get(num_id)
+        if num is None:
+            return None, None
+        start_over = None
+        for override in num.findall(f"{W}lvlOverride"):
+            if override.get(f"{W}ilvl") != str(ilvl):
+                continue
+            said = override.find(f"{W}startOverride")
+            if said is not None:
+                start_over = int(said.get(f"{W}val"))
+            lvl = override.find(f"{W}lvl")
+            if lvl is not None:
+                return lvl, start_over
+        abstract_id = num.find(f"{W}abstractNumId")
+        abstract = (
+            self.abstract.get(abstract_id.get(f"{W}val"))
+            if abstract_id is not None
+            else None
+        )
+        for lvl in abstract.findall(f"{W}lvl") if abstract is not None else []:
+            if lvl.get(f"{W}ilvl") == str(ilvl):
+                return lvl, start_over
+        return None, start_over
+
+    def first(self, num_id: str, ilvl: int) -> int:
+        lvl, start_over = self.level(num_id, ilvl)
+        if start_over is not None:
+            return start_over
+        start = lvl.find(f"{W}start") if lvl is not None else None
+        return int(start.get(f"{W}val")) if start is not None else 1
+
+    def label(self, num_id: str, ilvl: int) -> str:
+        """The label of the next paragraph of list 'num_id' at level 'ilvl':
+        the level counted on, the levels below it started over, and the
+        level's text with each level's number written as its format says"""
+
+        lvl, _ = self.level(num_id, ilvl)
+        if lvl is None:
+            return ""
+        counters = self.counters.setdefault(num_id, {})
+        counters[ilvl] = (
+            counters[ilvl] + 1 if ilvl in counters else self.first(num_id, ilvl)
+        )
+        for deeper in [level for level in counters if level > ilvl]:
+            del counters[deeper]
+        fmt = lvl.find(f"{W}numFmt")
+        text = lvl.find(f"{W}lvlText")
+        said = text.get(f"{W}val", "") if text is not None else ""
+        if fmt is not None and fmt.get(f"{W}val") == "bullet":
+            return BULLETS.get(said, said)
+
+        def number(match: "re.Match[str]") -> str:
+            at = int(match.group(1)) - 1
+            if at not in counters:
+                counters[at] = self.first(num_id, at)
+            higher, _ = self.level(num_id, at)
+            higher_fmt = higher.find(f"{W}numFmt") if higher is not None else None
+            return numbered(
+                counters[at],
+                higher_fmt.get(f"{W}val", "decimal")
+                if higher_fmt is not None
+                else "decimal",
+            )
+
+        return re.sub(r"%(\d)", number, said)
+
+
+def text_of_cell(docx_cell, labels: Optional[Dict[Any, str]] = None) -> str:
+    """The text of a cell, a paragraph a line, a paragraph of a list led by
+    the label Word shows before it, where 'labels' has them"""
+
+    lines = []
+    for paragraph in docx_cell.paragraphs:
+        text = text_of_paragraph(paragraph._p)
+        label = labels.get(paragraph._p) if labels else None
+        lines.append(f"{label} {text}" if label else text)
+    return "\n".join(lines)
 
 
 class FromPdf(Converter):
@@ -276,6 +460,8 @@ class FromDocx(Converter):
 
     @staticmethod
     def convert(path: Path, args: Namespace) -> Tuple[FigureDocument, List[Error]]:
+        labels: Dict[Any, str] = {}
+
         def docx_table_to_table(docx_table: docx.table.Table) -> Table:
             table = Table()
 
@@ -292,7 +478,7 @@ class FromDocx(Converter):
                     elif idx < len(above) and docx_cell._tc is above[idx]._tc:
                         merged = "up"
                     cell = Cell(
-                        text=text_of_cell(docx_cell),
+                        text=text_of_cell(docx_cell, labels),
                         tables=[
                             docx_table_to_table(nested_table)
                             for nested_table in docx_cell.tables
@@ -310,6 +496,7 @@ class FromDocx(Converter):
         errors: List[Error] = []
 
         docx_document = docx.Document(path)
+        labels.update(Numbering(docx_document).labels)
 
         # Add tabular figures -- page_nr unavailable
         for table_nr, docx_table in enumerate(docx_document.tables, 1):
