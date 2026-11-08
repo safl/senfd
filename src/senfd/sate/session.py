@@ -202,16 +202,16 @@ def height_of(console: Console, answer: Markdown) -> int:
 def show(console: Console, question: str, markdown: str, status: str) -> None:
     """An answer, opened by a rule naming the question, so that where each
     answer starts stands out when scrolling back; paged from its top where it
-    stands taller than the terminal, and left on the screen when the pager
-    is quit, with where the fields asked of are and the line under it shown
-    after the pager too"""
+    stands taller than the terminal, its citations still links, and left on
+    the screen when the pager is quit, with where the fields asked of are and
+    the line under it shown after the pager too"""
 
     console.rule(f"[bold]{escape(question.strip())}[/bold]", align="left")
     answer = Markdown(markdown)
     if height_of(console, answer) + 4 > console.size.height:
         # Colour, stay on the screen when quit, and no pager for one screen
         os.environ.setdefault("LESS", "-RFX")
-        with console.pager(styles=True):
+        with console.pager(styles=True, links=True):
             console.print(answer)
         if said(markdown):
             console.print(Markdown(said(markdown)))

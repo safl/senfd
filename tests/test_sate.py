@@ -809,7 +809,7 @@ def test_an_answer_opens_with_a_rule_naming_the_question_and_pages_when_tall(
 
     @contextlib.contextmanager
     def pager(self, pager=None, styles=False, links=False):
-        paged.append(styles)
+        paged.append((styles, links))  # Colour kept, and the citations' links
         yield
 
     monkeypatch.setattr(Console, "pager", pager)
@@ -824,7 +824,7 @@ def test_an_answer_opens_with_a_rule_naming_the_question_and_pages_when_tall(
     )
     tall = "| Bits | Name |\n|---|---|\n" + rows + "\n> FUA is bit 30"
     senfd.sate.session.show(console, "cdw12 of write", tall, "right")
-    assert paged == [True]
+    assert paged == [(True, True)]
     assert "FUA is bit 30" in out.getvalue()  # Said again after the pager
 
 
