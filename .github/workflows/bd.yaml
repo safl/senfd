@@ -102,7 +102,10 @@ jobs:
 
   # The data model of every specification NVM Express publishes, made from its
   # PDF and compared with what tests/public/documents.toml says senfd makes of
-  # it. The documents and the data model stay in this job: nothing is uploaded.
+  # it, then of all of them merged, compressed, and the benchmark's questions
+  # answered from it by senfd-ask. The documents, and the data model derived
+  # from them, stay in this job: nothing is uploaded, as the data model is
+  # under the notice printed in each specification.
   public-documents:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -132,4 +135,12 @@ jobs:
     - name: Make the data model of each, and compare
       run: |
         python toolbox/public_documents.py check
+
+    - name: Make the data model of them all, merged, and compress it
+      run: |
+        python toolbox/public_documents.py model ~/public-model
+
+    - name: Answer the benchmark's questions from it, every one right
+      run: |
+        python toolbox/public_documents.py ask ~/public-model
 
