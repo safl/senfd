@@ -68,10 +68,50 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
     ]
 
 
-def test_names_and_acronyms_complete_after_the_words_of_questions(vocabulary):
-    words = vocabulary.words()
-    assert words[: len(senfd.ask.WORDS)] == senfd.ask.WORDS
-    assert "Ding" in words and "FCNT" in words and "Foo Statistics" in words
+def offered(vocabulary, typed):
+    return [text for text, _, _ in vocabulary.completions(typed, most=1000)]
+
+
+def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
+    assert vocabulary.completions("opcode of foo sta")[0] == (
+        "Foo Statistics",
+        -len("foo sta"),
+        "log page",
+    )
+    assert offered(vocabulary, "What is foo cap")[0] == "Foo Capabilities"
+
+
+def test_the_words_of_questions_complete_first(vocabulary):
+    assert offered(vocabulary, "o")[0] == "opcode of "
+    assert offered(vocabulary, "cdw1")[:2] == ["cdw10 of ", "cdw11 of "]
+
+
+def test_names_complete_before_acronyms_unless_typed_in_capitals(vocabulary):
+    names = offered(vocabulary, "Which bits of fo")
+    assert names.index("Foo Get") < names.index("FOOCAP")
+    capitals = offered(vocabulary, "Which bits of FO")
+    assert capitals.index("FOOCAP") < capitals.index("Foo Get")
+
+
+@pytest.mark.parametrize(
+    "typed, kind",
+    [
+        ("log page ", "log page"),
+        ("What is feature ", "feature"),
+        ("opcode of ", "command"),
+        ("cdw10 of ", "command"),
+        ("structure foo", "structure"),
+    ],
+)
+def test_after_the_words_of_a_kind_its_names_come_first(vocabulary, typed, kind):
+    kinds = [k for _, _, k in vocabulary.completions(typed, most=1000)]
+    asked = kinds.count(kind)
+    assert asked >= 2 and kinds[:asked] == [kind] * asked
+
+
+def test_what_is_typed_out_is_not_offered_again(vocabulary):
+    assert "Ding" not in offered(vocabulary, "opcode of Ding")
+    assert offered(vocabulary, "zzz") == []
 
 
 def choosing(monkeypatch, *choices):
@@ -457,8 +497,9 @@ def test_the_session_completes_the_names_of_the_model(spec, monkeypatch, capsys)
         senfd.ask.interact(spec)
     assert "Ask about a command" in capsys.readouterr().out
     completer = made[0].completer
-    offered = [c.text for c in completer.get_completions(Document("Foo Sta"), None)]
-    assert "Foo Statistics" in offered
+    shown = list(completer.get_completions(Document("opcode of Foo Sta"), None))
+    assert (shown[0].text, shown[0].start_position) == ("Foo Statistics", -7)
+    assert shown[0].display_meta_text == "log page"
 
 
 def test_without_a_question_the_command_line_opens_the_session(monkeypatch, capsys):
