@@ -37,6 +37,7 @@ printed as Markdown.
 import argparse
 import json
 import re
+import sys
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -165,9 +166,12 @@ def words_of(text: str) -> str:
     return " " + " ".join(re.findall(r"[a-z0-9]+", text.lower())) + " "
 
 
-def spot(question: str, vocabulary: Vocabulary) -> Optional[Tuple[str, str]]:
-    """The longest name of the model the question names, with its kind; a
-    register by its name, as "controller status" of "CSTS - Controller Status" """
+def spot(
+    question: str, vocabulary: Vocabulary, only: Optional[str] = None
+) -> Optional[Tuple[str, str]]:
+    """The longest name of the model the question names, with its kind, or of
+    the kind 'only'; a register by its name, as "controller status" of
+    "CSTS - Controller Status" """
 
     asked = words_of(question)
     found: List[Tuple[int, int, str, str]] = []
@@ -178,12 +182,14 @@ def spot(question: str, vocabulary: Vocabulary) -> Optional[Tuple[str, str]]:
         ("structure", vocabulary.structures),
     ]
     for rank, (kind, names) in enumerate(kinds):
+        if only and kind != only:
+            continue
         for name in names:
             head, dash, rest = name.partition(" - ")
             # A register is named by its name, a caption not by its qualifier
             for form in {name, rest} if dash and head.isupper() else {name}:
                 key = words_of(form)
-                if not set(key.split()) - GENERIC:
+                if len(key.split()) == 1 and not set(key.split()) - GENERIC:
                     continue  # As "Command" of "CMD - Command", it names nothing
                 if len(key) > 3 and key in asked:
                     argument = head if dash and kind == "structure" else name
@@ -207,8 +213,10 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     match = re.match(r"errata\s*(.*)$", lower)
     if match:
         return Understood("errata", match[1])
+    named = spot(text, vocabulary)
+    # "Write Zeroes in NVMe 2.0" names a revision, not section 2.0
     match = re.search(r"\b([A-Z]?\d+(?:\.\d+)+)\b", text)
-    if match:
+    if match and not named:
         return Understood("section", match[1])
     match = re.match(r"section\s+(.+)$", lower)
     if match:
@@ -216,7 +224,10 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     match = re.match(r"search\s+(.+)$", lower)
     if match:
         return Understood("search", match[1])
-    named = spot(text, vocabulary)
+    asks_command = re.search(r"\b(?:opcodes?|opc|cdw\d*|command dword)\b", lower)
+    if asks_command:  # "opcode of identify controller" is the command
+        command = command_named(text, vocabulary)
+        named = ("command", command) if command else named
     identifier = re.search(r"\b(?:0x)?([0-9a-f]{1,2})h\b|\b0x([0-9a-f]{1,2})\b", lower)
     # An identifier in a question naming a command is a value of its fields
     if identifier and not (named and named[0] == "command"):
@@ -240,15 +251,22 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
         w for w in re.findall(r"\b[A-Z][A-Z0-9]+\b", text) if w in vocabulary.acronyms
     ]
     registers = [w for w in capitals if w in vocabulary.registers]
+    # A register named by its acronym, "CSTS", is what a question without a
+    # dword asks of, whatever command's name its words also make, "Shutdown"
+    if registers and not dword:
+        return Understood("register", registers[0])
     if named and named[0] == "command":
         return Understood("command", named[1], int(dword[1]) if dword else None)
+    rest = " ".join(terms(text))
+    if asks_command and not named and not registers and rest:
+        argument = command_named(text, vocabulary) or rest
+        return Understood("command", argument, int(dword[1]) if dword else None)
     if registers:
         return Understood("register", registers[0])
     if named:
         return Understood(named[0], named[1])
     # A feature or log page named by part of its name, as "a log page for
     # rotational media", is looked up by the rest of the question's terms
-    rest = " ".join(terms(text))
     for word, query in (
         (r"\blog ?pages?\b", "log_page"),
         (r"\bfeatures?\b", "feature"),
@@ -258,10 +276,6 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     if capitals:
         return Understood("acronym", capitals[0])
     return Understood("name", rest or lower)
-
-
-def strip_command(name: str) -> str:
-    return re.sub(r"\s+command$", "", name.strip())
 
 
 def answer(
@@ -312,9 +326,9 @@ def answer(
     if understood.query == "register":
         found = []
         for s in spec.structures:
-            if s.name.startswith(understood.argument + " - "):
+            if s.name.lower().startswith(understood.argument.lower() + " - "):
                 found += q.lines_of_structure(s, False, markdown=True)
-        return found
+        return found or [f"No register {understood.argument}"]
     if understood.query == "acronym":
         return bullets(q.search(spec, understood.argument))
     # A name: what has it, a command first, then a structure, else where it is
@@ -333,9 +347,100 @@ def nothing(lines: List[str]) -> bool:
     return not lines or lines[0].startswith(("No ", "Nothing named", "Give "))
 
 
+def ambiguous(lines: List[str]) -> bool:
+    """Whether 'lines' list what a name matches rather than answer, as
+    "92 structures; be more specific" """
+
+    return bool(lines) and bool(re.match(r"\d+ [a-z ]+; be more specific", lines[0]))
+
+
 def bullets(lines: List[str]) -> List[str]:
     return lines if nothing(lines) else [f"- {line}" for line in lines]
 
+
+def heading(lines: List[str]) -> str:
+    return next((line for line in lines if line.strip()), "")
+
+
+SEVERAL = "several commands"
+
+
+def elsewhere(
+    question: str, understood: Understood, lines: List[str], vocabulary: Vocabulary
+) -> Optional[str]:
+    """What 'question' names that the answer 'lines' is not about, if any.
+
+    A lookup by name answers with the thing it found, named at its head; that
+    must be the thing the question names, not another whose name contains
+    it, as "Memory Copy" of "Copy". A command answers only a question naming
+    it, by its name or by terms naming no other command. Another lookup must
+    mention what the question names."""
+
+    found = answered(lines)
+    if understood.query == "command":
+        asked = command_named(question, vocabulary)
+        if asked is not None:
+            return None if found and alias(found) == alias(asked) else asked
+        if command_words(question, vocabulary):
+            return SEVERAL  # As "Track", of "Track Send" and "Track Receive"
+    if understood.query == "register" and found:
+        if found.partition(" - ")[0] in re.findall(r"\b[A-Z][A-Z0-9]+\b", question):
+            return None  # The register the question names by its acronym
+    named = spot(question, vocabulary)
+    if not named:
+        return None
+    if understood.query in ("feature", "log_page", "structure", "register"):
+        if found is None:
+            return named[1]
+        head = found.partition(" - ")[0]
+        return None if alias(named[1]) in (alias(found), alias(head)) else named[1]
+    text = words_of(" ".join(lines))
+    return None if words_of(named[1]) in text else named[1]
+
+
+def answered(lines: List[str]) -> Optional[str]:
+    """The name of what an answer by name is about, from its head"""
+
+    first = heading(lines)
+    for pattern in (
+        r"^### (.+?): .*command",
+        r"^### (?:Feature|Log page) [0-9A-Fa-f]+h (.+?) \[",
+        r"^\*\*(.+?)(?: at offset [^,]+)?, [a-z]+ \[",
+    ):
+        match = re.match(pattern, first)
+        if match:
+            return match[1]
+    return None
+
+
+def command_named(question: str, vocabulary: Vocabulary) -> Optional[str]:
+    """The command 'question' names: by its name, the longest, or by terms
+    that name it and no other command, as "format" names "Format NVM" """
+
+    named = spot(question, vocabulary, only="command")
+    if named:
+        return named[1]
+    words = command_words(question, vocabulary)
+    among = [
+        c for c in vocabulary.commands if words and all(w in words_of(c) for w in words)
+    ]
+    return among[0] if len(among) == 1 else None
+
+
+def command_words(question: str, vocabulary: Vocabulary) -> List[str]:
+    """The terms of 'question' that are words of a command's name"""
+
+    return [
+        words_of(t)
+        for t in terms(question)
+        if any(words_of(t) in words_of(c) for c in vocabulary.commands)
+    ]
+
+
+REVISION = (
+    r"(?i)\b(?:nvme|nvm express|base|revision|rev|version|specification|spec)"
+    r"\s+v?\d+(?:\.\d+)+[a-z]?\b"
+)
 
 # Words of a question that name nothing the answer must mention
 GENERIC = set(
@@ -350,7 +455,8 @@ GENERIC = set(
     called contain contains have has ask asks enable enables entry entries
     specification spec nvme nvm express admin section sections errata erratum
     id ids fid lid opc hey hi hello thanks thank you i we my our need want know
-    find just also any
+    find just also any at as if into from not no than then up out over under per
+    via whose whom
     """.split()
 )
 
@@ -358,15 +464,22 @@ GENERIC = set(
 def terms(question: str) -> List[str]:
     """The terms of 'question' that name something, without a plural's 's'"""
 
+    # "0x07" is "07h", as the model writes it; "CSTS.RDY" is CSTS and RDY; and
+    # "NVMe 2.0" is a revision, not a section the answer must mention
+    question = re.sub(REVISION, "", question)
+    question = re.sub(
+        r"\b0x([0-9A-Fa-f]{1,2})\b", lambda m: m[1].upper() + "h", question
+    )
     words = re.findall(
-        r"[A-Za-z][A-Za-z0-9.]*|\d+(?:\.\d+)+|[0-9A-Fa-f]{1,2}h\b", question
+        r"[A-Za-z][A-Za-z0-9]*|\d+(?:\.\d+)+|[0-9A-Fa-f]{1,2}h\b", question
     )
     found = []
     for word in words:
-        key = word.lower().rstrip(".")
+        key = word.lower()
         if key in GENERIC or len(key) < 2:
             continue
-        found.append(re.sub(r"(?<=[a-z]{3})s$", "", key))
+        # A plural's 's', not an acronym's, as of "CSTS"
+        found.append(key if word.isupper() else re.sub(r"(?<=[a-z]{3})s$", "", key))
     return found
 
 
@@ -374,7 +487,11 @@ def unmentioned(question: str, lines: List[str]) -> List[str]:
     """The terms of 'question' that the answer 'lines' does not mention"""
 
     text = " ".join(lines).lower()
-    return [t for t in terms(question) if t not in text]
+    return [
+        t
+        for t in terms(question)
+        if not re.search(rf"(?<![a-z0-9]){re.escape(t)}s?(?![a-z0-9])", text)
+    ]
 
 
 def reply(
@@ -383,7 +500,12 @@ def reply(
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
 ) -> str:
-    text, _ = respond(spec, question, vocabulary, llm)
+    try:
+        text, _ = respond(spec, question, vocabulary, llm)
+    except (OSError, ValueError, KeyError, IndexError) as exc:
+        if llm is None:
+            raise
+        return f"The language model at {llm} did not choose a lookup: {exc}"
     return text
 
 
@@ -415,25 +537,45 @@ def respond(
             lines = answer(spec, understood, vocabulary)
             attempts.append((understood, lines))
             missing = unmentioned(question, lines)
-            if not nothing(lines) and not missing:
+            other = elsewhere(question, understood, lines, vocabulary)
+            if not (nothing(lines) or ambiguous(lines) or missing or other):
                 break
-            feedback = (
-                lines[0]
-                if nothing(lines)
-                else f"The answer does not mention {', '.join(missing)}"
-            )
+            if nothing(lines) or ambiguous(lines):
+                feedback = lines[0] if lines else "Nothing was found"
+            elif other == SEVERAL:
+                feedback = "The question names several commands, not one"
+            elif other:
+                feedback = f"The question is about {other}, the answer is not"
+            else:
+                feedback = f"The answer does not mention {', '.join(missing)}"
             messages.append({"role": "assistant", "content": understood.json()})
             messages.append({"role": "user", "content": feedback + "; choose another."})
 
     understood, lines = attempts[-1]
     tried = [str(u) for u, _ in attempts]
     missing = unmentioned(question, lines) if lines else []
-    if nothing(lines) or missing or understood.query == "unknown":
-        why = (
-            f"; what was found does not mention {', '.join(missing)}"
-            if lines and not nothing(lines)
-            else ""
-        )
+    other = elsewhere(question, understood, lines, vocabulary) if lines else None
+    # A language model's choice is grounded by what the question names
+    ungrounded = (
+        llm is not None and not terms(question) and not spot(question, vocabulary)
+    )
+    if llm is not None and ambiguous(lines):
+        lines = []
+    if (
+        nothing(lines)
+        or missing
+        or other
+        or ungrounded
+        or understood.query == "unknown"
+    ):
+        if other == SEVERAL:
+            why = "; the question names several commands rather than one"
+        elif other and not nothing(lines):
+            why = f"; what was found is not about {other}"
+        elif missing and not nothing(lines):
+            why = f"; what was found does not mention {', '.join(missing)}"
+        else:
+            why = ""
         return (
             f"_Understood as `{understood}`_\n\n"
             f"Not in the model{why}, so this is not known. "
@@ -577,7 +719,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="Have the language model served at URL understand the questions",
     )
     args = parser.parse_args(argv)
-    spec = senfd.query.load(args.spec)
+    try:
+        spec = senfd.query.load(args.spec)
+    except OSError as exc:
+        print(f"senfd-ask: no model to answer from: {exc}", file=sys.stderr)
+        return 1
     if args.question:
         show(
             reply(spec, " ".join(args.question), Vocabulary.of(spec), args.llm),
