@@ -1,1 +1,1 @@
-senfd example/example.docx --output /tmp/foo
+senfd example/example.docx --output output

@@ -21,10 +21,17 @@ Usage
 Example
 ~~~~~~~
 
-Place yourself in the root of the repository and run:
+Run it over the documents you hold; here over the synthetic example
+document in senfd's repository, ``example/example.docx``:
 
 .. literalinclude:: usage_example.cmd
    :language: bash
+
+A run ends by saying what it made, what of the documents to look at, and the
+command listing it:
+
+.. literalinclude:: usage_example.out
+   :language: text
 
 This extracts the figures of the ``.docx`` file, their captions and tables,
 into a ``FigureDocument``; normalises each into a
@@ -33,9 +40,8 @@ caption, with diagnostics saying what was normalised; and makes the data model
 of the specification of it, a ``SpecDocument``. The ``SpecDocument`` of every
 document given is merged into ``merged.spec.document.json``.
 
-For all of the output files then they are stored in the directory pointed to
-by ``--output``, in this case ``/tmp/foo``, each named by the input-document
-it is made from.
+Every output goes into the directory ``--output`` names, each file named by
+the document it is made from.
 
 In case you do not want to run it, then you can inspect the output files in the
 `repository on GitHUB <https://github.com/safl/senfd/tree/main/example/output>`_

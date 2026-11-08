@@ -33,5 +33,6 @@ the file ``SENFD_SPEC`` names. The documents are the ratified specifications
 as ``.docx``, from `NVM Express <https://nvmexpress.org/specifications/>`_.
 
 .. note::
-  senfd reads ``.docx`` with python-docx, which needs the system libraries
-  ``libxml2`` and ``libxslt``; pipx does not install them.
+  senfd reads ``.docx`` with python-docx, whose lxml installs as a prebuilt
+  wheel on most systems; where pip has to build it, it needs the system
+  libraries ``libxml2`` and ``libxslt``.
