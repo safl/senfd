@@ -8,7 +8,8 @@ A tagged PDF of a specification as senfd's figure document, as a .docx is
 The figures are the tables of the structure tree whose first row is a
 caption, "Figure N: title", in the section of the heading before them; a
 figure going on past a page break is its next table, repeating the caption
-and the header rows, which are dropped. The section numbers are the
+and the header rows, which are dropped, and a row broken across the page is
+joined again. The section numbers are the
 outline's, as printed, and the page numbers the table of figures'.
 """
 
@@ -24,7 +25,7 @@ from senfd.errors import Error, FigureDuplicateNumberError
 from senfd.pdf.pages import Pages
 from senfd.pdf.tables import table_of
 from senfd.pdf.tree import HEADINGS, paragraphs, rows, walk
-from senfd.tables import Table
+from senfd.tables import Row, Table
 
 CAPTION = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)$", re.S)
 ENTRY = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)\s*\.*\s*(\d+)$", re.S)
@@ -63,21 +64,64 @@ def outline(pdf: pikepdf.Pdf) -> List[Section]:
     return found
 
 
+def own(row: Row) -> List[str]:
+    """The texts of the cells of 'row', a cell spanning columns once, as it
+    is the same row whatever columns a page divides it into"""
+
+    return [cell.text for cell in row.cells if cell.merged != "left"]
+
+
+def heading(row: Row) -> List[str]:
+    """The texts 'row' has of its own, as a header row repeated on the next
+    page is compared: without the cells merged from beside or above, which a
+    page may divide or place otherwise, nor the empty ones"""
+
+    return [c.text for c in row.cells if c.merged is None and c.text.strip()]
+
+
+def carried(row: Row) -> bool:
+    """Whether 'row', the first after a page break, is the rest of the row
+    before it, broken across the page: only its last cell has text"""
+
+    texts = own(row)
+    return (
+        len(texts) > 1
+        and texts[-1].strip() != ""
+        and not any(text.strip() for text in texts[:-1])
+    )
+
+
 def joined(figure: Figure, table: Table) -> None:
     """'table' as the rows of 'figure' going on past a page break, without
-    the caption and header rows it repeats"""
+    the caption and header rows it repeats, and with a row broken across the
+    page joined again; a header row read better there replaces the first's"""
 
     assert figure.table is not None
-    heads = [
-        [c.text for c in row.cells] for row in figure.table.rows[: HEADER_ROWS + 1]
-    ]
-    skip = 0
+    heads = [heading(row) for row in figure.table.rows[: HEADER_ROWS + 1]]
+    repeated: List[Tuple[int, Row]] = []
     for row in table.rows:
-        if skip < len(heads) and [c.text for c in row.cells] in heads:
-            skip += 1
+        if len(repeated) < len(heads) and heading(row) in heads:
+            repeated.append((heads.index(heading(row)), row))
         else:
             break
-    figure.table.rows += table.rows[skip:]
+    rest = table.rows[len(repeated) :]
+    # A header row the first page read with its merged cells misplaced is
+    # read again on the next, as wide as the rows the first page read
+    width = len(figure.table.rows[-1].cells)
+    for at, row in repeated:
+        head = figure.table.rows[at]
+        differs = own(row) != own(head) or len(row.cells) != len(head.cells)
+        if differs and len(row.cells) == width:
+            figure.table.rows[at] = row
+    if rest and figure.table.rows and carried(rest[0]):
+        cells = figure.table.rows[-1].cells
+        start = len(cells) - 1
+        while start > 0 and cells[start].merged == "left":
+            start -= 1
+        for cell in cells[start:]:
+            cell.text = f"{cell.text}\n{rest[0].cells[-1].text}"
+        rest = rest[1:]
+    figure.table.rows += rest
 
 
 def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
