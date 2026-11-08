@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 doc: |
-  NVMe questions answered four ways: by senfd-ask from the words of each
-  question, by senfd-ask with a local language model on the target's CPU
+  NVMe questions answered four ways: by sate from the words of each
+  question, by sate with a local language model on the target's CPU
   choosing the lookups, and by frontier language models from memory, allowed
   to say "unknown" and made to answer. Every answer is kept, and the report
   grades them against the data model of the documents. Claim the target with

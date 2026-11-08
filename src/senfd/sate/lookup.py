@@ -11,9 +11,9 @@ from dataclasses import replace
 from typing import Iterable, List
 
 import senfd.query
-from senfd.ask.phrasing import HELP, words_of
-from senfd.ask.reading import Understood, spot
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.phrasing import HELP, words_of
+from senfd.sate.reading import Understood, spot
+from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import Bits, SpecDocument
 
 

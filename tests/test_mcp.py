@@ -15,13 +15,13 @@ SPEC = Path("example") / "output" / "merged.spec.document.json"
 
 
 def test_the_queries_are_tools_of_the_server_over_stdio():
-    """As an agent runs it: senfd-mcp over stdio, asked for a command's dword"""
+    """As an agent runs it: sate-mcp over stdio, asked for a command's dword"""
 
     from mcp import ClientSession
     from mcp.client.stdio import StdioServerParameters, stdio_client
 
-    executable = shutil.which("senfd-mcp")
-    assert executable, "senfd-mcp is not installed"
+    executable = shutil.which("sate-mcp")
+    assert executable, "sate-mcp is not installed"
     parameters = StdioServerParameters(
         command=executable, env={**os.environ, "SENFD_SPEC": str(SPEC.resolve())}
     )
@@ -57,24 +57,24 @@ def test_the_queries_are_tools_of_the_server_over_stdio():
 
 
 def test_a_missing_model_is_said_to_the_client(tmp_path, monkeypatch):
-    import senfd.mcp_server
+    import senfd.sate.mcp
 
     monkeypatch.setenv("SENFD_SPEC", str(tmp_path / "missing.json"))
-    senfd.mcp_server.spec.cache_clear()
+    senfd.sate.mcp.spec.cache_clear()
     with pytest.raises(RuntimeError, match="No data model of the specification at"):
-        senfd.mcp_server.command("ding")
-    senfd.mcp_server.spec.cache_clear()
+        senfd.sate.mcp.command("ding")
+    senfd.sate.mcp.spec.cache_clear()
 
 
 def test_every_tool_answers_from_the_model(monkeypatch):
-    import senfd.mcp_server
+    import senfd.sate.mcp
 
     monkeypatch.setenv("SENFD_SPEC", str(SPEC.resolve()))
-    senfd.mcp_server.spec.cache_clear()
-    assert senfd.mcp_server.feature("C0h").startswith("C0h Foo Config")
-    assert senfd.mcp_server.log_page("C0h").startswith("C0h Foo Statistics")
-    assert senfd.mcp_server.structure("FOOCAP").startswith("FOOCAP")
-    assert "Ding cdw10" in senfd.mcp_server.search("FCNT")
-    assert senfd.mcp_server.section("1.2").startswith("example 1.2 Ding command")
-    assert "beyond the 64 bits" in senfd.mcp_server.errata("example")
-    senfd.mcp_server.spec.cache_clear()
+    senfd.sate.mcp.spec.cache_clear()
+    assert senfd.sate.mcp.feature("C0h").startswith("C0h Foo Config")
+    assert senfd.sate.mcp.log_page("C0h").startswith("C0h Foo Statistics")
+    assert senfd.sate.mcp.structure("FOOCAP").startswith("FOOCAP")
+    assert "Ding cdw10" in senfd.sate.mcp.search("FCNT")
+    assert senfd.sate.mcp.section("1.2").startswith("example 1.2 Ding command")
+    assert "beyond the 64 bits" in senfd.sate.mcp.errata("example")
+    senfd.sate.mcp.spec.cache_clear()

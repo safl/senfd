@@ -89,13 +89,13 @@ data model, and ``--verbose`` gives the descriptions too. ``--markdown`` gives
 the fields of a command, feature, log page or structure as a Markdown table,
 for an answer shown to a reader.
 
-The same queries are the tools of an MCP server, ``senfd-mcp``, installed with
+The same queries are the tools of an MCP server, ``sate-mcp``, installed with
 ``pip install senfd[mcp]``. Registered with an agent, it answers a question
 about the specification with a tool call rather than by reading the documents:
 
 .. code-block:: bash
 
-   claude mcp add senfd -- senfd-mcp
+   claude mcp add sate -- sate-mcp
 
 .. _sec-usage-auxiliary:
 

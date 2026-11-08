@@ -180,10 +180,10 @@ def graded(lane: Path) -> Dict[str, int]:
 
 
 def ask(output: Path) -> int:
-    """The benchmark's questions answered by senfd-ask from the data model in
+    """The benchmark's questions answered by sate from the data model in
     'output', and every one of them right"""
 
-    lane = output / "senfd-ask.json"
+    lane = output / "sate.json"
     subprocess.run(
         [
             sys.executable,

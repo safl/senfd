@@ -7,19 +7,19 @@
 Ask the expert
 ==============
 
-``senfd-ask`` answers questions about the specifications as an expert would,
+``sate`` answers questions about the specifications as an expert would,
 at once, and only from senfd's data model. Ask it as you would ask a
 colleague:
 
 .. code-block:: console
 
-   $ pip install senfd[ask]
-   $ senfd-ask
-   ask> opcode of zone append
-   ask> Which bit of CDW12 of the Write command is FUA?
-   ask> What are the fields of the controller status register?
-   ask> log page 1Fh
-   ask> FUA
+   $ pip install senfd[sate]
+   $ sate
+   sate> opcode of zone append
+   sate> Which bit of CDW12 of the Write command is FUA?
+   sate> What are the fields of the controller status register?
+   sate> log page 1Fh
+   sate> FUA
 
 The session is made for someone who does not yet know how to ask. It opens
 with the questions it can answer in a menu, ``what is the opcode of
@@ -58,7 +58,7 @@ Given a question on the command line, it answers that and leaves:
 
 .. code-block:: console
 
-   $ senfd-ask "What is the opcode of the Sanitize Namespace command?"
+   $ sate "What is the opcode of the Sanitize Namespace command?"
 
 .. raw:: html
 
@@ -95,7 +95,7 @@ in ways no rule foresees:
 .. code-block:: console
 
    $ llama-server -m Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf --port 8088 --jinja
-   $ senfd-ask --llm http://127.0.0.1:8088
+   $ sate --llm http://127.0.0.1:8088
 
 The language model chooses the lookup and nothing else. Its output is
 constrained, by a JSON schema the server turns into a grammar, to the name of
@@ -116,14 +116,14 @@ fewer of the questions, and none of them wrongly.
 For an agent: the MCP server
 ----------------------------
 
-The same queries are the tools of an MCP server, ``senfd-mcp``, for a coding
+The same queries are the tools of an MCP server, ``sate-mcp``, for a coding
 agent to answer a question about the specification with a tool call costing a
 few lines rather than by reading the documents:
 
 .. code-block:: console
 
    $ pip install senfd[mcp]
-   $ claude mcp add senfd -- senfd-mcp
+   $ claude mcp add sate -- sate-mcp
 
 .. raw:: html
 

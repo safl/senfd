@@ -11,12 +11,12 @@ import re
 import time
 from typing import List, Optional, Tuple
 
-from senfd.ask import language_model
-from senfd.ask.grounding import SEVERAL, elsewhere, unmentioned
-from senfd.ask.lookup import ambiguous, answer, nothing, resolved
-from senfd.ask.phrasing import FILLER, acronyms_of, terms, words_of
-from senfd.ask.reading import Understood, spot, understand
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate import language_model
+from senfd.sate.grounding import SEVERAL, elsewhere, unmentioned
+from senfd.sate.lookup import ambiguous, answer, nothing, resolved
+from senfd.sate.phrasing import FILLER, acronyms_of, terms, words_of
+from senfd.sate.reading import Understood, spot, understand
+from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
 
 
@@ -125,7 +125,7 @@ def respond(
         else:
             why = ""
         not_known = f"Not in the data model{why}, so this is not known. "
-        return said + not_known + "`senfd-ask help` says what can be asked.", tried
+        return said + not_known + "`sate help` says what can be asked.", tried
     return said + "\n".join(lines), tried
 
 

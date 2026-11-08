@@ -11,7 +11,7 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
-from senfd.ask.phrasing import GENERIC
+from senfd.sate.phrasing import GENERIC
 from senfd.documents.spec import Bits, Dwords, SpecDocument
 
 # What fields are of: a thing by its name in lowercase and, of a command or

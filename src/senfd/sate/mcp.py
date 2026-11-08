@@ -9,7 +9,7 @@ An agent, such as Claude Code, then answers a question about the specification
 with a tool call costing a few lines, rather than by reading the documents:
 
     senfd *.docx --output ~/.cache/senfd
-    claude mcp add senfd -- senfd-mcp
+    claude mcp add sate -- sate-mcp
 """
 
 import inspect
@@ -30,7 +30,7 @@ INSTRUCTIONS = (
     "the document and figure it came from. Use it before reading the documents."
 )
 
-server = MCPServer(name="senfd", instructions=INSTRUCTIONS, version=senfd.__version__)
+server = MCPServer(name="sate", instructions=INSTRUCTIONS, version=senfd.__version__)
 
 
 def tool(function: Callable[..., str]) -> Callable[..., str]:
@@ -122,7 +122,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     argparse.ArgumentParser(
         description="An MCP server, over stdio, answering questions about the NVMe "
         "specifications from senfd's data model; register it with an agent, as "
-        "'claude mcp add senfd -- senfd-mcp'"
+        "'claude mcp add sate -- sate-mcp'"
     ).parse_args(argv)
     server.run("stdio")
     return 0

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
-"""senfd-ask on the command line: a question answered, or a session"""
+"""sate on the command line: a question answered, or a session"""
 
 import argparse
 import sys
@@ -10,14 +10,14 @@ from pathlib import Path
 from typing import List, Optional
 
 import senfd.query
-from senfd.ask.answering import reply
-from senfd.ask.phrasing import HELP
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.answering import reply
+from senfd.sate.phrasing import HELP
+from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
 
 
 def show(markdown: str, raw: bool = False) -> None:
-    """Print 'markdown' rendered, where the extra 'ask' is installed and not
+    """Print 'markdown' rendered, where the extra 'sate' is installed and not
     'raw', else as it is"""
 
     if not raw:
@@ -33,7 +33,7 @@ def show(markdown: str, raw: bool = False) -> None:
 
 
 def plain(spec: SpecDocument, llm: Optional[str] = None) -> int:
-    """A session without the extra 'ask': a question a line, answered in
+    """A session without the extra 'sate': a question a line, answered in
     Markdown, until the input ends"""
 
     vocabulary = Vocabulary.of(spec)
@@ -70,14 +70,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         spec = senfd.query.load(args.spec)
     except OSError as exc:
-        print(f"senfd-ask: no data model to answer from: {exc}", file=sys.stderr)
+        print(f"sate: no data model to answer from: {exc}", file=sys.stderr)
         return 1
     if args.question:
         question = " ".join(args.question)
         show(reply(spec, question, Vocabulary.of(spec), args.llm), args.raw)
         return 0
     try:
-        from senfd.ask.session import interact
+        from senfd.sate.session import interact
     except ImportError:
         return plain(spec, args.llm)
     return interact(spec, args.llm, args.spec)

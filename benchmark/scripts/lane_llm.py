@@ -5,12 +5,12 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 """
-senfd-ask, with a local language model choosing the lookups
+sate, with a local language model choosing the lookups
 ===========================================================
 
 For each of 'llm.models', on the target: checks the language model's file by its
 SHA-256, starts llama.cpp's llama-server on it, on the CPU with 'llm.threads'
-threads, and has senfd-ask, run here through an ssh tunnel to it, answer
+threads, and has sate, run here through an ssh tunnel to it, answer
 every question with the language model choosing the lookups. Writes
 '<output>/bench/lanes/llm-<name>.json', and beside it the server's log and
 what it ran on. The server is stopped, and the tunnel closed, whatever
