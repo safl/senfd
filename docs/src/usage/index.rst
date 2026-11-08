@@ -64,7 +64,8 @@ from the documents you have, into the cache:
 
 Then ask, and each answer cites where it came from, the document, the
 section, the figure and the page, as ``[Base 2.4, 5.2.13, Figure 203, page
-213]``:
+213]``, and, where the data model was made from a PDF, the page of the file,
+``page 213, PDF page 238``:
 
 .. code-block:: bash
 
@@ -87,10 +88,12 @@ see :ref:`the linter <sec-linting>`.
 ``--spec`` or the environment variable ``SENFD_SPEC`` points at another merged
 data model, and ``--verbose`` gives the descriptions too. ``--markdown`` gives
 the fields of a command, feature, log page or structure as a Markdown table,
-for an answer shown to a reader.
+for an answer shown to a reader, and makes each citation of a document NVM
+Express publishes a link to the page of its PDF, known by the SHA-256 of
+the file the data model was made from.
 
 The same queries are the tools of an MCP server, ``sate-mcp``, installed with
-``pip install senfd[mcp]``. Registered with an agent, it answers a question
+``pip install senfd[sate]``. Registered with an agent, it answers a question
 about the specification with a tool call rather than by reading the documents:
 
 .. code-block:: bash

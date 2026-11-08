@@ -49,9 +49,10 @@ caption names it otherwise than the figure defining it.
 
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
-On the eleven documents ratified in 2026 senfd reports 2 candidate errata
-and 12 document errors for the authors, and 24 figures it does not model,
-15 worked examples and 19 unassigned dwords.
+On the eleven documents ratified in 2026, as NVM Express publishes them as
+PDF, senfd reports 2 candidate errata and 6 document errors for the authors,
+and 23 figures it does not model, 16 worked examples and 19 unassigned
+dwords.
 The ratified documents are consistent by this measure; the value is in
 running senfd on every draft, where it takes a minute and checks every
 figure the same way, and in keeping each revision as consistent as the last.

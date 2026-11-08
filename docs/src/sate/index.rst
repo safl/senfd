@@ -20,6 +20,7 @@ colleague:
    sate> What are the fields of the controller status register?
    sate> log page 1Fh
    sate> FUA
+   sate> describe cdw12 of write
 
 The session is made for someone who does not yet know how to ask. It opens
 with the questions it can answer in a menu, ``what is the opcode of
@@ -42,23 +43,39 @@ and Esc to close it; on an empty line, ``?``, Up and Down for the questions
 asked before, kept between sessions, F1 for the forms of a question with
 examples, and Ctrl-D to leave.
 
-An answer asked of a field ends by saying where that field is, citing its
-figure, as "**FUA**, Force Unit Access, is bit 30 of cdw12 of Write [NVM
-1.3, 3.3.6, Figure 71, page 54]", with its row marked in the table above.
-Under each answer a line says what the question was read as, by how many
-lookups, in how long, and how many figures it cites, or that it is not
-known. An answer longer than the terminal opens in a pager, and where the
-fields asked of are is said again after it.
+Each answer opens with a rule naming the question, so that where it starts
+stands out when scrolling back. An answer asked of a field ends by saying
+where that field is, citing its figure, as "**FUA**, Force Unit Access, is
+bit 30 of cdw12 of Write [NVM 1.3, 3.3.6, Figure 71, page 54]", with its row
+marked in the table above. Under each answer a line says what the question
+was read as, by how many lookups, in how long, and how many figures it
+cites, or that it is not known. An answer taller than the terminal opens in
+a pager, from its top, and stays on the screen when the pager is quit, with
+where the fields asked of are said again after it.
+
+A table of a data structure is headed by bytes, and where a byte holds
+bits, as the Reservation Capabilities of a namespace, the bits stand in a
+column of their own beside it, named by both acronyms, as ``RESCAP.PTPLS``.
+``describe`` or ``explain`` before any question answers it with the
+descriptions of the fields, the first line of each: ``describe cdw12 of
+write``, ``explain CSTS``, ``describe feature 07h``. And every citation of a
+document NVM Express publishes as PDF is a link to the page of that PDF,
+which a terminal that shows links opens in the browser; the citation says
+the page of the file too, ``page 213, PDF page 238``, for a PDF saved rather
+than shown.
 
 .. raw:: html
 
    <div id="cast-session"></div>
 
-Given a question on the command line, it answers that and leaves:
+Given a question on the command line, it answers that and leaves; with
+``--raw`` it prints the answer as Markdown, unrendered, the links as
+addresses:
 
 .. code-block:: console
 
    $ sate "What is the opcode of the Sanitize Namespace command?"
+   $ sate --raw "opcode of sanitize"
 
 .. raw:: html
 
@@ -122,8 +139,12 @@ few lines rather than by reading the documents:
 
 .. code-block:: console
 
-   $ pip install senfd[mcp]
+   $ pip install senfd[sate]
    $ claude mcp add sate -- sate-mcp
+
+Its answers are those of ``senfd-query``, as Markdown, each citation a link
+to the page of the published PDF, so the agent can open the figure it was
+told of.
 
 .. raw:: html
 
