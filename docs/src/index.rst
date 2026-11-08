@@ -114,6 +114,7 @@ nvmexpress.org, give the same data model the CI job checks.
 
    install/index.rst
    usage/index.rst
+   stages/index.rst
    sate/index.rst
    benchmark/index.rst
    linting/index.rst

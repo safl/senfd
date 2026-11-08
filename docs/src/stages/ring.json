@@ -1,0 +1,94 @@
+{
+  "name": "Ring",
+  "opcode": 4,
+  "sqe": [
+    {
+      "lower": 14,
+      "upper": 15,
+      "condition": null,
+      "qualifier": null,
+      "fields": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 18,
+        "page_nr": 18,
+        "section": "1.2",
+        "section_title": "Ding command"
+      }
+    },
+    {
+      "lower": 11,
+      "upper": 11,
+      "condition": null,
+      "qualifier": null,
+      "fields": [
+        {
+          "name": "Ring Mode",
+          "acronym": null,
+          "unit": "bits",
+          "upper": 31,
+          "lower": 16,
+          "range": "31:16",
+          "description": "",
+          "section": null,
+          "columns": {},
+          "fields": [],
+          "union": null,
+          "alternative": null,
+          "values": []
+        }
+      ],
+      "source": {
+        "document": "example",
+        "figure_nr": 19,
+        "page_nr": 19,
+        "section": "1.2",
+        "section_title": "Ding command"
+      }
+    },
+    {
+      "lower": 10,
+      "upper": 10,
+      "condition": null,
+      "qualifier": null,
+      "fields": [
+        {
+          "name": "Ring Count",
+          "acronym": "RCNT",
+          "unit": "bits",
+          "upper": 31,
+          "lower": 0,
+          "range": "31:00",
+          "description": "How many rings.",
+          "section": null,
+          "columns": {},
+          "fields": [],
+          "union": null,
+          "alternative": null,
+          "values": []
+        }
+      ],
+      "source": {
+        "document": "example",
+        "figure_nr": 20,
+        "page_nr": 20,
+        "section": "1.2",
+        "section_title": "Ding command"
+      }
+    }
+  ],
+  "cqe": [],
+  "operations": [],
+  "columns": {
+    "function": "0000 10b",
+    "data_transfer": "00b",
+    "reference": "3.3"
+  },
+  "source": {
+    "document": "example",
+    "figure_nr": 1,
+    "page_nr": 1,
+    "section": "1.1",
+    "section_title": "Foobar Commands"
+  }
+}

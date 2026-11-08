@@ -1,8 +1,9 @@
 version = 1
 
 # The files that cannot carry a header of their own: data, images, the
-# synthetic example documents, what senfd writes of them, and the
-# benchmark's questions and the records of its runs
+# synthetic example documents, what senfd writes of them and what the
+# documentation shows of that, and the benchmark's questions and the
+# records of its runs
 [[annotations]]
 path = [
     "CHANGELOG.md",
@@ -15,6 +16,9 @@ path = [
     "docs/poetry.lock",
     "docs/src/**/*.cmd",
     "docs/src/**/*.out",
+    "docs/src/stages/*.html",
+    "docs/src/stages/*.json",
+    "docs/src/stages/*.txt",
     "example/**",
     "src/senfd/schemas/**",
 ]
