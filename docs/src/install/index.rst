@@ -14,23 +14,28 @@ in a virtual environment of its own:
 
 .. code-block:: console
 
-   $ pipx install "senfd[ask,mcp]"
+   $ pipx install "senfd[ask,mcp,pdf]"
 
 The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
 
 * ``ask``, the prompt and rendering of ``senfd-ask``, by prompt_toolkit and
   rich; without it, ``senfd-ask`` reads a question a line and prints Markdown.
 * ``mcp``, the MCP server ``senfd-mcp``.
+* ``pdf``, reading the specifications as the PDFs NVM Express publishes, by
+  pikepdf and pdfplumber; without it, senfd reads the ``.docx`` only.
 
 Then make the data model, once, from the documents you have:
 
 .. code-block:: console
 
-   $ senfd ~/specs/*.docx --output ~/.cache/senfd
+   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
 
 ``senfd-query``, ``senfd-ask`` and ``senfd-mcp`` read it from there, or from
-the file ``SENFD_SPEC`` names. The documents are the ratified specifications
-as ``.docx``, from `NVM Express <https://nvmexpress.org/specifications/>`_.
+the file ``SENFD_SPEC`` names. The documents are the ratified specifications,
+as the PDFs `NVM Express <https://nvmexpress.org/specifications/>`_ publishes
+for anyone to download, or as the ``.docx`` its members hold. A PDF must keep
+the structure of its tables, as NVM Express's do, being exported from Word
+with its document structure tags; one without is refused.
 
 .. note::
   senfd reads ``.docx`` with python-docx, whose lxml installs as a prebuilt

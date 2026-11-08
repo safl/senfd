@@ -7,8 +7,8 @@ senfd: the NVMe specifications, as data
 
 The NVMe specifications are published as documents, thousands of pages of
 figures that every driver, tool, emulator, firmware and test suite transcribes
-by hand. **senfd** reads the ratified documents, as ``.docx``, and makes a
-data model of them: every command with its dwords and fields, every data
+by hand. **senfd** reads the ratified documents, as the PDFs NVM Express
+publishes or the ``.docx`` its members hold, and makes a data model of them: every command with its dwords and fields, every data
 structure, register, feature, log page and table of values, each fact citing
 the document, section, figure and page it is from.
 
@@ -49,13 +49,22 @@ be built: ``pip install senfd`` and point it at the documents.
 
 .. code-block:: console
 
-   $ pip install senfd[ask,mcp]
-   $ senfd ~/specs/*.docx --output ~/.cache/senfd
+   $ pip install senfd[ask,mcp,pdf]
+   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
    $ senfd-ask "Which bits of CDW12 of Write are PRINFO?"
 
-The documents are NVM Express's and are not distributed with senfd, nor is
-anything made from them: the data model is made locally, by whoever holds the
-documents. senfd's tests and examples use synthetic documents of its own.
+**senfd is experimental, and independent of NVM Express:** it is not endorsed
+by NVM Express, Inc., nor made by it, and its data model is not a publication
+of NVM Express. The specifications are NVM Express's, under its copyright. It
+publishes the ratified specifications as PDF, which anyone can download from
+`nvmexpress.org <https://nvmexpress.org/specifications/>`_; their ``.docx``
+are available to its members only. senfd reads either and gives the same data
+model of both. Neither the documents nor anything made from them is
+distributed with senfd: the data model is made locally, by whoever has the
+documents. senfd's examples and most of its tests use synthetic documents of
+its own; the tests reading the specifications, and the CI job checking what
+senfd makes of each, download the public PDFs into a cache and upload
+nothing.
 
 .. toctree::
    :maxdepth: 2

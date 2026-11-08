@@ -50,8 +50,9 @@ model of them: every command with its dwords and fields, every data
 structure, register, feature, log page and table of values, each fact citing
 the document, section, figure and page it is from. It is a data model, not a
 language model: JSON validated by a schema, with nothing in it trained or
-generated, and the same documents give the same data model every time. From
-that one data model:
+generated, and the same documents give the same data model every time. It
+reads the specifications as NVM Express publishes them, as PDF, or as the
+.docx its members hold. From that one data model:
 
 * **Precise answers, at once**, with ``senfd-query`` and ``senfd-ask``, the
   expert to ask, which completes names as you type and answers in
@@ -68,9 +69,13 @@ that one data model:
 
 .. code-block:: console
 
-   $ pipx install "senfd[ask,mcp]"
-   $ senfd ~/specs/*.docx --output ~/.cache/senfd
+   $ pipx install "senfd[ask,mcp,pdf]"
+   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
    $ senfd-ask "Which bits of CDW12 of Write are PRINFO?"
+
+with the specifications downloaded from `nvmexpress.org
+<https://nvmexpress.org/specifications/>`_ into ``~/specs``, or, for a
+member of NVM Express, their ``.docx``.
 
 Asked 30 questions of the 2026 revisions, ``senfd-ask`` answered all 30
 right, in 4 ms each, and with Llama 3.1 8B on a CPU choosing the lookups,
@@ -79,9 +84,29 @@ from memory and told to answer, got 4.7 and 7.7 of them wrong, on average
 over three runs.
 
 It runs on the eleven documents ratified in 2026, from Base 2.4 to the TCP
-transport, in about a minute. The documents are NVM Express's; neither they
-nor anything made from them is part of senfd, whose tests and examples use
-synthetic documents of its own.
+transport, in about a minute from the .docx and a few minutes from the PDFs.
+
+Status and conditions
+---------------------
+
+**senfd is experimental, and independent of NVM Express.** It is not
+endorsed by NVM Express, Inc., nor made by it, and its data model is not a
+publication of NVM Express. Its answers cite the figure they are from so
+that they can be checked against the specification, which is what counts.
+
+**The specifications are NVM Express's,** under its copyright. NVM Express
+publishes the ratified specifications as PDF, which anyone can download from
+nvmexpress.org, and senfd reads those. The ``.docx`` of the specifications
+are available to members of NVM Express only; senfd reads those too, for
+those who hold them, and gives the same data model of either.
+
+**Neither the documents nor anything made from them is distributed with
+senfd.** Its examples and most of its tests use synthetic documents of its
+own. The tests that read the specifications, and the CI job checking what
+senfd makes of each, download the public PDFs from nvmexpress.org into a
+cache, checked by their SHA-256, and keep them and the data model there,
+uploading neither. Whoever runs senfd makes the data model locally, from the
+documents they have.
 
 See the `documentation <https://safl.dk/senfd/>`_ for the commands,
 the benchmark against frontier language models, and the schema of the data
