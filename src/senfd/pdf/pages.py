@@ -37,6 +37,18 @@ NEAR = 2.5
 STRUCK = (0.35, 0.75)
 
 
+def turned(char: dict) -> int:
+    """Which way a character is turned by 90 degrees, by its text matrix: 1
+    where it reads upward, -1 downward, 0 where it is not turned. The
+    'upright' pdfplumber gives does not tell: it holds for text turned by a
+    matrix of zero scale along the line."""
+
+    a, b, _, _ = char["matrix"][:4]
+    if abs(b) <= abs(a):
+        return 0
+    return 1 if b > 0 else -1
+
+
 def struck(char: dict, rules: Sequence[Horizontal]) -> bool:
     """Whether a thin horizontal line of 'rules', sorted by where down they
     are, runs through the middle of 'char', striking it out"""
@@ -120,12 +132,17 @@ class Pages:
                 boxes[number] = union(boxes.get(number), box)
             if not chars:
                 continue
-            turned = sum(not c.get("upright", True) for c in chars) * 2 > len(chars)
-            if turned:
+            ways = [turned(c) for c in chars]
+            if sum(1 for way in ways if way) * 2 > len(chars):
+                upward = sum(ways) > 0
                 across = cluster_objects(chars, lambda c: (c["x0"] + c["x1"]) / 2, 4)
-                for column in across:
-                    upward = sorted(column, key=lambda c: -c["bottom"])
-                    lines.append("".join(c["text"] for c in upward).strip())
+                # Turned to read upward, the first line stands leftmost;
+                # turned to read downward, rightmost
+                for column in across if upward else reversed(across):
+                    along = sorted(
+                        column, key=lambda c: -c["bottom"] if upward else c["top"]
+                    )
+                    lines.append("".join(c["text"] for c in along).strip())
             else:
                 lines.append(text_of_chars(chars, y_tolerance=LINE))
         return "\n".join(lines), boxes
