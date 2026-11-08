@@ -99,3 +99,15 @@ def test_a_merged_model_already_in_the_output_is_not_merged_again(
 
     assert senfd_main(monkeypatch, *docs, "--output", tmp_path) == 0
     assert json.loads(merged.read_text(encoding="utf-8")) == first
+
+
+def test_a_run_says_what_it_made_and_what_to_look_at(tmp_path):
+    documents = sorted(str(p) for p in Path("example").resolve().glob("*.docx"))
+    result = run(
+        ["senfd", *documents, "--output", str(tmp_path)], capture_output=True, text=True
+    )
+    assert result.returncode == 0
+    assert f"{len(documents)} documents into" in result.stdout
+    assert "candidate errata (senfd-query errata)" in result.stdout
+    logs = sorted(p.name for p in tmp_path.glob("*.error.log"))
+    assert logs and all("." not in name.removesuffix(".error.log") for name in logs)

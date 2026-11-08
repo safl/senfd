@@ -18,8 +18,9 @@ merged specification document that senfd writes, by default in the cache:
 import argparse
 import os
 import re
+import sys
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional
 
 from senfd.documents.spec import value_names as senfd_value_names
 from senfd.documents.spec import (
@@ -439,10 +440,50 @@ def errata(spec: SpecDocument, document: str = "") -> List[str]:
             e.source.figure_nr,
         )
     )
-    lines = []
+    # The same value in many rows of a figure is one erratum, said once
+    counted: Dict[str, int] = {}
     for e in found:
-        lines.append(f"{cite(e.source)}: {e.message}")
+        line = f"{cite(e.source)}: {e.message}"
+        counted[line] = counted.get(line, 0) + 1
+    lines = [line + (f" (in {n} rows)" if n > 1 else "") for line, n in counted.items()]
     return lines or ["No errata"]
+
+
+def lint(spec: SpecDocument, document: str = "") -> List[str]:
+    """What reading the figures as data found to look at, of the documents
+    whose short name has 'document' in it: for the authors, the candidate
+    errata; then what senfd could not read as data, the figures of no shape
+    it models, a worked example apart from the rest, and the dwords no
+    command, feature or operation claims"""
+
+    def of(text: str) -> bool:
+        return document.lower() in document_name(text).lower()
+
+    unmodelled = [
+        d.message
+        for d in spec.diagnostics
+        if d.code == "figure-not-modelled" and of(d.message)
+    ]
+    examples = [m for m in unmodelled if re.search(r"\bexamples?\b", m, re.I)]
+    others = [m for m in unmodelled if m not in examples]
+    unassigned = [
+        f"{cite(d.source)}: dwords {d.lower}:{d.upper} of '{name}'"
+        for name, dwords in sorted(spec.unassigned.items())
+        for d in dwords
+        if of(d.source.document)
+    ]
+    found = [line for line in errata(spec, document) if line != "No errata"]
+    sections = [
+        ("Candidate errata, for the authors", found),
+        ("Figures of no shape senfd models: the authors' or senfd's", others),
+        ("Worked examples, not data", examples),
+        ("Dwords no command, feature or operation claims", unassigned),
+    ]
+    lines = []
+    for title, items in sections:
+        lines.append(f"{title} ({len(items)})")
+        lines += [f"  {item}" for item in items]
+    return lines
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -482,12 +523,23 @@ def main(argv: Optional[List[str]] = None) -> int:
     sub.add_parser(
         "errata", help="Candidate errata of the documents, with where they are"
     ).add_argument("document", nargs="?", default="")
+    sub.add_parser(
+        "lint", help="What reading the figures as data found, for authors and senfd"
+    ).add_argument("document", nargs="?", default="")
     sub.add_parser("search", help="Fields and things by acronym or name").add_argument(
         "text"
     )
     args = parser.parse_args(argv)
 
-    spec = load(args.spec)
+    try:
+        spec = load(args.spec)
+    except OSError as exc:
+        print(
+            f"senfd-query: no data model to answer from: {exc}. Make one from "
+            "the documents with: senfd <documents>.docx --output ~/.cache/senfd",
+            file=sys.stderr,
+        )
+        return 1
     if args.what == "command":
         lines = command(spec, args.name, args.dword, args.verbose, args.markdown)
     elif args.what == "feature":
@@ -500,6 +552,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         lines = section(spec, args.key)
     elif args.what == "errata":
         lines = errata(spec, args.document)
+    elif args.what == "lint":
+        lines = lint(spec, args.document)
     else:
         lines = search(spec, args.text)
     print("\n".join(lines))

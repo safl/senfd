@@ -222,3 +222,29 @@ def test_the_command_line_gives_markdown(spec_path, capsys):
     argv = ["--spec", str(spec_path), "--markdown", "structure", "Bar"]
     assert senfd.query.main(argv) == 0
     assert "| Bytes | Name | Acronym |" in capsys.readouterr().out
+
+
+def test_the_same_erratum_in_many_rows_is_said_once(spec):
+    twice = spec.errata[0].model_copy()
+    folded = spec.model_copy(update={"errata": [spec.errata[0], twice]})
+    (line,) = senfd.query.errata(folded)
+    assert line.endswith(" (in 2 rows)")
+
+
+def test_the_lint_says_what_is_the_authors_and_what_is_senfds(spec):
+    lines = senfd.query.lint(spec)
+    headings = [line for line in lines if not line.startswith("  ")]
+    assert [h.rsplit(" (", 1)[0] for h in headings] == [
+        "Candidate errata, for the authors",
+        "Figures of no shape senfd models: the authors' or senfd's",
+        "Worked examples, not data",
+        "Dwords no command, feature or operation claims",
+    ]
+    assert headings[0].endswith(f"({len(senfd.query.errata(spec))})")
+    assert any("dwords" in line and line.startswith("  example") for line in lines)
+    assert all(not line.startswith("  ") for line in senfd.query.lint(spec, "nothing"))
+
+
+def test_without_a_data_model_the_query_says_how_to_make_one(capsys):
+    assert senfd.query.main(["--spec", "/no/such/model.json", "errata"]) == 1
+    assert "senfd <documents>.docx --output" in capsys.readouterr().err

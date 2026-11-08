@@ -17,6 +17,7 @@ from typing import List
 
 import senfd
 import senfd.pipeline
+import senfd.query
 import senfd.schemas
 from senfd.documents import get_document_classes
 from senfd.documents.base import to_file
@@ -115,11 +116,14 @@ def main() -> int:
             docclass.to_schema_file(args.output)
         return 0
 
-    for count, path in enumerate(sorted(args.document), 1):
+    errors_of_documents = 0
+    for path in sorted(args.document):
         args.output.mkdir(parents=True, exist_ok=True)
 
         errors = senfd.pipeline.process(path, args.output, args)
-        to_log_file(errors, path.stem, args.output)
+        # Named as every other output of the document is, "2-4" of "2.4"
+        to_log_file(errors, path.stem.replace(".", "-"), args.output)
+        errors_of_documents += len(errors)
 
     specs = [
         SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
@@ -128,9 +132,28 @@ def main() -> int:
     ]
     if specs:
         spec = merge(specs)
-        spec.to_json_file(args.output / spec.json_filename())
+        written = spec.to_json_file(args.output / spec.json_filename())
+        print(summary(spec, len(args.document), errors_of_documents, written))
 
     return 0
+
+
+def summary(spec: SpecDocument, documents: int, errors: int, written: Path) -> str:
+    """What a run made of the documents, and what of them to look at"""
+
+    commands = sum(len(s.commands) for s in spec.command_sets.values())
+    errata = [line for line in senfd.query.errata(spec) if line != "No errata"]
+    unmodelled = sum(d.code == "figure-not-modelled" for d in spec.diagnostics)
+    unassigned = sum(len(d) for d in spec.unassigned.values())
+    return (
+        f"{documents} document{'s' if documents != 1 else ''} into {written}: "
+        f"{commands} commands, {len(spec.features)} features, "
+        f"{len(spec.log_pages)} log pages and {len(spec.structures)} structures. "
+        f"To look at: {len(errata)} candidate errata (senfd-query errata), "
+        f"{unmodelled} figure{'s' if unmodelled != 1 else ''} not modelled and "
+        f"{unassigned} unassigned dwords "
+        f"(senfd-query lint), and {errors} document errors (*.error.log)."
+    )
 
 
 if __name__ == "__main__":
