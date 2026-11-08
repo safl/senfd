@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 import importlib.util
+import json
+import lzma
 import urllib.error
 from argparse import Namespace
 from pathlib import Path
@@ -98,3 +100,23 @@ def test_a_published_pdf_reads_as_its_figures(public, tmp_path):
     cdw12 = next(d for d in write["sqe"] if d["lower"] == 12)
     fua = next(f for f in cdw12["fields"] if f.get("acronym") == "FUA")
     assert (fua["upper"], fua["lower"], write["opcode"]) == (30, 30, 1)
+
+
+def test_the_compressed_data_model_is_the_same_bytes_every_time(public, tmp_path):
+    model = tmp_path / "merged.spec.document.json"
+    model.write_text(json.dumps({}), encoding="utf-8")
+    first = public.compressed(model).read_bytes()
+    assert public.compressed(model).read_bytes() == first
+    assert lzma.decompress(first) == model.read_bytes()
+
+
+def test_a_wrong_answer_of_the_benchmark_is_counted_and_named(public, tmp_path, capsys):
+    lane = tmp_path / "lane.json"
+    answers = [
+        {"id": 1, "question": "Write?", "answer": "| Write | 01h |"},
+        {"id": 2, "question": "Wrong?", "answer": "| Write | 7Fh |"},
+    ]
+    lane.write_text(json.dumps({"answers": answers}), encoding="utf-8")
+    tally = public.graded(lane)
+    assert tally["right"] + tally["wrong"] + tally["unknown"] == 2
+    assert tally["right"] < 2 and "2: " in capsys.readouterr().out
