@@ -72,9 +72,10 @@ that one data model:
    $ senfd-ask "Which bits of CDW12 of Write are PRINFO?"
 
 Asked 30 questions of the 2026 revisions, ``senfd-ask`` answered all 30
-right, in 3 ms each, and with Llama 3.1 8B on a CPU choosing the lookups,
-all 30 right in 2.8 s each, for free. Claude Opus 5.5 and Sonnet 5.5, asked
-from memory and told to answer, got 5 and 11 of them wrong.
+right, in 4 ms each, and with Llama 3.1 8B on a CPU choosing the lookups,
+all 30 right in 2.7 s each, for free. Claude Opus 5.5 and Sonnet 5.5, asked
+from memory and told to answer, got 4.7 and 6.3 of them wrong, on average
+over three runs.
 
 It runs on the eleven documents ratified in 2026, from Base 2.4 to the TCP
 transport, in about a minute. The documents are NVM Express's; neither they

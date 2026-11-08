@@ -11,11 +11,13 @@ default_target = "epyc-02"
 
 [cijoe.targets.epyc-02.ssh]
 username = "root"
+# cijoe connects with paramiko, which does not read ~/.ssh/config: give a
+# name your resolver knows, or the address
 hostname = "epyc-02"
 
 [senfd]
 repo = "https://github.com/safl/senfd"
-commit = "489c634269fa222497f67b05f8abaa552b38e3ce"
+commit = "6f85cc2b2cd167783b9dfe8d5d673bce4a4dc21b"
 python = "3.12"
 
 [spec]

@@ -27,43 +27,46 @@ that the revisions ratified in 2026 added or moved.
      - **30**
      - **0**
      - 0
-     - free, 3 ms a question
+     - free, 4 ms a question
    * - ``senfd-ask --llm``, Llama 3.1 8B (Q4_K_M), CPU only
      - **30**
      - **0**
      - 0
-     - free, 2.8 s a question
+     - free, 2.7 s a question
    * - ``senfd-ask --llm``, Llama 3.2 1B (Q4_K_M), CPU only
-     - 20
+     - 18
      - **0**
-     - 10
-     - free, 1.0 s a question
+     - 12
+     - free, 1.1 s a question
    * - Claude Opus 5.5, from memory, "unknown" allowed
-     - 23
-     - 0.3
-     - 6.7
-     - USD 0.13 a run
-   * - Claude Opus 5.5, from memory, answer required
-     - 25
-     - 5
+     - 22.3
      - 0
-     - USD 0.15 a run
-   * - Claude Sonnet 5.5, from memory, "unknown" allowed
-     - 20.3
-     - 2
      - 7.7
-     - USD 0.07 a run
-   * - Claude Sonnet 5.5, from memory, answer required
-     - 19.3
-     - 10.7
+     - USD 0.14 a run
+   * - Claude Opus 5.5, from memory, answer required
+     - 25.3
+     - 4.7
      - 0
-     - USD 0.03 a run
+     - USD 0.13 a run
+   * - Claude Sonnet 5.5, from memory, "unknown" allowed
+     - 22
+     - 1.7
+     - 6.3
+     - USD 0.05 a run
+   * - Claude Sonnet 5.5, from memory, answer required
+     - 23.7
+     - 6.3
+     - 0
+     - USD 0.06 a run
 
 Asked to answer, as a chat does, a frontier model states wrong opcodes,
 identifiers and bits as confidently as right ones: Opus gave Sanitize
-Namespace the opcode 85h in all three runs, where the figure says 8Ch, and
-Sonnet put Purge Required at bit 13 of CDW10, where it is bit 11. Allowed to
-say "unknown", they say it of what they do not know and still miss. Their
+Namespace a different opcode in each of its three runs, 85h, 32h and 82h,
+where the figure says 8Ch, and Sonnet gave it 84h, the opcode of Sanitize,
+twice with high confidence. Allowed to say "unknown", they say it of what
+they do not know and still miss. A frontier lane is the mean of three runs,
+and the means move between runs of the workflow: an earlier run, on an older
+senfd, had Sonnet told to answer 10.7 wrong rather than 6.3. Their
 training predates the documents, which is the point: what a language model
 knows is the revisions it was trained on, and the specifications move on.
 
@@ -72,8 +75,9 @@ make the same mistake. It chooses the lookup, constrained to a query and its
 argument, and the answer is what the lookup found in senfd's data model of the
 documents, with the figure it cites. The 8 billion parameter language model
 chose well for every question. The 1 billion parameter language model chose
-badly for ten, the questions of a dword's bits, and said of those that they
-are not known: a weaker language model costs answers, never correctness.
+badly for twelve, ten of them questions of a dword's or a register's bits,
+and said of those that they are not known: a weaker language model costs
+answers, never correctness.
 
 .. raw:: html
 
