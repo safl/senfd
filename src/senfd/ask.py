@@ -41,7 +41,7 @@ import sys
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, List, Optional, Set, Tuple
+from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 import senfd.query
 from senfd.documents.spec import Bits, SpecDocument, alias
@@ -79,6 +79,17 @@ WORDS = [
     "errata",
     "help",
 ]
+
+# The words after which a question names a thing of one kind
+KINDS_AFTER = [
+    (re.compile(r"log page", re.I), "log page"),
+    (re.compile(r"feature", re.I), "feature"),
+    (re.compile(r"structure", re.I), "structure"),
+    (re.compile(r"(opcode|cdw\d+|dword \d+) of", re.I), "command"),
+]
+KIND_WORDS = re.compile(
+    r"(log page|feature|structure|(?:opcode|cdw\d+|dword \d+) of) $", re.I
+)
 
 # The words a question may be phrased in, and that name nothing
 FILLER = re.compile(
@@ -150,11 +161,50 @@ class Vocabulary:
                 vocabulary.registers.add(head)
         return vocabulary
 
-    def words(self) -> List[str]:
-        """What completes a question: its words, then every name and acronym"""
+    def completions(self, typed: str, most: int = 40) -> List[Tuple[str, int, str]]:
+        """What completes 'typed', as (text, start, kind), 'start' counting back
+        from its end
 
-        names = self.commands | self.features | self.log_pages | self.structures
-        return WORDS + sorted(names, key=str.lower) + sorted(self.acronyms)
+        A name completes from where it starts in the question, so "opcode of
+        zone app" completes to Zone Append, and a register also by its name,
+        as "controller sta" to Controller Status. After the words of a kind,
+        as "log page " or "opcode of ", names of that kind come first, and are
+        offered before a letter of them is typed. Then the most words matched
+        come first, then the words of questions, commands, features, log
+        pages, structures and acronyms, and the shorter name before the
+        longer; a word typed in capitals, as "FU", is completed by acronyms
+        before names."""
+
+        kinds = [
+            ("", WORDS),
+            ("command", sorted(self.commands)),
+            ("feature", sorted(self.features)),
+            ("log page", sorted(self.log_pages)),
+            ("structure", sorted(self.structures)),
+            ("acronym", sorted(self.acronyms)),
+        ]
+        starts = [i for i in range(len(typed)) if i == 0 or typed[i - 1] == " "]
+        tails = [typed[i:] for i in starts if typed[i:].strip()]
+        after = KIND_WORDS.search(typed[: len(typed) - len(typed.split(" ")[-1])])
+        wanted = next((k for w, k in KINDS_AFTER if after and w.match(after[0])), "")
+        if wanted and not typed.split(" ")[-1]:
+            tails.append("")
+        found: Dict[str, Tuple[bool, int, int, int, str, int, str]] = {}
+        for rank, (kind, names) in enumerate(kinds):
+            for name in names:
+                head, dash, rest = name.partition(" - ")
+                for text in (name, rest) if dash and rest else (name,):
+                    for tail in tails:  # Longest first
+                        if text.lower().startswith(tail.lower()) and text != tail:
+                            capitals = len(tail) > 1 and tail.isupper()
+                            first = -1 if capitals and kind == "acronym" else rank
+                            words = -tail.count(" ")
+                            key = (kind != wanted, words, first, len(text), text)
+                            if text not in found or key < found[text][:5]:
+                                found[text] = (*key, len(tail), kind)
+                            break
+        ranked = sorted(found.values())[:most]
+        return [(text, -length, kind) for *_, text, length, kind in ranked]
 
 
 def words_of(text: str) -> str:
@@ -703,7 +753,7 @@ def interact(spec: SpecDocument, llm: Optional[str] = None) -> int:
     vocabulary = Vocabulary.of(spec)
     try:
         from prompt_toolkit import PromptSession
-        from prompt_toolkit.completion import FuzzyWordCompleter
+        from prompt_toolkit.completion import Completer, Completion
         from prompt_toolkit.history import InMemoryHistory
         from rich.console import Console
         from rich.markdown import Markdown
@@ -718,9 +768,15 @@ def interact(spec: SpecDocument, llm: Optional[str] = None) -> int:
 
     console = Console()
     console.print(Markdown(HELP))
-    words = vocabulary.words()
+
+    class Names(Completer):
+        def get_completions(self, document, complete_event):
+            typed = document.text_before_cursor
+            for text, start, kind in vocabulary.completions(typed):
+                yield Completion(text, start, display_meta=kind)
+
     session: PromptSession = PromptSession(
-        completer=FuzzyWordCompleter(words, WORD=True),
+        completer=Names(),
         complete_while_typing=True,
         history=InMemoryHistory(),
         bottom_toolbar=(
