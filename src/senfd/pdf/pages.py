@@ -5,9 +5,12 @@
 """
 The pages of a PDF as drawn: the characters of each piece of marked content,
 and the borders of the tables, which say what the structure tree does not,
-the columns a merged cell spans
+the columns a merged cell spans. A specification published with its tracked
+changes shown has its deletions on the page too, struck through; they are
+not its text.
 """
 
+from bisect import bisect_left, bisect_right
 from collections import defaultdict
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -29,6 +32,22 @@ Horizontal = Tuple[float, float, float]
 LINE = 6
 # How far apart, in points, two borders may be and still be one
 NEAR = 2.5
+# Where a line through a character strikes it out, as a share of its height
+# from the top: below it is an underline, above it a border over the text
+STRUCK = (0.35, 0.75)
+
+
+def struck(char: dict, rules: Sequence[Horizontal]) -> bool:
+    """Whether a thin horizontal line of 'rules', sorted by where down they
+    are, runs through the middle of 'char', striking it out"""
+
+    if not char.get("upright", True):
+        return False
+    top, height = char["top"], char["bottom"] - char["top"]
+    first = bisect_left(rules, (top + STRUCK[0] * height,))
+    last = bisect_right(rules, (top + STRUCK[1] * height, float("inf"), float("inf")))
+    across = (char["x0"] + char["x1"]) / 2
+    return any(x0 - 0.5 <= across <= x1 + 0.5 for _, x0, x1 in rules[first:last])
 
 
 def union(a: Optional[Box], b: Box) -> Box:
@@ -53,9 +72,15 @@ class Pages:
         if number in self._chars:
             return
         page = self.plumb.pages[number]
+        rules = sorted(
+            (r["top"] + r["height"] / 2, r["x0"], r["x1"])
+            for r in [*page.rects, *page.lines]
+            if r["height"] < 2 and r["width"] > 2
+        )
         by_mcid: Dict[Optional[int], List[dict]] = defaultdict(list)
         for char in page.chars:
-            by_mcid[char.get("mcid")].append(char)
+            if not struck(char, rules):
+                by_mcid[char.get("mcid")].append(char)
         self._chars[number] = by_mcid
         self._rects[number] = list(page.rects)
         page.close()  # Its characters are kept above; the rest is not needed

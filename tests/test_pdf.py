@@ -9,13 +9,15 @@ import urllib.error
 from argparse import Namespace
 from pathlib import Path
 
+import pdfplumber
 import pikepdf
 import pytest
 
 from senfd.documents.plain import Figure, FromPdf
-from senfd.pdf.pages import grid, spans
+from senfd.pdf.pages import Pages, grid, spans
 from senfd.pdf.reader import NotTagged, joined, read, stem_of
 from senfd.pdf.tables import columns_of
+from senfd.pdf.tree import Leaf
 from senfd.tables import Cell, Row, Table
 
 TOOL = Path(__file__).parents[1] / "toolbox" / "public_documents.py"
@@ -115,6 +117,49 @@ def test_a_cell_with_no_text_takes_a_column_no_other_covers():
     edges = [0.0, 50.0, 100.0]
     verticals = [(0.0, 0, 20), (50.0, 0, 20), (100.0, 0, 20)]
     assert spans([None, (55.0, 5.0, 95.0, 15.0)], edges, verticals) == [(0, 1), (1, 2)]
+
+
+def one_page(path, content):
+    """A PDF of one page drawing 'content' in Helvetica, its text in one
+    piece of marked content"""
+
+    pdf = pikepdf.new()
+    page = pdf.add_blank_page(page_size=(300, 300))
+    font = pdf.make_indirect(
+        pikepdf.Dictionary(
+            Type=pikepdf.Name.Font,
+            Subtype=pikepdf.Name.Type1,
+            BaseFont=pikepdf.Name.Helvetica,
+        )
+    )
+    page.Resources = pikepdf.Dictionary(Font=pikepdf.Dictionary(F1=font))
+    page.Contents = pdf.make_stream(content.encode())
+    pdf.save(path)
+    return path
+
+
+def marked_text(tmp_path, drawn):
+    """The text the reader gives the marked content of a page drawing
+    "Figure 338" at the baseline y 200, size 10, and then 'drawn'"""
+
+    path = one_page(
+        tmp_path / "page.pdf",
+        "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Figure 338) Tj ET EMC " + drawn,
+    )
+    with pikepdf.open(path) as pdf, pdfplumber.open(path) as plumb:
+        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        text, _ = pages.text([[Leaf(pdf.pages[0].objgen, 0)]])
+    return text
+
+
+def test_text_struck_through_is_a_deletion_shown_and_not_read(tmp_path):
+    # A rule 3 pt above the baseline, through the middle of the glyphs
+    assert marked_text(tmp_path, "100 203 52 0.5 re f") == ""
+
+
+def test_text_underlined_is_an_insertion_shown_and_read(tmp_path):
+    # A rule 1 pt below the baseline, as an underline is drawn
+    assert marked_text(tmp_path, "100 199 52 0.5 re f") == "Figure 338"
 
 
 def test_a_pdf_without_a_structure_tree_is_refused(tmp_path):
