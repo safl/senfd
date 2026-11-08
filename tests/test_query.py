@@ -258,3 +258,9 @@ def test_a_command_is_found_by_its_opcode(spec):
 def test_without_a_data_model_the_query_says_how_to_make_one(capsys):
     assert senfd.query.main(["--spec", "/no/such/model.json", "errata"]) == 1
     assert "senfd <documents>.docx --output" in capsys.readouterr().err
+
+
+def test_sections_sort_by_number_with_an_annex_last():
+    sections = ["A.1", "5.2.10", "5.2.9", None, "B", "5.10"]
+    ordered = sorted(sections, key=senfd.query.section_order)
+    assert ordered == [None, "5.2.9", "5.2.10", "5.10", "A.1", "B"]
