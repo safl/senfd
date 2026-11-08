@@ -376,3 +376,38 @@ def test_text_printed_below_the_table_is_no_cell_text():
         (80.0, 215.0, 200.0, 225.0),
         Columns([72.0], [(72.0, 100, 200)], (80.0, 105.0, 290.0, 195.0)),
     )
+
+
+def read_marked(tmp_path, content):
+    """The text the reader gives the one piece of marked content of a page
+    drawing 'content'"""
+
+    path = one_page(
+        tmp_path / "turned.pdf", f"/P <</MCID 0>> BDC BT /F1 10 Tf {content} ET EMC"
+    )
+    with pikepdf.open(path) as pdf, pdfplumber.open(path) as plumb:
+        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        text, _ = pages.text([[Leaf(pdf.pages[0].objgen, 0)]])
+    return text
+
+
+def test_text_turned_to_read_upward_reads_forward(tmp_path):
+    # A header turned by 90 degrees, as a narrow column's, its matrix rotating
+    assert (
+        read_marked(tmp_path, "0 1 -1 0 100 100 Tm (Extended only) Tj")
+        == "Extended only"
+    )
+
+
+def test_text_turned_to_read_downward_reads_forward_too(tmp_path):
+    assert (
+        read_marked(tmp_path, "0 -1 1 0 100 200 Tm (Extended only) Tj")
+        == "Extended only"
+    )
+
+
+def test_two_lines_turned_are_read_in_their_order(tmp_path):
+    upward = "0 1 -1 0 100 100 Tm (First) Tj 0 1 -1 0 112 100 Tm (Second) Tj"
+    assert read_marked(tmp_path, upward) == "First\nSecond"
+    downward = "0 -1 1 0 112 200 Tm (First) Tj 0 -1 1 0 100 200 Tm (Second) Tj"
+    assert read_marked(tmp_path, downward) == "First\nSecond"
