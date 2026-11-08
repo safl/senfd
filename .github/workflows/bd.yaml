@@ -82,8 +82,11 @@ jobs:
 
     - name: Upload coverage to Coveralls
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-      uses: coverallsapp/github-action@v2.3.0
+      uses: coverallsapp/github-action@v2.3.8
       with:
         file: coverage.lcov
         format: lcov
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        # The reporter is downloaded on every run; when that fails, the build
+        # has not. Coverage is enforced by the tests' --cov-fail-under.
+        fail-on-error: false
