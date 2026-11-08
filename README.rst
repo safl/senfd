@@ -45,10 +45,47 @@ senfd: the NVMe specifications, as data
     :target: https://safl.dk/senfd/ask/
     :alt: MCP server
 
-**senfd** reads the ratified NVMe specification documents and makes a data
-model of them: every command with its dwords and fields, every data
-structure, register, feature, log page and table of values, each fact citing
-the document, section, figure and page it is from. It is a data model, not a
+**Not endorsed by NVM Express.** senfd is an independent project. It is not
+endorsed by NVM Express, Inc., nor made by it, and its data model is not a
+publication of NVM Express. NVM Express and NVMe are trademarks of NVM
+Express, Inc.
+
+**Experimental: use at your own risk.** senfd is young, what it says can be
+wrong, and nothing it says replaces the specification. Every answer cites the
+figure it is from: check it there before you rely on it.
+
+**Derived from the specifications, and under their terms.** The data model
+senfd makes is derived from the NVMe specifications, so the notice printed in
+each specification governs it as it governs the specification. Members of NVM
+Express, Inc. may use it subject to their Participation Agreement and the
+Company's Intellectual Property Policy and Bylaws. To anyone else, the notice
+grants only the right to review, refer to or cite the specification, and
+not to make derivatives of it or implement it: **you must be a member of NVM
+Express, Inc. to make the data model or make use of it.**
+
+**And yet, see what it gets right.** Asked 30 questions with one exact
+answer each, an opcode, an identifier, a bit or a byte offset, mostly about
+what the revisions ratified in 2026 added or moved:
+
+* ``senfd-ask``, by the words of the question: **30 of 30 right**, in 4 ms
+  each, for free.
+* ``senfd-ask`` with Llama 3.1 8B on a CPU choosing the lookup: **30 of 30
+  right**, in 2.7 s each, for free, on your own hardware.
+* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **4.7 and
+  7.7 wrong** on average, stated as surely as the right ones, at USD 0.17
+  and 0.07 a run.
+
+The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
+how to run it again.
+
+What it is
+----------
+
+**senfd** reads **S**\ pecification documents, **E**\ xtracts and
+**N**\ ormalizes their **F**\ igures, and makes a structured **D**\ ata model
+of them: every command with its dwords and fields, every data structure,
+register, feature, log page and table of values, each fact citing the
+document, section, figure and page it is from. It is a data model, not a
 language model: JSON validated by a schema, with nothing in it trained or
 generated, and the same documents give the same data model every time. It
 reads the specifications as NVM Express publishes them, as PDF, or as the
@@ -75,24 +112,12 @@ reads the specifications as NVM Express publishes them, as PDF, or as the
 
 with the specifications downloaded from `nvmexpress.org
 <https://nvmexpress.org/specifications/>`_ into ``~/specs``, or, for a
-member of NVM Express, their ``.docx``.
+member of NVM Express, their ``.docx``. It runs on the eleven documents
+ratified in 2026, from Base 2.4 to the TCP transport, in about a minute from
+the .docx and a few minutes from the PDFs.
 
-Asked 30 questions of the 2026 revisions, ``senfd-ask`` answered all 30
-right, in 4 ms each, and with Llama 3.1 8B on a CPU choosing the lookups,
-all 30 right in 2.7 s each, for free. Claude Opus 5.5 and Sonnet 5.5, asked
-from memory and told to answer, got 4.7 and 7.7 of them wrong, on average
-over three runs.
-
-It runs on the eleven documents ratified in 2026, from Base 2.4 to the TCP
-transport, in about a minute from the .docx and a few minutes from the PDFs.
-
-Status and conditions
----------------------
-
-**senfd is experimental, and independent of NVM Express.** It is not
-endorsed by NVM Express, Inc., nor made by it, and its data model is not a
-publication of NVM Express. Its answers cite the figure they are from so
-that they can be checked against the specification, which is what counts.
+On what terms the documents are read
+------------------------------------
 
 **The specifications are NVM Express's,** under its copyright. NVM Express
 publishes the ratified specifications as PDF, which anyone can download from

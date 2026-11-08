@@ -5,7 +5,7 @@
 [project]
 name = "senfd"
 dynamic = ["version"]
-description = "Semantic Enhancer for Figure Documents"
+description = "Reads specification documents, extracts and normalizes their figures, and makes a structured data model of them"
 authors = [
     { name = "Simon A. F. Lund", email = "os@safl.dk" }
 ]
