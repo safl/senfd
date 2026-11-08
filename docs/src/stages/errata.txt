@@ -1,0 +1,5 @@
+example, 1.1, Figure 1, page 1: Command Zing: opcode is not a value
+example, 1.2, Figure 18, page 18: Field 64:00 Ring Tail: bit 64 beyond the 64 bits of its dwords
+example, 1.2, Figure 19, page 19: Field 31:16 Ring Mode: acronym 'R MODE' is not one
+example, 1.2, Figure 19, page 19: Ring cdw11: bits 0 to 15 are of no field
+example, 2, Figure 33, page 33: 'Maybe' in the column "I/O" is not a level

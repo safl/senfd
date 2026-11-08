@@ -123,7 +123,10 @@ with the specifications downloaded from `nvmexpress.org
 <https://nvmexpress.org/specifications/>`_ into ``~/specs``, or, for a
 member of NVM Express, their ``.docx``. It runs on the eleven documents
 ratified in 2026, from Base 2.4 to the TCP transport, in about a minute from
-the .docx and a few minutes from the PDFs.
+the .docx and a few minutes from the PDFs. To see what a figure becomes,
+the `documentation <https://safl.dk/senfd/stages/>`_ follows two figures of
+senfd's example document through every stage, to the candidate errata an
+author would see.
 
 Prior art
 ---------
