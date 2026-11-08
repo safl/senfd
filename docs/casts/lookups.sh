@@ -5,6 +5,8 @@ sate "What are the fields of the controller status register?"
 sate "Which feature is Power Limit?"
 sate "log page 1Fh"
 sate CRIME
+# Each citation links to the page of the published PDF; a terminal shows it as a link, --raw shows the address
+sate --raw "opcode of sanitize"
 # What the data model does not have, it says it does not know
 sate "Which bit of CDW12 of Write enables the hyperdrive?"
 # And what the documents may have wrong, with where it is
