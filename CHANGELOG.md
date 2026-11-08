@@ -10,6 +10,68 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.9.0
+
+senfd is a package of two tools: `senfd` makes the data model, and `sate`,
+Senfd Ask The Expert, answers from it. `senfd-ask` is now `sate`, and
+`senfd-mcp` is `sate-mcp`, both of the extra `sate`, which replaces the
+extras `ask` and `mcp`; the package `senfd.ask` is `senfd.sate`.
+
+senfd reads the specifications from the PDFs NVM Express publishes for
+anyone, as well as from the .docx its members hold, and gives the same
+data model of either: with the extra `pdf`, `senfd specification.pdf`. A
+PDF must keep the structure of its tables, as NVM Express's do; one
+without is refused. A CI job makes the data model of each of the eleven
+published PDFs and compares it with what is expected, downloading them
+into a cache and uploading nothing; it merges them into one data model,
+and has `sate` answer the benchmark's questions from it, every one right.
+The README and the documentation say that senfd is experimental, not
+endorsed by NVM Express, that the data model is derived from the
+specifications and under their terms, and how to make it.
+
+Read from the PDFs, a figure going on past a page break keeps one copy of
+its header and a row broken across the page whole; a table's columns are
+found where its rules meet its borders, so a border far from centred text
+is no longer lost, which brings twelve more figures of the Base
+specification and the features of the Management Interface into the data
+model; the deletions a specification published with its tracked changes
+shows struck through are left out, as they are of a `.docx`; and text Word
+tags into a cell but prints below the table is left out of the cell. Read
+from the `.docx`, a paragraph of a list is led by the label Word shows,
+"1.", "a)" or a bullet, so the notes of a figure keep their numbers and
+read as the PDF does.
+
+Each fact cites its document, section, figure and page, and where the
+document is one NVM Express publishes as PDF, the citation of `senfd-query
+--markdown`, `sate` and `sate-mcp` links to that page of the PDF: the data
+model carries the SHA-256 of the file each document was made from, and the
+page of the PDF each figure is on, as "page 213, PDF page 238". `sate` opens
+each answer with a rule naming the question and pages an answer taller than
+the terminal from its top; `describe` or `explain` before a question answers
+it with the descriptions of the fields; and the bits of a byte in a data
+structure stand in a column of their own beside the bytes. The PDF reader
+reads a header turned by 90 degrees the way it runs, places a figure in its
+section by the outline's destinations, carries a table nested in a cell past
+a page break, and makes one again a range wrapped by a narrow column; and a
+field named with a range in brackets, as `KV Key[63:00]`, keeps its name
+whole. senfd needs Python 3.11 or later.
+
+`senfd-query lint` lists what an author acts on first: the candidate errata,
+and the document errors, which were only in each document's error log and
+are now in the data model, each by its document and the figure it follows.
+Every line of the lint cites as the errata do, names read as words, and a
+range of identifiers giving the "h" once, or a column of sentences, is read
+as what it is rather than as an erratum. A run of `senfd` names the command
+listing what it found for the data model it wrote, and a missing document is
+an error.
+
+Every type and field of the data model is described in its schema.
+
+`senfd-query command` finds a command by its opcode, as "8Ch", and errata
+in an annex no longer stop `senfd-query errata`. `sate-mcp`
+says what it is with `--help`, and its tools' descriptions are without the
+indentation of their docstrings.
+
 ## 0.8.0
 
 `senfd-query lint`, and the MCP tool `lint`, list what reading the figures as
