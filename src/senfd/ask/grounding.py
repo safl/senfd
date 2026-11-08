@@ -1,0 +1,135 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+"""
+Whether an answer is about what its question asks of, and mentions what the
+question names, so that an answer about something else is not shown
+"""
+
+import re
+from typing import List, Optional, Tuple
+
+from senfd.ask.phrasing import ASKS_COMMAND, DWORD, terms, words_of
+from senfd.ask.reading import (
+    Understood,
+    command_named,
+    command_words,
+    field_of_other,
+    names_other,
+    spot,
+)
+from senfd.ask.vocabulary import Vocabulary
+from senfd.documents.spec import alias
+
+
+SEVERAL = "several commands"
+
+
+def nothing(lines: List[str]) -> bool:
+    return not lines or lines[0].startswith(("No ", "Nothing named", "Give "))
+
+
+def ambiguous(lines: List[str]) -> bool:
+    """Whether 'lines' list what a name matches rather than answer, as
+    "92 structures; be more specific" """
+
+    return bool(lines) and bool(re.match(r"\d+ [a-z ]+; be more specific", lines[0]))
+
+
+def heading(lines: List[str]) -> str:
+    return next((line for line in lines if line.strip()), "")
+
+
+def answered(lines: List[str]) -> Optional[Tuple[str, str]]:
+    """The kind and name of what an answer by name is about, from its head"""
+
+    first = heading(lines)
+    for pattern, kind in (
+        (r"^### (.+?): .*command", "command"),
+        (r"^### Feature [0-9A-Fa-f]+h (.+?) \[", "feature"),
+        (r"^### Log page [0-9A-Fa-f]+h (.+?) \[", "log_page"),
+        (r"^\*\*(.+?)(?: at offset [^,]+)?, [a-z]+ \[", "structure"),
+    ):
+        match = re.match(pattern, first)
+        if match:
+            head, dash, _ = match[1].partition(" - ")
+            if kind == "structure" and dash and head.isupper():
+                kind = "register"
+            return kind, match[1]
+    return None
+
+
+def elsewhere(
+    question: str, understood: Understood, lines: List[str], vocabulary: Vocabulary
+) -> Optional[str]:
+    """What 'question' asks of that the answer 'lines' is not about, if any.
+
+    The question asks of a kind of thing, by its words with the names it
+    names taken out, "log page 02h" or "the opcode of Write", and the answer
+    must be of that kind: a register named by its acronym is answered by
+    that register, a command by that command and dword. And it names a
+    thing, which a lookup by name finds and names at its head: that must be
+    the thing named, not another whose name contains it, as "Memory Copy" of
+    "Copy". Another lookup must mention what the question names."""
+
+    found = answered(lines)
+    kind, name = found if found else (None, None)
+    named = spot(question, vocabulary)
+    command = command_named(question, vocabulary)
+    lower = question.lower()
+    for taken in (named[1] if named else "", command or ""):
+        if taken:
+            lower = re.sub(rf"\b{re.escape(taken.lower())}\b", " ", lower)
+    capitals = re.findall(r"\b[A-Z][A-Z0-9]+\b", question)
+    registers = [c for c in capitals if c in vocabulary.registers]
+    dword = re.search(DWORD, question.lower())
+
+    if registers and not dword and not field_of_other(named, question.lower()):
+        head = name.partition(" - ")[0] if name else None
+        return None if kind == "register" and head in registers else registers[0]
+    kinds = [
+        of
+        for word, of in (
+            (r"\blog ?pages?\b|\blid\b", "log_page"),
+            (r"\bfeatures?\b|\bfid\b", "feature"),
+            (r"\bstructures?\b", "structure"),
+        )
+        # "the log page identifier in Get Log Page" asks of the command, and
+        # "the Identify Controller data structure" not of Identify
+        if re.search(word, lower) and not (command and not names_other(named))
+    ]
+    if kinds and kind not in kinds:
+        return named[1] if named else f"a {kinds[0].replace('_', ' ')}"
+    if not kinds and (re.search(ASKS_COMMAND, lower) or understood.query == "command"):
+        if command is None:
+            return (
+                SEVERAL
+                if command_words(question, vocabulary)
+                else (None if understood.query == "command" else "a command")
+            )
+        if kind != "command" or alias(name or "") != alias(command):
+            return command
+        if dword and understood.dword is not None and understood.dword != int(dword[1]):
+            return f"dword {dword[1]} of {command}"
+        return None
+    if not named:
+        return None
+    if understood.query in ("feature", "log_page", "structure", "register"):
+        if name is None:
+            return named[1]
+        head = name.partition(" - ")[0]
+        return None if alias(named[1]) in (alias(name), alias(head)) else named[1]
+    text = words_of(" ".join(lines))
+    return None if words_of(named[1]) in text else named[1]
+
+
+def unmentioned(question: str, lines: List[str]) -> List[str]:
+    """The terms of 'question' that the answer 'lines' does not mention"""
+
+    text = " ".join(lines).lower()
+    return [
+        t
+        for t in terms(question)
+        if not re.search(rf"(?<![a-z0-9]){re.escape(t)}s?(?![a-z0-9])", text)
+    ]

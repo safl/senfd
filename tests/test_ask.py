@@ -2,12 +2,18 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+import sys
 from pathlib import Path
 
 import pytest
 
 import senfd.ask
+import senfd.ask.completion
+import senfd.ask.session
 import senfd.query
+import senfd.ask.cli
+from senfd.ask import grounding, language_model, lookup, phrasing, reading
+from senfd.ask.completion import completions, recognised
 
 
 @pytest.fixture(scope="module")
@@ -57,23 +63,23 @@ def test_what_the_model_does_not_have_is_said_to_be_not_known(spec, vocabulary):
 
 
 def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
-    assert senfd.ask.terms("Which bit of CDW12 of Write is FUA?") == [
+    assert phrasing.terms("Which bit of CDW12 of Write is FUA?") == [
         "cdw12",
         "write",
         "fua",
     ]
-    assert senfd.ask.terms("hey, what FID does ding use?") == ["ding"]
-    assert senfd.ask.unmentioned("Where is the hyperdrive?", ["| 30 | FUA |"]) == [
+    assert phrasing.terms("hey, what FID does ding use?") == ["ding"]
+    assert grounding.unmentioned("Where is the hyperdrive?", ["| 30 | FUA |"]) == [
         "hyperdrive"
     ]
 
 
 def offered(vocabulary, typed):
-    return [text for text, _, _, _ in vocabulary.completions(typed, most=1000)]
+    return [text for text, _, _, _ in completions(vocabulary, typed, most=1000)]
 
 
 def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
-    assert vocabulary.completions("opcode of foo sta")[0] == (
+    assert completions(vocabulary, "opcode of foo sta")[0] == (
         "Foo Statistics",
         -len("foo sta"),
         "log page",
@@ -105,20 +111,20 @@ def test_names_complete_before_acronyms_unless_typed_in_capitals(vocabulary):
     ],
 )
 def test_after_the_words_of_a_kind_its_names_come_first(vocabulary, typed, kind):
-    kinds = [k for _, _, k, _ in vocabulary.completions(typed, most=1000)]
+    kinds = [k for _, _, k, _ in completions(vocabulary, typed, most=1000)]
     asked = kinds.count(kind)
     assert asked >= 2 and kinds[:asked] == [kind] * asked
 
 
 def test_with_nothing_typed_the_questions_to_ask_are_offered(vocabulary):
-    offered = vocabulary.completions("")
+    offered = completions(vocabulary, "")
     shown = [s for _, _, kind, s in offered if kind == "question"]
-    assert shown == [s for _, s in senfd.ask.QUESTIONS]
-    assert [t for t, _, kind, _ in offered if kind == "form"] == senfd.ask.WORDS
+    assert shown == [s for _, s in phrasing.QUESTIONS]
+    assert [t for t, _, kind, _ in offered if kind == "form"] == phrasing.WORDS
 
 
 def test_a_question_begun_completes_to_the_questions_it_may_be(vocabulary):
-    text, start, kind, shown = vocabulary.completions("which b")[0]
+    text, start, kind, shown = completions(vocabulary, "which b")[0]
     assert (text, start, kind) == ("which bit of cdw", -7, "question")
     assert shown == "which bit of cdw<N> of <command> is <acronym>?"
 
@@ -130,7 +136,7 @@ def test_after_is_the_acronyms_of_what_is_asked_of_come_first(vocabulary):
 
 def test_the_words_names_and_acronyms_of_a_question_are_recognised(vocabulary):
     text = "Which bits of cdw10 of the Ding command are FCNT?"
-    assert [(text[s:e], kind) for s, e, kind in vocabulary.recognised(text)] == [
+    assert [(text[s:e], kind) for s, e, kind in recognised(vocabulary, text)] == [
         ("cdw10 of", "word"),
         ("Ding", "name"),
         ("FCNT", "acronym"),
@@ -152,11 +158,15 @@ def test_the_field_asked_of_is_said_and_its_row_marked(spec, vocabulary):
 
 
 def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):
-    assert senfd.ask.reading("", vocabulary).startswith(" Ask of 8 commands")
-    assert senfd.ask.reading("which bits of cdw10 of Ding", vocabulary) == (
-        " Read as command('Ding', dword=10)"
+    assert senfd.ask.session.reading_so_far("", vocabulary).startswith(
+        " Ask of 8 commands"
     )
-    assert "language model" in senfd.ask.reading("ding", vocabulary, llm="x")
+    assert senfd.ask.session.reading_so_far(
+        "which bits of cdw10 of Ding", vocabulary
+    ) == (" Read as command('Ding', dword=10)")
+    assert "language model" in senfd.ask.session.reading_so_far(
+        "ding", vocabulary, llm="x"
+    )
 
 
 @pytest.mark.parametrize(
@@ -168,7 +178,7 @@ def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):
     ],
 )
 def test_the_bottom_line_says_what_comes_next(vocabulary, typed, next):
-    assert senfd.ask.reading(typed, vocabulary) == next
+    assert senfd.ask.session.reading_so_far(typed, vocabulary) == next
 
 
 def test_an_answer_says_how_it_was_found(spec, vocabulary):
@@ -200,7 +210,7 @@ def choosing(monkeypatch, *choices):
         told.append(messages[-1]["content"])
         return next(given)
 
-    monkeypatch.setattr(senfd.ask, "choose", choose)
+    monkeypatch.setattr(language_model, "choose", choose)
     return told
 
 
@@ -260,11 +270,11 @@ def test_the_language_model_is_asked_for_a_lookup_by_its_schema():
     server = HTTPServer(("127.0.0.1", 0), Server)
     threading.Thread(target=server.handle_request, daemon=True).start()
     url = f"http://127.0.0.1:{server.server_port}"
-    chosen = senfd.ask.choose(url, [{"role": "user", "content": "FCNT?"}])
+    chosen = language_model.choose(url, [{"role": "user", "content": "FCNT?"}])
     server.server_close()
     assert str(chosen) == "command('ding', dword=10)"
     schema = asked["response_format"]["json_schema"]["schema"]
-    assert schema == senfd.ask.SCHEMA and asked["temperature"] == 0
+    assert schema == language_model.SCHEMA and asked["temperature"] == 0
 
 
 def test_without_the_extra_questions_are_read_a_line_at_a_time(
@@ -289,7 +299,9 @@ def test_without_the_extra_questions_are_read_a_line_at_a_time(
         return real(name, *args, **kwargs)
 
     monkeypatch.setattr(builtins, "__import__", without_the_extra)
-    assert senfd.ask.interact(spec) == 0
+    monkeypatch.delitem(sys.modules, "senfd.ask.session")  # Imported anew, and fails
+    model = str(Path("example") / "output" / "merged.spec.document.json")
+    assert senfd.ask.main(["--spec", model]) == 0
     out = capsys.readouterr().out
     assert "Ask about a command" in out and "opcode 01h" in out
 
@@ -305,10 +317,10 @@ def test_a_command_named_with_its_command_set_is_the_command(
 
 def test_an_answer_is_rendered_where_it_can_be(capsys):
     pytest.importorskip("rich")
-    senfd.ask.show("| Bits | Name |\n|---|---|\n| 30 | Force Unit Access |")
+    senfd.ask.cli.show("| Bits | Name |\n|---|---|\n| 30 | Force Unit Access |")
     out = capsys.readouterr().out
     assert "Force Unit Access" in out and "|---|" not in out
-    senfd.ask.show("| a |", raw=True)
+    senfd.ask.cli.show("| a |", raw=True)
     assert capsys.readouterr().out == "| a |\n"
 
 
@@ -376,7 +388,7 @@ def test_a_question_without_terms_grounds_no_choice_of_a_language_model(
 
 def test_a_name_of_generic_words_is_spotted():
     vocabulary = senfd.ask.Vocabulary(commands={"Set Features"})
-    assert senfd.ask.spot("What is the opcode of Set Features?", vocabulary) == (
+    assert reading.spot("What is the opcode of Set Features?", vocabulary) == (
         "command",
         "Set Features",
     )
@@ -392,11 +404,11 @@ def test_a_name_of_generic_words_is_spotted():
     ],
 )
 def test_the_terms_of_a_question_are_what_an_answer_must_mention(question, expected):
-    assert senfd.ask.terms(question) == expected
+    assert phrasing.terms(question) == expected
 
 
 def test_mentioning_is_of_whole_words():
-    assert senfd.ask.unmentioned("opcode of format", ["Information"]) == ["format"]
+    assert grounding.unmentioned("opcode of format", ["Information"]) == ["format"]
 
 
 @pytest.mark.parametrize(
@@ -417,7 +429,7 @@ def test_a_language_model_not_answering_is_said_so(spec, vocabulary, monkeypatch
     def unreachable(url, messages):
         raise OSError("connection refused")
 
-    monkeypatch.setattr(senfd.ask, "choose", unreachable)
+    monkeypatch.setattr(language_model, "choose", unreachable)
     text = senfd.ask.reply(spec, "opcode of ding", vocabulary, "http://nowhere")
     assert text.startswith("The language model at http://nowhere did not choose")
 
@@ -470,9 +482,9 @@ def test_a_command_named_in_a_structure_s_name_does_not_answer_for_it(spec, voca
         structures=set(vocabulary.structures) | {"Ding Report"},
     )
     command = senfd.ask.Understood("command", "Ding")
-    lines = senfd.ask.answer(spec, command, vocabulary)
+    lines = lookup.answer(spec, command, vocabulary)
     question = "What is the Ding Report structure?"
-    assert senfd.ask.elsewhere(question, command, lines, vocabulary) == "Ding Report"
+    assert grounding.elsewhere(question, command, lines, vocabulary) == "Ding Report"
 
 
 def test_a_field_acronym_that_is_a_register_s_too_is_of_the_structure_named(
@@ -551,7 +563,7 @@ def session_answering(monkeypatch, *typed):
     import contextlib
 
     stack = contextlib.ExitStack()
-    monkeypatch.setattr(prompt_toolkit, "PromptSession", session)
+    monkeypatch.setattr(senfd.ask.session, "PromptSession", session)
     return made, stack
 
 
@@ -560,7 +572,7 @@ def test_the_session_answers_each_question_until_the_input_ends(
 ):
     made, stack = session_answering(monkeypatch, "opcode of ding", "", "C0h")
     with stack:
-        assert senfd.ask.interact(spec) == 0
+        assert senfd.ask.session.interact(spec) == 0
     out = capsys.readouterr().out
     assert "Ask about a command" in out
     assert "Ding: Foobar command, opcode 01h" in out
@@ -572,7 +584,7 @@ def test_the_session_completes_the_names_of_the_model(spec, monkeypatch, capsys)
 
     made, stack = session_answering(monkeypatch)
     with stack:
-        senfd.ask.interact(spec)
+        senfd.ask.session.interact(spec)
     assert "Ask about a command" in capsys.readouterr().out
     completer = made[0].completer
     shown = list(completer.get_completions(Document("opcode of Foo Sta"), None))
@@ -587,7 +599,7 @@ def test_the_session_shows_what_it_recognises_and_how_it_reads(
 
     made, stack = session_answering(monkeypatch)
     with stack:
-        senfd.ask.interact(spec, source=Path("model.json"))
+        senfd.ask.session.interact(spec, source=Path("model.json"))
     out = capsys.readouterr().out
     assert "senfd-ask" in out and "8 commands" in out and "model.json" in out
     session = made[0]
@@ -595,7 +607,9 @@ def test_the_session_shows_what_it_recognises_and_how_it_reads(
     assert ("class:name", "Ding") in fragments
     shown = "".join(text for _, text in session.bottom_toolbar())
     assert "Ask of 8 commands" in shown and "Tab complete |" in shown
-    typed = "".join(text for _, text in senfd.ask.bar("cdw10 of Ding", vocabulary))
+    typed = "".join(
+        text for _, text in senfd.ask.session.toolbar("cdw10 of Ding", vocabulary)
+    )
     assert "Read as command('Ding', dword=10)" in typed
     assert session.key_bindings.get_bindings_for_keys(("?",))
     assert session.key_bindings.get_bindings_for_keys(("f1",))
@@ -607,7 +621,7 @@ def test_the_questions_asked_are_kept_for_the_next_session(
     monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path))
     made, stack = session_answering(monkeypatch, "opcode of ding")
     with stack:
-        senfd.ask.interact(spec)
+        senfd.ask.session.interact(spec)
     capsys.readouterr()
     assert "opcode of ding" in (tmp_path / "senfd" / "ask-history").read_text()
 
@@ -622,8 +636,8 @@ def test_without_a_question_the_command_line_opens_the_session(monkeypatch, caps
 
 def test_a_register_named_by_one_generic_word_is_not_spotted_by_it():
     vocabulary = senfd.ask.Vocabulary(structures={"CMD - Command"})
-    assert senfd.ask.spot("Which command is it?", vocabulary) is None
-    assert senfd.ask.spot("What is the CMD - Command register?", vocabulary) == (
+    assert reading.spot("Which command is it?", vocabulary) is None
+    assert reading.spot("What is the CMD - Command register?", vocabulary) == (
         "register",
         "CMD",
     )

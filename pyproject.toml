@@ -57,3 +57,10 @@ testpaths = [
 
 [tool.ruff]
 line-length = 88
+
+# senfd-ask is held to annotated code throughout
+[[tool.mypy.overrides]]
+module = "senfd.ask.*"
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
