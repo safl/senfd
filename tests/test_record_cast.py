@@ -12,10 +12,6 @@ import pytest
 
 TOOL = Path(__file__).parents[1] / "toolbox" / "record_cast.py"
 
-pytestmark = pytest.mark.skipif(
-    sys.platform == "win32", reason="records commands run by a POSIX shell"
-)
-
 
 @pytest.fixture(scope="module")
 def record_cast():

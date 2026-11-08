@@ -8,8 +8,9 @@ Install
 =======
 
 senfd is a Python package, on `PyPI <https://pypi.org/project/senfd/>`_, tested
-on Python 3.10 to 3.12. `pipx <https://pipx.pypa.io/stable/>`_ installs it with
-its commands in a virtual environment of its own:
+on Python 3.10 to 3.12, on Linux and macOS; on Windows, use it in WSL or a
+container. `pipx <https://pipx.pypa.io/stable/>`_ installs it with its commands
+in a virtual environment of its own:
 
 .. code-block:: console
 
