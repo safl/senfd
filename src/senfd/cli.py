@@ -70,8 +70,9 @@ def parse_args() -> Namespace:
 
     parser = ArgumentParser(
         description=(
-            "Make the data model of NVMe specification documents, .docx, and say "
-            "what reading them found; senfd-query lint lists it"
+            "Reads specification documents, .pdf or .docx, extracts and normalizes "
+            "their figures, and makes a structured data model of them; "
+            "senfd-query lint lists what reading them found"
         ),
         epilog=PARSEARGS_EPILOG,
         formatter_class=RawTextHelpFormatter,

@@ -2,7 +2,7 @@ usage: senfd [-h] [--output OUTPUT] [--dump-schema]
              [--skip-figures SKIP_FIGURES] [--version]
              [document ...]
 
-Make the data model of NVMe specification documents, .docx, and say what reading them found; senfd-query lint lists it
+Reads specification documents, .pdf or .docx, extracts and normalizes their figures, and makes a structured data model of them; senfd-query lint lists what reading them found
 
 positional arguments:
   document              path to one or more document(s)
