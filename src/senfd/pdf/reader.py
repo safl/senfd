@@ -15,7 +15,7 @@ outline's, as printed, and the page numbers the table of figures'.
 
 import re
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional, Tuple
+from typing import Dict, List, NamedTuple, Optional, Sequence, Tuple
 
 import pdfplumber
 import pikepdf
@@ -39,28 +39,92 @@ class NotTagged(ValueError):
 
 
 class Section(NamedTuple):
+    """A section of the outline: its number and title, and where its heading
+    is, the page by index and how far down it in points, by the outline's
+    destination, where it has one"""
+
     number: Optional[str]
     title: Optional[str]
+    page: Optional[int] = None
+    top: Optional[float] = None
 
 
 def words(text: str) -> str:
     return " ".join(text.split())
 
 
+def destination(
+    pdf: pikepdf.Pdf, item: pikepdf.OutlineItem, index: Dict[Tuple[int, int], int]
+) -> Tuple[Optional[int], Optional[float]]:
+    """The page and the place down it an outline item points at, by its
+    destination, given outright or by name; None where it has none"""
+
+    dest = item.destination
+    if isinstance(dest, (pikepdf.Name, pikepdf.String)):
+        names = pdf.Root.get("/Names")
+        trees = names.get("/Dests") if names is not None else None
+        plain = pdf.Root.get("/Dests")
+        if trees is not None:
+            dest = pikepdf.NameTree(trees).get(str(dest))
+        elif plain is not None:
+            dest = plain.get(str(dest))
+        if isinstance(dest, pikepdf.Dictionary):
+            dest = dest.get("/D")
+    if not isinstance(dest, pikepdf.Array) or len(dest) < 1:
+        return None, None
+    page = dest[0]
+    number = index.get(page.objgen) if isinstance(page, pikepdf.Dictionary) else None
+    if number is None:
+        return None, None
+    kind = str(dest[1]) if len(dest) > 1 else ""
+    at = (
+        dest[3]
+        if kind == "/XYZ" and len(dest) > 3
+        else dest[2]
+        if kind in ("/FitH", "/FitBH") and len(dest) > 2
+        else None
+    )
+    if at is None:
+        return number, 0.0
+    box = pdf.pages[number].mediabox
+    return number, float(box[3]) - float(at)
+
+
 def outline(pdf: pikepdf.Pdf) -> List[Section]:
-    """The sections of the outline, in order, by number and title"""
+    """The sections of the outline, in order, by number and title, each with
+    the page and place its heading is at"""
 
     found: List[Section] = []
+    index = {page.objgen: i for i, page in enumerate(pdf.pages)}
 
     def visit(items: list) -> None:
         for item in items:
             title = words(str(item.title))
             match = NUMBERED.match(title)
-            found.append(Section(match[1], match[2]) if match else Section(None, title))
+            page, top = destination(pdf, item, index)
+            if match:
+                found.append(Section(match[1], match[2], page, top))
+            else:
+                found.append(Section(None, title, page, top))
             visit(item.children)
 
     with pdf.open_outline() as tree:
         visit(tree.root)
+    return found
+
+
+def section_at(sections: Sequence[Section], page: int, top: float) -> Optional[Section]:
+    """The section a figure at 'top' of page 'page' is in: the last whose
+    heading the outline places before it, the deepest where several share
+    the place; None where the outline places none"""
+
+    found: Optional[Section] = None
+    for section in sections:
+        if section.page is None or section.top is None:
+            continue
+        if (section.page, section.top) <= (page, top + 1):
+            if found is None or (section.page, section.top) >= (found.page, found.top):
+                found = section
     return found
 
 
@@ -153,9 +217,16 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 if entry:
                     entries[int(entry[1])] = int(entry[3])
             elif node.name == "/Table":
-                found, _ = table_of(pages, rows(node.element, node.page), errors)
+                found, extent = table_of(pages, rows(node.element, node.page), errors)
                 if not found:
                     continue
+                # The section is the outline's, by where the table is; the
+                # headings walked above stand in where the outline says not
+                where = section
+                if extent:
+                    begun = min(extent)
+                    placed = section_at(numbered, begun, extent[begun][1])
+                    where = placed if placed is not None else section
                 table = Table(table_nr=0, rows=found)
                 first = {c.text.strip() for c in found[0].cells if c.text.strip()}
                 caption = words(next(iter(first))) if len(first) == 1 else ""
@@ -184,8 +255,8 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     figure_nr=number,
                     caption=caption,
                     description=match[2].strip(),
-                    section=section.number,
-                    section_title=section.title,
+                    section=where.number,
+                    section_title=where.title,
                     table=table,
                 )
         for number, page in entries.items():

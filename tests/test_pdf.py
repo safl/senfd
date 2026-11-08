@@ -15,7 +15,15 @@ import pytest
 
 from senfd.documents.plain import Figure, FromPdf
 from senfd.pdf.pages import Pages, grid, spans
-from senfd.pdf.reader import NotTagged, joined, read, stem_of
+from senfd.pdf.reader import (
+    NotTagged,
+    Section,
+    joined,
+    outline,
+    read,
+    section_at,
+    stem_of,
+)
 from senfd.pdf.tables import Columns, astray, columns_of
 from senfd.pdf.tree import Leaf
 from senfd.tables import Cell, Row, Table
@@ -411,3 +419,35 @@ def test_two_lines_turned_are_read_in_their_order(tmp_path):
     assert read_marked(tmp_path, upward) == "First\nSecond"
     downward = "0 -1 1 0 112 200 Tm (First) Tj 0 -1 1 0 100 200 Tm (Second) Tj"
     assert read_marked(tmp_path, downward) == "First\nSecond"
+
+
+def test_the_outline_places_each_section_on_its_page(tmp_path):
+    pdf = pikepdf.new()
+    pdf.add_blank_page(page_size=(300, 400))
+    pdf.add_blank_page(page_size=(300, 400))
+    with pdf.open_outline() as tree:
+        tree.root.append(
+            pikepdf.OutlineItem("1 First", 0, "XYZ", left=69, top=350, zoom=0)
+        )
+        tree.root.append(
+            pikepdf.OutlineItem("1.1 Second", 1, "XYZ", left=69, top=100, zoom=0)
+        )
+        tree.root.append(pikepdf.OutlineItem("Loose"))
+    assert outline(pdf) == [
+        Section("1", "First", 0, 50.0),
+        Section("1.1", "Second", 1, 300.0),
+        Section(None, "Loose", None, None),
+    ]
+
+
+def test_a_figure_is_of_the_last_section_the_outline_places_before_it():
+    sections = [
+        Section("1", "First", 0, 50.0),
+        Section("1.1", "Second", 1, 300.0),
+        Section(None, "Loose"),
+    ]
+    assert section_at(sections, 0, 200.0) == sections[0]
+    assert section_at(sections, 1, 290.0) == sections[0]
+    assert section_at(sections, 1, 300.0) == sections[1]
+    assert section_at(sections, 3, 10.0) == sections[1]
+    assert section_at([Section("1", "First")], 0, 10.0) is None
