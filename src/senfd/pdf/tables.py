@@ -17,8 +17,9 @@ from typing import Dict, List, NamedTuple, Optional, Sequence, Set, Tuple
 
 from pdfplumber.utils import extract_text as text_of_chars
 
+from senfd.errors import Error
 from senfd.pdf.pages import LINE, NEAR, Box, Pages, Vertical, grid, spans, union
-from senfd.pdf.tree import TaggedCell, paragraphs, rows
+from senfd.pdf.tree import Leaf, TaggedCell, paragraphs, rows
 from senfd.tables import Cell, Row, Table
 
 
@@ -30,12 +31,14 @@ PADDING = 12
 
 class Read(NamedTuple):
     """A cell as read from the tree: its text, the box it is printed in on
-    each page, the page it starts on, and the tables nested in it"""
+    each page, the page it starts on, the tables nested in it, and the marked
+    content its text is of, by paragraph"""
 
     text: str
     boxes: Dict[int, Box]
     page: Optional[int]
     tables: List[Table]
+    paragraphs: List[List[Leaf]]
 
 
 class Placed(NamedTuple):
@@ -47,25 +50,23 @@ class Placed(NamedTuple):
 
 
 def table_of(
-    pages: Pages, tagged: Sequence[Sequence[TaggedCell]]
+    pages: Pages,
+    tagged: Sequence[Sequence[TaggedCell]],
+    errors: Optional[List[Error]] = None,
 ) -> Tuple[List[Row], Dict[int, Box]]:
     """The rows of the table whose cells the tree gives as 'tagged', and
-    where it is on each page it is on, its outer borders included"""
+    where it is on each page it is on, its outer borders included. Text the
+    tree puts in a cell but the page prints below the table is not the
+    cell's; it is left out, and said in 'errors' where given."""
 
     used: Dict[int, Set[int]] = defaultdict(set)
     nested: Dict[int, List[Box]] = defaultdict(list)
     read_rows = [
-        [read_cell(pages, cell, used, nested) for cell in row] for row in tagged
+        [read_cell(pages, cell, used, nested, errors) for cell in row] for row in tagged
     ]
-    by_page: Dict[int, List[Box]] = defaultdict(list)
-    for read_row in read_rows:
-        for read in read_row:
-            for number, box in read.boxes.items():
-                by_page[number].append(box)
-    columns = {
-        number: columns_of(pages, number, boxes, nested.get(number, []))
-        for number, boxes in by_page.items()
-    }
+    columns = columns_by_page(pages, read_rows, nested)
+    if strays_left_out(pages, read_rows, columns, errors):
+        columns = columns_by_page(pages, read_rows, nested)
     out, placed = placed_rows(pages, read_rows, columns)
     orphans(
         pages,
@@ -84,11 +85,89 @@ def table_of(
     return out, extent
 
 
+def columns_by_page(
+    pages: Pages, read_rows: Sequence[Sequence[Read]], nested: Dict[int, List[Box]]
+) -> Dict[int, "Columns"]:
+    """The columns of the table on each page its cells are printed on"""
+
+    by_page: Dict[int, List[Box]] = defaultdict(list)
+    for read_row in read_rows:
+        for read in read_row:
+            for number, box in read.boxes.items():
+                by_page[number].append(box)
+    return {
+        number: columns_of(pages, number, boxes, nested.get(number, []))
+        for number, boxes in by_page.items()
+    }
+
+
+def astray(box: Box, columns: "Columns") -> bool:
+    """Whether text printed in 'box' lies below the table whose 'columns' are
+    on its page, as the heading after the table or a list of the paragraph
+    after it, which Word may tag into the last cell: the table's borders say
+    how far down it goes. Text beside the table is not told apart, as the
+    columns found may stop short of the table's."""
+
+    if len(columns.edges) < 2 or not columns.verticals:
+        return False
+    return box[1] > max(v[2] for v in columns.verticals) + LINE
+
+
+def strays_left_out(
+    pages: Pages,
+    read_rows: List[List[Read]],
+    columns: Dict[int, "Columns"],
+    errors: Optional[List[Error]],
+) -> bool:
+    """The marked content of 'read_rows' that is astray of the table left out
+    of its cell, the cell's text read again without it; whether any was"""
+
+    found = False
+    for read_row in read_rows:
+        for at, read in enumerate(read_row):
+            kept: List[List[Leaf]] = []
+            for paragraph in read.paragraphs:
+                leaves = []
+                for leaf in paragraph:
+                    number = pages.number(leaf.page)
+                    chars = pages.chars(number).get(leaf.mcid, [])
+                    column = columns.get(number)
+                    if chars and column is not None:
+                        box = (
+                            min(c["x0"] for c in chars),
+                            min(c["top"] for c in chars),
+                            max(c["x1"] for c in chars),
+                            max(c["bottom"] for c in chars),
+                        )
+                        if astray(box, column):
+                            found = True
+                            if errors is not None:
+                                said = "".join(c["text"] for c in chars).strip()
+                                errors.append(
+                                    Error(
+                                        message=(
+                                            f"Page {number + 1} of the file: text "
+                                            "tagged in a cell of a table but printed "
+                                            f"outside it, left out of the cell: '{said[:60]}'"
+                                        )
+                                    )
+                                )
+                            continue
+                    leaves.append(leaf)
+                if leaves:
+                    kept.append(leaves)
+            if sum(map(len, kept)) != sum(map(len, read.paragraphs)):
+                text, boxes = pages.text(kept)
+                read_row[at] = read._replace(text=text, boxes=boxes, paragraphs=kept)
+    return found
+
+
 def read_cell(
     pages: Pages,
     cell: TaggedCell,
     used: Dict[int, Set[int]],
     nested: Dict[int, List[Box]],
+    errors: Optional[List[Error]] = None,
 ) -> Read:
     """A cell's text and where it is printed, with the tables nested in it;
     the marked content read is added to 'used', and the extent of each nested
@@ -105,14 +184,14 @@ def read_cell(
         for paragraph in paragraphs(element, page):
             for leaf in paragraph:
                 used[pages.number(leaf.page)].add(leaf.mcid)
-        inner, inner_extent = table_of(pages, rows(element, page))
+        inner, inner_extent = table_of(pages, rows(element, page), errors)
         tables.append(Table(rows=inner))
         for number, (x0, top, x1, bottom) in inner_extent.items():
             nested[number].append((x0 - 3, top - 3, x1 + 3, bottom + 3))
     start: Optional[int] = next(iter(boxes), None)
     if start is None and cell.page is not None:
         start = pages.number(cell.page)
-    return Read(text, boxes, start, tables)
+    return Read(text, boxes, start, tables, found)
 
 
 class Columns(NamedTuple):

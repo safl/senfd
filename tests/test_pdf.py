@@ -16,7 +16,7 @@ import pytest
 from senfd.documents.plain import Figure, FromPdf
 from senfd.pdf.pages import Pages, grid, spans
 from senfd.pdf.reader import NotTagged, joined, read, stem_of
-from senfd.pdf.tables import columns_of
+from senfd.pdf.tables import Columns, astray, columns_of
 from senfd.pdf.tree import Leaf
 from senfd.tables import Cell, Row, Table
 
@@ -359,3 +359,20 @@ def test_a_repeated_header_row_is_dropped_whichever_cells_it_merges_from_above()
         "LBA Range Type",
         "Error Recovery",
     ]
+
+
+def test_text_printed_below_the_table_is_no_cell_text():
+    columns = Columns(
+        [72.0, 300.0],
+        [(72.0, 100, 200), (300.0, 100, 200)],
+        (80.0, 105.0, 290.0, 195.0),
+    )
+    # The heading of the next section, tagged into a cell, printed under the table
+    assert astray((72.0, 215.0, 250.0, 225.0), columns)
+    # The table's own last row, and text beside it, whose columns may be read short
+    assert not astray((80.0, 190.0, 200.0, 200.0), columns)
+    assert not astray((320.0, 150.0, 400.0, 160.0), columns)
+    assert not astray(
+        (80.0, 215.0, 200.0, 225.0),
+        Columns([72.0], [(72.0, 100, 200)], (80.0, 105.0, 290.0, 195.0)),
+    )
