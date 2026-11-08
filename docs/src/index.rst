@@ -92,7 +92,11 @@ The specifications are NVM Express's, under its copyright. NVM Express
 publishes the ratified specifications as PDF, which anyone can download from
 `nvmexpress.org <https://nvmexpress.org/specifications/>`_; their ``.docx``
 are available to its members only. senfd reads either and gives the same data
-model of both. Neither the documents nor anything made from them is
+model of both. The ``.docx`` is the simpler source, as it states what the PDF
+only shows, and it is the one an editor has while a specification is under
+revision: run on the draft, ``senfd-query lint`` lists what does not read as
+data, for the figure to be corrected before it is ratified rather than
+after. Neither the documents nor anything made from them is
 distributed with senfd: the data model is made locally, by whoever has the
 documents. senfd's examples and most of its tests use synthetic documents of
 its own; the tests reading the specifications, and the CI job checking what
