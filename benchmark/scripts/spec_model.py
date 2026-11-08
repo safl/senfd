@@ -8,7 +8,7 @@
 The data model of the documents
 ===============================
 
-Runs the installed senfd over the '.docx' documents 'spec.documents' names,
+Runs the installed senfd over the documents 'spec.documents' names, .docx or PDF,
 a glob, into '<bench.workdir>/model'. The documents and the data model stay
 there; the run records only their names and SHA-256, so a later run can be
 checked to be of the same documents.
@@ -16,7 +16,7 @@ checked to be of the same documents.
 Config Arguments
 ----------------
 
-spec.documents: a glob of the .docx documents, outside any repository
+spec.documents: a glob of the documents, .docx or PDF, outside any repository
 
 Retargetable: False
 -------------------
