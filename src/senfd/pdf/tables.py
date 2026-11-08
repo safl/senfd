@@ -17,14 +17,14 @@ from typing import Dict, List, NamedTuple, Optional, Sequence, Set, Tuple
 
 from pdfplumber.utils import extract_text as text_of_chars
 
-from senfd.pdf.pages import LINE, Box, Pages, Vertical, grid, spans, union
+from senfd.pdf.pages import LINE, NEAR, Box, Pages, Vertical, grid, spans, union
 from senfd.pdf.tree import TaggedCell, paragraphs, rows
 from senfd.tables import Cell, Row, Table
 
 
-# How far, in points, a table's border may lie outside its text: the
-# padding of a cell, with room to spare, but less than the margin a change
-# bar is drawn in
+# How far, in points, a table's border may lie outside its text, where no
+# rule separates its rows to say: the padding of a cell, with room to spare,
+# but less than the margin a change bar is drawn in
 PADDING = 12
 
 
@@ -48,9 +48,9 @@ class Placed(NamedTuple):
 
 def table_of(
     pages: Pages, tagged: Sequence[Sequence[TaggedCell]]
-) -> Tuple[List[Row], Dict[int, List[Box]]]:
-    """The rows of the table whose cells the tree gives as 'tagged', and the
-    boxes of its text on each page it is on"""
+) -> Tuple[List[Row], Dict[int, Box]]:
+    """The rows of the table whose cells the tree gives as 'tagged', and
+    where it is on each page it is on, its outer borders included"""
 
     used: Dict[int, Set[int]] = defaultdict(set)
     nested: Dict[int, List[Box]] = defaultdict(list)
@@ -75,7 +75,13 @@ def table_of(
         {n: c.extent for n, c in columns.items()},
         used,
     )
-    return out, by_page
+    extent: Dict[int, Box] = {}
+    for number, column in columns.items():
+        x0, top, x1, bottom = column.extent
+        if column.edges:
+            x0, x1 = min(x0, column.edges[0]), max(x1, column.edges[-1])
+        extent[number] = (x0, top, x1, bottom)
+    return out, extent
 
 
 def read_cell(
@@ -99,15 +105,10 @@ def read_cell(
         for paragraph in paragraphs(element, page):
             for leaf in paragraph:
                 used[pages.number(leaf.page)].add(leaf.mcid)
-        inner, inner_boxes = table_of(pages, rows(element, page))
+        inner, inner_extent = table_of(pages, rows(element, page))
         tables.append(Table(rows=inner))
-        for number, printed in inner_boxes.items():
-            extent: Optional[Box] = None
-            for box in printed:
-                extent = union(extent, box)
-            if extent:
-                x0, top, x1, bottom = extent
-                nested[number].append((x0 - 3, top - 3, x1 + 3, bottom + 3))
+        for number, (x0, top, x1, bottom) in inner_extent.items():
+            nested[number].append((x0 - 3, top - 3, x1 + 3, bottom + 3))
     start: Optional[int] = next(iter(boxes), None)
     if start is None and cell.page is not None:
         start = pages.number(cell.page)
@@ -126,18 +127,32 @@ class Columns(NamedTuple):
 def columns_of(
     pages: Pages, number: int, boxes: Sequence[Box], nested: Sequence[Box]
 ) -> Columns:
-    """The columns of the table on page 'number', by the borders beside its
-    text: not those of a table nested in a cell, nor a line in the margin
-    beside the table, as a change bar"""
+    """The columns of the table on page 'number': the vertical borders that
+    the rules separating its rows end at or cross, which a line in the margin
+    beside the table, as a change bar, and the borders of a table nested in
+    a cell are not. A table may be wider than its text, where a column's text
+    is centred far from its border. Where no rule separates its rows, its
+    borders are those beside its text."""
 
     extent: Optional[Box] = None
     for box in boxes:
         extent = union(extent, box)
     assert extent is not None
+    separators = [
+        (x0, x1)
+        for y, x0, x1 in pages.horizontals(number, extent)
+        if any(b[3] <= y + 1 for b in boxes) and any(b[1] >= y - 1 for b in boxes)
+    ]
+
+    def column_edge(x: float) -> bool:
+        if separators:
+            return any(x0 - NEAR <= x <= x1 + NEAR for x0, x1 in separators)
+        return extent[0] - PADDING <= x <= extent[2] + PADDING
+
     verticals = [
         v
         for v in pages.verticals(number, extent)
-        if extent[0] - PADDING <= v[0] <= extent[2] + PADDING
+        if column_edge(v[0])
         and not any(
             n[0] < v[0] < n[2]
             and min(v[2], n[3]) - max(v[1], n[1]) > 0.5 * (v[2] - v[1])

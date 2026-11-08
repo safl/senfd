@@ -15,6 +15,7 @@ import pytest
 from senfd.documents.plain import Figure, FromPdf
 from senfd.pdf.pages import grid, spans
 from senfd.pdf.reader import NotTagged, joined, read, stem_of
+from senfd.pdf.tables import columns_of
 from senfd.tables import Cell, Row, Table
 
 TOOL = Path(__file__).parents[1] / "toolbox" / "public_documents.py"
@@ -61,6 +62,53 @@ def test_a_cell_spans_the_columns_between_the_borders_beside_its_text():
     # The first cell's text runs across the border at 50, which ends above it
     boxes = [(5.0, 12.0, 90.0, 18.0), (105.0, 12.0, 145.0, 18.0)]
     assert spans(boxes, edges, verticals) == [(0, 2), (2, 3)]
+
+
+class Ruled:
+    """A page with the borders given, in the place of Pages"""
+
+    def __init__(self, verticals, horizontals):
+        self.found = verticals, horizontals
+
+    def verticals(self, number, box, pad=2.0):
+        return self.found[0]
+
+    def horizontals(self, number, box, pad=2.0):
+        return self.found[1]
+
+
+HEADER = [(112.0, 100.0, 180.0, 110.0), (230.0, 100.0, 260.0, 110.0)]
+ROW = [(118.0, 120.0, 176.0, 130.0), (236.0, 120.0, 254.0, 130.0)]
+# The rules of a two-row table from 72 to 300, the separator in two pieces
+RULES = [
+    (95.0, 72.0, 300.0),
+    (115.0, 72.0, 219.8),
+    (115.0, 220.4, 300.0),
+    (135.0, 72.0, 300.0),
+]
+
+
+def test_a_border_far_from_the_centred_text_of_its_column_is_an_edge():
+    # The first column is wide and its text centred, 40 pt from the border
+    page = Ruled([(72.0, 95, 135), (220.0, 95, 135), (300.0, 95, 135)], RULES)
+    assert columns_of(page, 0, HEADER + ROW, []).edges == [72.0, 220.0, 300.0]
+
+
+def test_a_line_no_separator_reaches_is_no_edge():
+    # A change bar in the margin, and the border of a table beside this one
+    lines = [(72.0, 95, 135), (220.0, 95, 135), (300.0, 95, 135)]
+    beside = [(336.0, 98, 112), (306.0, 95, 135)]
+    page = Ruled(lines + beside, RULES)
+    assert columns_of(page, 0, HEADER + ROW, []).edges == [72.0, 220.0, 300.0]
+
+
+def test_a_table_whose_rows_no_rule_separates_has_the_borders_beside_its_text():
+    text = [(80.0, 100.0, 180.0, 110.0), (230.0, 100.0, 290.0, 110.0)]
+    page = Ruled(
+        [(72.0, 95, 115), (220.0, 95, 115), (300.0, 95, 115), (336.0, 98, 112)],
+        [(95.0, 72.0, 300.0), (115.0, 72.0, 300.0)],
+    )
+    assert columns_of(page, 0, text, []).edges == [72.0, 220.0, 300.0]
 
 
 def test_a_cell_with_no_text_takes_a_column_no_other_covers():
@@ -266,33 +314,3 @@ def test_a_repeated_header_row_is_dropped_whichever_cells_it_merges_from_above()
         "LBA Range Type",
         "Error Recovery",
     ]
-
-
-def test_a_header_row_read_better_on_the_next_page_replaces_the_first():
-    first = spanned(
-        page(
-            ["Figure 884: Behavior", None, None],
-            ["Host", "ASCR", "Action"],
-            ["TLS Disabled", "0", "", "Do not begin"],
-        )
-    )
-    figure = Figure(
-        figure_nr=884, caption="Figure 884: Behavior", description="B", table=first
-    )
-    joined(
-        figure,
-        spanned(
-            page(
-                ["Figure 884: Behavior", None, None, None],
-                ["Host", None, "ASCR", "Action"],
-                ["Authentication Disabled", "", "0", "Disconnect"],
-            )
-        ),
-    )
-    assert [c.text for c in figure.table.rows[1].cells] == [
-        "Host",
-        "Host",
-        "ASCR",
-        "Action",
-    ]
-    assert len(figure.table.rows) == 4

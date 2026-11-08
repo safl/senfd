@@ -94,25 +94,17 @@ def carried(row: Row) -> bool:
 def joined(figure: Figure, table: Table) -> None:
     """'table' as the rows of 'figure' going on past a page break, without
     the caption and header rows it repeats, and with a row broken across the
-    page joined again; a header row read better there replaces the first's"""
+    page joined again"""
 
     assert figure.table is not None
     heads = [heading(row) for row in figure.table.rows[: HEADER_ROWS + 1]]
-    repeated: List[Tuple[int, Row]] = []
+    skip = 0
     for row in table.rows:
-        if len(repeated) < len(heads) and heading(row) in heads:
-            repeated.append((heads.index(heading(row)), row))
+        if skip < len(heads) and heading(row) in heads:
+            skip += 1
         else:
             break
-    rest = table.rows[len(repeated) :]
-    # A header row the first page read with its merged cells misplaced is
-    # read again on the next, as wide as the rows the first page read
-    width = len(figure.table.rows[-1].cells)
-    for at, row in repeated:
-        head = figure.table.rows[at]
-        differs = own(row) != own(head) or len(row.cells) != len(head.cells)
-        if differs and len(row.cells) == width:
-            figure.table.rows[at] = row
+    rest = table.rows[skip:]
     if rest and figure.table.rows and carried(rest[0]):
         cells = figure.table.rows[-1].cells
         start = len(cells) - 1
