@@ -24,7 +24,7 @@ from senfd.pdf.reader import (
     section_at,
     stem_of,
 )
-from senfd.pdf.tables import Columns, astray, columns_of
+from senfd.pdf.tables import Columns, astray, columns_of, unwrapped
 from senfd.pdf.tree import Leaf
 from senfd.tables import Cell, Row, Table
 
@@ -451,3 +451,57 @@ def test_a_figure_is_of_the_last_section_the_outline_places_before_it():
     assert section_at(sections, 1, 300.0) == sections[1]
     assert section_at(sections, 3, 10.0) == sections[1]
     assert section_at([Section("1", "First")], 0, 10.0) is None
+
+
+def test_a_table_nested_in_a_cell_goes_on_past_the_page_break_too():
+    inner = page(["Bits", "Description"], ["31:25", "Reserved"])
+    first = spanned(
+        page(
+            CAPTION_ROW,
+            ["Bytes", "Name", "Description"],
+            ["99:96", "CTRATT", "Controller Attributes"],
+        )
+    )
+    first.rows[-1].cells[-1].tables.append(inner)
+    figure = Figure(
+        figure_nr=338, caption="Figure 338: CSTS", description="Identify", table=first
+    )
+    # The next page: the caption and header again, then the rest of the row, nothing
+    # but the rest of the nested table, its header repeated
+    rest = page(["", "", ""])
+    rest.rows[0].cells[-1].tables.append(
+        page(["Bits", "Description"], ["24", "Idle"], ["23:0", "Reserved"])
+    )
+    following = page(["103:100", "Next", "The next field"])
+    joined(
+        figure,
+        spanned(
+            Table(
+                rows=page(CAPTION_ROW, ["Bytes", "Name", "Description"]).rows
+                + rest.rows
+                + following.rows
+            )
+        ),
+    )
+    nested = figure.table.rows[2].cells[-1].tables
+    assert len(nested) == 1
+    assert [c.text for r in nested[0].rows for c in r.cells][::2] == [
+        "Bits",
+        "31:25",
+        "24",
+        "23:0",
+    ]
+    assert [r.cells[0].text for r in figure.table.rows] == [
+        "Figure 42: CSTS",
+        "Bytes",
+        "99:96",
+        "103:100",
+    ]
+
+
+def test_a_range_wrapped_inside_its_lower_number_is_made_one():
+    assert unwrapped("1795:179\n2") == "1795:1792"
+    assert unwrapped("403:40\n0") == "403:400"
+    assert unwrapped("7:4\n3") == "7:4\n3"  # Two values, not a wrapped range
+    assert unwrapped("31:16\n15:00") == "31:16\n15:00"
+    assert unwrapped("Reserved") == "Reserved"
