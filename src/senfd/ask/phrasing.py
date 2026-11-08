@@ -112,7 +112,7 @@ GENERIC = set(
     specification spec nvme nvm express admin section sections errata erratum
     id ids fid lid opc hey hi hello thanks thank you i we my our need want know
     find just also any search at as if into from not no than then up out over under per
-    via whose whom
+    via whose whom report reports reported reporting indicate indicates
     """.split()
 )
 
@@ -138,9 +138,10 @@ def terms(question: str) -> List[str]:
     found = []
     for word in words:
         key = word.lower()
-        if key in GENERIC or len(key) < 2:
+        term = key if word.isupper() else singular(key)
+        if key in GENERIC or term in GENERIC or len(key) < 2:
             continue
-        found.append(key if word.isupper() else singular(key))
+        found.append(term)
     return found
 
 

@@ -13,6 +13,7 @@ from typing import List, Optional, Tuple
 from senfd.ask.phrasing import ASKS_COMMAND, DWORD, terms, words_of
 from senfd.ask.reading import (
     Understood,
+    carries,
     command_named,
     command_words,
     field_of_other,
@@ -104,12 +105,16 @@ def elsewhere(
         return None
     if not named:
         return None
+    text = words_of(" ".join(lines))
+    if named[0] == "command" and understood.query in ("feature", "log_page"):
+        # A command carrying it, or lending a word to what it holds
+        mentioned = words_of(named[1]) in text
+        return None if carries(named[1], understood.query) or mentioned else named[1]
     if understood.query in ("feature", "log_page", "structure", "register"):
         if name is None:
             return named[1]
         head = name.partition(" - ")[0]
         return None if alias(named[1]) in (alias(name), alias(head)) else named[1]
-    text = words_of(" ".join(lines))
     return None if words_of(named[1]) in text else named[1]
 
 

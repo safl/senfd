@@ -764,3 +764,34 @@ def test_the_session_answer_does_not_say_twice_what_it_was_read_as(spec, vocabul
         spec, "cdw10 of ding", vocabulary, said_as=False
     )
     assert "Understood as" not in markdown and status.startswith("read as")
+
+
+def test_a_feature_by_identifier_is_that_feature_whatever_carries_it(spec, vocabulary):
+    carrying = senfd.ask.Vocabulary(
+        commands=set(vocabulary.commands) | {"Set Features"},
+        features=set(vocabulary.features),
+    )
+    question = "What is feature C0h of Set Features?"
+    understood = senfd.ask.understand(question, carrying)
+    assert str(understood) == "feature('c0h')"
+    lines = lookup.answer(spec, understood)
+    assert grounding.elsewhere(question, understood, lines, carrying) is None
+
+
+def test_which_kind_is_asked_of_though_a_command_lends_it_a_word(vocabulary):
+    understood = senfd.ask.understand(
+        "Which log page reports the Ding reads?", vocabulary
+    )
+    assert understood.query == "log_page"
+    understood = senfd.ask.understand("What is the opcode of Ding?", vocabulary)
+    assert understood.query == "command"
+
+
+def test_a_feature_is_found_by_the_field_it_holds(spec, vocabulary):
+    text = senfd.ask.reply(spec, "Which feature sets the foo level?", vocabulary)
+    assert "### Feature C0h Foo Config" in text
+    assert "> **" in text and "Foo Level" in text
+
+
+def test_a_generic_word_is_no_term_in_its_plural_either():
+    assert phrasing.terms("Which feature sets the foo levels?") == ["foo", "level"]

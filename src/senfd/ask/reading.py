@@ -95,6 +95,14 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     if asks_command:  # "opcode of identify controller" is the command
         command = command_named(text, vocabulary)
         named = ("command", command) if command else named
+    # "feature 02h of Set Features" is that feature, whatever command carries it
+    kind_and_id = re.search(
+        r"\b(feature|fid|log ?page|lid)\s+(?:identifier\s+)?(?:0x)?([0-9a-f]{1,2})h?\b",
+        lower,
+    )
+    if kind_and_id and not asks_command:
+        kind = "feature" if kind_and_id[1] in ("feature", "fid") else "log_page"
+        return Understood(kind, kind_and_id[2] + "h")
     identifier = re.search(r"\b(?:0x)?([0-9a-f]{1,2})h\b|\b0x([0-9a-f]{1,2})\b", lower)
     # An identifier in a question naming a command is a value of its fields
     if identifier and not (named and named[0] == "command"):
@@ -123,9 +131,22 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     # not when it names a structure, whose field "VS" is also a register's
     if registers and not dword and not field_of_other(named, lower):
         return Understood("register", registers[0])
+    rest = " ".join(terms(text))
+    # "Which log page reports sanitize progress?" asks of a log page, the
+    # command's name only a word of what it holds; not "the log page
+    # identifier of Get Log Page", which asks of the command carrying it
+    asked_kind = kind_asked(lower)
+    if (
+        named
+        and named[0] == "command"
+        and asked_kind
+        and not asks_command
+        and not carries(named[1], asked_kind)
+        and rest
+    ):
+        return Understood(asked_kind, rest)
     if named and named[0] == "command":
         return Understood("command", named[1], int(dword[1]) if dword else None)
-    rest = " ".join(terms(text))
     if asks_command and not named and not registers and rest:
         argument = command_named(text, vocabulary) or rest
         return Understood("command", argument, int(dword[1]) if dword else None)
@@ -146,6 +167,29 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     if not rest:  # Nothing that names anything, as "[" or "what is the"
         return Understood("help")
     return Understood("name", rest)
+
+
+# The commands that carry a feature or a log page, rather than are one
+CARRIERS = {
+    "feature": {"set features", "get features"},
+    "log_page": {"get log page"},
+}
+
+
+def carries(command: str, kind: str) -> bool:
+    """Whether 'command' carries things of 'kind', as Set Features features"""
+
+    return command.lower() in CARRIERS.get(kind, set())
+
+
+def kind_asked(lower: str) -> str:
+    """The kind of thing a question asks which of, as "which log page", or
+    "" where it asks which of none"""
+
+    match = re.search(r"\b(?:which|what)\s+(log ?page|feature)s?\b", lower)
+    if not match:
+        return ""
+    return "feature" if match[1] == "feature" else "log_page"
 
 
 def command_named(question: str, vocabulary: Vocabulary) -> Optional[str]:

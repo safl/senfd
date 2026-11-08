@@ -8,13 +8,13 @@ A question's reading looked up in the data model, as Markdown
 
 import re
 from dataclasses import replace
-from typing import List
+from typing import Iterable, List
 
 import senfd.query
-from senfd.ask.phrasing import HELP
+from senfd.ask.phrasing import HELP, words_of
 from senfd.ask.reading import Understood, spot
 from senfd.ask.vocabulary import Vocabulary
-from senfd.documents.spec import SpecDocument
+from senfd.documents.spec import Bits, SpecDocument
 
 
 def nothing(lines: List[str]) -> bool:
@@ -45,19 +45,50 @@ def resolved(
     return understood
 
 
+def holding(spec: SpecDocument, kind: str, words: str, most: int = 3) -> List[str]:
+    """The identifiers of the features or log pages with a field named by all
+    of 'words', as the Sanitize Status log page of "sanitize progress", where
+    there are at most 'most'"""
+
+    wanted = words_of(words).split()
+
+    def named_by(fields: Iterable[Bits]) -> bool:
+        return any(
+            all(w in words_of(f"{f.name} {f.acronym or ''}").split() for w in wanted)
+            or named_by(f.fields)
+            for f in fields
+        )
+
+    found = []
+    if kind == "log_page":
+        for page in spec.log_pages.values():
+            if page.structure and named_by(page.structure.fields):
+                found.append(f"{page.identifier:02X}h")
+    else:
+        for feature in spec.features.values():
+            if any(named_by(d.fields) for d in [*feature.sqe, *feature.cqe]):
+                found.append(f"{feature.identifier:02X}h")
+    return found if wanted and len(found) <= most else []
+
+
 def answer(spec: SpecDocument, understood: Understood) -> List[str]:
-    """The Markdown answering 'understood'"""
+    """The Markdown answering 'understood'; a feature or a log page not named
+    by its argument, by the fields named by it"""
 
     q = senfd.query
+    if understood.query in ("feature", "log_page"):
+        by = q.feature if understood.query == "feature" else q.log_page
+        lines = by(spec, understood.argument, markdown=True)
+        if nothing(lines):
+            keys = holding(spec, understood.query, understood.argument)
+            held = [line for key in keys for line in by(spec, key, markdown=True)]
+            return held or lines
+        return lines
     found: List[str]
     if understood.query == "help":
         return [str(line) for line in HELP.splitlines()]
     if understood.query == "command":
         return q.command(spec, understood.argument, understood.dword, markdown=True)
-    if understood.query == "feature":
-        return q.feature(spec, understood.argument, markdown=True)
-    if understood.query == "log_page":
-        return q.log_page(spec, understood.argument, markdown=True)
     if understood.query == "structure":
         return q.structure(spec, understood.argument, markdown=True)
     if understood.query == "section":
