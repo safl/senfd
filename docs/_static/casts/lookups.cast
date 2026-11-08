@@ -343,7 +343,7 @@
 [30.02, "o", "M"]
 [30.055, "o", "E"]
 [30.455, "o", "\r\n"]
-[30.655, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40macronym('CRIME')\u001b[0m                                                                                \r\n\r\n\u001b[1m \u2022 \u001b[0mCC - Controller Configuration [Base 2.4, 3.1.4.5, Figure 41, page 60]: 24 Controller Ready Independent of  \r\n\u001b[1m   \u001b[0mMedia Enable (CRIME)                                                                                       \r\n\u001b[1m \u2022 \u001b[0mAdditional Hardware Error Information for Controller Ready Timeout Exceeded errors [Base 2.4,              \r\n\u001b[1m   \u001b[0m5.2.13.1.14.2, Figure 246, page 257]: 0 Controller Ready Independent of Media Enable (CRIME)               \r\n"]
+[30.655, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40macronym('CRIME')\u001b[0m                                                                                \r\n\r\n\u001b[1m \u2022 \u001b[0mCC - Controller Configuration [Base 2.4, 3.1.4.5, Figure 41, page 60]: 24 Controller Ready Independent of  \r\n\u001b[1m   \u001b[0mMedia Enable (CRIME)                                                                                       \r\n\u001b[1m \u2022 \u001b[0mAdditional Hardware Error Information for Controller Ready Timeout Exceeded errors [Base 2.4,              \r\n\u001b[1m   \u001b[0m5.2.13.1.14.2.5, Figure 246, page 257]: 0 Controller Ready Independent of Media Enable (CRIME)             \r\n"]
 [32.735, "o", "\u001b[1;32m$\u001b[0m "]
 [32.77, "o", "#"]
 [32.805, "o", " "]
