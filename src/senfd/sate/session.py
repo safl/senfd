@@ -29,6 +29,7 @@ from prompt_toolkit.lexers import Lexer
 from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.markdown import Markdown
+from rich.markup import escape
 from rich.text import Text
 
 import senfd
@@ -191,18 +192,31 @@ def said(markdown: str) -> str:
     return "\n".join(lines[end:])
 
 
-def show(console: Console, markdown: str, status: str) -> None:
-    """An answer, paged where it is longer than the terminal, with where the
-    fields asked of are and the line under it shown after the pager too"""
+def height_of(console: Console, answer: Markdown) -> int:
+    """The lines 'answer' takes on 'console', rendered at its width: a table
+    of few rows wraps to many lines"""
 
-    if markdown.count("\n") + 4 > console.size.height:
-        os.environ.setdefault("LESS", "-RFX")  # Colour, and no pager for a screen
+    return len(console.render_lines(answer, console.options, pad=False))
+
+
+def show(console: Console, question: str, markdown: str, status: str) -> None:
+    """An answer, opened by a rule naming the question, so that where each
+    answer starts stands out when scrolling back; paged from its top where it
+    stands taller than the terminal, and left on the screen when the pager
+    is quit, with where the fields asked of are and the line under it shown
+    after the pager too"""
+
+    console.rule(f"[bold]{escape(question.strip())}[/bold]", align="left")
+    answer = Markdown(markdown)
+    if height_of(console, answer) + 4 > console.size.height:
+        # Colour, stay on the screen when quit, and no pager for one screen
+        os.environ.setdefault("LESS", "-RFX")
         with console.pager(styles=True):
-            console.print(Markdown(markdown))
+            console.print(answer)
         if said(markdown):
             console.print(Markdown(said(markdown)))
     else:
-        console.print(Markdown(markdown))
+        console.print(answer)
     console.print(status_of(status))
 
 
@@ -270,4 +284,4 @@ def interact(
         except Exception as exc:  # A lookup failing ends the answer, not the session
             console.print(f"[red]sate failed to answer:[/red] {exc}", highlight=False)
             continue
-        show(console, markdown, status)
+        show(console, question, markdown, status)
