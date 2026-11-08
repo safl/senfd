@@ -173,7 +173,14 @@ def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):
     "typed, next",
     [
         ("which bit of cdw10 of", " Next, a command: Tab lists them"),
-        ("which bit of cdw10 of Ding is ", " Next, an acronym: Tab lists them"),
+        (
+            "which bit of cdw10 of Ding is ",
+            " Next, a field of cdw10 of Ding: Tab lists them",
+        ),
+        (
+            "which bit of cdw",
+            " Next, the number of a dword, as cdw12: then of and a command",
+        ),
         ("log page ", " Next, a log page: Tab lists them"),
     ],
 )
@@ -482,7 +489,7 @@ def test_a_command_named_in_a_structure_s_name_does_not_answer_for_it(spec, voca
         structures=set(vocabulary.structures) | {"Ding Report"},
     )
     command = senfd.ask.Understood("command", "Ding")
-    lines = lookup.answer(spec, command, vocabulary)
+    lines = lookup.answer(spec, command)
     question = "What is the Ding Report structure?"
     assert grounding.elsewhere(question, command, lines, vocabulary) == "Ding Report"
 
@@ -606,7 +613,7 @@ def test_the_session_shows_what_it_recognises_and_how_it_reads(
     fragments = session.lexer.lex_document(Document("cdw10 of Ding"))(0)
     assert ("class:name", "Ding") in fragments
     shown = "".join(text for _, text in session.bottom_toolbar())
-    assert "Ask of 8 commands" in shown and "Tab complete |" in shown
+    assert "Ask of 8 commands" in shown and "Enter take it" in shown  # Its menu is open
     typed = "".join(
         text for _, text in senfd.ask.session.toolbar("cdw10 of Ding", vocabulary)
     )
@@ -652,3 +659,108 @@ def test_a_section_is_asked_for_by_its_number(spec, vocabulary):
 def test_an_opcode_asked_of_a_word_of_several_commands_is_not_known(spec, vocabulary):
     text, _ = senfd.ask.respond(spec, "opcode of foo directive", vocabulary)
     assert "the question names several commands rather than one" in text
+
+
+def test_is_alone_does_not_ask_for_an_acronym(vocabulary):
+    assert senfd.ask.completion.wanted("what is ", vocabulary) == ""
+    assert not senfd.ask.session.reading_so_far("what is ", vocabulary).startswith(
+        " Next"
+    )
+
+
+def test_a_begun_question_offers_only_the_questions_it_may_be(vocabulary):
+    assert {kind for _, _, kind, _ in completions(vocabulary, "which ")} == {"question"}
+
+
+def test_a_one_letter_acronym_comes_after_the_longer(vocabulary):
+    vocabulary = senfd.ask.Vocabulary(acronyms={"F", "FCNT"})
+    shown = offered(vocabulary, "f")
+    assert shown.index("FCNT") < shown.index("F")
+
+
+@pytest.mark.parametrize(
+    "plural, word",
+    [
+        ("queues", "queue"),
+        ("pages", "page"),
+        ("status", "status"),
+        ("address", "address"),
+        ("analysis", "analysis"),
+    ],
+)
+def test_a_plural_s_is_taken_off_and_no_other(plural, word):
+    assert phrasing.singular(plural) == word
+
+
+def test_a_question_naming_nothing_is_answered_by_the_help(vocabulary):
+    for question in ("[", "(", "what is the"):
+        assert str(senfd.ask.understand(question, vocabulary)) == "help('')"
+
+
+def test_a_dotted_acronym_is_recognised_whole_or_by_its_parts(spec, vocabulary):
+    spans = recognised(vocabulary, "FOOCAP.FL and fcnt")
+    assert [kind for _, _, kind in spans] == ["acronym", "acronym", "acronym"]
+    assert "> **FL**" in senfd.ask.reply(
+        spec, "Which bit of FOOCAP is FOOCAP.FL?", vocabulary
+    )
+
+
+def test_a_command_resolved_by_its_name_is_a_new_reading(spec, vocabulary):
+    given = senfd.ask.Understood("command", "Admin Ding")
+    taken = lookup.resolved(spec, given, vocabulary)
+    assert given.argument == "Admin Ding" and taken.argument == "Ding"
+
+
+@pytest.mark.parametrize(
+    "text, menu, first",
+    [
+        ("", False, " ? questions"),
+        ("ding", False, " Tab complete"),
+        ("ding", True, " Tab, Up, Down choose"),
+    ],
+)
+def test_the_keys_shown_are_those_that_do_something_now(text, menu, first):
+    assert senfd.ask.session.keys(text, menu).startswith(first)
+
+
+def test_enter_in_the_menu_takes_the_completion_and_asks_nothing():
+    class Buffer:
+        complete_state = object()
+
+    class Event:
+        current_buffer = Buffer()
+
+    event = Event()
+    senfd.ask.session.take_completion(event)
+    assert event.current_buffer.complete_state is None
+
+
+def test_the_line_under_an_answer_marks_what_is_not_known():
+    line = senfd.ask.session.status_of("read as x | 1 lookup | 1.0 ms | not known")
+    assert line.plain == "read as x | 1 lookup | 1.0 ms | not known"
+    assert any(span.style == "yellow" for span in line.spans)
+
+
+def test_the_fields_said_are_the_quoted_lines_ending_an_answer():
+    markdown = "| a | b |\n\n> **FL**, Foo, is bit 0\n>\n> **FC**, Fc, is bit 1"
+    assert senfd.ask.session.said(markdown) == (
+        "> **FL**, Foo, is bit 0\n>\n> **FC**, Fc, is bit 1"
+    )
+
+
+def test_a_failed_lookup_ends_the_answer_not_the_session(spec, monkeypatch, capsys):
+    def failing(*args, **kwargs):
+        raise ValueError("broken")
+
+    monkeypatch.setattr(senfd.ask.session, "exchange", failing)
+    made, stack = session_answering(monkeypatch, "opcode of ding", "C0h")
+    with stack:
+        assert senfd.ask.session.interact(spec) == 0
+    assert capsys.readouterr().out.count("failed to answer") == 2
+
+
+def test_the_session_answer_does_not_say_twice_what_it_was_read_as(spec, vocabulary):
+    markdown, status = senfd.ask.exchange(
+        spec, "cdw10 of ding", vocabulary, said_as=False
+    )
+    assert "Understood as" not in markdown and status.startswith("read as")

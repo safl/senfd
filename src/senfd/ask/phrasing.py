@@ -8,7 +8,7 @@ they take, and the terms of a question that name something
 """
 
 import re
-from typing import List
+from typing import List, Tuple
 
 
 HELP = """\
@@ -140,6 +140,32 @@ def terms(question: str) -> List[str]:
         key = word.lower()
         if key in GENERIC or len(key) < 2:
             continue
-        # A plural's 's', not an acronym's, as of "CSTS"
-        found.append(key if word.isupper() else re.sub(r"(?<=[a-z]{3})s$", "", key))
+        found.append(key if word.isupper() else singular(key))
+    return found
+
+
+def singular(word: str) -> str:
+    """'word' without a plural's 's': "queues" is "queue", while "status",
+    "address" and "analysis" are not plurals"""
+
+    return re.sub(r"(?<=[a-z]{2}[^siu])s$", "", word)
+
+
+# An acronym as written in a question: "FUA", "IPM.PMT", or "CSTS.RDY", which
+# is also CSTS and RDY
+ACRONYM = re.compile(r"[A-Za-z][A-Za-z0-9]*(?:\.[A-Za-z][A-Za-z0-9]*)*")
+
+
+def acronyms_of(text: str) -> List[Tuple[int, int, str]]:
+    """The words of 'text' that may be acronyms, as (start, end, word): each
+    dotted word whole, then each of its parts"""
+
+    found = []
+    for m in ACRONYM.finditer(text):
+        found.append((m.start(), m.end(), m[0]))
+        if "." in m[0]:
+            at = m.start()
+            for part in m[0].split("."):
+                found.append((at, at + len(part), part))
+                at += len(part) + 1
     return found

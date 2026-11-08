@@ -26,17 +26,6 @@ from senfd.documents.spec import alias
 SEVERAL = "several commands"
 
 
-def nothing(lines: List[str]) -> bool:
-    return not lines or lines[0].startswith(("No ", "Nothing named", "Give "))
-
-
-def ambiguous(lines: List[str]) -> bool:
-    """Whether 'lines' list what a name matches rather than answer, as
-    "92 structures; be more specific" """
-
-    return bool(lines) and bool(re.match(r"\d+ [a-z ]+; be more specific", lines[0]))
-
-
 def heading(lines: List[str]) -> str:
     return next((line for line in lines if line.strip()), "")
 

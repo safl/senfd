@@ -5,10 +5,16 @@
 """What a question typed so far completes to, and which of its words are
 recognised, for a session to offer and to colour as it is typed"""
 
-import re
 from typing import Dict, List, NamedTuple, Tuple
 
-from senfd.ask.phrasing import GENERIC, KINDS_AFTER, QUESTION_WORDS, QUESTIONS, WORDS
+from senfd.ask.phrasing import (
+    GENERIC,
+    KINDS_AFTER,
+    QUESTION_WORDS,
+    QUESTIONS,
+    WORDS,
+    acronyms_of,
+)
 from senfd.ask.reading import understand
 from senfd.ask.vocabulary import Vocabulary
 
@@ -42,18 +48,35 @@ class Tail(NamedTuple):
     fields: Dict[str, int]
 
 
-def wanted(before: str) -> str:
-    """The kind of name that comes after 'before', as a command after "opcode
-    of ", or "" where none does"""
+# How a name offered ranks, the least first: by the order of the fields of
+# what is asked of; the kind wanted; the most words matched; a one-letter
+# acronym last; the kind; and the shorter name, then the name
+Rank = Tuple[int, bool, int, bool, int, int, str]
+
+
+def kind_after(before: str) -> str:
+    """The kind of name the words ending 'before' say comes next, as a
+    command after "opcode of ", or "" where they say none"""
 
     return next((kind for words, kind in KINDS_AFTER if words.search(before)), "")
+
+
+def wanted(before: str, vocabulary: Vocabulary) -> str:
+    """The kind of name that comes after 'before': an acronym after "is" only
+    where the question asks of a thing with fields, as "which bit of cdw12
+    of Write is ", not "what is " """
+
+    kind = kind_after(before)
+    if kind == "acronym" and not fields_asked_of(before, vocabulary):
+        return ""
+    return kind
 
 
 def fields_asked_of(before: str, vocabulary: Vocabulary) -> Dict[str, int]:
     """After "is", the acronyms of the fields of what 'before' asks of, as of
     cdw12 of Write in "which bit of cdw12 of Write is ", by their order"""
 
-    if wanted(before) != "acronym":
+    if kind_after(before) != "acronym":
         return {}
     understood = understand(before, vocabulary)
     known = vocabulary.fields_of(understood.argument, understood.dword)
@@ -72,10 +95,10 @@ def tails(typed: str, vocabulary: Vocabulary) -> List[Tail]:
             continue
         if tail.strip().lower() not in GENERIC:
             found.append((tail, typed[:start]))
-    if wanted(typed) and typed.endswith(" "):
+    if typed.endswith(" ") and wanted(typed, vocabulary):
         found.append(("", typed))
     return [
-        Tail(tail, wanted(before), fields_asked_of(before, vocabulary))
+        Tail(tail, wanted(before, vocabulary), fields_asked_of(before, vocabulary))
         for tail, before in found
     ]
 
@@ -108,11 +131,13 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     acronyms of the fields of what the question asks of come first, in the
     order of its figure. Then the most words matched come first, then the
     words of questions, commands, features, log pages, structures and
-    acronyms, and the shorter name before the longer; a word typed in
-    capitals, as "FU", is completed by acronyms before names."""
+    acronyms, a one-letter acronym last, and the shorter name before the
+    longer; a word typed in capitals, as "FU", is completed by acronyms
+    before names. While a common question is begun, only the questions it
+    may be are offered."""
 
     begun = questions(typed)
-    if not typed.strip():
+    if begun:  # While a common question is begun, only the questions it may be
         return begun
     kinds = [
         ("", WORDS),
@@ -123,7 +148,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
         ("acronym", sorted(vocabulary.acronyms)),
     ]
     ends = tails(typed, vocabulary)
-    best: Dict[str, Tuple[Tuple, Offer]] = {}
+    best: Dict[str, Tuple[Rank, Offer]] = {}
     for rank, (kind, names) in enumerate(kinds):
         for name in names:
             _, dash, rest = name.partition(" - ")
@@ -144,10 +169,11 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
                     if kind == "acronym"
                     else len(tail.fields)
                 )
-                key = (
-                    order,  # The fields of what is asked of, by their figure
-                    kind != tail.wanted,  # The kind the question wants
-                    -tail.typed.count(" "),  # The most words matched
+                key: Rank = (
+                    order,
+                    kind != tail.wanted,
+                    -tail.typed.count(" "),
+                    kind == "acronym" and len(text) < 2,
                     -1 if capitals and kind == "acronym" else rank,
                     len(text),
                     text,
@@ -155,7 +181,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
                 if text not in best or key < best[text][0]:
                     best[text] = (key, Offer(text, -len(tail.typed), kind, text))
     ranked = [offer for _, offer in sorted(best.values())]
-    return begun + ranked[: max(most - len(begun), 0)]
+    return ranked[:most]
 
 
 def recognised(vocabulary: Vocabulary, text: str) -> List[Span]:
@@ -172,7 +198,11 @@ def recognised(vocabulary: Vocabulary, text: str) -> List[Span]:
     for m in vocabulary.names.finditer(text):
         if free(m.start(), m.end()):
             spans.append(Span(m.start(), m.end(), "name"))
-    for m in re.finditer(r"[A-Za-z][A-Za-z0-9.]*", text):
-        if m[0] in vocabulary.acronyms and free(m.start(), m.end()):
-            spans.append(Span(m.start(), m.end(), "acronym"))
+    for start, end, word in acronyms_of(text):
+        typed_as_is = word in vocabulary.acronyms
+        # "fua" is FUA, while "set" is not SET, nor "of" OF
+        lowered = len(word) > 2 and word.lower() not in GENERIC
+        if typed_as_is or lowered and word.upper() in vocabulary.acronyms:
+            if free(start, end):
+                spans.append(Span(start, end, "acronym"))
     return sorted(spans)

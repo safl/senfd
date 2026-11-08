@@ -9,7 +9,7 @@ Record an interactive program as an asciinema recording, asciicast v2
 
 The program runs in a terminal of its own, a pseudo-terminal, and each line
 of the script is typed into it a key at a time, then Enter; '\\t' in a line
-is a press of Tab. What the program draws is recorded as it draws it, so its
+is a press of Tab, and '\\r' one of Enter. What the program draws is recorded as it draws it, so its
 completion menus show. The timing is made up, as by record_cast.py, a fixed
 pace of typing and a pause after each answer; at the end of the script the
 input ends, as by Ctrl-D. It needs pyte, of the extra 'dev':
@@ -29,7 +29,7 @@ import struct
 import termios
 import time
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import pyte
 
@@ -38,7 +38,19 @@ PAUSE = 2.4  # Seconds after an answer, for reading it
 WIDTH, HEIGHT = 110, 32
 
 
-def drawn(fd: int, screen, quiet: float, longest: float) -> str:
+class Terminal(pyte.Screen):
+    """A screen of the size recorded, answering what the program asks of its
+    terminal, as where its cursor is, through 'fd'"""
+
+    def __init__(self, fd: int):
+        super().__init__(WIDTH, HEIGHT)
+        self.fd = fd
+
+    def write_process_input(self, data: str) -> None:
+        os.write(self.fd, data.encode())
+
+
+def drawn(fd: int, screen: pyte.ByteStream, quiet: float, longest: float) -> str:
     """What the program draws, until it has drawn nothing for 'quiet' seconds
     or 'longest' seconds have gone; 'screen' follows it, as a terminal would,
     and answers what the program asks of the terminal, as where its cursor
@@ -61,14 +73,14 @@ def drawn(fd: int, screen, quiet: float, longest: float) -> str:
     return out.decode("utf-8", "replace")
 
 
-def events_of(command: List[str], script: List[str], env: dict):
+def events_of(
+    command: List[str], script: List[str], env: Dict[str, str]
+) -> List[Tuple[float, str]]:
     pid, fd = pty.fork()
     if pid == 0:
         os.execvpe(command[0], command, env)
     fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", HEIGHT, WIDTH, 0, 0))
-    terminal = pyte.Screen(WIDTH, HEIGHT)
-    terminal.write_process_input = lambda answer: os.write(fd, answer.encode())
-    screen = pyte.ByteStream(terminal)
+    screen = pyte.ByteStream(Terminal(fd))
 
     events: List[Tuple[float, str]] = []
     at = 0.5
@@ -81,7 +93,7 @@ def events_of(command: List[str], script: List[str], env: dict):
 
     show(drawn(fd, screen, 1.5, 30), 1.5)  # Until it waits for a question
     for line in script:
-        for key in line.replace("\\t", "\t"):
+        for key in line.replace("\\t", "\t").replace("\\r", "\r"):
             os.write(fd, key.encode())
             show(drawn(fd, screen, 0.15, 5), TYPING if key != "\t" else 1.4)
         os.write(fd, b"\r")

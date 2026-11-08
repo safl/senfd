@@ -33,15 +33,22 @@ figure. A name completes from where it starts, so "zone app" completes to
 Zone Append, and a word typed in capitals is completed by acronyms.
 
 The words of the question it recognises, names and acronyms are coloured
-as you type them, and the line at the bottom says how the question is read
-so far, ``Read as command('Write', dword=12)``, or what kind of name comes
-next in it, above the keys: Tab, ``?``, Up and Down for the questions asked
-before, kept between sessions, F1 for the forms of a question with examples,
-and Ctrl-D to leave. An answer asked of a field ends by saying where that
-field is, citing its figure, as "**FUA**, Force Unit Access, is bit 30 of
-cdw12 of Write [NVM 1.3, 3.3.6, Figure 71, page 54]", with its row marked in
-the table above, and under each answer a line says what the question was
-read as, by how many lookups, in how long, and how many figures it cites.
+as you type them. The line at the bottom says how the question is read so
+far, ``Read as command('Write', dword=12)``, or what comes next in it, as
+the number of a dword after "cdw" or a field of cdw12 of Write after "is".
+Under it are the keys that do something at that moment: in the menu, Tab
+and the arrows to choose, Enter to take the choice, which does not yet ask,
+and Esc to close it; on an empty line, ``?``, Up and Down for the questions
+asked before, kept between sessions, F1 for the forms of a question with
+examples, and Ctrl-D to leave.
+
+An answer asked of a field ends by saying where that field is, citing its
+figure, as "**FUA**, Force Unit Access, is bit 30 of cdw12 of Write [NVM
+1.3, 3.3.6, Figure 71, page 54]", with its row marked in the table above.
+Under each answer a line says what the question was read as, by how many
+lookups, in how long, and how many figures it cites, or that it is not
+known. An answer longer than the terminal opens in a pager, and where the
+fields asked of are is said again after it.
 
 .. raw:: html
 

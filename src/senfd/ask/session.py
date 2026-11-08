@@ -13,6 +13,7 @@ Of the extra 'ask': prompt_toolkit for the prompt, rich for the answers.
 """
 
 import os
+import re
 from pathlib import Path
 from typing import Callable, Iterator, Optional
 
@@ -20,7 +21,7 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.completion import CompleteEvent, Completer, Completion
 from prompt_toolkit.document import Document
-from prompt_toolkit.filters import Condition
+from prompt_toolkit.filters import Condition, completion_is_selected, has_completions
 from prompt_toolkit.formatted_text import StyleAndTextTuples
 from prompt_toolkit.history import FileHistory, History, InMemoryHistory
 from prompt_toolkit.key_binding import KeyBindings, KeyPressEvent
@@ -28,6 +29,7 @@ from prompt_toolkit.lexers import Lexer
 from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.markdown import Markdown
+from rich.text import Text
 
 import senfd
 import senfd.query
@@ -37,8 +39,6 @@ from senfd.ask.phrasing import HELP
 from senfd.ask.reading import understand
 from senfd.ask.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
-
-KEYS = " Tab complete | ? questions | Up, Down history | F1 forms | Ctrl-D leave"
 
 STYLE = Style.from_dict(
     {
@@ -99,12 +99,20 @@ def holds(vocabulary: Vocabulary) -> str:
 
 
 def reading_so_far(text: str, vocabulary: Vocabulary, llm: Optional[str] = None) -> str:
-    """How the question typed so far is read, what kind of name comes next in
-    it, or, before one is begun, what can be asked of"""
+    """How the question typed so far is read, or what comes next in it, as a
+    dword number after "cdw" or the acronyms of what is asked of after "is";
+    before a question is begun, what can be asked of"""
 
     if not text.strip():
         return f" Ask of {holds(vocabulary)}"
-    kind = wanted(text if text.endswith(" ") else text + " ")
+    if re.search(r"\bcdw$", text, re.I):
+        return " Next, the number of a dword, as cdw12: then of and a command"
+    after = text if text.endswith(" ") else text + " "
+    kind = wanted(after, vocabulary)
+    if kind == "acronym":
+        understood = understand(after, vocabulary)
+        dword = f"cdw{understood.dword} of " if understood.dword is not None else ""
+        return f" Next, a field of {dword}{understood.argument}: Tab lists them"
     if kind:
         article = "an" if kind[0] in "aeiou" else "a"
         return f" Next, {article} {kind}: Tab lists them"
@@ -116,22 +124,35 @@ def reading_so_far(text: str, vocabulary: Vocabulary, llm: Optional[str] = None)
     return f" Read as {understood}"
 
 
+def keys(text: str, menu: bool, llm: Optional[str] = None) -> str:
+    """The keys that do something now: in the menu, choosing; on an empty
+    line, finding a question; else, completing and asking"""
+
+    if menu:
+        line = " Tab, Up, Down choose | Enter take it | Esc close"
+    elif not text:
+        line = " ? questions | Up, Down history | F1 forms | Ctrl-D leave"
+    else:
+        line = " Tab complete | Enter ask | F1 forms | Ctrl-D leave"
+    return line + (f" | --llm {llm}" if llm else "")
+
+
 def toolbar(
-    text: str, vocabulary: Vocabulary, llm: Optional[str] = None
+    text: str, vocabulary: Vocabulary, llm: Optional[str] = None, menu: bool = False
 ) -> StyleAndTextTuples:
     """The two lines at the bottom of the session: how the question typed so
-    far is read, and the keys"""
+    far is read, and the keys that do something now"""
 
     return [
         ("class:bottom-toolbar.reading", reading_so_far(text, vocabulary, llm)),
         ("", "\n"),
-        ("class:bottom-toolbar.keys", KEYS + (f" | --llm {llm}" if llm else "")),
+        ("class:bottom-toolbar.keys", keys(text, menu, llm)),
     ]
 
 
 def history() -> History:
-    """The questions asked before, kept in the cache beside the data model;
-    in memory only where that cannot be written"""
+    """The questions asked before, kept under $XDG_CACHE_HOME/senfd, by
+    default ~/.cache/senfd, or in memory where that cannot be written"""
 
     cache = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
     try:
@@ -139,6 +160,50 @@ def history() -> History:
         return FileHistory(str(cache / "senfd" / "ask-history"))
     except OSError:
         return InMemoryHistory()
+
+
+def take_completion(event: KeyPressEvent) -> None:
+    """Enter in the menu: take what is chosen and close the menu, rather than
+    ask the question, which is often only begun, as "which bit of cdw" """
+
+    event.current_buffer.complete_state = None
+
+
+def status_of(status: str) -> Text:
+    """The line under an answer: what it was read as, then how it was found,
+    and whether it is known"""
+
+    read, *rest = status.split(" | ")
+    line = Text(read, style="cyan")
+    for part in rest:
+        line.append(" | ", style="dim")
+        line.append(part, style="yellow" if part == "not known" else "dim green")
+    return line
+
+
+def said(markdown: str) -> str:
+    """The lines ending an answer that say where the fields asked of are"""
+
+    lines = markdown.rstrip("\n").split("\n")
+    end = len(lines)
+    while end and lines[end - 1].startswith(">"):
+        end -= 1
+    return "\n".join(lines[end:])
+
+
+def show(console: Console, markdown: str, status: str) -> None:
+    """An answer, paged where it is longer than the terminal, with where the
+    fields asked of are and the line under it shown after the pager too"""
+
+    if markdown.count("\n") + 4 > console.size.height:
+        os.environ.setdefault("LESS", "-RFX")  # Colour, and no pager for a screen
+        with console.pager(styles=True):
+            console.print(Markdown(markdown))
+        if said(markdown):
+            console.print(Markdown(said(markdown)))
+    else:
+        console.print(Markdown(markdown))
+    console.print(status_of(status))
 
 
 def interact(
@@ -154,27 +219,39 @@ def interact(
     console.print(f"[dim]{shown.replace(str(Path.home()), '~', 1)}[/dim]")
     console.print(Markdown(HELP))
 
-    keys = KeyBindings()
+    bindings = KeyBindings()
+    menu = has_completions & completion_is_selected
+    bindings.add("enter", filter=menu)(take_completion)
 
-    @keys.add("?", filter=Condition(lambda: not session.default_buffer.text))
+    @bindings.add("escape", filter=has_completions)
+    def close(event: KeyPressEvent) -> None:
+        """Esc: close the menu"""
+        event.current_buffer.cancel_completion()
+
+    @bindings.add("?", filter=Condition(lambda: not session.default_buffer.text))
     def questions(event: KeyPressEvent) -> None:
         """'?' on an empty line: the menu of the questions to ask"""
         event.current_buffer.start_completion(select_first=False)
 
-    @keys.add("f1")
+    @bindings.add("f1")
     def forms(event: KeyPressEvent) -> None:
         """F1: the forms a question can take, with examples"""
         run_in_terminal(lambda: console.print(Markdown(HELP)))
 
-    recognised(vocabulary, "")  # The pattern of names, built before the first key
+    vocabulary.names  # The pattern of names, built before the first key
     session: PromptSession[str] = PromptSession(
         completer=Names(vocabulary),
         complete_while_typing=True,
         history=history(),
         lexer=Recognised(vocabulary),
-        key_bindings=keys,
+        key_bindings=bindings,
         style=STYLE,
-        bottom_toolbar=lambda: toolbar(session.default_buffer.text, vocabulary, llm),
+        bottom_toolbar=lambda: toolbar(
+            session.default_buffer.text,
+            vocabulary,
+            llm,
+            session.default_buffer.complete_state is not None,
+        ),
     )
     opening = True  # The first prompt opens with the menu of questions
     while True:
@@ -186,7 +263,13 @@ def interact(
         except (EOFError, KeyboardInterrupt):
             return 0
         opening = False
-        if question.strip():
-            markdown, status = exchange(spec, question, vocabulary, llm)
-            console.print(Markdown(markdown))
-            console.print(f"[dim]{status}[/dim]", highlight=False)
+        if not question.strip():
+            continue
+        try:
+            markdown, status = exchange(spec, question, vocabulary, llm, said_as=False)
+        except Exception as exc:  # A lookup failing ends the answer, not the session
+            console.print(
+                f"[red]senfd-ask failed to answer:[/red] {exc}", highlight=False
+            )
+            continue
+        show(console, markdown, status)
