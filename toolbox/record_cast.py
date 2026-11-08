@@ -63,7 +63,8 @@ def main() -> int:
     script = [
         line.rstrip() for line in args.script.read_text().splitlines() if line.strip()
     ]
-    env = dict(os.environ, COLUMNS=str(WIDTH), TERM="xterm-256color")
+    # The output is captured, not shown on a terminal, so colour is asked for
+    env = dict(os.environ, COLUMNS=str(WIDTH), TERM="xterm-256color", FORCE_COLOR="1")
     header = {"version": 2, "width": WIDTH, "height": HEIGHT, "title": args.title}
     args.cast.parent.mkdir(parents=True, exist_ok=True)
     with args.cast.open("w") as cast:

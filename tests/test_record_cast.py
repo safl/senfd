@@ -53,3 +53,13 @@ def test_a_recording_is_the_same_each_time_it_is_made(
     assert json.loads(header)["version"] == 2
     assert all(json.loads(e)[1] == "o" for e in events)
     assert "a\r\nb\r\n" in "".join(json.loads(e)[2] for e in events)
+
+
+def test_the_commands_are_asked_for_colour(record_cast, tmp_path, monkeypatch):
+    script = tmp_path / "script.sh"
+    script.write_text("echo colour=$FORCE_COLOR width=$COLUMNS\n")
+    cast = tmp_path / "colour.cast"
+    monkeypatch.delenv("FORCE_COLOR", raising=False)
+    monkeypatch.setattr(sys, "argv", ["record_cast.py", str(script), str(cast)])
+    assert record_cast.main() == 0
+    assert f"colour=1 width={record_cast.WIDTH}" in cast.read_text()

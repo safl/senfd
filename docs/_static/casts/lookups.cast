@@ -502,7 +502,7 @@
 [38.63, "o", "?"]
 [38.665, "o", "\""]
 [39.065, "o", "\r\n"]
-[39.265, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40mcommand('Write', dword=12)\u001b[0m                                                                      \r\n\r\nNot in the model; what was found does not mention hyperdrive, so this is not known. \u001b[1;36;40mhelp\u001b[0m says what can be     \r\nasked.                                                                                                        \r\n"]
+[39.265, "o", "\u001b[3mUnderstood as \u001b[0m\u001b[1;3;36;40mcommand('Write', dword=12)\u001b[0m                                                                      \r\n\r\nNot in the data model; what was found does not mention hyperdrive, so this is not known. \u001b[1;36;40mhelp\u001b[0m says what can be\r\nasked.                                                                                                        \r\n"]
 [41.185, "o", "\u001b[1;32m$\u001b[0m "]
 [41.22, "o", "#"]
 [41.255, "o", " "]
