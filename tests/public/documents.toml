@@ -13,10 +13,10 @@ url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Base-Specification-
 sha256 = "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd"
 commands = 57
 features = 51
-log_pages = 48
+log_pages = 55
 structures = 346
-errata = 8
-not_modelled = 34
+errata = 5
+not_modelled = 22
 
 [[document]]
 name = "Boot 1.4"
@@ -28,7 +28,7 @@ features = 0
 log_pages = 0
 structures = 19
 errata = 0
-not_modelled = 3
+not_modelled = 2
 
 [[document]]
 name = "Computational Programs Command Set 1.3"
@@ -60,11 +60,11 @@ file = "NVM-Express-Management-Interface-Specification-Revision-2.2-Ratified-202
 url = "https://nvmexpress.org/wp-content/uploads/NVM-Express-Management-Interface-Specification-Revision-2.2-Ratified-2026.07.31.pdf"
 sha256 = "1aad98ccb9daf9a23b0dcca2c12fde7c99b5bd1bb542cf928af740cd53261817"
 commands = 22
-features = 0
+features = 51
 log_pages = 53
 structures = 72
-errata = 1
-not_modelled = 6
+errata = 0
+not_modelled = 5
 
 [[document]]
 name = "NVM Command Set 1.3"
@@ -135,5 +135,5 @@ commands = 3
 features = 0
 log_pages = 1
 structures = 11
-errata = 1
-not_modelled = 2
+errata = 0
+not_modelled = 1
