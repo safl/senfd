@@ -119,4 +119,5 @@ nvmexpress.org, give the same data model the CI job checks.
    linting/index.rst
    codegen/index.rst
    schema/index.rst
+   prior-art/index.rst
    contributors/index.rst
