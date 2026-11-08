@@ -15,7 +15,7 @@ commands = 57
 features = 51
 log_pages = 48
 structures = 346
-errata = 9
+errata = 8
 not_modelled = 34
 
 [[document]]
@@ -75,7 +75,7 @@ commands = 8
 features = 6
 log_pages = 8
 structures = 58
-errata = 2
+errata = 0
 not_modelled = 8
 
 [[document]]

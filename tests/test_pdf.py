@@ -12,9 +12,10 @@ from pathlib import Path
 import pikepdf
 import pytest
 
-from senfd.documents.plain import FromPdf
+from senfd.documents.plain import Figure, FromPdf
 from senfd.pdf.pages import grid, spans
-from senfd.pdf.reader import NotTagged, read, stem_of
+from senfd.pdf.reader import NotTagged, joined, read, stem_of
+from senfd.tables import Cell, Row, Table
 
 TOOL = Path(__file__).parents[1] / "toolbox" / "public_documents.py"
 
@@ -120,3 +121,178 @@ def test_a_wrong_answer_of_the_benchmark_is_counted_and_named(public, tmp_path, 
     tally = public.graded(lane)
     assert tally["right"] + tally["wrong"] + tally["unknown"] == 2
     assert tally["right"] < 2 and "2: " in capsys.readouterr().out
+
+
+def page(*rows):
+    """A table of 'rows', each a list of texts, a cell spanning the column
+    before it written as None"""
+
+    return Table(
+        rows=[
+            Row(
+                cells=[
+                    Cell(text=t) if t is not None else Cell(text="", merged="left")
+                    for t in row
+                ]
+            )
+            for row in rows
+        ]
+    )
+
+
+def spanned(table):
+    """'table' with the text of a spanning cell repeated, as the reader gives"""
+
+    for row in table.rows:
+        for before, cell in zip(row.cells, row.cells[1:]):
+            if cell.merged == "left":
+                cell.text = before.text
+    return table
+
+
+CAPTION_ROW = ["Figure 42: CSTS", None, None]
+
+
+def test_the_caption_and_header_a_page_repeats_are_dropped_however_it_divides():
+    first = spanned(
+        page(CAPTION_ROW, ["Bits", "Type", "Description"], ["31:07", "RO", "Reserved"])
+    )
+    figure = Figure(
+        figure_nr=42, caption="Figure 42: CSTS", description="CSTS", table=first
+    )
+    # The next page divides Description into two columns
+    joined(
+        figure,
+        spanned(
+            page(
+                CAPTION_ROW + [None],
+                ["Bits", "Type", "Description", None],
+                ["06", "RO", "Shutdown Type", None],
+            )
+        ),
+    )
+    assert [r.cells[0].text for r in figure.table.rows] == [
+        "Figure 42: CSTS",
+        "Bits",
+        "31:07",
+        "06",
+    ]
+
+
+def test_a_row_broken_across_a_page_is_joined_again():
+    first = spanned(
+        page(CAPTION_ROW, ["Bits", "Type", "Description"], ["03:02", "RO", "SHST: a"])
+    )
+    figure = Figure(
+        figure_nr=42, caption="Figure 42: CSTS", description="CSTS", table=first
+    )
+    joined(
+        figure,
+        spanned(
+            page(
+                CAPTION_ROW,
+                ["Bits", "Type", "Description"],
+                ["", "", "b"],
+                ["01", "RO", "CFS"],
+            )
+        ),
+    )
+    rows = [[c.text for c in r.cells] for r in figure.table.rows[2:]]
+    assert rows == [["03:02", "RO", "SHST: a\nb"], ["01", "RO", "CFS"]]
+
+
+def test_the_rest_of_a_broken_row_goes_to_the_cell_it_is_the_rest_of():
+    # The last cell spans two columns, and another cell has the same text
+    first = spanned(
+        page(
+            CAPTION_ROW + [None],
+            ["Bits", "Type", "Description", None],
+            ["0", "RO", "0", None],
+        )
+    )
+    figure = Figure(
+        figure_nr=42, caption="Figure 42: CSTS", description="CSTS", table=first
+    )
+    joined(figure, spanned(page(["", "", "more", None])))
+    assert [c.text for c in figure.table.rows[-1].cells] == [
+        "0",
+        "RO",
+        "0\nmore",
+        "0\nmore",
+    ]
+
+
+def test_a_row_with_text_before_its_last_cell_is_a_row_of_its_own():
+    first = spanned(
+        page(CAPTION_ROW, ["Bits", "Type", "Description"], ["03:02", "RO", "a"])
+    )
+    figure = Figure(
+        figure_nr=42, caption="Figure 42: CSTS", description="CSTS", table=first
+    )
+    joined(figure, spanned(page(["", "RW", "b"])))
+    assert [c.text for c in figure.table.rows[-1].cells] == ["", "RW", "b"]
+
+
+def test_a_repeated_header_row_is_dropped_whichever_cells_it_merges_from_above():
+    header = page(["Name", "Identifier", "Support", None])
+    lower = Row(
+        cells=[
+            Cell(text="Name", merged="up"),
+            Cell(text="I/O"),
+            Cell(text="Admin"),
+            Cell(),
+        ]
+    )
+    header.rows.append(lower)
+    first = spanned(page(["Figure 16: Features", None, None, None]))
+    first.rows += spanned(header).rows + [
+        page(["LBA Range Type", "03h", "O", "P"]).rows[0]
+    ]
+    figure = Figure(
+        figure_nr=16, caption="Figure 16: Features", description="F", table=first
+    )
+    # The next page has the identifier merged from above, as the first lost it
+    again = Row(
+        cells=[
+            Cell(text="Name", merged="up"),
+            Cell(text="Identifier", merged="up"),
+            Cell(text="I/O"),
+            Cell(text="Admin"),
+        ]
+    )
+    following = page(["Error Recovery", "05h", "M", "P"])
+    joined(figure, Table(rows=[again] + following.rows))
+    assert [r.cells[0].text for r in figure.table.rows[-2:]] == [
+        "LBA Range Type",
+        "Error Recovery",
+    ]
+
+
+def test_a_header_row_read_better_on_the_next_page_replaces_the_first():
+    first = spanned(
+        page(
+            ["Figure 884: Behavior", None, None],
+            ["Host", "ASCR", "Action"],
+            ["TLS Disabled", "0", "", "Do not begin"],
+        )
+    )
+    figure = Figure(
+        figure_nr=884, caption="Figure 884: Behavior", description="B", table=first
+    )
+    joined(
+        figure,
+        spanned(
+            page(
+                ["Figure 884: Behavior", None, None, None],
+                ["Host", None, "ASCR", "Action"],
+                ["Authentication Disabled", "", "0", "Disconnect"],
+            )
+        ),
+    )
+    assert [c.text for c in figure.table.rows[1].cells] == [
+        "Host",
+        "Host",
+        "ASCR",
+        "Action",
+    ]
+    assert len(figure.table.rows) == 4
