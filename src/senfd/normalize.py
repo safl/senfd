@@ -178,15 +178,17 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
 
 
 # A footnote marker can follow the acronym, as in "Name (ACR) 1:" or "(ACR)1, 3:";
-# without an acronym, digits at the end are the name's, as in "Entry 1:"
+# without an acronym, digits at the end are the name's, as in "Entry 1:". A
+# name may hold a range in brackets, colon and all, as "KV Key[63:00]:"
+NAME = r"(?P<name>(?:[^:()\[\]]|\[[^\]]*\])+?)(?<!\s)"
 REGEX_FIELD = re.compile(
-    r"^(?P<name>[^:()]*?[^\s:()])\s*(?:\((?P<acronym>[^()]+)\)"
+    rf"^{NAME}\s*(?:\((?P<acronym>[^()]+)\)"
     r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::\s*(?P<rest>.*))?$"
 )
 
 
 REGEX_FIELD_NO_COLON = re.compile(
-    r"^(?P<name>[^:()]*?[^\s:()])\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z].*)$"
+    rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z].*)$"
 )
 
 

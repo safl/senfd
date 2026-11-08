@@ -385,3 +385,23 @@ def test_the_normalising_module_is_imported_on_its_own():
         [sys.executable, "-c", "import senfd.normalize"], capture_output=True, text=True
     )
     assert proc.returncode == 0, proc.stderr
+
+
+def test_a_name_holding_a_range_in_brackets_keeps_its_colon():
+    from senfd.normalize import parse_field_description
+
+    assert parse_field_description("KV Key[63:00]: The least-significant 64 bits.") == (
+        "KV Key[63:00]",
+        None,
+        "The least-significant 64 bits.",
+    )
+    assert parse_field_description("Key[127:64] (KVK): The rest.") == (
+        "Key[127:64]",
+        "KVK",
+        "The rest.",
+    )
+    assert parse_field_description("Name (ACR): A description: with a colon.") == (
+        "Name",
+        "ACR",
+        "A description: with a colon.",
+    )
