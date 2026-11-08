@@ -252,8 +252,9 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     ]
     registers = [w for w in capitals if w in vocabulary.registers]
     # A register named by its acronym, "CSTS", is what a question without a
-    # dword asks of, whatever command's name its words also make, "Shutdown"
-    if registers and not dword:
+    # dword asks of, whatever command's name its words also make, "Shutdown";
+    # not when it names a structure, whose field "VS" is also a register's
+    if registers and not dword and not field_of_other(named, lower):
         return Understood("register", registers[0])
     if named and named[0] == "command":
         return Understood("command", named[1], int(dword[1]) if dword else None)
@@ -261,7 +262,7 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     if asks_command and not named and not registers and rest:
         argument = command_named(text, vocabulary) or rest
         return Understood("command", argument, int(dword[1]) if dword else None)
-    if registers:
+    if registers and not field_of_other(named, lower):
         return Understood("register", registers[0])
     if named:
         return Understood(named[0], named[1])
@@ -393,7 +394,7 @@ def elsewhere(
     registers = [c for c in capitals if c in vocabulary.registers]
     dword = re.search(DWORD, question.lower())
 
-    if registers and not dword:
+    if registers and not dword and not field_of_other(named, question.lower()):
         head = name.partition(" - ")[0] if name else None
         return None if kind == "register" and head in registers else registers[0]
     kinds = [
@@ -403,8 +404,9 @@ def elsewhere(
             (r"\bfeatures?\b|\bfid\b", "feature"),
             (r"\bstructures?\b", "structure"),
         )
-        # "the log page identifier in Get Log Page" asks of the command
-        if re.search(word, lower) and not command
+        # "the log page identifier in Get Log Page" asks of the command, and
+        # "the Identify Controller data structure" not of Identify
+        if re.search(word, lower) and not (command and not names_other(named))
     ]
     if kinds and kind not in kinds:
         return named[1] if named else f"a {kinds[0].replace('_', ' ')}"
@@ -429,6 +431,23 @@ def elsewhere(
         return None if alias(named[1]) in (alias(name), alias(head)) else named[1]
     text = words_of(" ".join(lines))
     return None if words_of(named[1]) in text else named[1]
+
+
+def names_other(named: Optional[Tuple[str, str]]) -> bool:
+    """Whether the longest name a question names is of other than a command
+    or a register, as "Identify Controller" is, though "Identify" is a
+    command's"""
+
+    return named is not None and named[0] in ("feature", "log_page", "structure")
+
+
+def field_of_other(named: Optional[Tuple[str, str]], lower: str) -> bool:
+    """Whether a question asks of a field of the structure, feature or log page
+    it names, as "the VS field of the Identify Controller structure", whose
+    acronym is a register's too, rather than of the register"""
+
+    kind = r"\bfields?\b|\bstructures?\b|\bfeatures?\b|\blog ?pages?\b"
+    return names_other(named) and bool(re.search(kind, lower))
 
 
 def answered(lines: List[str]) -> Optional[Tuple[str, str]]:

@@ -344,3 +344,23 @@ def test_a_field_named_as_a_kind_in_a_command_is_of_the_command(
 def test_a_search_asked_for_is_answered(spec, vocabulary):
     text, _ = senfd.ask.respond(spec, "search FCNT", vocabulary)
     assert "so this is not known" not in text
+
+
+def test_a_command_named_in_a_structure_s_name_does_not_answer_for_it(spec, vocabulary):
+    vocabulary = senfd.ask.Vocabulary(
+        commands=set(vocabulary.commands),
+        structures=set(vocabulary.structures) | {"Ding Report"},
+    )
+    command = senfd.ask.Understood("command", "Ding")
+    lines = senfd.ask.answer(spec, command, vocabulary)
+    question = "What is the Ding Report structure?"
+    assert senfd.ask.elsewhere(question, command, lines, vocabulary) == "Ding Report"
+
+
+def test_a_field_acronym_that_is_a_register_s_too_is_of_the_structure_named(
+    vocabulary,
+):
+    understood = senfd.ask.understand(
+        "What is the FOOCAP field of the Foo Descriptor structure?", vocabulary
+    )
+    assert str(understood) == "structure('Foo Descriptor')"
