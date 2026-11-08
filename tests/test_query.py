@@ -235,14 +235,24 @@ def test_the_lint_says_what_is_the_authors_and_what_is_senfds(spec):
     lines = senfd.query.lint(spec)
     headings = [line for line in lines if not line.startswith("  ")]
     assert [h.rsplit(" (", 1)[0] for h in headings] == [
-        "Candidate errata, for the authors",
-        "Figures of no shape senfd models: the authors' or senfd's",
+        "The authors': candidate errata",
+        "The authors': document errors",
+        "senfd's, or the figure's: figures of no shape senfd models",
         "Worked examples, not data",
-        "Dwords no command, feature or operation claims",
+        "senfd's, or the caption's: dwords no command claims",
     ]
     assert headings[0].endswith(f"({len(senfd.query.errata(spec))})")
-    assert any("dwords" in line and line.startswith("  example") for line in lines)
+    errors = lines[lines.index(headings[1]) + 1 : lines.index(headings[2])]
+    assert "  example, the table after Figure 80, page 80: Table wrapped" in (
+        "\n".join(errors)
+    )
+    assert any(line.startswith("  example, 4, Figure 65") for line in lines)
     assert all(not line.startswith("  ") for line in senfd.query.lint(spec, "nothing"))
+
+
+def test_a_command_is_found_by_its_opcode(spec):
+    assert senfd.query.command(spec, "01h")[0].startswith("Ding: Foobar command")
+    assert senfd.query.command(spec, "Ding") == senfd.query.command(spec, "01h")
 
 
 def test_without_a_data_model_the_query_says_how_to_make_one(capsys):

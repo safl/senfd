@@ -31,6 +31,9 @@ from senfd.documents.spec import (
     SpecDocument,
     Structure,
     alias,
+    cite,
+    document_name,
+    dwords_named,
 )
 
 
@@ -44,31 +47,6 @@ def default_spec_path() -> Path:
 def load(path: Optional[Path] = None) -> SpecDocument:
     path = path or default_spec_path()
     return SpecDocument.model_validate_json(path.read_text(encoding="utf-8"))
-
-
-def document_name(document: str) -> str:
-    """A document by a short name, as "Base 2.2" """
-
-    match = re.match(
-        r"NVM Express (?P<name>.+?) Specification,? Revision (?P<revision>[\d\-.]+)",
-        document,
-    )
-    if not match:
-        return document
-    name = re.sub(r" Command Set$", "", match["name"])
-    return f"{name} {match['revision'].replace('-', '.')}"
-
-
-def cite(source: Source) -> str:
-    """Where 'source' is, as "Base 2.2, 5.1.10, Figure 190, page 195" """
-
-    parts = [document_name(source.document)]
-    if source.section:
-        parts.append(source.section)
-    parts.append(f"Figure {source.figure_nr}")
-    if source.page_nr:
-        parts.append(f"page {source.page_nr}")
-    return ", ".join(parts)
 
 
 def bits(field: Bits) -> str:
@@ -201,10 +179,20 @@ def command(
     if not name.strip():
         return ["Give the name of a command"]
     lines = []
+    opcode = re.fullmatch(r"(?:0x)?([0-9A-Fa-f]{1,2})h?", name.strip())
     found = [
         (command_set, key)
         for command_set in spec.command_sets.values()
-        for key in find(command_set.commands, name)
+        for key in (
+            # A command by its opcode, "8Ch", in every command set having it
+            [
+                k
+                for k, c in command_set.commands.items()
+                if c.opcode == int(opcode[1], 16)
+            ]
+            if opcode and re.search(r"h$|^0x|\d", name.strip())
+            else find(command_set.commands, name)
+        )
     ]
     # A command of the name given rather than those whose names contain it
     exact = [(cs, key) for cs, key in found if key == alias(name)]
@@ -405,7 +393,8 @@ def section(spec: SpecDocument, key: str) -> List[str]:
     for s in spec.structures:
         found.append((s.source, f"structure {s.name} [{cite(s.source)}]"))
     for v in spec.values:
-        found.append((v.source, f"table of {v.kind} {v.name or ''} [{cite(v.source)}]"))
+        kind = "values" if v.kind == "other" else v.kind.replace("_", " ")
+        found.append((v.source, f"table of {kind} {v.name or ''} [{cite(v.source)}]"))
 
     lines = []
     for source, line in sorted(
@@ -424,7 +413,9 @@ def section(spec: SpecDocument, key: str) -> List[str]:
     return head + lines if lines else [f"No section '{key}'"]
 
 
-def errata(spec: SpecDocument, document: str = "") -> List[str]:
+def errata(
+    spec: SpecDocument, document: str = "", none: Optional[List[str]] = None
+) -> List[str]:
     """The errata of the specification, of the documents whose short name has
     'document' in it, by document and section, each with where it is"""
 
@@ -446,38 +437,40 @@ def errata(spec: SpecDocument, document: str = "") -> List[str]:
         line = f"{cite(e.source)}: {e.message}"
         counted[line] = counted.get(line, 0) + 1
     lines = [line + (f" (in {n} rows)" if n > 1 else "") for line, n in counted.items()]
-    return lines or ["No errata"]
+    return lines or (["No errata"] if none is None else none)
 
 
 def lint(spec: SpecDocument, document: str = "") -> List[str]:
     """What reading the figures as data found to look at, of the documents
-    whose short name has 'document' in it: for the authors, the candidate
-    errata; then what senfd could not read as data, the figures of no shape
-    it models, a worked example apart from the rest, and the dwords no
-    command, feature or operation claims"""
+    whose short name has 'document' in it. First what is the authors': the
+    candidate errata and the document errors. Then what senfd could not read
+    as data, which is senfd's to learn or the figure's to follow the
+    conventions: the figures of no shape it models, the worked examples
+    apart, and the dwords no command, feature or operation claims."""
 
     def of(text: str) -> bool:
         return document.lower() in document_name(text).lower()
 
-    unmodelled = [
-        d.message
-        for d in spec.diagnostics
-        if d.code == "figure-not-modelled" and of(d.message)
-    ]
+    def coded(code: str) -> List[str]:
+        return [d.message for d in spec.diagnostics if d.code == code and of(d.message)]
+
+    unmodelled = coded("figure-not-modelled")
     examples = [m for m in unmodelled if re.search(r"\bexamples?\b", m, re.I)]
-    others = [m for m in unmodelled if m not in examples]
     unassigned = [
-        f"{cite(d.source)}: dwords {d.lower}:{d.upper} of '{name}'"
+        f"{cite(d.source)}: {dwords_named(name, d)}"
         for name, dwords in sorted(spec.unassigned.items())
         for d in dwords
         if of(d.source.document)
     ]
-    found = [line for line in errata(spec, document) if line != "No errata"]
     sections = [
-        ("Candidate errata, for the authors", found),
-        ("Figures of no shape senfd models: the authors' or senfd's", others),
+        ("The authors': candidate errata", errata(spec, document, none=[])),
+        ("The authors': document errors", coded("document-error")),
+        (
+            "senfd's, or the figure's: figures of no shape senfd models",
+            [m for m in unmodelled if m not in examples],
+        ),
         ("Worked examples, not data", examples),
-        ("Dwords no command, feature or operation claims", unassigned),
+        ("senfd's, or the caption's: dwords no command claims", unassigned),
     ]
     lines = []
     for title, items in sections:

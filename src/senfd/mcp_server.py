@@ -12,9 +12,10 @@ with a tool call costing a few lines, rather than by reading the documents:
     claude mcp add senfd -- senfd-mcp
 """
 
+import inspect
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
+from typing import Callable, List, Optional
 
 from mcp.server.mcpserver import MCPServer
 
@@ -23,13 +24,21 @@ import senfd.query
 from senfd.documents.spec import SpecDocument
 
 INSTRUCTIONS = (
-    "Answers questions about the NVMe specifications from a model senfd made of "
+    "Answers questions about the NVMe specifications from the data model senfd made of "
     "them: commands and their dwords, features and log pages by identifier, "
     "data structures and registers, and fields by acronym. Each answer cites "
     "the document and figure it came from. Use it before reading the documents."
 )
 
 server = MCPServer(name="senfd", instructions=INSTRUCTIONS, version=senfd.__version__)
+
+
+def tool(function: Callable[..., str]) -> Callable[..., str]:
+    """A tool of the server, described by its docstring without the docstring's
+    indentation, which a client would show"""
+
+    description = inspect.cleandoc(function.__doc__ or "")
+    return server.tool(structured_output=False, description=description)(function)
 
 
 @lru_cache(maxsize=1)
@@ -39,13 +48,13 @@ def spec(path: Optional[Path] = None) -> SpecDocument:
         return senfd.query.load(path)
     except FileNotFoundError:
         raise RuntimeError(
-            f"No model of the specification at {path}; make it with "
+            f"No data model of the specification at {path}; make it with "
             f"'senfd <documents.docx> --output {path.parent}', or point "
             "SENFD_SPEC at one"
         ) from None
 
 
-@server.tool(structured_output=False)
+@tool
 def command(name: str, dword: Optional[int] = None, verbose: bool = False) -> str:
     """A command's opcode and its submission queue dwords with their fields,
     and completion queue dwords; 'dword' gives one dword only, as 12 for CDW12"""
@@ -53,28 +62,28 @@ def command(name: str, dword: Optional[int] = None, verbose: bool = False) -> st
     return "\n".join(senfd.query.command(spec(), name, dword, verbose))
 
 
-@server.tool(structured_output=False)
+@tool
 def feature(key: str, verbose: bool = False) -> str:
     """A feature by its identifier, as "07h", or name, with its dwords"""
 
     return "\n".join(senfd.query.feature(spec(), key, verbose))
 
 
-@server.tool(structured_output=False)
+@tool
 def log_page(key: str, verbose: bool = False) -> str:
     """A log page by its identifier, as "02h", or name, with its structure"""
 
     return "\n".join(senfd.query.log_page(spec(), key, verbose))
 
 
-@server.tool(structured_output=False)
+@tool
 def structure(name: str, verbose: bool = False) -> str:
     """A data structure or register by name, with its fields"""
 
     return "\n".join(senfd.query.structure(spec(), name, verbose))
 
 
-@server.tool(structured_output=False)
+@tool
 def search(text: str) -> str:
     """Fields by acronym or name, and commands, features, log pages and
     structures by name, each with where it is"""
@@ -82,7 +91,7 @@ def search(text: str) -> str:
     return "\n".join(senfd.query.search(spec(), text))
 
 
-@server.tool(structured_output=False)
+@tool
 def section(key: str) -> str:
     """What a section of the specification describes, by its number, as
     "5.1.25", with its subsections, or by a word of its title"""
@@ -90,7 +99,7 @@ def section(key: str) -> str:
     return "\n".join(senfd.query.section(spec(), key))
 
 
-@server.tool(structured_output=False)
+@tool
 def errata(document: str = "") -> str:
     """Candidate errata of the documents, values that are not what their kind
     must be, each with where it is; 'document' as "Base" or "NVM" narrows them"""
@@ -98,7 +107,7 @@ def errata(document: str = "") -> str:
     return "\n".join(senfd.query.errata(spec(), document))
 
 
-@server.tool(structured_output=False)
+@tool
 def lint(document: str = "") -> str:
     """What reading the figures as data found: candidate errata for the
     authors, figures of no shape senfd models, worked examples, and dwords no
@@ -107,7 +116,14 @@ def lint(document: str = "") -> str:
     return "\n".join(senfd.query.lint(spec(), document))
 
 
-def main() -> int:
+def main(argv: Optional[List[str]] = None) -> int:
+    import argparse
+
+    argparse.ArgumentParser(
+        description="An MCP server, over stdio, answering questions about the NVMe "
+        "specifications from senfd's data model; register it with an agent, as "
+        "'claude mcp add senfd -- senfd-mcp'"
+    ).parse_args(argv)
     server.run("stdio")
     return 0
 

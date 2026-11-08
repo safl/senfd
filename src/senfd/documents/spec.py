@@ -329,6 +329,42 @@ class SpecDocument(Document):
     """The candidate errata of the documents"""
 
 
+def document_name(document: str) -> str:
+    """A document by a short name, as "Base 2.2" """
+
+    match = re.match(
+        r"NVM Express (?P<name>.+?) Specification,? Revision (?P<revision>[\d\-.]+)",
+        document,
+    )
+    if not match:
+        return document
+    name = re.sub(r" Command Set$", "", match["name"])
+    return f"{name} {match['revision'].replace('-', '.')}"
+
+
+def cite(source: Source) -> str:
+    """Where 'source' is, as "Base 2.2, 5.1.10, Figure 190, page 195" """
+
+    parts = [document_name(source.document)]
+    if source.section:
+        parts.append(source.section)
+    parts.append(f"Figure {source.figure_nr}")
+    if source.page_nr:
+        parts.append(f"page {source.page_nr}")
+    return ", ".join(parts)
+
+
+def dwords_named(key: str, dwords: "Dwords") -> str:
+    """Dwords as an author reads them, by the name their caption gives, as
+    "dwords 0:0 of the completion of Abort" of 'cqe:abort_command'"""
+
+    completion = key.startswith("cqe:")
+    name = key.removeprefix("cqe:").replace("_", " ")
+    name = re.sub(r" command$", "", name)
+    of = f"the completion of {name}" if completion else name
+    return f"dwords {dwords.lower}:{dwords.upper} of {of}"
+
+
 def without_footnote(name: str) -> str:
     """'name' without a footnote marker, as "Flush4" or "Cancel 4" is "Flush" and
     "Cancel" """
@@ -618,11 +654,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             document.errata += type_values(document.values[-1])
         else:
             document.diagnostics.append(
-                note(
-                    "figure-not-modelled",
-                    f"{stem} figure {figure.figure_nr}, a table of no shape senfd "
-                    f"models: '{figure.caption}'",
-                )
+                note("figure-not-modelled", f"{cite(source)}: '{figure.caption}'")
             )
         return
 
@@ -684,8 +716,12 @@ TYPED_FORMS = [
     (
         "identifier",
         re.compile(
-            r"^(?P<lower>[0-9A-Fa-f]+)h"
-            r"(?:\s*(?:to|-)\s*(?P<upper>[0-9A-Fa-f]+)h)?" + FOOTNOTES + r"$"
+            # A range may give the "h" once, after its upper bound: "86 to BFh"
+            r"^(?:(?P<lower>[0-9A-Fa-f]+)h"
+            r"(?:\s*(?:to|-)\s*(?P<upper>[0-9A-Fa-f]+)h)?"
+            r"|(?P<bare_lower>[0-9A-Fa-f]+)\s*(?:to|-)\s*(?P<bare_upper>[0-9A-Fa-f]+)h)"
+            + FOOTNOTES
+            + r"$"
         ),
     ),
     (
@@ -724,8 +760,10 @@ def typed_of(text: str) -> Optional[Typed]:
         elif kind == "flag":
             typed.flag = groups["flag"].lower().startswith("y")
         elif kind == "identifier":
-            typed.lower = int(groups["lower"], 16)
-            typed.upper = int(groups["upper"], 16) if groups["upper"] else typed.lower
+            lower, upper = groups["lower"] or groups["bare_lower"], groups["upper"]
+            upper = upper or groups["bare_upper"]
+            typed.lower = int(lower, 16)
+            typed.upper = int(upper, 16) if upper else typed.lower
         elif kind == "number":
             if groups.get("binary"):
                 typed.lower = int(groups["binary"], 2)
@@ -764,8 +802,31 @@ def kinds_of(column: str, values: "Values") -> Optional[set]:
     return None
 
 
+def column_title(column: str) -> str:
+    """A column by its key as an author reads it, as 'I/O' of 'i_o'"""
+
+    return {"i_o": "I/O", "om": "O/M"}.get(column, column.replace("_", " "))
+
+
 # A kind of value, as an author reads it
 KIND_WORDS = {"flag": "a flag", "identifier": "an identifier", "level": "a level"}
+
+
+def free_text(values: "Values") -> set:
+    """The columns of 'values' that hold sentences in most of their rows, as a
+    column of descriptions whose name says "requirement", which are text
+    whatever their name"""
+
+    cells: Dict[str, List[str]] = {}
+    for entry in values.entries:
+        for column, text in {entry.value_column: entry.value, **entry.columns}.items():
+            if text.strip():
+                cells.setdefault(column, []).append(text)
+    return {
+        column
+        for column, texts in cells.items()
+        if sum(len(text.split()) > 4 for text in texts) * 2 > len(texts)
+    }
 
 
 def type_values(values: "Values") -> List["Erratum"]:
@@ -773,12 +834,13 @@ def type_values(values: "Values") -> List["Erratum"]:
     errata of those of no form their column holds"""
 
     errata = []
+    prose = free_text(values)
     for entry in values.entries:
         cells = {entry.value_column: entry.value, **entry.columns}
         others = [v for k, v in cells.items() if k != entry.value_column and v]
         for column, text in cells.items():
             kinds = kinds_of(column, values)
-            if kinds is None or not text.strip():
+            if kinds is None or column in prose or not text.strip():
                 continue
             typed = typed_of(text)
             if typed and typed.kind in kinds | COMMON:
@@ -788,9 +850,8 @@ def type_values(values: "Values") -> List["Erratum"]:
                     Erratum(
                         code="value",
                         message=(
-                            f"'{text}' in the column "
-                            f'"{column.replace("_", " ")}" is not '
-                            + " or ".join(KIND_WORDS[k] for k in sorted(kinds))
+                            f"'{text}' in the column \"{column_title(column)}\" is "
+                            "not " + " or ".join(KIND_WORDS[k] for k in sorted(kinds))
                         ),
                         found=text,
                         source=values.source,
@@ -1273,9 +1334,8 @@ def resolve(document: SpecDocument) -> SpecDocument:
             document.diagnostics.append(
                 warning(
                     "dwords-unassigned",
-                    f"Dwords {d.lower}:{d.upper} of '{key}', {d.source.document} "
-                    f"figure {d.source.figure_nr}, of no command, feature or "
-                    "directive operation",
+                    f"{cite(d.source)}: {dwords_named(key, d)}, of no command, "
+                    "feature or directive operation",
                 )
             )
     return document

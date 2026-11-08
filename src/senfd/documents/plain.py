@@ -390,16 +390,19 @@ class FromDocx(Converter):
             if paragraph.style.name != "table of figures":
                 continue
 
+            # Check whether the paragraph is a reference to a figure; the
+            # heading of the table, styled as its entries, is not one
+            caption = paragraph.text.strip()
+            if caption.lower() == "table of figures":
+                continue
             tof_entry += 1
 
-            # Check whether the paragraph is a reference to a figure
-            caption = paragraph.text.strip()
             figure = Figure.from_regex(Figure.REGEX_TABLE_OF_FIGURES, caption)
             if not figure:
                 errors.append(
                     senfd.errors.TableOfFiguresError(
                         tof_entry_nr=tof_entry,
-                        message="Does not match figure assumptions",
+                        message=("Entry not of the form 'Figure N: title' and a page"),
                         caption=caption,
                     )
                 )
