@@ -1,0 +1,211 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+"""
+The pages of a PDF as drawn: the characters of each piece of marked content,
+and the borders of the tables, which say what the structure tree does not,
+the columns a merged cell spans
+"""
+
+from collections import defaultdict
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import pdfplumber
+from pdfplumber.utils import cluster_objects
+from pdfplumber.utils import extract_text as text_of_chars
+
+from senfd.pdf.tree import Leaf, PageId
+
+# A box on a page: left, top, right, bottom, in points from the top left
+Box = Tuple[float, float, float, float]
+# A vertical border: where across, and from where to where down
+Vertical = Tuple[float, float, float]
+# A horizontal border: where down, and from where to where across
+Horizontal = Tuple[float, float, float]
+
+# How far apart, in points, two lines of a paragraph's text may be and still
+# be one line, as a superscript footnote marker beside its word
+LINE = 6
+# How far apart, in points, two borders may be and still be one
+NEAR = 2.5
+
+
+def union(a: Optional[Box], b: Box) -> Box:
+    """The box holding both 'a' and 'b'"""
+
+    if a is None:
+        return b
+    return (min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3]))
+
+
+class Pages:
+    """The pages of a PDF, read once each: their characters by the marked
+    content they are of, and their ruled borders"""
+
+    def __init__(self, plumb: pdfplumber.PDF, index: Dict[PageId, int]):
+        self.plumb = plumb
+        self.index = index
+        self._chars: Dict[int, Dict[Optional[int], List[dict]]] = {}
+        self._rects: Dict[int, List[dict]] = {}
+
+    def read(self, number: int) -> None:
+        if number in self._chars:
+            return
+        page = self.plumb.pages[number]
+        by_mcid: Dict[Optional[int], List[dict]] = defaultdict(list)
+        for char in page.chars:
+            by_mcid[char.get("mcid")].append(char)
+        self._chars[number] = by_mcid
+        self._rects[number] = list(page.rects)
+        page.close()  # Its characters are kept above; the rest is not needed
+
+    def chars(self, number: int) -> Dict[Optional[int], List[dict]]:
+        self.read(number)
+        return self._chars[number]
+
+    def rects(self, number: int) -> List[dict]:
+        self.read(number)
+        return self._rects[number]
+
+    def number(self, page: PageId) -> int:
+        return self.index[page]
+
+    def text(self, paragraphs: Sequence[Sequence[Leaf]]) -> Tuple[str, Dict[int, Box]]:
+        """The text of 'paragraphs', a line each, and the box it is printed
+        in on each page it is on. Text turned by 90 degrees, as the headers
+        of narrow columns, is read along its turn."""
+
+        lines: List[str] = []
+        boxes: Dict[int, Box] = {}
+        for paragraph in paragraphs:
+            chars: List[dict] = []
+            for leaf in paragraph:
+                number = self.number(leaf.page)
+                found = self.chars(number).get(leaf.mcid, [])
+                if not found:
+                    continue
+                chars += found
+                box = (
+                    min(c["x0"] for c in found),
+                    min(c["top"] for c in found),
+                    max(c["x1"] for c in found),
+                    max(c["bottom"] for c in found),
+                )
+                boxes[number] = union(boxes.get(number), box)
+            if not chars:
+                continue
+            turned = sum(not c.get("upright", True) for c in chars) * 2 > len(chars)
+            if turned:
+                across = cluster_objects(chars, lambda c: (c["x0"] + c["x1"]) / 2, 4)
+                for column in across:
+                    upward = sorted(column, key=lambda c: -c["bottom"])
+                    lines.append("".join(c["text"] for c in upward).strip())
+            else:
+                lines.append(text_of_chars(chars, y_tolerance=LINE))
+        return "\n".join(lines), boxes
+
+    def verticals(self, number: int, box: Box, pad: float = 2.0) -> List[Vertical]:
+        """The vertical borders drawn beside 'box', a segment per cell side
+        joined into one where they touch"""
+
+        _, top, _, bottom = box
+        found = sorted(
+            (round((r["x0"] + r["x1"]) / 2, 1), r["top"], r["bottom"])
+            for r in self.rects(number)
+            if r["width"] < 3
+            and r["height"] > 2
+            and r["bottom"] > top - pad
+            and r["top"] < bottom + pad
+        )
+        joined: List[Vertical] = []
+        for x, t, b in found:
+            if joined and abs(joined[-1][0] - x) < 1 and t <= joined[-1][2] + 2:
+                joined[-1] = (joined[-1][0], joined[-1][1], max(joined[-1][2], b))
+            else:
+                joined.append((x, t, b))
+        return joined
+
+    def horizontals(self, number: int, box: Box, pad: float = 2.0) -> List[Horizontal]:
+        """The horizontal borders drawn beside 'box'"""
+
+        _, top, _, bottom = box
+        return [
+            (round((r["top"] + r["bottom"]) / 2, 1), r["x0"], r["x1"])
+            for r in self.rects(number)
+            if r["height"] < 3
+            and r["width"] > 3
+            and r["bottom"] > top - pad
+            and r["top"] < bottom + pad
+        ]
+
+
+def grid(verticals: Sequence[Vertical]) -> List[float]:
+    """The columns' edges, across, as the vertical borders give them"""
+
+    edges: List[float] = []
+    for x in sorted({v[0] for v in verticals}):
+        if not edges or abs(edges[-1] - x) >= NEAR:
+            edges.append(x)
+    return edges
+
+
+def edge(edges: Sequence[float], x: Optional[float], default: int) -> int:
+    """The edge nearest 'x', or 'default' where none is near it"""
+
+    if x is None or not edges:
+        return default
+    nearest = min(range(len(edges)), key=lambda i: abs(edges[i] - x))
+    return nearest if abs(edges[nearest] - x) < NEAR else default
+
+
+def spans(
+    boxes: Sequence[Optional[Box]],
+    edges: Sequence[float],
+    verticals: Sequence[Vertical],
+) -> List[Tuple[int, int]]:
+    """The columns, first and past the last, each cell of a row spans: those
+    between the nearest borders left and right of its text that run alongside
+    it. A cell with no text, and so no box, takes a column no other covers."""
+
+    if len(edges) < 2:
+        return [(i, i + 1) for i in range(len(boxes))]
+    if len(boxes) == 1:
+        return [(0, len(edges) - 1)]
+    placed: List[Optional[Tuple[int, int]]] = [None] * len(boxes)
+    for i, box in enumerate(boxes):
+        if box is None:
+            continue
+        x0, top, x1, bottom = box
+        height = max(bottom - top, 1.0)
+        beside = [
+            v[0] for v in verticals if min(v[2], bottom) - max(v[1], top) > 0.3 * height
+        ]
+        left = [x for x in beside if x <= x0 - 0.5]
+        right = [x for x in beside if x >= x1 + 0.5]
+        first = edge(
+            edges,
+            max(left) if left else None,
+            max((j for j, e in enumerate(edges) if e <= x0 + 1.5), default=0),
+        )
+        last = edge(
+            edges,
+            min(right) if right else None,
+            min(
+                (j for j, e in enumerate(edges) if e >= x1 - 1.5),
+                default=len(edges) - 1,
+            ),
+        )
+        placed[i] = (first, max(last, first + 1))
+    covered = {c for span in placed if span for c in range(*span)}
+    free = [c for c in range(len(edges) - 1) if c not in covered]
+    return [span if span else take(free, edges) for span in placed]
+
+
+def take(free: List[int], edges: Sequence[float]) -> Tuple[int, int]:
+    """A free column, the first not covered, or one past the last"""
+
+    if free:
+        column = free.pop(0)
+        return (column, column + 1)
+    return (len(edges) - 1, len(edges))

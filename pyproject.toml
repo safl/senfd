@@ -22,8 +22,11 @@ readme = { file = "README.rst", content-type = "text/x-rst" }
 [project.optional-dependencies]
 mcp = ["mcp>=2"]
 ask = ["prompt_toolkit>=3", "rich>=13"]
+pdf = ["pikepdf>=8", "pdfplumber>=0.10"]
 dev = [
     "mcp>=2",
+    "pdfplumber>=0.10",
+    "pikepdf>=8",
     "pyte",
     "pytest",
     "pytest-cov",

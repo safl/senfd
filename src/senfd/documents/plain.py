@@ -250,6 +250,25 @@ def text_of_cell(docx_cell) -> str:
     return "\n".join(text_of_paragraph(p._p) for p in docx_cell.paragraphs)
 
 
+class FromPdf(Converter):
+    """A tagged PDF of a specification, as NVM Express publishes it; of the
+    extra 'pdf'"""
+
+    @staticmethod
+    def is_applicable(path: Path) -> bool:
+        return path.suffix.lower() == ".pdf"
+
+    @staticmethod
+    def convert(path: Path, args: Namespace) -> Tuple[FigureDocument, List[Error]]:
+        try:
+            from senfd.pdf.reader import read
+        except ImportError as exc:
+            raise ImportError(
+                f"Reading {path} needs the extra 'pdf': pip install senfd[pdf]"
+            ) from exc
+        return read(path)
+
+
 class FromDocx(Converter):
     @staticmethod
     def is_applicable(path: Path) -> bool:
