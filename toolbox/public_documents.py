@@ -29,10 +29,7 @@ import subprocess
 import sys
 import tempfile
 
-try:
-    import tomllib
-except ModuleNotFoundError:  # Python 3.10, where it is tomli
-    import tomli as tomllib  # type: ignore[no-redef]
+import tomllib
 import urllib.request
 from pathlib import Path
 from typing import Dict, List, Optional

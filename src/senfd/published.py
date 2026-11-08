@@ -13,10 +13,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, Optional
 
-try:
-    import tomllib
-except ModuleNotFoundError:  # Python 3.10, where it is tomli
-    import tomli as tomllib  # type: ignore[no-redef]
+import tomllib
 
 TABLE = Path(__file__).with_name("published.toml")
 

@@ -47,7 +47,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional
 
-import tomli
+import tomllib
 
 from senfd.documents.plain import Figure
 from senfd.errors import MultipleClassifierMatchException
@@ -100,7 +100,7 @@ class SkipPatterns:
 
         if list_path:
             text = list_path.read_text(encoding="utf-8")
-            config = tomli.loads(text)
+            config = tomllib.loads(text)
             patterns = config["skip"]
 
             for pattern_obj in patterns:
