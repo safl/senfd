@@ -17,10 +17,10 @@ against the figure that gives it. `questions.json` holds them.
 | `senfd-ask`, no language model | 30 | 0 | 0 | free, 4 ms a question |
 | `senfd-ask --llm`, Llama 3.1 8B Q4_K_M, CPU only | 30 | 0 | 0 | free, 2.7 s a question |
 | `senfd-ask --llm`, Llama 3.2 1B Q4_K_M, CPU only | 18 | 0 | 12 | free, 1.1 s a question |
-| Claude Opus 5.5, from memory, "unknown" allowed | 22.3 | 0 | 7.7 | USD 0.14 a run |
-| Claude Opus 5.5, from memory, answer required | 25.3 | 4.7 | 0 | USD 0.13 a run |
-| Claude Sonnet 5.5, from memory, "unknown" allowed | 22 | 1.7 | 6.3 | USD 0.05 a run |
-| Claude Sonnet 5.5, from memory, answer required | 23.7 | 6.3 | 0 | USD 0.06 a run |
+| Claude Opus 5.5, from memory, "unknown" allowed | 23 | 0.7 | 6.3 | USD 0.12 a run |
+| Claude Opus 5.5, from memory, answer required | 25.3 | 4.7 | 0 | USD 0.17 a run |
+| Claude Sonnet 5.5, from memory, "unknown" allowed | 20.7 | 2.3 | 7 | USD 0.07 a run |
+| Claude Sonnet 5.5, from memory, answer required | 22.3 | 7.7 | 0 | USD 0.07 a run |
 
 A frontier lane is the mean of three runs. `results/2026-11-08/bench/`
 keeps every answer of every run: `report.html` shows them side by side,
