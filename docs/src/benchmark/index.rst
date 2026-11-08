@@ -114,12 +114,12 @@ are not known: a weaker language model costs answers, never correctness.
      </div>
      <div class="bench-panel" id="bench-panel-repeat">
        <p>The benchmark is a <a href="https://cijoe.readthedocs.io/">cijoe</a>
-       workflow, kept with the transcripts of every run in the
-       <code>nvme-spec-model</code> repository: the questions and their
-       answers, the steps, and a configuration naming the documents, the senfd
-       commit, the machine and the language models. The documents are not in
-       it; bring your own.</p>
-       <pre>cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/$(date +%F)</pre>
+       workflow, kept with the transcripts of every run in senfd's
+       <a href="https://github.com/safl/senfd/tree/main/benchmark"><code>benchmark/</code></a>
+       directory: the questions and their answers, the steps, and a
+       configuration naming the documents, the senfd commit, the machine and
+       the language models. The documents are not in it; bring your own.</p>
+       <pre>cd benchmark &amp;&amp; cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/$(date +%F)</pre>
        <p>It records what it ran on and with, makes a virtual environment of
        the pinned senfd, makes the data model of the documents, runs every
        lane, and writes the report above. A run takes about seven minutes.</p>
