@@ -5,10 +5,10 @@
 """
 Ask the data model questions, as of an expert who answers at once
 
-    senfd-ask
-    ask> opcode of zone append
-    ask> Which bit of CDW12 of Write is FUA?
-    ask> log page 1Fh
+    sate
+    sate> opcode of zone append
+    sate> Which bit of CDW12 of Write is FUA?
+    sate> log page 1Fh
 
 A question is read without a language model: by its words, as "opcode of",
 "cdw12 of", "feature", "log page" or "section", by an identifier, as "1Fh",
@@ -32,13 +32,13 @@ A question passes through the modules in this order:
 * ``grounding``: whether the answer is about what was asked
 * ``answering``: all of it, the answer said, with where its fields are
 * ``completion`` and ``session``: the interactive session, of the extra
-  'ask'; ``cli``: the command line
+  'sate'; ``cli``: the command line
 """
 
-from senfd.ask.answering import exchange, reply, respond
-from senfd.ask.cli import main
-from senfd.ask.reading import Understood, understand
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.answering import exchange, reply, respond
+from senfd.sate.cli import main
+from senfd.sate.reading import Understood, understand
+from senfd.sate.vocabulary import Vocabulary
 
 __all__ = [
     "Understood",

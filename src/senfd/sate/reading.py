@@ -11,8 +11,8 @@ import re
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
-from senfd.ask.phrasing import ASKS_COMMAND, DWORD, GENERIC, terms, words_of
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.phrasing import ASKS_COMMAND, DWORD, GENERIC, terms, words_of
+from senfd.sate.vocabulary import Vocabulary
 
 
 @dataclass

@@ -11,7 +11,7 @@ import json
 import urllib.request
 from typing import Dict, List
 
-from senfd.ask.reading import Understood
+from senfd.sate.reading import Understood
 
 
 QUERIES = {

@@ -7,7 +7,7 @@ recognised, for a session to offer and to colour as it is typed"""
 
 from typing import Dict, List, NamedTuple, Tuple
 
-from senfd.ask.phrasing import (
+from senfd.sate.phrasing import (
     GENERIC,
     KINDS_AFTER,
     QUESTION_WORDS,
@@ -15,8 +15,8 @@ from senfd.ask.phrasing import (
     WORDS,
     acronyms_of,
 )
-from senfd.ask.reading import understand
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.reading import understand
+from senfd.sate.vocabulary import Vocabulary
 
 
 class Offer(NamedTuple):

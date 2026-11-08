@@ -14,13 +14,14 @@ in a virtual environment of its own:
 
 .. code-block:: console
 
-   $ pipx install "senfd[ask,mcp,pdf]"
+   $ pipx install "senfd[sate,pdf]"
 
 The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
 
-* ``ask``, the prompt and rendering of ``senfd-ask``, by prompt_toolkit and
-  rich; without it, ``senfd-ask`` reads a question a line and prints Markdown.
-* ``mcp``, the MCP server ``senfd-mcp``.
+* ``sate``, the expert to ask, ``sate``, with its prompt and rendering, by
+  prompt_toolkit and rich, and its MCP server ``sate-mcp``; without it,
+  ``sate`` reads a question a line and prints Markdown, and ``sate-mcp``
+  does not start.
 * ``pdf``, reading the specifications as the PDFs NVM Express publishes, by
   pikepdf and pdfplumber; without it, senfd reads the ``.docx`` only.
 
@@ -30,7 +31,7 @@ Then make the data model, once, from the documents you have:
 
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
 
-``senfd-query``, ``senfd-ask`` and ``senfd-mcp`` read it from there, or from
+``senfd-query``, ``sate`` and ``sate-mcp`` read it from there, or from
 the file ``SENFD_SPEC`` names. The documents are the ratified specifications,
 as the PDFs `NVM Express <https://nvmexpress.org/specifications/>`_ publishes
 for anyone to download, or as the ``.docx`` its members hold. A PDF must keep

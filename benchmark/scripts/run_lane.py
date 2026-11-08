@@ -5,13 +5,13 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 """
-Answer every question of questions.json with senfd-ask, and write the
+Answer every question of questions.json with sate, and write the
 transcript: each question, what it was understood as, each try, the answer
 as shown, and how long it took
 
     run_lane.py --spec merged.spec.document.json --out lane.json [--llm URL]
 
-Without --llm, senfd-ask understands the questions by their words; with it,
+Without --llm, sate understands the questions by their words; with it,
 the language model served at URL does. Run with the Python of a venv that
 has senfd; it does not grade, as the report does that from the transcript.
 """
@@ -22,7 +22,7 @@ import time
 from pathlib import Path
 
 import senfd
-import senfd.ask
+import senfd.sate
 import senfd.query
 
 QUESTIONS = Path(__file__).parent.parent / "questions.json"
@@ -33,16 +33,16 @@ def main() -> int:
     parser.add_argument("--spec", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--llm", default=None)
-    parser.add_argument("--lane", default="senfd-ask")
+    parser.add_argument("--lane", default="sate")
     parser.add_argument("--questions", type=Path, default=QUESTIONS)
     args = parser.parse_args()
 
     spec = senfd.query.load(args.spec)
-    vocabulary = senfd.ask.Vocabulary.of(spec)
+    vocabulary = senfd.sate.Vocabulary.of(spec)
     answers = []
     for item in json.loads(args.questions.read_text()):
         start = time.monotonic()
-        text, tried = senfd.ask.respond(spec, item["q"], vocabulary, args.llm)
+        text, tried = senfd.sate.respond(spec, item["q"], vocabulary, args.llm)
         answers.append(
             {
                 "id": item["id"],

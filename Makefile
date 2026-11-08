@@ -29,7 +29,7 @@ uninstall:
 	pipx uninstall $(PROJECT_NAME) || true
 
 install-dev:
-	pipx install --include-deps --force --editable ".[dev,ask]"
+	pipx install --include-deps --force --editable ".[dev,sate]"
 
 install:
 	pipx install --include-deps --force dist/*.tar.gz

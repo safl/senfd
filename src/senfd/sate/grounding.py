@@ -10,8 +10,8 @@ question names, so that an answer about something else is not shown
 import re
 from typing import List, Optional, Tuple
 
-from senfd.ask.phrasing import ASKS_COMMAND, DWORD, terms, words_of
-from senfd.ask.reading import (
+from senfd.sate.phrasing import ASKS_COMMAND, DWORD, terms, words_of
+from senfd.sate.reading import (
     Understood,
     carries,
     command_named,
@@ -20,7 +20,7 @@ from senfd.ask.reading import (
     names_other,
     spot,
 )
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import alias
 
 

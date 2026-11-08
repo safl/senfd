@@ -25,7 +25,7 @@ Express, Inc. to make the data model or make use of it.**
 
 **And yet, see what it gets right.** Asked 30 questions with one exact
 answer each, mostly about what the revisions ratified in 2026 added or moved,
-``senfd-ask`` answered **all 30 right**, in 4 ms each, for free, and so did
+``sate`` answered **all 30 right**, in 4 ms each, for free, and so did
 Llama 3.1 8B on a CPU choosing its lookups, in 2.7 s each. Claude Opus 5.5
 and Sonnet 5.5, from memory and told to answer, got **4.7 and 7.7 wrong** on
 average, stated as surely as the right ones. The :ref:`benchmark
@@ -46,13 +46,20 @@ and the same documents give the same data model, every time. Language models
 come in only where senfd hands its data model to one, and then as a reader of
 it, never as the source of a fact.
 
+The package has two tools. ``senfd`` makes the data model. ``sate``, for
+**S**\ enfd **A**\ sk **T**\ he **E**\ xpert, puts an expert on the
+specifications at your fingertips: ask it as you would a colleague, and it
+answers at once from the data model, citing the figure. *Senf* is Danish for
+mustard, as the logo's documents drenched in it show, and a sate is what
+comes of the marinade.
+
 From that one data model, today:
 
-* **Precise answers, at once.** ``senfd-query`` and ``senfd-ask`` answer a
+* **Precise answers, at once.** ``senfd-query`` and ``sate`` answer a
   question about a command, a field, a register, a feature or a log page in
   milliseconds, with the figure to check the answer against.
-* **Language models that cannot make NVMe facts up.** ``senfd-mcp`` gives a
-  coding agent the data model as tools, and ``senfd-ask --llm`` has a small
+* **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
+  coding agent the data model as tools, and ``sate --llm`` has a small
   language model, run for free on your own CPU, choose the lookup and write
   nothing of the answer. Frontier language models asked from memory invent
   opcodes and bits of recent revisions; senfd's answers are the figures'. In
@@ -77,9 +84,9 @@ be built: ``pip install senfd`` and point it at the documents.
 
 .. code-block:: console
 
-   $ pip install senfd[ask,mcp,pdf]
+   $ pip install senfd[sate,pdf]
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ senfd-ask "Which bits of CDW12 of Write are PRINFO?"
+   $ sate "Which bits of CDW12 of Write are PRINFO?"
 
 The specifications are NVM Express's, under its copyright. NVM Express
 publishes the ratified specifications as PDF, which anyone can download from
@@ -90,7 +97,11 @@ distributed with senfd: the data model is made locally, by whoever has the
 documents. senfd's examples and most of its tests use synthetic documents of
 its own; the tests reading the specifications, and the CI job checking what
 senfd makes of each, download the public PDFs into a cache and upload
-nothing.
+nothing. The CI job also merges them into one data model and has ``sate``
+answer the :ref:`benchmark's <sec-benchmark>` questions from it, failing
+unless every one is right; that data model is not offered for download
+either. **Make your own**: the commands above, on the PDFs downloaded from
+nvmexpress.org, give the same data model the CI job checks.
 
 .. toctree::
    :maxdepth: 2
@@ -99,7 +110,7 @@ nothing.
 
    install/index.rst
    usage/index.rst
-   ask/index.rst
+   sate/index.rst
    benchmark/index.rst
    linting/index.rst
    codegen/index.rst

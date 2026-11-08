@@ -42,7 +42,7 @@ senfd: the NVMe specifications, as data
     :alt: Checked with mypy
 
 .. image:: https://img.shields.io/badge/MCP-server-8A2BE2
-    :target: https://safl.dk/senfd/ask/
+    :target: https://safl.dk/senfd/sate/
     :alt: MCP server
 
 **Not endorsed by NVM Express.** senfd is an independent project. It is not
@@ -67,9 +67,9 @@ Express, Inc. to make the data model or make use of it.**
 answer each, an opcode, an identifier, a bit or a byte offset, mostly about
 what the revisions ratified in 2026 added or moved:
 
-* ``senfd-ask``, by the words of the question: **30 of 30 right**, in 4 ms
+* ``sate``, by the words of the question: **30 of 30 right**, in 4 ms
   each, for free.
-* ``senfd-ask`` with Llama 3.1 8B on a CPU choosing the lookup: **30 of 30
+* ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **30 of 30
   right**, in 2.7 s each, for free, on your own hardware.
 * Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **4.7 and
   7.7 wrong** on average, stated as surely as the right ones, at USD 0.17
@@ -89,13 +89,22 @@ document, section, figure and page it is from. It is a data model, not a
 language model: JSON validated by a schema, with nothing in it trained or
 generated, and the same documents give the same data model every time. It
 reads the specifications as NVM Express publishes them, as PDF, or as the
-.docx its members hold. From that one data model:
+.docx its members hold.
 
-* **Precise answers, at once**, with ``senfd-query`` and ``senfd-ask``, the
+The package has two tools. ``senfd`` makes the data model. ``sate``, for
+**S**\ enfd **A**\ sk **T**\ he **E**\ xpert, puts an expert on the
+specifications at your fingertips: ask it as you would a colleague, and it
+answers at once from the data model, citing the figure. *Senf* is Danish for
+mustard, as the logo's documents drenched in it show, and a sate is what
+comes of the marinade.
+
+From that one data model:
+
+* **Precise answers, at once**, with ``senfd-query`` and ``sate``, the
   expert to ask, which completes names as you type and answers in
   milliseconds, citing the figure.
-* **Language models that cannot make NVMe facts up**: ``senfd-mcp`` gives a
-  coding agent the data model as tools, and ``senfd-ask --llm`` has a small
+* **Language models that cannot make NVMe facts up**: ``sate-mcp`` gives a
+  coding agent the data model as tools, and ``sate --llm`` has a small
   language model, free, on your own CPU, choose the lookup and write nothing
   of the answer.
 * **Code generated from the figures**, as an early prototype for xNVMe writes
@@ -106,9 +115,9 @@ reads the specifications as NVM Express publishes them, as PDF, or as the
 
 .. code-block:: console
 
-   $ pipx install "senfd[ask,mcp,pdf]"
+   $ pipx install "senfd[sate,pdf]"
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ senfd-ask "Which bits of CDW12 of Write are PRINFO?"
+   $ sate "Which bits of CDW12 of Write are PRINFO?"
 
 with the specifications downloaded from `nvmexpress.org
 <https://nvmexpress.org/specifications/>`_ into ``~/specs``, or, for a
@@ -130,8 +139,11 @@ senfd.** Its examples and most of its tests use synthetic documents of its
 own. The tests that read the specifications, and the CI job checking what
 senfd makes of each, download the public PDFs from nvmexpress.org into a
 cache, checked by their SHA-256, and keep them and the data model there,
-uploading neither. Whoever runs senfd makes the data model locally, from the
-documents they have.
+uploading neither. The job also merges them into one data model and has
+``sate`` answer the benchmark's questions from it, failing unless every one
+is right; that data model is not offered for download either. **Make your
+own**: the commands above, on the PDFs downloaded from nvmexpress.org, give
+the same data model the CI job checks.
 
 See the `documentation <https://safl.dk/senfd/>`_ for the commands,
 the benchmark against frontier language models, and the schema of the data

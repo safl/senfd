@@ -20,8 +20,7 @@ dependencies = [
 readme = { file = "README.rst", content-type = "text/x-rst" }
 
 [project.optional-dependencies]
-mcp = ["mcp>=2"]
-ask = ["prompt_toolkit>=3", "rich>=13"]
+sate = ["mcp>=2", "prompt_toolkit>=3", "rich>=13"]
 pdf = ["pikepdf>=8", "pdfplumber>=0.10"]
 dev = [
     "mcp>=2",
@@ -31,13 +30,13 @@ dev = [
     "pytest",
     "pytest-cov",
 ]
-all = ["senfd[dev,ask]"]
+all = ["senfd[dev,sate,pdf]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
 senfd-query = "senfd.query:main"
-senfd-mcp = "senfd.mcp_server:main"
-senfd-ask = "senfd.ask:main"
+sate-mcp = "senfd.sate.mcp:main"
+sate = "senfd.sate:main"
 
 
 [build-system]
@@ -62,9 +61,9 @@ testpaths = [
 [tool.ruff]
 line-length = 88
 
-# senfd-ask is held to annotated code throughout
+# sate is held to annotated code throughout
 [[tool.mypy.overrides]]
-module = "senfd.ask.*"
+module = "senfd.sate.*"
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true

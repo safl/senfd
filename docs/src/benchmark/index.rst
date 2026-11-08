@@ -23,17 +23,17 @@ that the revisions ratified in 2026 added or moved.
      - Wrong
      - Unknown
      - Cost and time
-   * - ``senfd-ask``, no language model
+   * - ``sate``, no language model
      - **30**
      - **0**
      - 0
      - free, 4 ms a question
-   * - ``senfd-ask --llm``, Llama 3.1 8B (Q4_K_M), CPU only
+   * - ``sate --llm``, Llama 3.1 8B (Q4_K_M), CPU only
      - **30**
      - **0**
      - 0
      - free, 2.7 s a question
-   * - ``senfd-ask --llm``, Llama 3.2 1B (Q4_K_M), CPU only
+   * - ``sate --llm``, Llama 3.2 1B (Q4_K_M), CPU only
      - 18
      - **0**
      - 12
@@ -70,7 +70,7 @@ and 6.3 wrong rather than 7.7. Their
 training predates the documents, which is the point: what a language model
 knows is the revisions it was trained on, and the specifications move on.
 
-A small language model on a CPU, used as ``senfd-ask --llm`` uses it, cannot
+A small language model on a CPU, used as ``sate --llm`` uses it, cannot
 make the same mistake. It chooses the lookup, constrained to a query and its
 argument, and the answer is what the lookup found in senfd's data model of the
 documents, with the figure it cites. The 8 billion parameter language model
@@ -93,7 +93,7 @@ answers, never correctness.
        run: <span style="color:#1a7f37">right in green</span>,
        <span style="color:#cf222e">wrong in red</span>,
        <span style="color:#6e7781">unknown in grey</span>. Under each answer
-       of <code>senfd-ask</code>, what the question was understood as and the
+       of <code>sate</code>, what the question was understood as and the
        time it took. <a href="../_static/benchmark/report-2026-11-08.html">Open
        it on its own page.</a></p>
        <iframe src="../_static/benchmark/report-2026-11-08.html"
@@ -107,11 +107,11 @@ answers, never correctness.
        against it, and told to answer every question, as a chat does.</p>
        <p>The local lanes ran <code>llama-server</code> of llama.cpp on an AMD
        EPYC 7532, 16 threads and no GPU offload, with the language models as
-       published, Q4_K_M, checked by their SHA-256. <code>senfd-ask</code> ran
+       published, Q4_K_M, checked by their SHA-256. <code>sate</code> ran
        from a pinned commit of senfd, against the data model it made of the
        eleven documents ratified in 2026, the documents checked by their
        SHA-256 too.</p>
-       <p>An answer of <code>senfd-ask</code> is right when a line of it
+       <p>An answer of <code>sate</code> is right when a line of it
        names the field, command, feature or log page asked about and gives
        the right value; a frontier model's, when its value is the right
        one. Each right answer was checked against the figure that gives it.</p>
@@ -147,6 +147,6 @@ What it does not show
 The questions are of facts with one answer, which a lookup answers and a
 language model's memory may not. They are not questions of how to use a
 feature, or why, where a frontier model's reasoning is worth its fee; given
-``senfd-mcp`` as tools, it has the facts as well. Nor are 30 questions every
-question: what ``senfd-ask`` does not understand, it says it does not know, so
+``sate-mcp`` as tools, it has the facts as well. Nor are 30 questions every
+question: what ``sate`` does not understand, it says it does not know, so
 the cost of a question it cannot read is an answer, not a wrong one.

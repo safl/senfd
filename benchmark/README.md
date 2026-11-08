@@ -12,11 +12,13 @@ are of long-standing facts, the rest of commands, features, log pages and
 fields that recent revisions added or moved. Each right answer was checked
 against the figure that gives it. `questions.json` holds them.
 
+`sate` was named `senfd-ask` when these ran; their records say so.
+
 | Lane, 2026-11-08 | Right | Wrong | Unknown | Cost and time |
 |---|---|---|---|---|
-| `senfd-ask`, no language model | 30 | 0 | 0 | free, 4 ms a question |
-| `senfd-ask --llm`, Llama 3.1 8B Q4_K_M, CPU only | 30 | 0 | 0 | free, 2.7 s a question |
-| `senfd-ask --llm`, Llama 3.2 1B Q4_K_M, CPU only | 18 | 0 | 12 | free, 1.1 s a question |
+| `sate`, no language model | 30 | 0 | 0 | free, 4 ms a question |
+| `sate --llm`, Llama 3.1 8B Q4_K_M, CPU only | 30 | 0 | 0 | free, 2.7 s a question |
+| `sate --llm`, Llama 3.2 1B Q4_K_M, CPU only | 18 | 0 | 12 | free, 1.1 s a question |
 | Claude Opus 5.5, from memory, "unknown" allowed | 23 | 0.7 | 6.3 | USD 0.12 a run |
 | Claude Opus 5.5, from memory, answer required | 25.3 | 4.7 | 0 | USD 0.17 a run |
 | Claude Sonnet 5.5, from memory, "unknown" allowed | 20.7 | 2.3 | 7 | USD 0.07 a run |
@@ -25,7 +27,7 @@ against the figure that gives it. `questions.json` holds them.
 A frontier lane is the mean of three runs. `results/2026-11-08/bench/`
 keeps every answer of every run: `report.html` shows them side by side,
 right in green, wrong in red and unknown in grey, and `lanes/` holds the
-transcripts, with what `senfd-ask` understood each question as and each
+transcripts, with what `sate` understood each question as and each
 lookup it tried, and the llama-server logs.
 
 ## How it is run
@@ -44,9 +46,9 @@ It records the machine, the documents' SHA-256 and the senfd commit; makes a
 virtual environment of that senfd and its data model of the documents; and
 runs the lanes:
 
-* `senfd-ask` reads each question by its words and names.
+* `sate` reads each question by its words and names.
 * For each language model, llama-server is started on the machine, CPU only,
-  and reached through an ssh tunnel; `senfd-ask --llm` has it choose the
+  and reached through an ssh tunnel; `sate --llm` has it choose the
   lookups. The server is stopped and the tunnel closed after each language
   model.
 * Each frontier model answers from memory, by `claude -p --safe-mode --tools

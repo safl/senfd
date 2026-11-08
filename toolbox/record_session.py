@@ -14,7 +14,7 @@ completion menus show. The timing is made up, as by record_cast.py, a fixed
 pace of typing and a pause after each answer; at the end of the script the
 input ends, as by Ctrl-D. It needs pyte, of the extra 'dev':
 
-    toolbox/record_session.py "senfd-ask" docs/casts/session.txt \\
+    toolbox/record_session.py "sate" docs/casts/session.txt \\
         docs/_static/casts/session.cast
 """
 

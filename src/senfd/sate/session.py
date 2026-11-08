@@ -9,7 +9,7 @@ question by the kind of name that comes next; colours the words, names and
 acronyms it recognises; and says at the bottom how the question is read so
 far, above the keys. Under each answer, a line says how it was found.
 
-Of the extra 'ask': prompt_toolkit for the prompt, rich for the answers.
+Of the extra 'sate': prompt_toolkit for the prompt, rich for the answers.
 """
 
 import os
@@ -33,11 +33,11 @@ from rich.text import Text
 
 import senfd
 import senfd.query
-from senfd.ask.answering import exchange
-from senfd.ask.completion import completions, recognised, wanted
-from senfd.ask.phrasing import HELP
-from senfd.ask.reading import understand
-from senfd.ask.vocabulary import Vocabulary
+from senfd.sate.answering import exchange
+from senfd.sate.completion import completions, recognised, wanted
+from senfd.sate.phrasing import HELP
+from senfd.sate.reading import understand
+from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
 
 STYLE = Style.from_dict(
@@ -214,7 +214,7 @@ def interact(
 
     vocabulary = Vocabulary.of(spec)
     console = Console()
-    console.print(f"[bold]senfd-ask {senfd.__version__}[/bold]  {holds(vocabulary)}")
+    console.print(f"[bold]sate {senfd.__version__}[/bold]  {holds(vocabulary)}")
     shown = str(source or senfd.query.default_spec_path())
     console.print(f"[dim]{shown.replace(str(Path.home()), '~', 1)}[/dim]")
     console.print(Markdown(HELP))
@@ -257,7 +257,7 @@ def interact(
     while True:
         try:
             question = session.prompt(
-                "ask> ",
+                "sate> ",
                 pre_run=session.default_buffer.start_completion if opening else None,
             )
         except (EOFError, KeyboardInterrupt):
@@ -268,8 +268,6 @@ def interact(
         try:
             markdown, status = exchange(spec, question, vocabulary, llm, said_as=False)
         except Exception as exc:  # A lookup failing ends the answer, not the session
-            console.print(
-                f"[red]senfd-ask failed to answer:[/red] {exc}", highlight=False
-            )
+            console.print(f"[red]sate failed to answer:[/red] {exc}", highlight=False)
             continue
         show(console, markdown, status)
