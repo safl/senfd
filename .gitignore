@@ -4,9 +4,24 @@
 
 *.lcov
 
+# NVM Express's documents, and anything made from them, are not senfd's to
+# distribute: the tests and examples use synthetic documents of their own
+*.docx
+*.doc
+*.pdf
+*.pptx
+*.xlsx
+benchmark/**/*.figure.document.*
+benchmark/**/*.spec.document.*
+
+# A benchmark run keeps its bench/ directory, the transcripts and the report;
+# the rest is cijoe's working state
+benchmark/results/*/*
+!benchmark/results/*/bench/
+benchmark/output/
+
 docs/_build
 *.pyc
-*.docx
 build
 dist
 src/jugmt.egg-info/
@@ -177,3 +192,7 @@ cython_debug/
 
 # Editors/IDEs
 .vscode/
+
+# Last, so that '*.log' above does not drop them: a benchmark run's
+# llama-server logs are among its records
+!benchmark/results/*/bench/**/*.log

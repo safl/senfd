@@ -1,0 +1,30 @@
+---
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+doc: |
+  NVMe questions answered four ways: by senfd-ask from the words of each
+  question, by senfd-ask with a local language model on the target's CPU
+  choosing the lookups, and by frontier language models from memory, allowed
+  to say "unknown" and made to answer. Every answer is kept, and the report
+  grades them against the data model of the documents. Claim the target with
+  dibs first.
+
+    cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/<run>
+
+steps:
+- name: facts
+  uses: core.facts_gather
+- name: senfd
+  uses: senfd_venv
+- name: data_model
+  uses: spec_model
+- name: ask
+  uses: lane_ask
+- name: llm
+  uses: lane_llm
+- name: frontier
+  uses: lane_frontier
+- name: report
+  uses: report
