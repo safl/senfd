@@ -127,9 +127,11 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     "opcode of zone app" completes to Zone Append, and a register also by its
     name, as "controller sta" to Controller Status. After the words of a
     kind, as "log page ", "opcode of " or "is ", names of that kind come
-    first, offered before a letter of them is typed; after "is", the
-    acronyms of the fields of what the question asks of come first, in the
-    order of its figure. Then the most words matched come first, then the
+    first, offered before a letter of them is typed, and names of other
+    kinds not at all while a name of that kind matches what was typed, nor
+    once a name of that kind is typed whole, so Enter asks. After "is",
+    the acronyms of the fields of what the question asks of come first, in
+    the order of its figure. Then the most words matched come first, then the
     words of questions, commands, features, log pages, structures and
     acronyms, a one-letter acronym last, and the shorter name before the
     longer; a word typed in capitals, as "FU", is completed by acronyms
@@ -181,6 +183,22 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
                 if text not in best or key < best[text][0]:
                     best[text] = (key, Offer(text, -len(tail.typed), kind, text))
     ranked = [offer for _, offer in sorted(best.values())]
+    # After the words of a kind, as "feature ", a name of another kind is no
+    # answer while a name of that kind matches what was typed: "Timestamp"
+    # the feature, not the figure of the event named so, and nothing once the
+    # feature's name is typed whole
+    known = {
+        "command": vocabulary.commands,
+        "feature": vocabulary.features,
+        "log page": vocabulary.log_pages,
+        "structure": vocabulary.structures,
+    }
+    for tail in ends:
+        if tail.wanted in known and any(
+            name.lower().startswith(tail.typed.lower()) for name in known[tail.wanted]
+        ):
+            ranked = [o for o in ranked if o.kind in (tail.wanted, "acronym")]
+            break
     return ranked[:most]
 
 
