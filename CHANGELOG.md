@@ -10,6 +10,25 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.8.0
+
+`senfd-query lint`, and the MCP tool `lint`, list what reading the figures as
+data found, for the authors apart from for senfd: candidate errata, figures of
+no shape senfd models with worked examples apart, and dwords no command,
+feature or operation claims. An erratum found in many rows of a figure is said
+once, with the number of rows, and columns and kinds read as words. A run of
+`senfd` ends by saying what it made and what to look at, the document errors
+say what they found, and the error logs are named as the other outputs.
+
+`senfd-ask` answers which feature or log page holds a field, as "Which log page
+reports sanitize progress?", and a feature or log page by identifier whatever
+command carries it, as "feature 02h of Set Features".
+
+The documentation describes the parts of the data model and how stable its
+schema is, and says that the xNVMe generator is proposed to xNVMe.
+`senfd-query` without a data model says how to make one, and the package says
+it needs Python 3.10 or later.
+
 ## 0.7.0
 
 The data model says what each value is rather than its text, and holds the
