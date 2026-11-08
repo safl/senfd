@@ -224,7 +224,7 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     match = re.match(r"search\s+(.+)$", lower)
     if match:
         return Understood("search", match[1])
-    asks_command = re.search(r"\b(?:opcodes?|opc|cdw\d*|command dword)\b", lower)
+    asks_command = re.search(ASKS_COMMAND, lower)
     if asks_command:  # "opcode of identify controller" is the command
         command = command_named(text, vocabulary)
         named = ("command", command) if command else named
@@ -246,7 +246,7 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
         if match:
             return Understood(query, match[1])
 
-    dword = re.search(r"\b(?:cdw|dword|command dword|dw)\s*(\d+)\b", lower)
+    dword = re.search(DWORD, lower)
     capitals = [
         w for w in re.findall(r"\b[A-Z][A-Z0-9]+\b", text) if w in vocabulary.acronyms
     ]
@@ -363,53 +363,90 @@ def heading(lines: List[str]) -> str:
 
 
 SEVERAL = "several commands"
+# What asks of a command: its opcode or a dword of it
+ASKS_COMMAND = r"\b(?:opcodes?|opc|cdw\d*|(?:command )?dword\s*\d+|dw\d+)\b"
+DWORD = r"\b(?:cdw|dword|command dword|dw)\s*(\d+)\b"
 
 
 def elsewhere(
     question: str, understood: Understood, lines: List[str], vocabulary: Vocabulary
 ) -> Optional[str]:
-    """What 'question' names that the answer 'lines' is not about, if any.
+    """What 'question' asks of that the answer 'lines' is not about, if any.
 
-    A lookup by name answers with the thing it found, named at its head; that
-    must be the thing the question names, not another whose name contains
-    it, as "Memory Copy" of "Copy". A command answers only a question naming
-    it, by its name or by terms naming no other command. Another lookup must
-    mention what the question names."""
+    The question asks of a kind of thing, by its words with the names it
+    names taken out, "log page 02h" or "the opcode of Write", and the answer
+    must be of that kind: a register named by its acronym is answered by
+    that register, a command by that command and dword. And it names a
+    thing, which a lookup by name finds and names at its head: that must be
+    the thing named, not another whose name contains it, as "Memory Copy" of
+    "Copy". Another lookup must mention what the question names."""
 
     found = answered(lines)
-    if understood.query == "command":
-        asked = command_named(question, vocabulary)
-        if asked is not None:
-            return None if found and alias(found) == alias(asked) else asked
-        if command_words(question, vocabulary):
-            return SEVERAL  # As "Track", of "Track Send" and "Track Receive"
-    if understood.query == "register" and found:
-        if found.partition(" - ")[0] in re.findall(r"\b[A-Z][A-Z0-9]+\b", question):
-            return None  # The register the question names by its acronym
+    kind, name = found if found else (None, None)
     named = spot(question, vocabulary)
+    command = command_named(question, vocabulary)
+    lower = question.lower()
+    for taken in (named[1] if named else "", command or ""):
+        if taken:
+            lower = re.sub(rf"\b{re.escape(taken.lower())}\b", " ", lower)
+    capitals = re.findall(r"\b[A-Z][A-Z0-9]+\b", question)
+    registers = [c for c in capitals if c in vocabulary.registers]
+    dword = re.search(DWORD, question.lower())
+
+    if registers and not dword:
+        head = name.partition(" - ")[0] if name else None
+        return None if kind == "register" and head in registers else registers[0]
+    kinds = [
+        of
+        for word, of in (
+            (r"\blog ?pages?\b|\blid\b", "log_page"),
+            (r"\bfeatures?\b|\bfid\b", "feature"),
+            (r"\bstructures?\b", "structure"),
+        )
+        # "the log page identifier in Get Log Page" asks of the command
+        if re.search(word, lower) and not command
+    ]
+    if kinds and kind not in kinds:
+        return named[1] if named else f"a {kinds[0].replace('_', ' ')}"
+    if not kinds and (re.search(ASKS_COMMAND, lower) or understood.query == "command"):
+        if command is None:
+            return (
+                SEVERAL
+                if command_words(question, vocabulary)
+                else (None if understood.query == "command" else "a command")
+            )
+        if kind != "command" or alias(name or "") != alias(command):
+            return command
+        if dword and understood.dword is not None and understood.dword != int(dword[1]):
+            return f"dword {dword[1]} of {command}"
+        return None
     if not named:
         return None
     if understood.query in ("feature", "log_page", "structure", "register"):
-        if found is None:
+        if name is None:
             return named[1]
-        head = found.partition(" - ")[0]
-        return None if alias(named[1]) in (alias(found), alias(head)) else named[1]
+        head = name.partition(" - ")[0]
+        return None if alias(named[1]) in (alias(name), alias(head)) else named[1]
     text = words_of(" ".join(lines))
     return None if words_of(named[1]) in text else named[1]
 
 
-def answered(lines: List[str]) -> Optional[str]:
-    """The name of what an answer by name is about, from its head"""
+def answered(lines: List[str]) -> Optional[Tuple[str, str]]:
+    """The kind and name of what an answer by name is about, from its head"""
 
     first = heading(lines)
-    for pattern in (
-        r"^### (.+?): .*command",
-        r"^### (?:Feature|Log page) [0-9A-Fa-f]+h (.+?) \[",
-        r"^\*\*(.+?)(?: at offset [^,]+)?, [a-z]+ \[",
+    for pattern, kind in (
+        (r"^### (.+?): .*command", "command"),
+        (r"^### Feature [0-9A-Fa-f]+h (.+?) \[", "feature"),
+        (r"^### Log page [0-9A-Fa-f]+h (.+?) \[", "log_page"),
+        (r"^\*\*(.+?)(?: at offset [^,]+)?, [a-z]+ \[", "structure"),
     ):
         match = re.match(pattern, first)
         if match:
-            return match[1]
+            head, dash, _ = match[1].partition(" - ")
+            if kind == "structure" and dash and head.isupper():
+                kind = "register"
+            return kind, match[1]
     return None
 
 
@@ -455,7 +492,7 @@ GENERIC = set(
     called contain contains have has ask asks enable enables entry entries
     specification spec nvme nvm express admin section sections errata erratum
     id ids fid lid opc hey hi hello thanks thank you i we my our need want know
-    find just also any at as if into from not no than then up out over under per
+    find just also any search at as if into from not no than then up out over under per
     via whose whom
     """.split()
 )

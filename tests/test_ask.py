@@ -307,3 +307,40 @@ def test_a_language_model_not_answering_is_said_so(spec, vocabulary, monkeypatch
 def test_a_model_not_there_is_said_so(capsys):
     assert senfd.ask.main(["--spec", "/no/such/model.json", "opcode of ding"]) == 1
     assert "no model to answer from" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "question, choice",
+    [
+        # Of the kind the question asks of
+        ("What is log page C0h?", senfd.ask.Understood("feature", "c0h")),
+        ("What is feature C1h?", senfd.ask.Understood("log_page", "c1h")),
+        # Of the dword the question asks of
+        ("dword 10 of ding", senfd.ask.Understood("command", "ding", 11)),
+        # A command's opcode, not a search mentioning it
+        ("What is the opcode of Ding?", senfd.ask.Understood("search", "FCNT")),
+        # A register named by its acronym, not a search mentioning it
+        ("What is register FOOCAP?", senfd.ask.Understood("search", "FOOCAP")),
+    ],
+)
+def test_a_language_model_choosing_another_kind_of_answer_is_not_shown(
+    spec, vocabulary, monkeypatch, question, choice
+):
+    choosing(monkeypatch, *[choice] * 3)
+    text, _ = senfd.ask.respond(spec, question, vocabulary, llm="x")
+    assert "so this is not known" in text
+
+
+def test_a_field_named_as_a_kind_in_a_command_is_of_the_command(
+    spec, vocabulary, monkeypatch
+):
+    choosing(monkeypatch, senfd.ask.Understood("command", "foo get"))
+    text, _ = senfd.ask.respond(
+        spec, "Where is the feature identifier in Foo Get?", vocabulary, llm="x"
+    )
+    assert "so this is not known" not in text
+
+
+def test_a_search_asked_for_is_answered(spec, vocabulary):
+    text, _ = senfd.ask.respond(spec, "search FCNT", vocabulary)
+    assert "so this is not known" not in text
