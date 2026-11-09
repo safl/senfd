@@ -42,6 +42,7 @@ def test_the_queries_are_tools_of_the_server_over_stdio():
         "feature",
         "log_page",
         "structure",
+        "value",
         "search",
         "section",
         "errata",
@@ -75,6 +76,7 @@ def test_every_tool_answers_from_the_model(monkeypatch):
     assert senfd.sate.mcp.log_page("C0h").startswith("C0h Foo Statistics")
     assert senfd.sate.mcp.structure("FOOCAP").startswith("FOOCAP")
     assert "Ding cdw10" in senfd.sate.mcp.search("FCNT")
+    assert senfd.sate.mcp.value("status code 82h").startswith("82h Foo Lost")
     assert senfd.sate.mcp.section("1.2").startswith("example 1.2 Ding command")
     assert "beyond the 64 bits" in senfd.sate.mcp.errata("example")
     senfd.sate.mcp.spec.cache_clear()

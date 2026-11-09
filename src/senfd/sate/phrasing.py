@@ -21,6 +21,7 @@ HELP = """\
 | one dword of a command | `cdw12 of write`, `dword 10 of get log page` |
 | a feature or a log page | `feature 07h`, `feature number of queues`, `log page 1Fh` |
 | what an identifier is | `1Fh` |
+| a status code or a CNS value | `status code 82h`, `status code type 1h`, `CNS 05h`, `status code of zone boundary error` |
 | a structure or a register | `structure identify controller`, `CC`, `CSTS` |
 | a field, everywhere it is | `FUA`, `search storage tag` |
 | any of these with the descriptions | `describe cdw12 of write`, `explain CSTS` |
@@ -44,6 +45,8 @@ WORDS = [
     "feature ",
     "log page ",
     "structure ",
+    "status code ",
+    "cns ",
     "search ",
     "section ",
     "errata",
@@ -59,6 +62,7 @@ QUESTIONS = [
     ("what are the fields of the ", "what are the fields of the <structure>?"),
     ("which feature is ", "which feature is <name or identifier>?"),
     ("which log page is ", "which log page is <name or identifier>?"),
+    ("what is status code ", "what is status code <value or name>?"),
 ]
 
 
@@ -75,7 +79,7 @@ KINDS_AFTER = [
 # The words of questions, as the input line shows them recognised
 QUESTION_WORDS = re.compile(
     r"\b(?:describe|explain|opcode of|(?:cdw|dword ?)\d+(?: of)?|feature|log page|"
-    r"structure|register|section|search|errata|help)\b",
+    r"structure|register|status code(?: type)?|cns|section|search|errata|help)\b",
     re.I,
 )
 
@@ -117,6 +121,7 @@ GENERIC = set(
     id ids fid lid opc hey hi hello thanks thank you i we my our need want know
     find just also any search at as if into from not no than then up out over under per
     via whose whom many much report reports reported reporting indicate indicates
+    return returns returned
     """.split()
 )
 

@@ -142,7 +142,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     if begun:  # While a common question is begun, only the questions it may be
         return begun
     kinds = [
-        ("", WORDS),
+        ("form", WORDS),
         ("command", sorted(vocabulary.commands)),
         ("feature", sorted(vocabulary.features)),
         ("log page", sorted(vocabulary.log_pages)),

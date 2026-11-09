@@ -102,6 +102,10 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
         return lines
     if understood.query == "structure":
         return q.structure(spec, understood.argument, verbose=describe, markdown=True)
+    if understood.query == "value":
+        return bullets(
+            q.value(spec, understood.argument, verbose=describe, markdown=True)
+        )
     if understood.query == "section":
         return bullets(q.section(spec, understood.argument))
     if understood.query == "errata":

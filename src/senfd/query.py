@@ -28,9 +28,11 @@ from senfd.documents.spec import (
     Bits,
     Command,
     Dwords,
+    Entry,
     Source,
     SpecDocument,
     Structure,
+    Values,
     alias,
     cite,
     document_name,
@@ -385,6 +387,155 @@ def search(
     return unique or [f"Nothing named '{text}'"]
 
 
+# The kinds of tables of values as a question names them; "status code type"
+# before "status code", which it contains
+VALUE_KINDS = [
+    (r"status code types?|sct", "status_code_type"),
+    (r"status(?: codes?| values?)?", "status_values"),
+    (r"cns(?: values?)?", "cns_values"),
+    (r"log ?page identifiers?", "log_page_identifiers"),
+    (r"feature identifiers?", "feature_identifiers"),
+]
+
+# The words a value is asked with that name no table and no entry
+ASKING = {"what", "which", "is", "are", "the", "a", "an", "of", "for", "in", "to"}
+
+
+def table_title(table: Values) -> str:
+    """A table of values as a question names it, as "Command Specific status
+    code of Write", "Generic Command status code" or "CNS value of Identify" """
+
+    if table.kind == "status_values" and table.qualifier == "Status Code Type":
+        return "Status Code Type (SCT)"
+    kind = {
+        "status_values": "status code",
+        "cns_values": "CNS value",
+        "log_page_identifiers": "log page identifier",
+        "feature_identifiers": "feature identifier",
+        "requirements": "requirement",
+    }.get(table.kind, "value")
+    parts = [table.qualifier, kind] if table.qualifier else [kind]
+    if table.name and alias(table.name) != alias(kind):
+        parts.append(f"of {table.name}")
+    title = " ".join(parts)
+    if table.scope and table.scope != table.name:
+        title += f", {table.scope}"
+    return title
+
+
+def of_kind(table: Values, kind: str) -> bool:
+    """Whether 'table' is of 'kind', the status code types being no status
+    codes; every table is of the kind "" """
+
+    types = table.kind == "status_values" and table.qualifier == "Status Code Type"
+    if kind == "status_code_type":
+        return types
+    if kind == "status_values":
+        return table.kind == "status_values" and not types
+    return not kind or table.kind == kind
+
+
+def within(written: str, value: int) -> bool:
+    """Whether 'value' is the value 'written', as "82h", or in its range, as
+    "C0h to FFh" """
+
+    match = re.fullmatch(
+        r"([0-9A-Fa-f]+)h(?:\s*(?:to|-)\s*([0-9A-Fa-f]+)h)?", written.strip()
+    )
+    if not match:
+        return False
+    low = int(match[1], 16)
+    high = int(match[2], 16) if match[2] else low
+    return low <= value <= high
+
+
+def value(
+    spec: SpecDocument, text: str, verbose=False, markdown=False, limit: int = 40
+) -> List[str]:
+    """The entries of the tables of values 'text' asks for, each with its
+    table and where it is: by the kind of table, as "status code", "status
+    code type" or "CNS", by the value, as "82h" or "0x82", and by words of
+    the entry's name or its table's, as "zone boundary error", all of which
+    an entry found meets; of every kind where none is named. With 'verbose',
+    an entry's description and its other columns too."""
+
+    lower = " ".join(text.lower().split())
+    kind = ""
+    for pattern, of in VALUE_KINDS:
+        match = re.search(rf"\b(?:{pattern})\b", lower)
+        if match:
+            kind = of
+            lower = lower[: match.start()] + " " + lower[match.end() :]
+            break
+    wanted: Optional[int] = None
+    whole = re.fullmatch(r"\s*(?:0x)?([0-9a-f]{1,2})h?\s*", lower)
+    if whole:
+        wanted, lower = int(whole[1], 16), ""
+    else:
+        match = re.search(r"\b(?:0x([0-9a-f]{1,2})|([0-9a-f]{1,2})h)\b", lower)
+        if match:
+            wanted = int(match[1] or match[2], 16)
+            lower = lower[: match.start()] + " " + lower[match.end() :]
+    words = [
+        w for w in re.findall(r"[a-z0-9]+", lower) if len(w) > 1 and w not in ASKING
+    ]
+    if not kind and wanted is None and not words:
+        return ["Give the kind of table, a value or a name, as 'status code 82h'"]
+
+    def named(entry: Entry) -> str:
+        return entry.name or entry.description.split("\n")[0][:160]
+
+    def spaced(text: str) -> str:
+        return " " + " ".join(re.findall(r"[a-z0-9]+", text.lower())) + " "
+
+    found = []
+    for table in spec.values:
+        if not of_kind(table, kind):
+            continue
+        about = spaced(f"{table_title(table)} {document_name(table.source.document)}")
+        for entry in table.entries:
+            if wanted is not None and not within(entry.value, wanted):
+                continue
+            of_name = about + spaced(named(entry))
+            if all(f" {w} " in of_name for w in words):
+                rank = 0
+            elif all(f" {w} " in of_name + spaced(entry.description) for w in words):
+                rank = 1
+            else:
+                continue
+            # The status codes of one command after the tables of them all
+            specific = table.kind == "status_values" and table.name not in (
+                None,
+                "Status Code",
+            )
+            order = (rank, specific, table.source.document, table.source.figure_nr)
+            found.append((order, table, entry))
+    if not found:
+        return [f"No table of values has '{text}'"]
+    # Entries named by the words asked, else those described by them
+    best = min(order[0] for order, _, _ in found)
+    found = [f for f in found if f[0][0] == best]
+    if wanted is None and not words and len(found) > limit:
+        return [f"Give a value or a name; {len(found)} entries are of that kind"]
+
+    lines = []
+    for _, table, entry in sorted(found, key=lambda f: f[0]):
+        head = f"**{entry.value}**" if markdown else entry.value
+        line = f"{head} {named(entry)}, {table_title(table)} [{cite(table.source)}]"
+        if verbose:
+            told = [
+                f"{k.replace('_', ' ')}: {v}" for k, v in entry.columns.items() if v
+            ]
+            if entry.name and entry.description:
+                told.insert(0, entry.description.split("\n")[0][:160])
+            if told:
+                line += ": " + "; ".join(told)
+        lines.append(line)
+    if len(lines) > limit:
+        return lines[:limit] + [f"... and {len(lines) - limit} more"]
+    return lines
+
+
 def section(spec: SpecDocument, key: str) -> List[str]:
     """What the figures of a section describe, the section by its number, with
     its subsections, or by a word of its title"""
@@ -568,6 +719,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     sub.add_parser("search", help="Fields and things by acronym or name").add_argument(
         "text"
     )
+    sub.add_parser(
+        "value",
+        help='An entry of a table of values, as "status code 82h" or "CNS 05h"',
+    ).add_argument("text")
     args = parser.parse_args(argv)
 
     try:
@@ -593,6 +748,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         lines = errata(spec, args.document)
     elif args.what == "lint":
         lines = lint(spec, args.document)
+    elif args.what == "value":
+        lines = value(spec, args.text, args.verbose, args.markdown)
     else:
         lines = search(spec, args.text)
     print("\n".join(linked(spec, lines) if args.markdown else lines))
