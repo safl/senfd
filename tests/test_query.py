@@ -139,6 +139,31 @@ def test_verbose_gives_the_descriptions_and_the_headings(spec):
     assert any(line.startswith("  Note: NOTES:") for line in lines)
 
 
+def a_long_description(spec, monkeypatch):
+    """Sets the description of FCNT as a PDF column breaks a long one"""
+
+    field = next(
+        field
+        for command_set in spec.command_sets.values()
+        for command in command_set.commands.values()
+        for dwords in command.sqe
+        for field in dwords.fields
+        if field.acronym == "FCNT"
+    )
+    long = "How many of them, " + "and of what kind, " * 12 + "are counted, in non-\n"
+    long += "volatile\nmedia.\n\nSee the note."
+    monkeypatch.setattr(field, "description", long)
+    return " ".join(long.replace("non-\n", "non-").split())
+
+
+def test_verbose_gives_a_description_whole_and_on_one_line(spec, monkeypatch):
+    whole = a_long_description(spec, monkeypatch)
+    assert "non-volatile media. See the note." in whole
+    assert "    " + whole in senfd.query.command(spec, "ding", 10, verbose=True)
+    markdown = senfd.query.command(spec, "ding", 10, verbose=True, markdown=True)
+    assert any(line.endswith(f"| FCNT | {whole} |") for line in markdown)
+
+
 def test_a_structure_of_the_name_given_comes_before_those_containing_it(spec):
     lines = senfd.query.structure(spec, "foo statistics")
     assert lines[0].startswith("Foo Statistics, bytes")
