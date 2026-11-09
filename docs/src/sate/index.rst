@@ -36,6 +36,9 @@ The forms of a question
      - ``feature 07h``, ``feature number of queues``, ``log page 1Fh``
    * - what an identifier is
      - ``1Fh``
+   * - a status code or a CNS value
+     - ``status code 82h``, ``status code type 1h``, ``CNS 05h``, ``status
+       code of zone boundary error``
    * - a structure or a register
      - ``structure identify controller``, ``CC``, ``CSTS``
    * - a field, everywhere it is
@@ -48,8 +51,8 @@ The forms of a question
      - ``errata``, ``errata nvm``
 
 No language model is involved. A question is read by its words, as "opcode
-of", "cdw12 of", "feature", "log page" or "section"; by an identifier, as
-``1Fh``; and by the names and acronyms of the data model it names, the
+of", "cdw12 of", "feature", "log page", "status code" or "section"; by an
+identifier, as ``1Fh``; and by the names and acronyms of the data model it names, the
 longest first, so "the controller status register" is ``CSTS`` and "dword
 13 of Zone Append" is that dword of that command. Each answer starts by
 saying what the question was understood as, ``command('Zone Append',
