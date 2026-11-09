@@ -23,13 +23,13 @@ grants only the right to review, refer to or cite the specification, and
 not to make derivatives of it or implement it: **you must be a member of NVM
 Express, Inc. to make the data model or make use of it.**
 
-**And yet, see what it gets right.** Asked 30 questions with one exact
+**And yet, see what it gets right.** Asked 71 questions with one exact
 answer each, mostly about what the revisions ratified in 2026 added or moved,
-``sate`` answered **all 30 right**, in 4 ms each, for free, and so did
-Llama 3.1 8B on a CPU choosing its lookups, in 3.3 s each. Claude Opus 5.5
-and Sonnet 5.5, from memory and told to answer, got **4.3 and 7.3 wrong** on
-average, stated as surely as the right ones. The :ref:`benchmark
-<sec-benchmark>` shows every answer.
+``sate`` answered **all 71 right**, in 4 ms each, for free; Llama 3.1 8B on
+a CPU choosing its lookups answered 70 and said of one that it is not
+known, in 2.7 s each. Claude Opus 5.5 and Sonnet 5.5, from memory and told
+to answer, got **15.3 and 32.3 wrong** on average, stated as surely as the
+right ones. The :ref:`benchmark <sec-benchmark>` shows every answer.
 
 The NVMe specifications are published as documents, thousands of pages of
 figures that every driver, tool, emulator, firmware and test suite
