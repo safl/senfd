@@ -590,3 +590,77 @@ def test_bits_nested_in_a_formula_of_bytes_lie_within_its_width():
         "Field 16:00 Wide: bit 16 beyond the 16 bits of bytes (n*2)+1:(n*2)"
     ]
     assert kept[0].fields == []
+
+
+def test_bytes_of_no_field_between_two_fields_are_a_gap_unless_rows_are_left_out():
+    """As Identify Controller lists Power State Descriptors 0 to 2, then
+    "...", then 31; a table of bits lists the highest first"""
+
+    from senfd.documents.spec import Bits, Source, uncovered
+
+    source = Source(document="example", figure_nr=338)
+
+    def span(rng, name, elided=False):
+        upper, _, lower = rng.partition(":")
+        return Bits(
+            unit="bytes",
+            range=rng,
+            name=name,
+            upper=int(upper),
+            lower=int(lower or upper),
+            elided=elided,
+        )
+
+    entries = [span("31:00", "Entry 0"), span("63:32", "Entry 1")]
+    left_out = entries + [span("127:96", "Entry 3", elided=True)]
+    assert uncovered(left_out, "bytes", source) == []
+    formula = Bits(unit="bytes", range="N+3:N", kind="formula", name="Entry N")
+    assert (
+        uncovered(entries + [formula, span("199:196", "Last")], "bytes", source) == []
+    )
+
+    (gap,) = uncovered(entries + [span("127:96", "Entry 3")], "bytes", source)
+    assert (gap.code, gap.message) == (
+        "gap",
+        "Bytes 64 to 95 are of no field, before 127:96 Entry 3",
+    )
+    highest_first = [span("31:16", "High"), span("15:14", "Mid", elided=True)]
+    assert uncovered(highest_first + [span("07:00", "Low")], "bits", source)[
+        0
+    ].message == ("Bits 8 to 13 are of no field, before 15:14 Mid")
+    assert (
+        uncovered([span("31:16", "High"), span("15:14", "Mid")], "bits", source) == []
+    )
+    (one,) = uncovered([span("00", "A"), span("02", "B")], "bytes", source)
+    assert one.message == "Byte 1 is of no field, before 02 B"
+    # Fields sharing bytes, as alternatives, leave none
+    union = [span("15:00", "IPv6"), span("03:00", "IPv4"), span("31:16", "Port")]
+    assert uncovered(union, "bytes", source) == []
+
+
+def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it():
+    """A figure of some fields, as those a reference value is given for, is
+    of the kind "other" by its caption, and leaves the rest out on purpose"""
+
+    from senfd.documents.spec import Bits, Source, Structure, resolve
+
+    source = Source(document="example", figure_nr=33)
+    fields = [
+        Bits(unit="bytes", range="05:02", upper=5, lower=2, name="NMR"),
+        Bits(unit="bytes", range="31:16", upper=31, lower=16, name="Reserved"),
+    ]
+
+    def gaps_of(kind):
+        structure = Structure(
+            name="Foo", kind=kind, unit="bytes", fields=fields, source=source
+        )
+        return [
+            e.message
+            for e in resolve(SpecDocument(structures=[structure])).errata
+            if e.code == "gap"
+        ]
+
+    assert gaps_of("data_structure") == [
+        "Bytes 6 to 15 are of no field, before 31:16 Reserved"
+    ]
+    assert gaps_of("other") == []

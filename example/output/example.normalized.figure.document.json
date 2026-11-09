@@ -127,6 +127,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -142,6 +143,7 @@
             "description": "How many.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -193,6 +195,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -208,6 +211,7 @@
             "description": "Whether foo.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -259,6 +263,7 @@
             "description": "Where foo is.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -310,6 +315,7 @@
             "description": "Where bar is.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -361,6 +367,7 @@
             "description": "The data.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -412,6 +419,7 @@
             "description": "The meta.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -463,6 +471,7 @@
             "description": "What came of foo.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -556,6 +565,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -571,6 +581,7 @@
             "description": "Which bar.",
             "columns": {},
             "section": "Foo Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -622,6 +633,7 @@
             "description": "The data.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -673,6 +685,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -724,6 +737,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -775,6 +789,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -790,6 +805,7 @@
             "description": "The operation.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": [
               {
@@ -863,6 +879,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -878,6 +895,7 @@
             "description": "How to migrate.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": [
               {
@@ -945,6 +963,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -996,6 +1015,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1047,6 +1067,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1098,6 +1119,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1149,6 +1171,7 @@
             "description": "How many rings.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1200,6 +1223,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1499,6 +1523,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -1514,6 +1539,7 @@
             "description": "Which foo.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1565,6 +1591,7 @@
             "description": "The command.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1616,6 +1643,7 @@
             "description": "Which entry.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1757,6 +1785,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -1772,6 +1801,7 @@
             "description": "How much foo.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -1937,6 +1967,7 @@
             "description": "How many foos.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -1952,6 +1983,7 @@
             "description": "Bits of foo.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [
               {
                 "unit": "bits",
@@ -1968,6 +2000,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -1983,6 +2016,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   }
@@ -2004,6 +2038,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2055,6 +2090,7 @@
             "description": "Foo blocks.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2106,6 +2142,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2157,6 +2194,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2208,6 +2246,7 @@
             "description": "2",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2259,6 +2298,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -2274,6 +2314,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2325,6 +2366,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -2340,6 +2382,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2391,6 +2434,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2442,6 +2486,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2724,6 +2769,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2782,6 +2828,7 @@
               "reset": "0h"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -2800,6 +2847,7 @@
               "reset": "0h"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2851,6 +2899,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2902,6 +2951,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -2953,6 +3003,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3004,6 +3055,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3104,6 +3156,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3239,6 +3292,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3290,6 +3344,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3341,6 +3396,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3392,6 +3448,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3443,6 +3500,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3494,6 +3552,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3549,6 +3608,7 @@
               "pdu_section": "PDU Header"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3602,6 +3662,7 @@
               "bytes_detail": "07:04"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3657,6 +3718,7 @@
               "om": "M"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3674,6 +3736,7 @@
               "om": ""
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3691,6 +3754,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3708,6 +3772,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3725,6 +3790,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3742,6 +3808,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -3759,6 +3826,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": true,
             "layouts": [],
             "values": []
           },
@@ -3776,6 +3844,7 @@
               "om": "O"
             },
             "section": "Bar Specific",
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3917,6 +3986,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -3968,6 +4038,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4026,6 +4097,7 @@
               "type": "RO"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4044,6 +4116,7 @@
               "type": "RW"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4193,6 +4266,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4208,6 +4282,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4259,6 +4334,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4352,6 +4428,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4403,6 +4480,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4454,6 +4532,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4505,6 +4584,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4556,6 +4636,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4607,6 +4688,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4622,6 +4704,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4637,6 +4720,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4652,6 +4736,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4667,6 +4752,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4722,6 +4808,7 @@
               "data_structure": "Foo Data Structure"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4739,6 +4826,7 @@
               "data_structure": "Bar Data Structure"
             },
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4790,6 +4878,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4805,6 +4894,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4820,6 +4910,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": true,
             "layouts": [],
             "values": []
           },
@@ -4835,6 +4926,7 @@
             "description": "An ASCII string.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -4886,6 +4978,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -4901,6 +4994,7 @@
             "description": "Two halves.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [
               {
                 "unit": "bytes",
@@ -4917,6 +5011,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -4932,6 +5027,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   }
@@ -4953,6 +5049,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -5004,6 +5101,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5019,6 +5117,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5034,6 +5133,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5049,6 +5149,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5064,6 +5165,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -5115,6 +5217,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5130,6 +5233,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5145,6 +5249,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5160,6 +5265,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5175,6 +5281,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": true,
             "layouts": [],
             "values": []
           }
@@ -5226,6 +5333,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -5241,6 +5349,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
@@ -5330,6 +5439,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [
               {
                 "unit": "bits",
@@ -5346,6 +5456,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -5361,6 +5472,7 @@
                     "description": "Whether zing is supported.",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -5376,6 +5488,7 @@
                     "description": "Whether ring is supported.",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   }
@@ -5397,6 +5510,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [
               {
                 "unit": "bits",
@@ -5413,6 +5527,7 @@
                     "description": "",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -5428,6 +5543,7 @@
                     "description": "Whether zing is enabled.",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -5443,6 +5559,7 @@
                     "description": "Whether ring is enabled.",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   }
@@ -5464,6 +5581,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }
