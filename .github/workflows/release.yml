@@ -22,6 +22,7 @@ jobs:
     permissions:
       actions: read
       contents: write
+      packages: write
       pull-requests: read
     env:
       GH_TOKEN: ${{ github.token }}
@@ -99,6 +100,19 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         twine upload --skip-existing "$RUNNER_TEMP"/dist/*
+
+    # Built from this tree, which the step above requires to be the one the
+    # pull request's checks ran on, its container job building this image
+    - name: Publish the image to the GitHub container registry
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        IMAGE: ghcr.io/${{ github.repository }}
+        ACTOR: ${{ github.actor }}
+      run: |
+        docker build -t "$IMAGE:$VERSION" -t "$IMAGE:latest" .
+        echo "$GH_TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+        docker push "$IMAGE:$VERSION"
+        docker push "$IMAGE:latest"
 
     - name: Tag and create the release
       if: steps.done.outputs.released != 'true'
