@@ -74,7 +74,7 @@ offset, mostly about what the revisions ratified in 2026 added or moved:
   hardware.
 * Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **15.3
   and 32.3 wrong** on average, stated as surely as the right ones, at USD
-  0.10 and 0.02 a run.
+  0.10 and 0.02 a run and 0.66 s and 0.13 s a question.
 
 The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
 how to run it again.
