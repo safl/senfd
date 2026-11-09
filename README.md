@@ -38,6 +38,22 @@ answer against:
 
 [![senfd making the data model of the eleven specifications ratified in 2026, and sate answering three questions from it](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/intro.svg)](https://safl.dk/senfd/)
 
+## What the data model is for
+
+* **Precise answers, at once.** `sate` and `senfd-query` answer a question
+  about a command, a field, a register, a feature or a log page in
+  milliseconds; see [the expert](https://safl.dk/senfd/sate/).
+* **Language models that cannot make NVMe facts up.** `sate-mcp` gives a
+  coding agent the data model as tools, and `sate --llm` has a small
+  language model on your own CPU choose the lookup and write nothing of the
+  answer; see [with a language model](https://safl.dk/senfd/llm/).
+* **Code generated from the figures.** An early prototype writes xNVMe's
+  specification headers from the data model, every member citing its
+  figure; see [code from the figures](https://safl.dk/senfd/codegen/).
+* **A linter of the documents.** What does not read as data is listed with
+  its figure and page, for the authors to fix; see
+  [the linter](https://safl.dk/senfd/linting/).
+
 The [documentation](https://safl.dk/senfd/) has the rest: how to
 [install](https://safl.dk/senfd/install/) senfd, or run it from its
 [container image](https://safl.dk/senfd/install/#in-a-container),
