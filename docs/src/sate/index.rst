@@ -142,28 +142,27 @@ once, or asked from a script:
    $ sate --raw "which bit of cdw12 of write is FUA"
 
 ``--raw`` prints the answer as Markdown, unrendered, with the links as
-addresses. ``senfd-query`` gives the same answers to a lookup named rather
-than asked, as a script would name it:
+addresses. Named by its lookup rather than asked, as a script would name
+it, a question needs no reading:
 
 .. code-block:: console
 
-   $ senfd-query command write 12
-   $ senfd-query feature 07h
-   $ senfd-query log-page 02h
-   $ senfd-query structure "Controller Status"
-   $ senfd-query search FUA
-   $ senfd-query value "status code 82h"
-   $ senfd-query section 5.2.6
-   $ senfd-query errata Base
-   $ senfd-query lint
+   $ sate command write 12
+   $ sate feature 07h
+   $ sate log-page 02h
+   $ sate structure controller status
+   $ sate search FUA
+   $ sate value status code 82h
+   $ sate section 5.2.6
 
 ``command`` takes a command's name and, after it, the number of one of its
 dwords. ``feature`` and ``log-page`` take a name or an identifier, and
 ``structure`` a name or an acronym. ``search`` finds a word or an acronym
 everywhere it is. ``value`` finds an entry of a table of values, as ``"CNS
 05h"`` or ``"status code of zone boundary error"``. ``section`` takes a
-section's number. ``errata`` and ``lint`` take a document to confine the
-findings to; see :ref:`the linter <sec-linting>`.
+section's number. A question in quotes is read as a question, whatever
+its first word. What reading the documents found is senfd's to list, by
+``senfd lint`` and ``senfd errata``; see :ref:`the linter <sec-linting>`.
 
 ``--verbose`` adds the descriptions. ``--markdown`` gives the fields as a
 Markdown table and makes each citation a link to the page of the published

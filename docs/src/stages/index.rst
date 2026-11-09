@@ -75,7 +75,7 @@ requirement reads "Maybe", which is no level:
 .. literalinclude:: errata.txt
    :language: text
 
-``senfd-query lint`` lists these together with the document errors, the
+``senfd lint`` lists these together with the document errors, the
 figures of a shape senfd does not read, and the dwords no command claims;
 see :ref:`the linter <sec-linting>`. On a draft, this is the check an
 editor gets for nothing from making the data model.

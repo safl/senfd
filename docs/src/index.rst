@@ -62,7 +62,7 @@ every answer.
 What the data model is for
 --------------------------
 
-* **Precise answers, at once.** ``sate`` and ``senfd-query`` answer a
+* **Precise answers, at once.** ``sate`` answers a
   question about a command, a field, a register, a feature or a log page in
   milliseconds; see :ref:`the expert <sec-ask>`.
 * **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
@@ -108,7 +108,7 @@ publishes the ratified specifications as PDF, which anyone can download from
 are available to its members only. senfd reads either and gives the same
 data model of both. The ``.docx`` is the simpler source, as it states what
 the PDF only shows, and it is the one an editor has while a specification
-is under revision: run on the draft, ``senfd-query lint`` lists what does
+is under revision: run on the draft, ``senfd lint`` lists what does
 not read as data, for the figure to be corrected before it is ratified
 rather than after.
 

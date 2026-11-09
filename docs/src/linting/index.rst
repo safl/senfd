@@ -11,21 +11,21 @@ To read a figure as data is to check it. Every figure senfd normalises, and
 every value it types, either takes the form its kind must have or is
 reported, with the document, section, figure and page it is on, so the
 author of a document goes straight to what to fix. A run of ``senfd`` ends
-by saying how many of each it found; ``senfd-query lint``, or the MCP tool
+by saying how many of each it found; ``senfd lint``, or the MCP tool
 ``lint``, lists them, the authors' first, and a document's name after
 ``lint`` or ``errata`` confines the list to it:
 
 .. code-block:: console
 
-   $ senfd-query lint
-   $ senfd-query lint nvm
-   $ senfd-query errata base
+   $ senfd lint
+   $ senfd lint nvm
+   $ senfd errata base
 
 .. raw:: html
 
    <div id="cast-lint"></div>
 
-**Candidate errata**, the authors', also listed by ``senfd-query errata``:
+**Candidate errata**, the authors', also listed by ``senfd errata``:
 a value that is not of its column's kind, as a footnote marker run into a
 flag; a field whose bits lie beyond the dwords that hold it; an acronym
 that is not one; bits of a command's dwords that no figure gives a field.

@@ -26,11 +26,43 @@ def show(markdown: str, raw: bool = False) -> None:
     Console().print(Markdown(markdown))
 
 
+def first_word(argv: List[str]) -> Optional[int]:
+    """Where in 'argv' its first word is, past the options and their values"""
+
+    at = 0
+    while at < len(argv):
+        if argv[at] in ("--spec", "--llm"):
+            at += 2
+        elif argv[at].startswith("-"):
+            at += 1
+        else:
+            return at
+    return None
+
+
 def main(argv: Optional[List[str]] = None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    at = first_word(argv)
+    if at is not None and argv[at] in senfd.query.LOOKUPS:
+        # A lookup by its name, as "sate command write 12"; a question put in
+        # quotes is one word, and read as a question
+        return senfd.query.run(
+            "sate",
+            argv[at:] + argv[:at],
+            senfd.query.LOOKUPS,
+            "Look up a command, feature, log page, structure, section or value",
+        )
     parser = argparse.ArgumentParser(
         description="Ask the data model questions, as of an expert who answers at once"
     )
-    parser.add_argument("question", nargs="*", help="Answer this, and leave")
+    parser.add_argument(
+        "question",
+        nargs="*",
+        help=(
+            "Answer this, and leave; or look up "
+            f"{', '.join(senfd.query.LOOKUPS)}, as 'sate command write 12'"
+        ),
+    )
     parser.add_argument(
         "--spec",
         type=Path,

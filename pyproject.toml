@@ -33,7 +33,6 @@ all = ["senfd[dev]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
-senfd-query = "senfd.query:main"
 sate-mcp = "senfd.sate.mcp:main"
 sate = "senfd.sate:main"
 
