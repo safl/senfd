@@ -7,20 +7,28 @@
 With a language model
 =====================
 
-:ref:`The expert <sec-ask>` needs no language model, and answers in
-milliseconds for free. A language model can still be of use in two ways,
-neither of which lets it make an NVMe fact up. ``sate --llm`` has a small
-language model on your own CPU read questions phrased in ways no rule
-foresees. ``sate-mcp`` gives a coding agent the data model as tools. The
-:ref:`benchmark <sec-benchmark>` sets the expert alone, the expert with a
-language model choosing the lookup, and frontier language models answering
-from memory side by side, with what each costs and gets wrong.
+:ref:`The expert <sec-ask>` needs no language model. Two programs put one
+beside the data model, each for a different user. In neither does the
+language model state an NVMe fact: every field, bit and opcode in an answer
+comes from the data model, with the figure it is in. The :ref:`benchmark
+<sec-benchmark>` sets them beside frontier language models answering from
+memory, with what each costs and gets wrong.
 
-Choosing the lookup: sate --llm
--------------------------------
+Questions in your own words: sate --llm
+---------------------------------------
 
-``--llm URL`` has a language model served at URL, as by llama.cpp's
-``llama-server``, understand the questions instead:
+``sate --llm`` is the expert with a language model you run yourself reading
+the question. ``sate`` alone reads a question by its words, the names,
+acronyms and dwords of the specifications, so a question must name what it
+asks about. With ``--llm``, a small language model reads the question
+instead, and chooses which lookup to run and on what.
+
+Use it when questions do not use the specifications' names: "hey, what
+opcode does migration send use?", "which FID is the rate limiting feature",
+"the shutdown type bit in CSTS, where is it?". Use it, too, where a question
+must not leave the machine: the language model runs on your own CPU, with
+no GPU, no account and no fee. Where a question names what it asks about,
+``sate`` alone answers it as well, in milliseconds.
 
 .. code-block:: console
 
@@ -29,35 +37,37 @@ Choosing the lookup: sate --llm
 
 The language model chooses the lookup and nothing else. Its output is
 constrained, by a JSON schema the server turns into a grammar, to the name
-of a query and its argument; the answer shown is what the query found. It
-writes no part of the answer, so it can state no field, bit or opcode that
-is not in the figures. When a lookup finds nothing, or nothing mentioning
-the question's terms, it is told so and chooses again, three times at most,
-and then the answer is that it is not known. A language model of 8 billion
-parameters on a CPU is enough, as the :ref:`benchmark <sec-benchmark>`
-shows; no GPU, no service and no fee. A smaller language model chooses
-worse, and what it cannot find it says is not known: the language model of
-1 billion parameters answers fewer of the questions, and none of them
-wrongly.
+of a query and its argument; the answer shown is what the query found, so
+it can state no field, bit or opcode that is not in the figures. When a
+lookup finds nothing, or nothing mentioning the question's terms, it is
+told so and chooses again, three times at most, and then the answer is that
+it is not known. A language model of 8 billion parameters on a CPU is
+enough. One of 1 billion parameters chooses worse: it answers fewer of the
+questions, and none of them wrongly.
 
 .. raw:: html
 
    <div id="cast-llm"></div>
 
-For an agent: the MCP server
+For a coding agent: sate-mcp
 ----------------------------
 
-``sate-mcp`` is an MCP server whose tools are the same lookups. A coding
-agent answers a question about the specification with a tool call costing
-a few lines, rather than by reading the documents:
+``sate-mcp`` is an MCP server whose tools are the expert's lookups,
+``command``, ``feature``, ``log_page``, ``structure``, ``value``,
+``search`` and ``section``, and the documents' ``lint`` and ``errata``. A
+coding agent, such as Claude Code, calls them rather than answering from
+memory or reading the documents.
+
+Use it when an agent works on code that implements NVMe: writing a
+command, decoding a log page, or checking an opcode, a bit or an offset in
+a patch against its figure. An answer is a few lines, so it costs the agent
+little of its context. Each cites its figure with a link to the page of
+the published PDF, so the agent, or you, can open the figure it was told
+of.
 
 .. code-block:: console
 
    $ claude mcp add sate -- sate-mcp
-
-Its answers are those of ``sate``'s lookups with ``--markdown``, each citation a link to
-the page of the published PDF, so the agent can open the figure it was told
-of.
 
 .. toctree::
    :hidden:
