@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "0.10.0",
+    "version": "0.11.0",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b"
@@ -207,7 +207,7 @@
   "errata": [],
   "documents": {
     "invalid": {
-      "version": "0.10.0",
+      "version": "0.11.0",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b"
