@@ -107,7 +107,7 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     if understood.query == "errata":
         return bullets(q.errata(spec, understood.argument))
     if understood.query == "search":
-        return bullets(q.search(spec, understood.argument))
+        return bullets(q.search(spec, understood.argument, verbose=describe))
     if understood.query == "identifier":
         found = []
         for lines in (
@@ -124,7 +124,7 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
                 found += q.lines_of_structure(s, describe, markdown=True)
         return found or [f"No register {understood.argument}"]
     if understood.query == "acronym":
-        return bullets(q.search(spec, understood.argument))
+        return bullets(q.search(spec, understood.argument, verbose=describe))
     # A name: what has it, a command first, then a structure, else where it is
     for lines in (
         q.command(spec, understood.argument, verbose=describe, markdown=True),
@@ -134,7 +134,7 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     ):
         if not nothing(lines):
             return lines
-    return bullets(q.search(spec, understood.argument))
+    return bullets(q.search(spec, understood.argument, verbose=describe))
 
 
 def bullets(lines: List[str]) -> List[str]:

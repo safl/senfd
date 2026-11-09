@@ -890,3 +890,13 @@ def test_the_opcode_asked_alone_is_answered_alone(spec, vocabulary):
     assert len(lines) == 1 and "opcode 01h" in lines[0] and "Ding" in lines[0]
     whole = answer(spec, senfd.sate.understand("ding", vocabulary))
     assert len(whole) > 1 and whole[0] == lines[0]
+
+
+def test_a_field_searched_for_with_describe_has_its_description(spec, vocabulary):
+    from senfd.sate.lookup import answer
+
+    plain = answer(spec, senfd.sate.understand("FCNT", vocabulary))
+    told = answer(spec, senfd.sate.understand("describe FCNT", vocabulary))
+    assert any("Foo Count" in line for line in plain)
+    assert not any("How many." in line for line in plain)
+    assert any("Foo Count" in line and "How many." in line for line in told)
