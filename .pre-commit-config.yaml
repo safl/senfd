@@ -9,6 +9,18 @@ repos:
     hooks:
       - id: mypy
         args: ["--ignore-missing-imports"]
+        # The packages senfd uses, so that their types are checked against
+        # rather than taken as Any; pydantic's above all, as the documents
+        # are its models
+        additional_dependencies:
+          - jinja2
+          - mcp>=2
+          - pikepdf>=8
+          - prompt_toolkit>=3
+          - pydantic
+          - pytest
+          - python-docx
+          - rich>=13
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
