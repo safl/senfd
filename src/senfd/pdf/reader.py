@@ -288,6 +288,9 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
         for number, page in entries.items():
             if number in figures:
                 figures[number].page_nr = page
+        deleted = pages.deletions()
+        if deleted:
+            errors.append(Error(message=deleted))
 
     document = FigureDocument(figures=[figures[n] for n in sorted(figures)])
     document.meta.stem = stem_of(path)

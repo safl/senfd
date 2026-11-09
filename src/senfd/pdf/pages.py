@@ -7,7 +7,7 @@ The pages of a PDF as drawn: the characters of each piece of marked content,
 and the borders of the tables, which say what the structure tree does not,
 the columns a merged cell spans. A specification published with its tracked
 changes shown has its deletions on the page too, struck through; they are
-not its text.
+not its text, and are kept apart, to be reported as an error of the document.
 """
 
 from bisect import bisect_left, bisect_right
@@ -62,6 +62,10 @@ def struck(char: dict, rules: Sequence[Horizontal]) -> bool:
     return any(x0 - 0.5 <= across <= x1 + 0.5 for _, x0, x1 in rules[first:last])
 
 
+def counted(n: int, thing: str) -> str:
+    return f"{n:,} {thing}{'' if n == 1 else 's'}"
+
+
 def union(a: Optional[Box], b: Box) -> Box:
     """The box holding both 'a' and 'b'"""
 
@@ -79,23 +83,57 @@ class Pages:
         self.index = index
         self._chars: Dict[int, Dict[Optional[int], List[dict]]] = {}
         self._rects: Dict[int, List[dict]] = {}
+        # The text struck through on each page read, a string each place
+        self.struck: Dict[int, List[str]] = {}
 
     def read(self, number: int) -> None:
         if number in self._chars:
             return
         page = self.plumb.pages[number]
+        # Word prints a strike as a thin filled rectangle; a stroked line
+        # through text is a drawing's, as an arrow through its label
         rules = sorted(
             (r["top"] + r["height"] / 2, r["x0"], r["x1"])
-            for r in [*page.rects, *page.lines]
+            for r in page.rects
             if r["height"] < 2 and r["width"] > 2
         )
         by_mcid: Dict[Optional[int], List[dict]] = defaultdict(list)
+        places: List[str] = []
+        place = ""
         for char in page.chars:
-            if not struck(char, rules):
-                by_mcid[char.get("mcid")].append(char)
+            if struck(char, rules):
+                place += char["text"]
+                continue
+            if place.strip():
+                places.append(place.strip())
+            place = ""
+            by_mcid[char.get("mcid")].append(char)
+        if place.strip():
+            places.append(place.strip())
+        if places:
+            self.struck[number] = places
         self._chars[number] = by_mcid
         self._rects[number] = list(page.rects)
         page.close()  # Its characters are kept above; the rest is not needed
+
+    def deletions(self) -> Optional[str]:
+        """What every page says struck through, as tracked changes shown
+        print a deletion, or None where nothing is"""
+
+        for number in range(len(self.plumb.pages)):
+            self.read(number)
+        if not self.struck:
+            return None
+        pages = sorted(self.struck)
+        places = [p for n in pages for p in self.struck[n]]
+        characters = sum(len(p) for p in places)
+        first = places[0] if len(places[0]) <= 60 else places[0][:57].rstrip() + "..."
+        return (
+            f"Text struck through, a deletion of tracked changes shown, left out: "
+            f"{counted(characters, 'character')} in {counted(len(places), 'place')} "
+            f"on {counted(len(pages), 'page')} of the file, the first on page "
+            f"{pages[0] + 1}: '{first}'"
+        )
 
     def chars(self, number: int) -> Dict[Optional[int], List[dict]]:
         self.read(number)

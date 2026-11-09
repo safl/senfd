@@ -5,6 +5,8 @@
 # The specifications NVM Express publishes as PDF, by address and SHA-256,
 # which the tests download into a cache and never distribute; and what senfd
 # makes of each, which a change to senfd or to a document shows against.
+# The document errors of Base 2.4, Boot 1.4 and Management Interface 2.2
+# include the text each prints struck through, its tracked changes shown.
 
 [[document]]
 name = "Base 2.4"
@@ -16,6 +18,7 @@ features = 51
 log_pages = 55
 structures = 346
 errata = 5
+document_errors = 7
 not_modelled = 22
 
 [[document]]
@@ -28,6 +31,7 @@ features = 0
 log_pages = 0
 structures = 19
 errata = 0
+document_errors = 1
 not_modelled = 2
 
 [[document]]
@@ -40,6 +44,7 @@ features = 0
 log_pages = 5
 structures = 14
 errata = 1
+document_errors = 0
 not_modelled = 0
 
 [[document]]
@@ -52,6 +57,7 @@ features = 1
 log_pages = 2
 structures = 9
 errata = 0
+document_errors = 0
 not_modelled = 0
 
 [[document]]
@@ -64,6 +70,7 @@ features = 51
 log_pages = 53
 structures = 72
 errata = 0
+document_errors = 1
 not_modelled = 5
 
 [[document]]
@@ -76,6 +83,7 @@ features = 6
 log_pages = 8
 structures = 58
 errata = 0
+document_errors = 0
 not_modelled = 8
 
 [[document]]
@@ -88,6 +96,7 @@ features = 0
 log_pages = 1
 structures = 60
 errata = 0
+document_errors = 0
 not_modelled = 1
 
 [[document]]
@@ -100,6 +109,7 @@ features = 0
 log_pages = 0
 structures = 4
 errata = 0
+document_errors = 0
 not_modelled = 0
 
 [[document]]
@@ -112,6 +122,7 @@ features = 0
 log_pages = 0
 structures = 14
 errata = 0
+document_errors = 0
 not_modelled = 0
 
 [[document]]
@@ -124,6 +135,7 @@ features = 0
 log_pages = 3
 structures = 6
 errata = 0
+document_errors = 0
 not_modelled = 0
 
 [[document]]
@@ -136,4 +148,5 @@ features = 0
 log_pages = 1
 structures = 11
 errata = 0
+document_errors = 0
 not_modelled = 1
