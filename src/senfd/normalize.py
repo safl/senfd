@@ -187,6 +187,13 @@ REGEX_FIELD = re.compile(
 )
 
 
+# What the acronym of a name wrapped over lines looks like, so that a closing
+# "(refer to Figure 3)" is none
+REGEX_ACRONYM_WORD = re.compile(r"^[A-Z][A-Za-z0-9_-]*$")
+
+# Rows that are whole in their first line, whatever the lines after them say
+UNNAMED_ROWS = ("reserved", "obsolete", "vendor specific", "ignored")
+
 REGEX_FIELD_NO_COLON = re.compile(
     rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z].*)$"
 )
@@ -202,6 +209,9 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
     first, _, more = text.strip().partition("\n")
     first = normalize_text(first)
     more = more.strip()
+    wrapped = unwrapped_name(text)
+    if wrapped:
+        first, more = wrapped
     match = REGEX_FIELD.match(first)
     if not match:
         # "Name (ACR) The description...", the colon left out
@@ -217,6 +227,25 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
     rest = (match["rest"] or "").strip()
     description = "\n".join(p for p in [rest, more] if p)
     return name, match["acronym"], description
+
+
+def unwrapped_name(text: str) -> Optional[Tuple[str, str]]:
+    """The first lines of 'text' as one, and the lines after them, where a
+    narrow column of a PDF wrapped "Name (ACRONYM): ..." over them: the first
+    line has no colon or parenthesis of its own, and the acronym ends the
+    name on a line after it. None of other text."""
+
+    lines = text.strip().split("\n")
+    if ":" in lines[0] or "(" in lines[0] or lines[0].rstrip().endswith("."):
+        return None
+    if lines[0].strip().lower() in UNNAMED_ROWS:
+        return None
+    for count in range(2, min(len(lines), 3) + 1):
+        joined = normalize_text(" ".join(lines[:count]))
+        match = REGEX_FIELD.match(joined)
+        if match and match["acronym"] and REGEX_ACRONYM_WORD.match(match["acronym"]):
+            return joined, "\n".join(lines[count:]).strip()
+    return None
 
 
 def is_name(text: str) -> bool:

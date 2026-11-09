@@ -65,6 +65,12 @@
                     "title": "Range",
                     "type": "string"
                 },
+                "role": {
+                    "default": "field",
+                    "description": "What the field is: a \"field\" of its name, or what holds a place,\n\"reserved\", \"obsolete\", \"vendor_specific\" or 'ignored'",
+                    "title": "Role",
+                    "type": "string"
+                },
                 "kind": {
                     "default": "span",
                     "description": "What the range is: a \"span\" of numbers, a \"formula\" of values the\nfigure names, as \"(N*16)+15:N*16\", or \"open\", as 'n/a' or 'Impl Spec'",
@@ -465,7 +471,7 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "What kind it is, as \"value\", \"acronym\", \"range\" (text that is no\nrange), \"range-outside\", \"range-reversed\", \"opcode\" or 'gap'",
+                    "description": "What kind it is, as \"value\", \"acronym\", \"range\" (text that is no\nrange), \"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords) or 'layout-gap' (of a structure)",
                     "title": "Code",
                     "type": "string"
                 },

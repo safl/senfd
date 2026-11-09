@@ -20,13 +20,18 @@ from typing import Dict, Iterator, List, Optional, Tuple
 from pydantic import BaseModel
 
 
-class RangeError(ValueError):
-    """Text that is no range: 'code' says what kind of wrong, as "range",
-    "range-reversed" or 'range-outside', and the message why"""
+class Unconstructible(ValueError):
+    """What a figure gives that a value of the data model cannot be made
+    from: 'code' says what kind of wrong, and the message why"""
 
     def __init__(self, code: str, message: str):
         super().__init__(message)
         self.code = code
+
+
+class RangeError(Unconstructible):
+    """Text that is no range, with the code "range", "range-reversed" or
+    'range-outside'"""
 
 
 # A product of named values, by their names in order; () is the integer 1
