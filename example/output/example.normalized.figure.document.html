@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>91 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
+<p>92 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -2006,6 +2006,108 @@ th { background-color: #f2f2f2; }
 <tr><th>name</th><th>purpose</th></tr>
 <tr><td>Foo</td><td>Bar</td></tr>
 </table>
+
+
+
+<h3>Figure 93: Baz Capabilities Data Structure</h3>
+<p>Subject: data_structure, name: Baz Capabilities. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:00</td>
+  <td>Baz Supported</td>
+  <td></td>
+  <td>
+  
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>255:02</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>01</td>
+  <td>Zing Supported</td>
+  <td>ZS</td>
+  <td>Whether zing is supported.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>00</td>
+  <td>Ring Supported</td>
+  <td>RS</td>
+  <td>Whether ring is supported.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+</td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>63:32</td>
+  <td>Baz Enabled</td>
+  <td></td>
+  <td>
+  
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>255:02</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>01</td>
+  <td>Zing Enabled</td>
+  <td>ZE</td>
+  <td>Whether zing is enabled.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>00</td>
+  <td>Ring Enabled</td>
+  <td>RE</td>
+  <td>Whether ring is enabled.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+</td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>4095:64</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
 
 
 

@@ -315,6 +315,25 @@ def test_fields_of_several_structures_in_a_table_are_no_union(tmp_path):
     assert [f.union for f in sizes.fields] == [None, None]
 
 
+def test_a_layout_of_bytes_and_bits_nests_the_bits_in_their_byte_range(tmp_path):
+    """A header of bytes and bits, each byte range named by the heading row
+    above it and merged down over a row for each range of its bits"""
+
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    (baz,) = [st for st in spec.structures if st.name == "Baz Capabilities"]
+    assert baz.unit == "bytes"
+    assert [(f.range, f.name, f.unit, f.section) for f in baz.fields] == [
+        ("31:00", "Baz Supported", "bytes", None),
+        ("63:32", "Baz Enabled", "bytes", None),
+        ("4095:64", "Reserved", "bytes", None),
+    ]
+    assert [[(b.range, b.acronym, b.unit) for b in f.fields] for f in baz.fields] == [
+        [("255:02", None, "bits"), ("01", "ZS", "bits"), ("00", "RS", "bits")],
+        [("255:02", None, "bits"), ("01", "ZE", "bits"), ("00", "RE", "bits")],
+        [],
+    ]
+
+
 def test_the_unions_of_a_layout_and_those_nested_in_it_have_numbers_of_their_own():
     from senfd.documents.spec import Bits, number_unions
 

@@ -3,7 +3,7 @@
     "version": "0.10.0",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "5357e46eba704370a5192404e20a7586844b356a6d272522dd35dcd6c24d1029"
+    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
   },
   "command_sets": {
     "foobar": {
@@ -3972,6 +3972,161 @@
         "section": "4.1",
         "section_title": "Offset 18h: FOOVER – Foo Version"
       }
+    },
+    {
+      "name": "Baz Capabilities",
+      "kind": "data_structure",
+      "unit": "bytes",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Baz Supported",
+          "acronym": null,
+          "unit": "bytes",
+          "upper": 31,
+          "lower": 0,
+          "range": "31:00",
+          "description": "",
+          "section": null,
+          "columns": {},
+          "fields": [
+            {
+              "name": "Reserved",
+              "acronym": null,
+              "unit": "bits",
+              "upper": 255,
+              "lower": 2,
+              "range": "255:02",
+              "description": "",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            },
+            {
+              "name": "Zing Supported",
+              "acronym": "ZS",
+              "unit": "bits",
+              "upper": 1,
+              "lower": 1,
+              "range": "01",
+              "description": "Whether zing is supported.",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            },
+            {
+              "name": "Ring Supported",
+              "acronym": "RS",
+              "unit": "bits",
+              "upper": 0,
+              "lower": 0,
+              "range": "00",
+              "description": "Whether ring is supported.",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            }
+          ],
+          "union": null,
+          "alternative": null,
+          "values": []
+        },
+        {
+          "name": "Baz Enabled",
+          "acronym": null,
+          "unit": "bytes",
+          "upper": 63,
+          "lower": 32,
+          "range": "63:32",
+          "description": "",
+          "section": null,
+          "columns": {},
+          "fields": [
+            {
+              "name": "Reserved",
+              "acronym": null,
+              "unit": "bits",
+              "upper": 255,
+              "lower": 2,
+              "range": "255:02",
+              "description": "",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            },
+            {
+              "name": "Zing Enabled",
+              "acronym": "ZE",
+              "unit": "bits",
+              "upper": 1,
+              "lower": 1,
+              "range": "01",
+              "description": "Whether zing is enabled.",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            },
+            {
+              "name": "Ring Enabled",
+              "acronym": "RE",
+              "unit": "bits",
+              "upper": 0,
+              "lower": 0,
+              "range": "00",
+              "description": "Whether ring is enabled.",
+              "section": null,
+              "columns": {},
+              "fields": [],
+              "union": null,
+              "alternative": null,
+              "values": []
+            }
+          ],
+          "union": null,
+          "alternative": null,
+          "values": []
+        },
+        {
+          "name": "Reserved",
+          "acronym": null,
+          "unit": "bytes",
+          "upper": 4095,
+          "lower": 64,
+          "range": "4095:64",
+          "description": "",
+          "section": null,
+          "columns": {},
+          "fields": [],
+          "union": null,
+          "alternative": null,
+          "values": []
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 93,
+        "page_nr": 93,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
     }
   ],
   "values": [
@@ -5612,7 +5767,7 @@
       "version": "0.10.0",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "5357e46eba704370a5192404e20a7586844b356a6d272522dd35dcd6c24d1029"
+      "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
     }
   }
 }

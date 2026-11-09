@@ -3,7 +3,7 @@
     "version": "0.10.0",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "5357e46eba704370a5192404e20a7586844b356a6d272522dd35dcd6c24d1029"
+    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
   },
   "figures": [
     {
@@ -7463,6 +7463,229 @@
               },
               {
                 "text": "Bar",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 93,
+      "caption": "Figure 93: Baz Capabilities Data Structure",
+      "description": "Baz Capabilities Data Structure",
+      "page_nr": 93,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 91,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 93: Baz Capabilities Data Structure",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 93: Baz Capabilities Data Structure",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 93: Baz Capabilities Data Structure",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bytes",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Bits",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Baz Supported",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Baz Supported",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Baz Supported",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "31:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "255:02",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "31:00",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "01",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Zing Supported (ZS): Whether zing is supported.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "31:00",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Ring Supported (RS): Whether ring is supported.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Baz Enabled",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Baz Enabled",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Baz Enabled",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "63:32",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "255:02",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "63:32",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "01",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Zing Enabled (ZE): Whether zing is enabled.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "63:32",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Ring Enabled (RE): Whether ring is enabled.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "4095:64",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "n/a",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
                 "tables": [],
                 "merged": null
               }

@@ -748,6 +748,27 @@ FIGURES = [
         {"header": ("Name", "Purpose"), "rows": [("Foo", "Bar")]},
     ),
     ("Foo Architecture", None),
+    heading(2, "Baz Capabilities"),
+    # Bytes and the bits in them, in one table: a heading row names a range of
+    # bytes, merged down over a row for each range of its bits, and a range of
+    # bytes of no bits, "n/a", ends it
+    (
+        "Baz Capabilities Data Structure",
+        {
+            "header": ("Bytes", "Bits", "Description"),
+            "rows": [
+                ("Baz Supported", LEFT, LEFT),
+                ("31:00", "255:02", "Reserved"),
+                (UP, "01", "Zing Supported (ZS): Whether zing is supported."),
+                (UP, "00", "Ring Supported (RS): Whether ring is supported."),
+                ("Baz Enabled", LEFT, LEFT),
+                ("63:32", "255:02", "Reserved"),
+                (UP, "01", "Zing Enabled (ZE): Whether zing is enabled."),
+                (UP, "00", "Ring Enabled (RE): Whether ring is enabled."),
+                ("4095:64", "n/a", "Reserved"),
+            ],
+        },
+    ),
 ]
 
 
@@ -799,6 +820,7 @@ def number_headings(figures):
 TOC_NUMBERS = {
     "Data Structures": "4",
     f"Offset 18h: FOOVER {DASH} Foo Version": "4.1",
+    "Baz Capabilities": "4.2",
 }
 
 
