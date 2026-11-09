@@ -35,6 +35,9 @@ no GPU, no account and no fee. Where a question names what it asks about,
    $ llama-server -m Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf --port 8088 --jinja
    $ sate --llm http://127.0.0.1:8088
 
+A server holding several language models needs to be told which:
+``--llm-model NAME`` asks it for that one.
+
 The language model chooses the lookup and nothing else. Its output is
 constrained, by a JSON schema the server turns into a grammar, to the name
 of a query and its argument; the answer shown is what the query found, so

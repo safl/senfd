@@ -35,7 +35,12 @@ def by_words(
 
 
 def by_language_model(
-    spec: SpecDocument, question: str, vocabulary: Vocabulary, llm: str, tries: int
+    spec: SpecDocument,
+    question: str,
+    vocabulary: Vocabulary,
+    llm: str,
+    tries: int,
+    llm_model: Optional[str] = None,
 ) -> List[Attempt]:
     """The lookups a language model at 'llm' chooses for 'question': it is
     told what is wrong with an answer, and chooses again, 'tries' times at
@@ -47,7 +52,7 @@ def by_language_model(
         {"role": "user", "content": question},
     ]
     for _ in range(tries):
-        chosen = language_model.choose(llm, messages)
+        chosen = language_model.choose(llm, messages, llm_model)
         if described(question)[0]:
             chosen = replace(chosen, describe=True)
         if chosen.query == "unknown":
@@ -89,6 +94,7 @@ def respond(
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
     tries: int = 3,
+    llm_model: Optional[str] = None,
 ) -> Tuple[str, List[str]]:
     """The answer to 'question', and what it was understood as, each try. An
     answer about other than what the question asks of, or not mentioning
@@ -97,7 +103,7 @@ def respond(
     if llm is None:
         attempts = by_words(spec, question, vocabulary)
     else:
-        attempts = by_language_model(spec, question, vocabulary, llm, tries)
+        attempts = by_language_model(spec, question, vocabulary, llm, tries, llm_model)
     understood, lines = attempts[-1]
     tried = [str(u) for u, _ in attempts]
     if understood.query == "help":
@@ -138,6 +144,7 @@ def exchange(
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
     said_as: bool = True,
+    llm_model: Optional[str] = None,
 ) -> Tuple[str, str]:
     """The answer to 'question', and a line saying how it was found: what it
     was read as, by how many lookups, in how long, citing how many figures.
@@ -146,7 +153,7 @@ def exchange(
 
     began = time.perf_counter()
     try:
-        text, tried = respond(spec, question, vocabulary, llm)
+        text, tried = respond(spec, question, vocabulary, llm, llm_model=llm_model)
     except (OSError, ValueError, KeyError, IndexError) as exc:
         if llm is None:
             raise
@@ -172,10 +179,11 @@ def reply(
     question: str,
     vocabulary: Vocabulary,
     llm: Optional[str] = None,
+    llm_model: Optional[str] = None,
 ) -> str:
     """The answer to 'question', as Markdown, opening with what it was read as"""
 
-    return exchange(spec, question, vocabulary, llm)[0]
+    return exchange(spec, question, vocabulary, llm, llm_model=llm_model)[0]
 
 
 # A heading citing its figure: "### Write: NVM command, opcode 01h [...]" of
