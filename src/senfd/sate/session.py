@@ -9,7 +9,7 @@ question by the kind of name that comes next; colours the words, names and
 acronyms it recognises; and says at the bottom how the question is read so
 far, above the keys. Under each answer, a line says how it was found.
 
-Of the extra 'sate': prompt_toolkit for the prompt, rich for the answers.
+prompt_toolkit draws the prompt, and rich the answers.
 """
 
 import os

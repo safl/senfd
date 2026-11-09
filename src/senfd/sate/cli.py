@@ -11,39 +11,19 @@ from typing import List, Optional
 
 import senfd.query
 from senfd.sate.answering import reply
-from senfd.sate.phrasing import HELP
 from senfd.sate.vocabulary import Vocabulary
-from senfd.documents.spec import SpecDocument
 
 
 def show(markdown: str, raw: bool = False) -> None:
-    """Print 'markdown' rendered, where the extra 'sate' is installed and not
-    'raw', else as it is"""
+    """Print 'markdown' rendered, or as it is where 'raw'"""
 
-    if not raw:
-        try:
-            from rich.console import Console
-            from rich.markdown import Markdown
-        except ImportError:
-            pass
-        else:
-            Console().print(Markdown(markdown))
-            return
-    print(markdown)
+    if raw:
+        print(markdown)
+        return
+    from rich.console import Console
+    from rich.markdown import Markdown
 
-
-def plain(spec: SpecDocument, llm: Optional[str] = None) -> int:
-    """A session without the extra 'sate': a question a line, answered in
-    Markdown, until the input ends"""
-
-    vocabulary = Vocabulary.of(spec)
-    print(HELP)
-    while True:
-        try:
-            question = input("> ")
-        except EOFError:
-            return 0
-        print(reply(spec, question, vocabulary, llm))
+    Console().print(Markdown(markdown))
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -76,8 +56,6 @@ def main(argv: Optional[List[str]] = None) -> int:
         question = " ".join(args.question)
         show(reply(spec, question, Vocabulary.of(spec), args.llm), args.raw)
         return 0
-    try:
-        from senfd.sate.session import interact
-    except ImportError:
-        return plain(spec, args.llm)
+    from senfd.sate.session import interact
+
     return interact(spec, args.llm, args.spec)
