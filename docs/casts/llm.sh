@@ -1,4 +1,4 @@
-# A small language model, Llama 3.1 8B on 16 CPU cores, reads the question and picks the lookup
+# A small language model, Qwen 2.5 7B on 16 CPU cores, reads the question and picks the lookup
 # It writes nothing of the answer: the answer is senfd's data model of the documents'
 sate --llm http://127.0.0.1:8088 "hey, what opcode does migration send use?"
 sate --llm http://127.0.0.1:8088 "where in CDW10 of sanitize do I set EMVS?"
