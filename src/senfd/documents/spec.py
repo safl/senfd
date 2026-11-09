@@ -33,6 +33,7 @@ from senfd.documents.normalized import (
 )
 from senfd.errors import Error
 from senfd.normalize import Diagnostic, note, warning
+import senfd.ranges
 
 
 class Source(Model):
@@ -58,7 +59,7 @@ class Source(Model):
 class Bits(Model):
     """
     A field of bits or bytes; 'upper' and 'lower' are None where the document
-    gives the range by a formula, which 'range' then holds
+    gives the range by a formula, or leaves it open, as 'kind' says
     """
 
     name: Optional[str] = None
@@ -74,6 +75,15 @@ class Bits(Model):
     """The lower bound of the range"""
     range: str
     """The range as the document writes it, as "29:26" or '03:00'"""
+    kind: str = "span"
+    """What the range is: a "span" of numbers, a "formula" of values the
+    figure names, as "(N*16)+15:N*16", or "open", as 'n/a' or 'Impl Spec'"""
+    formula: Optional[str] = None
+    """Of a formula, its bounds written plainly, "upper:lower", as
+    '16*N + 15:16*N'"""
+    width: Optional[int] = None
+    """How many bits or bytes the range is, where its bounds give it, as 16
+    of '16*N + 15:16*N'"""
     description: str = ""
     """The text of the field's description"""
     section: Optional[str] = None
@@ -297,8 +307,8 @@ class Erratum(Model):
     """
 
     code: str
-    """What kind it is, as "value", "acronym", "range-outside",
-    "range-reversed", "opcode" or 'gap'"""
+    """What kind it is, as "value", "acronym", "range" (text that is no
+    range), "range-outside", "range-reversed", "opcode" or 'gap'"""
     message: str
     """What is wrong, said for a person"""
     found: str = ""
@@ -574,11 +584,11 @@ def checked(
 ) -> Tuple[List[Bits], List[Erratum]]:
     """
     The fields of a layout that are what fields must be, and the errata of
-    those that are not: an acronym that is not one is left out, and a field of
-    reversed bounds, or beyond the 'width' in bits of what it is 'of', its
-    dwords or the bytes holding it, is left out whole; fields sharing bits are
-    not errata, as a layout can give either of two, as an IPv4 or an IPv6
-    address
+    those that are not: an acronym that is not one is left out, and a field
+    whose range is none, by senfd.ranges, is left out whole, as one of
+    reversed bounds or beyond the 'width' in bits of what it is 'of', its
+    dwords or the bytes holding it; fields sharing bits are not errata, as a
+    layout can give either of two, as an IPv4 or an IPv6 address
     """
 
     errata: List[Erratum] = []
@@ -596,42 +606,38 @@ def checked(
                 )
             )
             field = field.model_copy(update={"acronym": None})
-        if field.upper is not None and field.lower is not None:
-            if field.upper < field.lower:
-                errata.append(
-                    Erratum(
-                        code="range-reversed",
-                        message=f"Field {what}: upper bound below the lower",
-                        found=field.range,
-                        source=source,
-                    )
+        try:
+            rng = senfd.ranges.parse(field.unit, field.range, width)
+        except senfd.ranges.RangeError as exc:
+            said = f"{exc} of {of}" if exc.code == "range-outside" else str(exc)
+            errata.append(
+                Erratum(
+                    code=exc.code,
+                    message=f"Field {what}: {said}",
+                    found=field.range,
+                    source=source,
                 )
-                continue
-            if width is not None and field.unit == "bits" and field.upper >= width:
-                errata.append(
-                    Erratum(
-                        code="range-outside",
-                        message=(
-                            f"Field {what}: bit {field.upper} beyond the "
-                            f"{width} bits of {of}"
-                        ),
-                        found=field.range,
-                        source=source,
-                    )
-                )
-                continue
+            )
+            continue
         # Bits nested in a range of bytes lie within its bytes
         within, holding = None, "its dwords"
-        if (
-            field.unit == "bytes"
-            and field.upper is not None
-            and field.lower is not None
-        ):
-            within = 8 * (field.upper - field.lower + 1)
+        if rng.unit == "bytes" and rng.width is not None:
+            within = 8 * rng.width
             holding = f"byte {field.range}" if within == 8 else f"bytes {field.range}"
         nested, nested_errata = checked(field.fields, within, source, holding)
         errata += nested_errata
-        kept.append(field.model_copy(update={"fields": nested}))
+        kept.append(
+            field.model_copy(
+                update={
+                    "fields": nested,
+                    "upper": rng.upper,
+                    "lower": rng.lower,
+                    "kind": rng.kind,
+                    "formula": rng.formula,
+                    "width": rng.width,
+                }
+            )
+        )
 
     return kept, errata
 

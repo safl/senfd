@@ -405,3 +405,22 @@ def test_a_name_holding_a_range_in_brackets_keeps_its_colon():
         "ACR",
         "A description: with a colon.",
     )
+
+
+def test_a_row_of_conditions_over_the_ranges_heads_them_and_is_no_field():
+    """As "HDGSTF=1" and "HDGSTF=0" of NVMe over TCP 1.3, over the bytes of
+    the header digest when it is present and when it is not"""
+
+    from senfd.documents.normalized import parse_layout
+
+    diagnostics = []
+    layout = parse_layout(
+        rows(
+            ("HDGSTF=1", "HDGSTF=0", ""),
+            ("75:72", "Not present", "PDU Header Digest (HDGST): The digest."),
+        ),
+        ["bytes", "bytes", "description"],
+        diagnostics,
+    )
+    assert [(f.range.text, f.acronym) for f in layout.fields] == [("75:72", "HDGST")]
+    assert [d.code for d in diagnostics] == ["range-condition"]

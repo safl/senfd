@@ -1,7 +1,7 @@
 {
     "$defs": {
         "Bits": {
-            "description": "A field of bits or bytes; 'upper' and 'lower' are None where the document\ngives the range by a formula, which 'range' then holds",
+            "description": "A field of bits or bytes; 'upper' and 'lower' are None where the document\ngives the range by a formula, or leaves it open, as 'kind' says",
             "properties": {
                 "name": {
                     "anyOf": [
@@ -64,6 +64,38 @@
                     "description": "The range as the document writes it, as \"29:26\" or '03:00'",
                     "title": "Range",
                     "type": "string"
+                },
+                "kind": {
+                    "default": "span",
+                    "description": "What the range is: a \"span\" of numbers, a \"formula\" of values the\nfigure names, as \"(N*16)+15:N*16\", or \"open\", as 'n/a' or 'Impl Spec'",
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "formula": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Of a formula, its bounds written plainly, \"upper:lower\", as\n'16*N + 15:16*N'",
+                    "title": "Formula"
+                },
+                "width": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "How many bits or bytes the range is, where its bounds give it, as 16\nof '16*N + 15:16*N'",
+                    "title": "Width"
                 },
                 "description": {
                     "default": "",
@@ -427,7 +459,7 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "What kind it is, as \"value\", \"acronym\", \"range-outside\",\n\"range-reversed\", \"opcode\" or 'gap'",
+                    "description": "What kind it is, as \"value\", \"acronym\", \"range\" (text that is no\nrange), \"range-outside\", \"range-reversed\", \"opcode\" or 'gap'",
                     "title": "Code",
                     "type": "string"
                 },
