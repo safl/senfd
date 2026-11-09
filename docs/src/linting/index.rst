@@ -71,12 +71,10 @@ the caption names it otherwise than the figure defining it.
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
 On the eleven documents ratified in 2026, as NVM Express publishes them as
-PDF, senfd reports 12 candidate errata and 9 document errors for the
+PDF, senfd reports 11 candidate errata and 9 document errors for the
 authors, and 15 rows that name no field, 23 figures it does not model, 16
-worked examples and 19 unassigned dwords. One of the candidate errata is
-senfd's: the "n/a9" of Base 2.4, Figure 466, is "n/a" and the marker of the
-figure's note 9.
-Six are the formulas of Base 2.4, Figure 432, five of them a range
+worked examples and 19 unassigned dwords.
+Six of the candidate errata are the formulas of Base 2.4, Figure 432, five of them a range
 whose upper bound, "... + 59", is below its lower, "... + 60".
 Three of the document errors are the tracked changes the PDFs of Base
 2.4, Boot 1.4 and Management Interface 2.2 are printed with. On a draft,
