@@ -324,8 +324,11 @@ def structure(
     return lines or [f"No structure '{name}'"]
 
 
-def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
-    """Fields by acronym or name, and things by name, with where they are"""
+def search(
+    spec: SpecDocument, text: str, limit: int = 40, verbose: bool = False
+) -> List[str]:
+    """Fields by acronym or name, and things by name, with where they are;
+    with 'verbose', a field's description too, its first line"""
 
     needle = text.strip().lower()
     if not needle:
@@ -340,7 +343,10 @@ def search(spec: SpecDocument, text: str, limit: int = 40) -> List[str]:
     def fields(where: str, items: List[Bits]):
         for field in items:
             if match(field):
-                hits.append(f"{where}: {bits(field).strip()}")
+                hit = f"{where}: {bits(field).strip()}"
+                if verbose and field.description:
+                    hit += ": " + field.description.split("\n")[0][:160]
+                hits.append(hit)
             fields(where, field.fields)
 
     for command_set in spec.command_sets.values():
