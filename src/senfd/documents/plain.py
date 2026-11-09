@@ -438,8 +438,7 @@ def text_of_cell(docx_cell, labels: Optional[Dict[Any, str]] = None) -> str:
 
 
 class FromPdf(Converter):
-    """A tagged PDF of a specification, as NVM Express publishes it; of the
-    extra 'pdf'"""
+    """A tagged PDF of a specification, as NVM Express publishes it"""
 
     @staticmethod
     def is_applicable(path: Path) -> bool:
@@ -447,12 +446,8 @@ class FromPdf(Converter):
 
     @staticmethod
     def convert(path: Path, args: Namespace) -> Tuple[FigureDocument, List[Error]]:
-        try:
-            from senfd.pdf.reader import read
-        except ImportError as exc:
-            raise ImportError(
-                f"Reading {path} needs the extra 'pdf': pip install senfd[pdf]"
-            ) from exc
+        from senfd.pdf.reader import read
+
         return read(path)
 
 

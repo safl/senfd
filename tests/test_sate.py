@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
-import sys
 from pathlib import Path
 
 import pytest
@@ -336,35 +335,6 @@ def test_the_language_model_is_asked_for_a_lookup_by_its_schema():
     assert str(chosen) == "command('ding', dword=10)"
     schema = asked["response_format"]["json_schema"]["schema"]
     assert schema == language_model.SCHEMA and asked["temperature"] == 0
-
-
-def test_without_the_extra_questions_are_read_a_line_at_a_time(
-    spec, monkeypatch, capsys
-):
-    import builtins
-
-    lines = iter(["opcode of ding"])
-
-    def given(prompt=""):
-        try:
-            return next(lines)
-        except StopIteration:
-            raise EOFError
-
-    monkeypatch.setattr(builtins, "input", given)
-    real = builtins.__import__
-
-    def without_the_extra(name, *args, **kwargs):
-        if name.startswith(("prompt_toolkit", "rich")):
-            raise ImportError(name)
-        return real(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", without_the_extra)
-    monkeypatch.delitem(sys.modules, "senfd.sate.session")  # Imported anew, and fails
-    model = str(Path("example") / "output" / "merged.spec.document.json")
-    assert senfd.sate.main(["--spec", model]) == 0
-    out = capsys.readouterr().out
-    assert "Ask about a command" in out and "opcode 01h" in out
 
 
 def test_a_command_named_with_its_command_set_is_the_command(
