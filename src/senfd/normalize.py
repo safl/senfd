@@ -195,7 +195,7 @@ REGEX_ACRONYM_WORD = re.compile(r"^[A-Z][A-Za-z0-9_-]*$")
 UNNAMED_ROWS = ("reserved", "obsolete", "vendor specific", "ignored")
 
 REGEX_FIELD_NO_COLON = re.compile(
-    rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z].*)$"
+    rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z(].*)$"
 )
 
 

@@ -80,6 +80,17 @@ def test_a_field_description_is_its_name_acronym_and_description():
     assert parse_field_description("Reserved") == ("Reserved", None, "")
 
 
+def test_an_aside_in_parentheses_after_the_acronym_is_of_the_description():
+    """As the last entry of NVM 1.3, Figure 41, writes its tags field, with no
+    colon between the acronym and an aside the earlier entries put after one"""
+
+    assert parse_field_description("Foo Tags (FT) (i.e., FST and FRT)") == (
+        "Foo Tags",
+        "FT",
+        "(i.e., FST and FRT)",
+    )
+
+
 def test_a_caption_is_parsed_for_its_subject():
     subject = parse_caption("Ding - Command Dword 11 if Foo Mode is set")
     assert (subject.kind, subject.name, subject.lower, subject.condition) == (
