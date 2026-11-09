@@ -68,40 +68,21 @@ what they mean.
 
 ## Notices
 
-**Not endorsed by NVM Express.** senfd is an independent project. It is not
-endorsed by NVM Express, Inc., nor made by it, and its data model is not a
-publication of NVM Express. NVM Express and NVMe are trademarks of NVM
-Express, Inc.
+**Not endorsed by NVM Express.** senfd is independent of NVM Express, Inc.
+NVM Express and NVMe are its trademarks.
 
-**Experimental: use at your own risk.** senfd is young, what it says can be
-wrong, and nothing it says replaces the specification. Every answer cites the
-figure it is from: check it there before you rely on it.
+**Experimental.** What senfd says can be wrong. Every answer cites the
+figure it is from; check it there before you rely on it.
 
-**Derived from the specifications, and under their terms.** The data model
-senfd makes is derived from the NVMe specifications, so the notice printed in
-each specification governs it as it governs the specification. Members of NVM
-Express, Inc. may use it subject to their Participation Agreement and the
-Company's Intellectual Property Policy and Bylaws. To anyone else, the notice
-grants only the right to review, refer to or cite the specification, and
-not to make derivatives of it or implement it: **you must be a member of NVM
-Express, Inc. to make the data model or make use of it.**
+**The data model is under the specifications' terms.** It is derived from
+the NVMe specifications, so the notice printed in each governs it. Members
+of NVM Express, Inc. may use it under their Participation Agreement and the
+Company's Intellectual Property Policy and Bylaws; to anyone else, the
+notice grants only the right to review, refer to or cite the
+specification. **You must be a member of NVM Express, Inc. to make the data
+model or use it.**
 
-**The specifications are NVM Express's,** under its copyright. NVM Express
-publishes the ratified specifications as PDF, which anyone can download from
-nvmexpress.org, and senfd reads those. The `.docx` of the specifications
-are available to members of NVM Express only; senfd reads those too, for
-those who hold them, and gives the same data model of either. The `.docx`
-is the simpler source, as it states what the PDF only shows, and it is the
-one an editor has while a specification is under revision: run on the
-draft, `senfd lint` lists what does not read as data, for the
-figure to be corrected before it is ratified rather than after.
-
-**Neither the documents nor anything made from them is distributed with
-senfd.** Its examples and most of its tests use synthetic documents of its
-own. The tests that read the specifications, and the CI job checking what
-senfd makes of each, download the public PDFs from nvmexpress.org into a
-cache, checked by their SHA-256, and upload neither them nor the data model
-made of them, which the job merges and has `sate` answer the benchmark's
-questions from, failing unless every one is right. **Make your own**: made
-as the documentation shows, from the public PDFs, it is the same data model
-the CI job checks.
+**Nothing made from the specifications is distributed.** senfd ships no
+specification and no data model, and its CI job, which reads the public
+PDFs, uploads nothing made from them. Make your own from the public PDFs,
+as the documentation shows.
