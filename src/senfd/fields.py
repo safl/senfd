@@ -30,6 +30,11 @@ PLACES: Tuple[Tuple[re.Pattern, Role, str], ...] = (
     (re.compile(r"^ignored\b", re.IGNORECASE), "ignored", "Ignored"),
 )
 
+# What may follow the word of a place in a name that holds one, as "Reserved
+# by PCI-SIG"; a name going on otherwise is a field's, as "Vendor Specific
+# Information Available"
+QUALIFIED = re.compile(r"^(?:\s+(?:by|for)\b.*)?$", re.IGNORECASE)
+
 
 # How a sentence about a field begins, where a name of one does not
 SENTENCE = re.compile(r"^(?:if|these|there|shall|refer)\b", re.IGNORECASE)
@@ -60,8 +65,11 @@ def identity(
     Unnamed where a row gives neither a name nor a place held"""
 
     for form, role, called in PLACES:
-        if form.match(name or description):
-            return Identity(role, called if name is None else name, acronym)
+        if name is None:
+            if form.match(description):
+                return Identity(role, called, acronym)
+        elif (match := form.match(name)) and QUALIFIED.match(name[match.end() :]):
+            return Identity(role, name, acronym)
     if name:
         return Identity("field", name, acronym)
     if is_phrase(description):

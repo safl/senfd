@@ -26,8 +26,32 @@ def test_what_holds_a_place_is_named_by_what_it_is(description, role, name):
     assert identity(None, None, description) == Identity(role, name)
 
 
-def test_a_place_given_a_name_keeps_it():
-    assert identity("Reserved", None).role == "reserved"
+@pytest.mark.parametrize(
+    "name, role",
+    [
+        ("Reserved", "reserved"),
+        ("Reserved by PCI-SIG", "reserved"),
+        ("Vendor Specific", "vendor_specific"),
+        ("Obsolete", "obsolete"),
+    ],
+)
+def test_a_place_given_a_name_keeps_it(name, role):
+    assert identity(name, None) == Identity(role, name)
+
+
+@pytest.mark.parametrize(
+    "name, acronym",
+    [
+        ("Vendor Specific Information Available", "VSIA"),
+        ("Vendor Specific Event Descriptor 0", None),
+        ("Reserved Bandwidth", "RBW"),
+    ],
+)
+def test_a_name_going_on_past_a_word_of_a_place_is_of_a_field(name, acronym):
+    """As Base 2.4 names the Vendor Specific Information Available field of
+    the Error Information Log Entry, which holds no place"""
+
+    assert identity(name, acronym) == Identity("field", name, acronym)
 
 
 def test_a_phrase_that_is_all_a_row_gives_is_its_name():
