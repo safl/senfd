@@ -8,10 +8,9 @@ Ask the expert
 ==============
 
 ``sate`` answers questions about the specifications from senfd's data
-model, at once. Alone on the command line it opens a session. Given a
-question, it answers that and leaves. ``--raw`` prints the answer as
-Markdown, unrendered, with the links as addresses. The same lookups answer
-``senfd-query`` on the command line.
+model, at once. Ask it in a session, which helps you put the question, or
+put the question on the command line, to have it answered and done, or from
+a script.
 
 .. raw:: html
 
@@ -28,6 +27,34 @@ nvmexpress.org: a terminal that shows links opens it in the browser, at the
 figure, to read what the specification says of the matter at hand. The
 citation gives the page of the file too, ``PDF page 54``, for a PDF saved
 rather than shown.
+
+Interactive
+-----------
+
+.. code-block:: console
+
+   $ sate
+
+The session is made for someone who does not yet know how to ask. It opens
+with a menu of the questions it answers, ``what is the opcode of
+<command>?``, ``which bit of cdw<N> of <command> is <acronym>?`` and the
+others. ``?`` on an empty line opens the menu again.
+
+Tab completes each part of a question from what the data model holds, each
+completion shown with its kind. After "opcode of" it offers the commands,
+after "log page" the log pages, and after "which bit of cdw12 of Write is"
+the acronyms of that dword's fields, in the order of its figure. A name
+completes from where it starts, so "zone app" completes to Zone Append. A
+word typed in capitals completes to acronyms.
+
+The words it recognises are coloured as you type. The line at the bottom
+says how the question is read so far, ``Read as command('Write',
+dword=12)``, or what comes next. Under it are the keys that work at that
+moment. Up and Down recall the questions asked before, kept between
+sessions. F1 or ``help`` lists :ref:`the forms <sec-ask-forms>`, and
+Ctrl-D leaves.
+
+.. _sec-ask-forms:
 
 The forms of a question
 -----------------------
@@ -84,27 +111,6 @@ what the question names. Asked for the opcode of Read, the answer must be
 Read, not Memory Read or Copy. Asked for the opcode of "Track", a word of
 several commands' names, the answer is that it is not known.
 
-The session
------------
-
-The session is made for someone who does not yet know how to ask. It opens
-with a menu of the questions it answers, ``what is the opcode of
-<command>?``, ``which bit of cdw<N> of <command> is <acronym>?`` and the
-others. ``?`` on an empty line opens the menu again.
-
-Tab completes each part of a question from what the data model holds, each
-completion shown with its kind. After "opcode of" it offers the commands,
-after "log page" the log pages, and after "which bit of cdw12 of Write is"
-the acronyms of that dword's fields, in the order of its figure. A name
-completes from where it starts, so "zone app" completes to Zone Append. A
-word typed in capitals completes to acronyms.
-
-The words it recognises are coloured as you type. The line at the bottom
-says how the question is read so far, ``Read as command('Write',
-dword=12)``, or what comes next. Under it are the keys that work at that
-moment. Up and Down recall the questions asked before, kept between
-sessions. F1 or ``help`` lists the forms above, and Ctrl-D leaves.
-
 The answers
 -----------
 
@@ -124,11 +130,20 @@ description.
 
 .. _sec-usage-query:
 
-On the command line: senfd-query
---------------------------------
+On the command line
+-------------------
 
-``senfd-query`` gives the same answers to a lookup named on the command
-line, for scripts and for the shell:
+Given a question, ``sate`` answers it and leaves, for a question asked
+once, or asked from a script:
+
+.. code-block:: console
+
+   $ sate "What is the opcode of the Sanitize Namespace command?"
+   $ sate --raw "which bit of cdw12 of write is FUA"
+
+``--raw`` prints the answer as Markdown, unrendered, with the links as
+addresses. ``senfd-query`` gives the same answers to a lookup named rather
+than asked, as a script would name it:
 
 .. code-block:: console
 
@@ -154,6 +169,10 @@ findings to; see :ref:`the linter <sec-linting>`.
 Markdown table and makes each citation a link to the page of the published
 PDF. ``--spec``, or the environment variable ``SENFD_SPEC``, names another
 data model than ``~/.cache/senfd/merged.spec.document.json``.
+
+A coding agent can be given these lookups as tools, and a small language
+model can choose the lookup for a question put loosely; :ref:`with a
+language model <sec-llm>` says how, and what each costs.
 
 .. raw:: html
 
