@@ -26,9 +26,9 @@ in it is trained or generated, and the same documents give the same data
 model every time.
 
 sate answers at once and cites the figure to check the answer against. It
-is a session with completion, or a question on the command line.
-``sate --llm`` lets a small language model on your own CPU choose the
-lookup; it writes nothing of the answer.
+is a session with completion, or a question on the command line. It needs
+no language model; :ref:`with a language model <sec-llm>` says how to use
+one anyway, and what it costs.
 
 .. code-block:: console
 
@@ -59,7 +59,7 @@ What the data model is for
 * **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
   coding agent the data model as tools, and ``sate --llm`` has a small
   language model on your own CPU choose the lookup and write nothing of the
-  answer.
+  answer; see :ref:`with a language model <sec-llm>`.
 * **Code generated from the figures.** An early prototype writes xNVMe's
   specification headers from the data model, every member citing its
   figure; see :ref:`code from the figures <sec-codegen>`.
@@ -131,6 +131,7 @@ data model the CI job checks.
    tutorial/index.rst
    install/index.rst
    sate/index.rst
+   llm/index.rst
    usage/index.rst
    linting/index.rst
 
@@ -141,7 +142,6 @@ data model the CI job checks.
    stages/index.rst
    schema/index.rst
    codegen/index.rst
-   benchmark/index.rst
    prior-art/index.rst
 
 .. toctree::

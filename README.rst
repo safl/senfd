@@ -64,9 +64,9 @@ model is JSON validated by a schema. Nothing in it is trained or generated,
 and the same documents give the same data model every time.
 
 sate answers at once and cites the figure to check the answer against. It
-is a session with completion, or a question on the command line.
-``sate --llm`` lets a small language model on your own CPU choose the
-lookup; it writes nothing of the answer.
+is a session with completion, or a question on the command line. It needs
+no language model. ``sate --llm`` uses one anyway, a small one on your own
+CPU choosing the lookup and writing nothing of the answer.
 
 Get started
 -----------
