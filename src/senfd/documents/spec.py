@@ -570,14 +570,15 @@ REGEX_ACRONYM = re.compile(r"^[A-Za-z0-9]+(?:[-_/.][A-Za-z0-9]+)*$")
 
 
 def checked(
-    fields: List[Bits], width: Optional[int], source: Source
+    fields: List[Bits], width: Optional[int], source: Source, of: str = "its dwords"
 ) -> Tuple[List[Bits], List[Erratum]]:
     """
     The fields of a layout that are what fields must be, and the errata of
     those that are not: an acronym that is not one is left out, and a field of
-    reversed bounds, or beyond the 'width' of the dwords it is of, is left out
-    whole; fields sharing bits are not errata, as a layout can give either of
-    two, as an IPv4 or an IPv6 address
+    reversed bounds, or beyond the 'width' in bits of what it is 'of', its
+    dwords or the bytes holding it, is left out whole; fields sharing bits are
+    not errata, as a layout can give either of two, as an IPv4 or an IPv6
+    address
     """
 
     errata: List[Erratum] = []
@@ -612,14 +613,23 @@ def checked(
                         code="range-outside",
                         message=(
                             f"Field {what}: bit {field.upper} beyond the "
-                            f"{width} bits of its dwords"
+                            f"{width} bits of {of}"
                         ),
                         found=field.range,
                         source=source,
                     )
                 )
                 continue
-        nested, nested_errata = checked(field.fields, None, source)
+        # Bits nested in a range of bytes lie within its bytes
+        within, holding = None, "its dwords"
+        if (
+            field.unit == "bytes"
+            and field.upper is not None
+            and field.lower is not None
+        ):
+            within = 8 * (field.upper - field.lower + 1)
+            holding = f"byte {field.range}" if within == 8 else f"bytes {field.range}"
+        nested, nested_errata = checked(field.fields, within, source, holding)
         errata += nested_errata
         kept.append(field.model_copy(update={"fields": nested}))
 
