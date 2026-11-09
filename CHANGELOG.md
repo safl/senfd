@@ -10,6 +10,28 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.10.0
+
+`pipx install senfd` installs all of senfd: the PDF reader, and the
+expert's prompt, rendering and MCP server, which were the extras `pdf` and
+`sate`. The extras remain, empty, so `senfd[sate,pdf]` still installs.
+Where installing these is the problem, a container image of senfd is
+published with each release, as `ghcr.io/safl/senfd`; it holds no
+specification, and the documents and the data model are mounted into it.
+
+An answer about a field, made from the published PDFs, ended "is bits
+29:26 of" and stopped; it says again where the field is, "of cdw12 of
+Write", and the figure to read it in. `senfd --help` says what a skip list
+is, without a heading of its own.
+
+The README and the documentation open with what senfd and sate are: a
+diagram of senfd making the data model, and a recording of sate answering
+from it. The documentation has a page for each step of using them, in the
+order they are taken, with no walk-through repeating them; the expert's
+page leads with its links to the pages of the specifications, and tells
+the session apart from the command line. The contributing guide says what
+a change must carry, and that no specification goes into the repository.
+
 ## 0.9.2
 
 The package is as in 0.9.1; this release brings its description on PyPI,
