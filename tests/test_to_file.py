@@ -37,9 +37,10 @@ def test_to_file_with_a_filepath(tmp_path):
 
 def test_the_example_outputs_are_those_senfd_makes(tmp_path):
     """example/output is what 'make version' writes; a change to what senfd
-    makes of the example documents shows here, rather than going unseen"""
+    makes of the example documents shows here, rather than going unseen. They
+    are compared byte for byte, as the JSON is written to be diffed: indented,
+    and the same bytes of the same document every time"""
 
-    import json
     from argparse import Namespace
     from pathlib import Path
 
@@ -54,8 +55,8 @@ def test_the_example_outputs_are_those_senfd_makes(tmp_path):
         if expected.name.startswith("merged."):
             continue
         made = tmp_path / expected.name
-        assert json.loads(made.read_text(encoding="utf-8")) == json.loads(
-            expected.read_text(encoding="utf-8")
+        assert made.read_text(encoding="utf-8") == expected.read_text(
+            encoding="utf-8"
         ), f"{expected} is not what senfd makes; regenerate it with 'make version'"
 
 
