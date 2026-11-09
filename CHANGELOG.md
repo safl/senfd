@@ -10,6 +10,26 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.12.0
+
+`senfd-query` is gone. What reading the documents found is senfd's to
+list, as `senfd lint` and `senfd errata`; a lookup is the expert's, as
+`sate command write 12`, `sate feature 07h` or `sate structure controller
+status`, its name taking several words without quotes. A question in
+quotes is still read as a question, whatever its first word.
+
+A PDF published with its tracked changes shown is a document error,
+listed once a document with how much is struck through and where it
+starts: the published Base 2.4, Boot 1.4 and Management Interface 2.2
+carry them. Only a filled rectangle strikes text through, as Word prints
+one, so the labels of arrows and dimension lines in diagrams are no
+longer dropped as deletions.
+
+Bits nested in a range of bytes are held to the bits of those bytes, so
+bits 15:3 under the one byte 362 of Base 2.4's Identify Controller are a
+candidate erratum. The README's notices are four short ones, and sate is
+introduced as an expert on the subject a data model describes.
+
 ## 0.11.0
 
 A data structure laid out in both bytes and bits, a heading row naming each
