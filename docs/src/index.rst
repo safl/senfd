@@ -5,25 +5,30 @@
 senfd and sate
 ==============
 
+* **senfd**: a data model generated from the NVMe specification documents,
+  ``.pdf`` and ``.docx``.
+* **sate**: an interactive expert answering from that data model, with no
+  language model; and ``sate-mcp``, an MCP server giving it to language
+  models as tools.
+
 .. warning::
 
    senfd is not endorsed by NVM Express, it is experimental, and you must be
    a member of NVM Express, Inc. to make its data model or make use of it.
    Read the :ref:`notices <sec-notices>` at the end of this page first.
 
-**senfd** makes a data model of the NVMe specifications. It reads the PDFs
-NVM Express publishes, or the ``.docx`` its members hold, and turns the
-figures into data: every command with its dwords and fields, every data
-structure, register, feature, log page and table of values. Each fact cites
-the document, section, figure and page it is from. It is a data model, not
-a language model: JSON validated by a :ref:`schema <sec-schema>`, nothing
-in it trained or generated, and the same documents give the same data
+senfd reads the PDFs NVM Express publishes, or the ``.docx`` its members
+hold, and turns the figures into data: every command with its dwords and
+fields, every data structure, register, feature, log page and table of
+values. Each fact cites the document, section, figure and page it is from.
+The data model is JSON validated by a :ref:`schema <sec-schema>`. Nothing
+in it is trained or generated, and the same documents give the same data
 model every time.
 
-**sate** answers questions from that data model, as an expert would. Ask it
-as you would ask a colleague, and it answers at once, citing the figure to
-check the answer against. It is a session with completion, a question on
-the command line, or an MCP server for a coding agent.
+sate answers at once and cites the figure to check the answer against. It
+is a session with completion, or a question on the command line.
+``sate --llm`` lets a small language model on your own CPU choose the
+lookup; it writes nothing of the answer.
 
 .. code-block:: console
 
