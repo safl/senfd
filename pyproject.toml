@@ -28,7 +28,7 @@ readme = { file = "README.md", content-type = "text/markdown" }
 # senfd[sate,pdf], of a version before, still works
 sate = []
 pdf = []
-dev = ["pyte", "pytest", "pytest-cov"]
+dev = ["jsonschema", "pyte", "pytest", "pytest-cov"]
 all = ["senfd[dev]"]
 
 [project.scripts]

@@ -38,6 +38,7 @@ from senfd.normalize import (
     shape_of,
     warning,
 )
+from senfd.ranges import Unit
 from senfd.skiplist import SkipPatterns
 from senfd.tables import Cell, Row, Table
 
@@ -65,7 +66,7 @@ class LayoutField(BaseModel):
 
 
 class Layout(BaseModel):
-    unit: str
+    unit: Unit
     fields: List[LayoutField] = Field(default_factory=list)
     notes: List[str] = Field(default_factory=list)
 
@@ -231,7 +232,7 @@ def parse_layout(
     # A header of both bytes and bits gives each byte range the bits in it, a
     # row each, the range of the bytes merged down over the rows of its bits
     nests_bits = "bytes" in grid and "bits" in grid
-    unit = "bytes" if nests_bits or "bits" not in grid else "bits"
+    unit: Unit = "bytes" if nests_bits or "bits" not in grid else "bits"
     text_column = "name" if "name" in grid else "description"
     columns = unique(grid)
     others = [c for c in columns if c not in ("bytes", "bits", "name", "description")]

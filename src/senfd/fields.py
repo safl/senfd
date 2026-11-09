@@ -12,12 +12,14 @@ needs: making one raises Unnamed.
 """
 
 import re
-from typing import NamedTuple, Optional
+from typing import Literal, NamedTuple, Optional, Tuple
 
 from senfd.ranges import Unconstructible
 
+Role = Literal["field", "reserved", "obsolete", "vendor_specific", "ignored"]
+
 # What holds a place, by the words its row begins with, and the name it has
-PLACES = (
+PLACES: Tuple[Tuple[re.Pattern, Role, str], ...] = (
     (re.compile(r"^reserved\b", re.IGNORECASE), "reserved", "Reserved"),
     (re.compile(r"^obsolete\b", re.IGNORECASE), "obsolete", "Obsolete"),
     (
@@ -39,14 +41,14 @@ class Unnamed(Unconstructible):
 
     def __init__(self, description: str):
         said = " ".join(description.split())
-        super().__init__("field-name", f"no name in '{said[:60]}'")
+        super().__init__(f"no name in '{said[:60]}'")
 
 
 class Identity(NamedTuple):
     """What a field is: its 'role', "field" or what it holds a place as, its
     name, and its acronym where it has one"""
 
-    role: str
+    role: Role
     name: str
     acronym: Optional[str] = None
 

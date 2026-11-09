@@ -51,4 +51,4 @@ def test_a_phrase_that_is_all_a_row_gives_is_its_name():
 def test_a_row_giving_no_name_makes_no_field(description):
     with pytest.raises(Unnamed) as raised:
         identity(None, None, description)
-    assert raised.value.code == "field-name"
+    assert "no name" in str(raised.value)
