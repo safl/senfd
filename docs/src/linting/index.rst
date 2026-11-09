@@ -4,8 +4,8 @@
 
 .. _sec-linting:
 
-A linter of the documents
-=========================
+Lint the documents
+==================
 
 To read a figure as data is to check it. Every figure senfd normalises, and
 every value it types, either takes the form its kind must have or is
@@ -20,6 +20,10 @@ by saying how many of each it found; ``senfd-query lint``, or the MCP tool
    $ senfd-query lint
    $ senfd-query lint nvm
    $ senfd-query errata base
+
+.. raw:: html
+
+   <div id="cast-lint"></div>
 
 **Candidate errata**, the authors', also listed by ``senfd-query errata``:
 a value that is not of its column's kind, as a footnote marker run into a
@@ -59,3 +63,13 @@ unassigned dwords. The ratified documents are consistent by this measure;
 the value is in running senfd on every draft, where it takes a minute and
 checks every figure the same way, and in keeping each revision as
 consistent as the last.
+
+.. raw:: html
+
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
+   <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
+   <script>
+     AsciinemaPlayer.create("../_static/casts/lint.cast", document.getElementById("cast-lint"),
+       {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
+        poster: "npt:0:12"});
+   </script>

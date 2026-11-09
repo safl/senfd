@@ -74,10 +74,6 @@ what the question names. Asked for the opcode of Read, the answer must be
 Read, not Memory Read or Copy. Asked for the opcode of "Track", a word of
 several commands' names, the answer is that it is not known.
 
-.. raw:: html
-
-   <div id="cast-lookups"></div>
-
 The session
 -----------
 
@@ -159,9 +155,7 @@ data model than ``~/.cache/senfd/merged.spec.document.json``.
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
    <script>
-     for (const [id, cast] of [["cast-session", "session"], ["cast-lookups", "lookups"]]) {
-       AsciinemaPlayer.create(`../_static/casts/${cast}.cast`, document.getElementById(id),
-         {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
-          poster: "npt:0:12"});
-     }
+     AsciinemaPlayer.create("../_static/casts/session.cast", document.getElementById("cast-session"),
+       {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
+        poster: "npt:0:12"});
    </script>

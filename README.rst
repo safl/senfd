@@ -71,21 +71,24 @@ specifications ratified in 2026, and sate answering three questions from it.
    a member of NVM Express, Inc. to make its data model or make use of it.
    Read the `notices`_ at the end first.
 
-Get started
------------
+Use
+---
 
 .. code-block:: console
 
    $ pipx install "senfd[sate,pdf]"
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ sate "Which bits of CDW12 of Write are PRINFO?"
    $ senfd-query lint
-   $ claude mcp add sate -- sate-mcp
+   $ sate "Which bits of CDW12 of Write are PRINFO?"
 
 with the eleven specifications ratified in 2026 downloaded from
 `nvmexpress.org <https://nvmexpress.org/specifications/>`_ into
-``~/specs``. The `documentation <https://safl.dk/senfd/>`__ walks through
-them, from nothing to a data model and an expert to ask.
+``~/specs``. The documentation has a page for each step: `install
+<https://safl.dk/senfd/install/>`_, `make the data model
+<https://safl.dk/senfd/usage/>`_, `lint the documents
+<https://safl.dk/senfd/linting/>`_, `ask the expert
+<https://safl.dk/senfd/sate/>`_, and `with a language model
+<https://safl.dk/senfd/llm/>`_.
 
 What it gets right
 ------------------

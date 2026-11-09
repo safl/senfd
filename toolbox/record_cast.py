@@ -13,7 +13,7 @@ comment and not run. The timing is made up, a fixed pace of typing and a
 pause after each output, so a recording is the same each time it is made
 from the same data model, and needs no terminal to make:
 
-    toolbox/record_cast.py docs/casts/lookups.sh docs/_static/casts/lookups.cast
+    toolbox/record_cast.py docs/casts/intro.sh docs/_static/casts/intro.cast
 """
 
 import argparse
