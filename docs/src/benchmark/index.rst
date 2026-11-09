@@ -131,13 +131,17 @@ Run it yourself
 The benchmark is a `cijoe <https://cijoe.readthedocs.io/>`_ workflow, kept
 with the transcripts of every run in senfd's `benchmark/
 <https://github.com/safl/senfd/tree/main/benchmark>`_ directory: the
-questions and their answers, the steps, and a configuration naming the
-documents, the senfd commit, the machine and the language models. The
-documents are not in it; bring your own.
+questions and their answers, the steps, and ``configs/default.toml``,
+naming the documents, the senfd release and the language models. It runs on
+your own machine. Download the PDFs as :ref:`making the data model
+<sec-usage>` says, and the two language models from Hugging Face, by the
+names the configuration gives. Have llama.cpp's ``llama-server`` on PATH,
+and Claude Code logged in for the frontier lanes. Copy the configuration
+where your machine differs.
 
 .. code-block:: console
 
-   $ cd benchmark && cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/$(date +%F)
+   $ cd benchmark && cijoe workflows/benchmark.yaml -c configs/default.toml -o results/$(date +%F)
 
 It records what it ran on and with, makes a virtual environment of the
 pinned senfd, makes the data model of the documents, runs every lane, and

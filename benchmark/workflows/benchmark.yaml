@@ -8,10 +8,9 @@ doc: |
   question, by sate with a local language model on the target's CPU
   choosing the lookups, and by frontier language models from memory, allowed
   to say "unknown" and made to answer. Every answer is kept, and the report
-  grades them against the data model of the documents. Claim the target with
-  dibs first.
+  grades them against the data model of the documents.
 
-    cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/<run>
+    cijoe workflows/benchmark.yaml -c configs/default.toml -o results/<run>
 
 steps:
 - name: facts

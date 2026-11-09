@@ -8,7 +8,7 @@
 Install senfd
 =============
 
-Installs senfd, with its 'ask' extra, from 'senfd.repo' at 'senfd.commit'
+Installs senfd from 'senfd.repo' at 'senfd.commit'
 into a venv of the benchmark's own under 'bench.workdir', with uv; the
 senfd on PATH is never used. Records the version and commit.
 
