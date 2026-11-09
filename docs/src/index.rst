@@ -5,30 +5,33 @@
 senfd and sate
 ==============
 
-* **senfd**: a data model generated from the NVMe specification documents,
-  ``.pdf`` and ``.docx``.
-* **sate**: an interactive expert answering from that data model, with no
-  language model; and ``sate-mcp``, an MCP server giving it to language
-  models as tools.
+**senfd** reads the NVMe specifications, the PDFs NVM Express publishes or
+the ``.docx`` its members hold, and makes a data model of them: every command
+with its dwords and fields, every data structure, register, feature, log page
+and table of values, each fact citing the document, section, figure and page
+it is from.
+
+.. image:: ../_static/senfd.svg
+   :alt: The .pdf and .docx documents go through senfd's stages, read,
+         normalise, define and merge, into one data model
+
+The data model is JSON validated by a :ref:`schema <sec-schema>`, and the
+same documents give the same data model every time.
+
+**sate** is an expert with the knowledge of that data model. Ask it about a
+command, a field, a register, a feature or a log page, in a session with
+completion or on the command line, and it answers at once, citing the figure
+to check the answer against:
+
+.. raw:: html
+
+   <div id="cast-intro"></div>
 
 .. warning::
 
    senfd is not endorsed by NVM Express, it is experimental, and you must be
    a member of NVM Express, Inc. to make its data model or make use of it.
    Read the :ref:`notices <sec-notices>` at the end of this page first.
-
-senfd reads the PDFs NVM Express publishes, or the ``.docx`` its members
-hold, and turns the figures into data: every command with its dwords and
-fields, every data structure, register, feature, log page and table of
-values. Each fact cites the document, section, figure and page it is from.
-The data model is JSON validated by a :ref:`schema <sec-schema>`. Nothing
-in it is trained or generated, and the same documents give the same data
-model every time.
-
-sate answers at once and cites the figure to check the answer against. It
-is a session with completion, or a question on the command line. It needs
-no language model; :ref:`with a language model <sec-llm>` says how to use
-one anyway, and what it costs.
 
 .. code-block:: console
 
@@ -149,3 +152,13 @@ data model the CI job checks.
    :hidden:
 
    contributors/index.rst
+
+.. raw:: html
+
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
+   <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
+   <script>
+     AsciinemaPlayer.create("_static/casts/intro.cast", document.getElementById("cast-intro"),
+       {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
+        poster: "npt:0:12"});
+   </script>

@@ -45,28 +45,31 @@ senfd and sate
     :target: https://safl.dk/senfd/sate/
     :alt: MCP server
 
-* **senfd**: a data model generated from the NVMe specification documents,
-  ``.pdf`` and ``.docx``.
-* **sate**: an interactive expert answering from that data model, with no
-  language model; and ``sate-mcp``, an MCP server giving it to language
-  models as tools.
+**senfd** reads the NVMe specifications, the PDFs NVM Express publishes or
+the ``.docx`` its members hold, and makes a data model of them: every command
+with its dwords and fields, every data structure, register, feature, log page
+and table of values, each fact citing the document, section, figure and page
+it is from.
 
-**Warning:** senfd is not endorsed by NVM Express, it is experimental, and
-you must be a member of NVM Express, Inc. to make its data model or make use
-of it. Read the `notices`_ at the end first.
+.. image:: https://raw.githubusercontent.com/safl/senfd/main/docs/_static/senfd.svg
+   :alt: The .pdf and .docx documents go through senfd's stages, read,
+         normalise, define and merge, into one data model
 
-senfd reads the PDFs NVM Express publishes, or the ``.docx`` its members
-hold, and turns the figures into data: every command with its dwords and
-fields, every data structure, register, feature, log page and table of
-values. Each fact cites the document, section, figure and page it is from,
-and links to that page of the PDF where NVM Express publishes it. The data
-model is JSON validated by a schema. Nothing in it is trained or generated,
-and the same documents give the same data model every time.
+The data model is JSON validated by a schema, and the same documents give
+the same data model every time.
 
-sate answers at once and cites the figure to check the answer against. It
-is a session with completion, or a question on the command line. It needs
-no language model. ``sate --llm`` uses one anyway, a small one on your own
-CPU choosing the lookup and writing nothing of the answer.
+**sate** is an expert with the knowledge of that data model. Ask it about a
+command, a field, a register, a feature or a log page, in a session with
+completion or on the command line, and it answers at once, citing the figure
+to check the answer against. The `documentation <https://safl.dk/senfd/>`__
+opens with a recording of both: senfd making the data model of the eleven
+specifications ratified in 2026, and sate answering three questions from it.
+
+.. warning::
+
+   senfd is not endorsed by NVM Express, it is experimental, and you must be
+   a member of NVM Express, Inc. to make its data model or make use of it.
+   Read the `notices`_ at the end first.
 
 Get started
 -----------
