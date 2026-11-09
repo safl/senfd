@@ -47,6 +47,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -62,6 +63,7 @@
             "description": "This is where a description would go",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -77,6 +79,7 @@
             "description": "",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           },
@@ -92,6 +95,7 @@
             "description": "The definition of this field is described in the table below.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [
               {
                 "unit": "bits",
@@ -108,6 +112,7 @@
                     "description": "5h as specified in some other figure",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   },
@@ -123,6 +128,7 @@
                     "description": "Valid values are specified in some other figure",
                     "columns": {},
                     "section": null,
+                    "elided": false,
                     "layouts": [],
                     "values": []
                   }
@@ -211,6 +217,7 @@
             "description": "This field indicates the host buffer size in bytes.",
             "columns": {},
             "section": null,
+            "elided": false,
             "layouts": [],
             "values": []
           }

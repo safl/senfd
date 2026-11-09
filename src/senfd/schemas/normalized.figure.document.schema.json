@@ -165,6 +165,11 @@
                     "default": null,
                     "title": "Section"
                 },
+                "elided": {
+                    "default": false,
+                    "title": "Elided",
+                    "type": "boolean"
+                },
                 "layouts": {
                     "items": {
                         "$ref": "#/$defs/Layout"

@@ -29,7 +29,10 @@ by saying how many of each it found; ``senfd lint``, or the MCP tool
 a value that is not of its column's kind; a range that is none, as a
 formula whose parentheses do not match, bounds where the upper is below the
 lower, or bits beyond the dwords or the bytes that hold them; an acronym
-that is not one; bits of a command's dwords that no figure gives a field.
+that is not one; bits of a command's dwords that no figure gives a field,
+and bits or bytes of no field between two fields of a figure laying out the
+whole of a data structure, a log page or a register, unless the figure
+leaves rows out there with "..." or gives a formula between them.
 A range is a span of numbers, a formula of values the figure names, as
 "(N*16)+15:N*16", or left open, as "n/a"; text that is none of these is the
 erratum, and a formula's bounds are compared whatever the values it names.
@@ -63,10 +66,11 @@ the caption names it otherwise than the figure defining it.
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
 On the eleven documents ratified in 2026, as NVM Express publishes them as
-PDF, senfd reports 11 candidate errata and 9 document errors for the
+PDF, senfd reports 13 candidate errata and 9 document errors for the
 authors, and 23 figures it does not model, 16 worked examples and 19
-unassigned dwords. One of the candidate errata is senfd's: the "n/a9" of
-Base 2.4, Figure 466, is "n/a" and the marker of the figure's note 9.
+unassigned dwords. Two of the candidate errata are senfd's: the "n/a9" of
+Base 2.4, Figure 466, is "n/a" and the marker of the figure's note 9, and
+the gap of Zoned Namespace 1.5, Figure 49, is a row senfd misreads.
 Six are the formulas of Base 2.4, Figure 432, five of them a range
 whose upper bound, "... + 59", is below its lower, "... + 60".
 Three of the document errors are the tracked changes the PDFs of Base

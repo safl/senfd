@@ -89,6 +89,9 @@ class Bits(Model):
     section: Optional[str] = None
     """The heading of a row of the figure that groups fields, as the fields
     under it are of"""
+    elided: bool = False
+    """Whether the figure leaves rows out before it, as "..." between the
+    first and the last of entries counted by a value"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The figure's other columns of the field, by their keys, as "reset" or
     'type'"""
@@ -456,6 +459,7 @@ def bits_of(field: LayoutField, unit: str) -> Bits:
         range=field.range.text,
         description=field.description,
         section=field.section,
+        elided=field.elided,
         columns=field.columns,
         fields=unions_of(
             [
@@ -640,6 +644,51 @@ def checked(
         )
 
     return kept, errata
+
+
+# The kinds of a figure that lay out the whole of something, by its caption;
+# another can list some fields of it, as those a reference value is given for
+WHOLE = ("data_structure", "log_page", "register")
+
+
+def uncovered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
+    """
+    The errata of a layout whose fields do not lie one after another: bits or
+    bytes of no field between two fields next in the table, where the figure
+    leaves no rows out between them and no field of a formula or an open
+    range lies between them. Fields sharing bits, as the alternatives of a
+    union or the fields of several structures in one table, leave none.
+    """
+
+    spans = [f for f in fields if f.kind == "span" and f.lower is not None]
+    descending = len(spans) > 1 and (spans[0].lower or 0) > (spans[-1].lower or 0)
+    errata: List[Erratum] = []
+    after: Optional[int] = None  # The first bit or byte after those before
+    unknown = False  # Whether a field of no known bounds lies between
+    elided = False  # Whether the figure leaves rows out between
+    for field in fields[::-1] if descending else fields:
+        # Rows left out are marked on the field after them in the table
+        elided = elided or (field.elided and not descending)
+        if field.kind != "span" or field.upper is None or field.lower is None:
+            unknown = True
+        else:
+            if after is not None and field.lower > after and not (unknown or elided):
+                missing = f"{unit[:-1].capitalize()} {after} is"
+                if field.lower - 1 > after:
+                    missing = f"{unit.capitalize()} {after} to {field.lower - 1} are"
+                named = f"{field.range} {field.name or ''}".strip()
+                errata.append(
+                    Erratum(
+                        code="gap",
+                        message=f"{missing} of no field, before {named}",
+                        found=field.range,
+                        source=source,
+                    )
+                )
+            after = max(after or 0, field.upper + 1)
+            unknown = elided = False
+        elided = elided or (field.elided and descending)
+    return errata
 
 
 def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
@@ -1390,6 +1439,12 @@ def resolve(document: SpecDocument) -> SpecDocument:
                 for e in gaps(command)
                 if (e.source.document, e.source.figure_nr) not in excluded
             ]
+    for structure in document.structures:
+        cited = (structure.source.document, structure.source.figure_nr)
+        if structure.kind in WHOLE and cited not in excluded:
+            document.errata += uncovered(
+                structure.fields, structure.unit, structure.source
+            )
 
     document.unassigned = {
         key: described for key, described in document.dwords.items() if key not in used

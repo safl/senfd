@@ -116,6 +116,12 @@
                     "description": "The heading of a row of the figure that groups fields, as the fields\nunder it are of",
                     "title": "Section"
                 },
+                "elided": {
+                    "default": false,
+                    "description": "Whether the figure leaves rows out before it, as \"...\" between the\nfirst and the last of entries counted by a value",
+                    "title": "Elided",
+                    "type": "boolean"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"

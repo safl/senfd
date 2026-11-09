@@ -55,6 +55,9 @@ class LayoutField(BaseModel):
     description: str = ""
     columns: Dict[str, str] = Field(default_factory=dict)
     section: Optional[str] = None
+    # Whether rows are left out before it, as "..." between the first and the
+    # last of entries counted by a value
+    elided: bool = False
     layouts: List["Layout"] = Field(default_factory=list)
     # The tables of values in its description, as the values a field selecting
     # an operation takes, by the names of their columns
@@ -235,6 +238,7 @@ def parse_layout(
 
     layout = Layout(unit=unit)
     section = None
+    elided = False
     for row in rows:
         values = values_of(row, grid)
         if values is None:
@@ -256,7 +260,8 @@ def parse_layout(
 
         filled = [t for t in texts.values() if t]
         if filled and all(REGEX_ELISION.match(t) for t in filled):
-            continue  # Entries left out, as between the first and the last
+            elided = True  # Entries left out, as between the first and the last
+            continue
 
         # Conditions heading the ranges below them are neither a field nor a
         # heading of its fields
@@ -339,10 +344,12 @@ def parse_layout(
                 columns={c: texts.get(c, "") for c in others}
                 | ({f"{unit}_detail": detail} if detail else {}),
                 section=section,
+                elided=elided,
                 layouts=nested,
                 values=enumerated,
             )
         )
+        elided = False
     return layout
 
 
