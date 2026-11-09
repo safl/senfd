@@ -1,0 +1,298 @@
+{
+ "lane": "frontier claude-opus-5-5 required",
+ "kind": "value",
+ "model": "claude-opus-5-5",
+ "mode": "required",
+ "run": 1,
+ "system": "You answer a closed-book quiz about the NVMe specifications from memory only. You have no tools. Reply with only a JSON object.",
+ "prompt": "Give each answer as the NVMe specification would write it: an opcode or identifier in hexadecimal (as \"3Dh\"), a bit as a number (as \"30\"), a range of bits as \"upper:lower\" (as \"29:26\"), a byte offset as a number. Give your best answer to every question. Add a confidence of high, medium or low to each. Reply with only a JSON object, keys the question numbers as strings, each value an object {\"answer\": \"...\", \"confidence\": \"...\"}.\n\n1. What is the opcode of the NVM Command Set Write command?\n2. What is the opcode of the Admin Identify command?\n3. Which bit of Command Dword 12 of the Write command is Force Unit Access (FUA)?\n4. What is the Feature Identifier of Number of Queues?\n5. What is the Log Page Identifier of SMART / Health Information?\n6. What is the opcode of the Zoned Namespace Zone Append command?\n7. At which byte offset of the Identify Controller data structure is Maximum Data Transfer Size (MDTS)?\n8. At which offset is the Controller Configuration (CC) register?\n9. What is the opcode of the Admin Track Send command?\n10. What is the opcode of the Admin Migration Send command?\n11. What is the opcode of the Admin Controller Data Queue command?\n12. What is the opcode of the Admin Sanitize Namespace command?\n13. What is the opcode of the Admin Cross-Controller Reset command?\n14. What is the opcode of the Admin Memory Range Set Management command?\n15. What is the opcode of the Key Value Command Set Exist command?\n16. What is the Feature Identifier of Power Limit?\n17. What is the Feature Identifier of Rate Limiting?\n18. What is the Feature Identifier of Flexible Data Placement Events?\n19. What is the Log Page Identifier of Rotational Media Information?\n20. What is the Log Page Identifier of Lost Host Communication?\n21. What is the Log Page Identifier of Reachability Groups?\n22. Which bits of Command Dword 12 of the NVM Write command are Protection Information (PRINFO)?\n23. Which bit of Command Dword 12 of the NVM Write command is Storage Tag Check (STC)?\n24. Which bit of Command Dword 10 of the Sanitize command is Enter Media Verification State (EMVS)?\n25. Which bit of Command Dword 10 of the Sanitize command is Purge Required (PREQ)?\n26. Which bits of Command Dword 11 of the Temperature Threshold feature are Temperature Threshold Hysteresis (TMPTHH)?\n27. Which bit of the Controller Configuration (CC) register is Controller Ready Independent of Media Enable (CRIME)?\n28. Which bit of the Controller Status (CSTS) register is Shutdown Type (ST)?\n29. Which bits of Command Dword 10 of Get Log Page are Number of Dwords Lower (NUMDL)?\n30. Which bits of Command Dword 13 of Zone Append are Directive Specific (DSPEC), when CETYPE is cleared to 0h?\n31. At which bytes of the Identify Controller data structure is Optional Fabrics Commands Support (OFCS)?\n32. At which bytes of the Identify Controller data structure is I/O Queue Command Capsule Supported Size (IOCCSZ)?\n33. Which bits of the Controller Capabilities (CAP) register are Controller Ready Modes Supported (CRMS)?\n34. Which bit of the Controller Capabilities (CAP) register is NVM Subsystem Shutdown Enhancements Supported (NSSES)?\n35. Which bits of the Controller Configuration (CC) register are I/O Completion Queue Entry Size (IOCQES)?\n36. Which bit of the Controller Status (CSTS) register is Processing Paused (PP)?\n37. Which bits of the Controller Ready Timeouts (CRTO) register are Controller Ready Independent of Media Timeout (CRIMT)?\n38. What is the opcode of the Key Value Command Set Store command?\n39. What is the opcode of the Key Value Command Set List command?\n40. What is the opcode of the Key Value Command Set Delete command?\n41. What is the opcode of the Zoned Namespace Zone Management Send command?\n42. What is the opcode of the Zoned Namespace Zone Management Receive command?\n43. What is the opcode of the Subsystem Local Memory Command Set Memory Copy command?\n44. What is the opcode of the Subsystem Local Memory Command Set Memory Fill command?\n45. What is the opcode of the Computational Programs Command Set Execute Program command?\n46. What is the opcode of the Admin Load Program command?\n47. What is the opcode of the Admin Program Activation Management command?\n48. What is the opcode of the NVMe-MI PDA Write Zeroes command?\n49. What is the Feature Identifier of Namespace Admin Label?\n50. What is the Feature Identifier of Key Value Configuration?\n51. What is the Feature Identifier of Configurable Device Personality?\n52. What is the Feature Identifier of Voltage Measurement?\n53. What is the Log Page Identifier of Reachability Associations?\n54. What is the Log Page Identifier of Device Personalities?\n55. What is the Log Page Identifier of Manufacturer Default Configuration Status?\n56. What is the Log Page Identifier of Pull Model DDC Request?\n57. What is the Log Page Identifier of Memory Range Set List?\n58. What is the Log Page Identifier of Host Addressable Namespaces?\n59. What is the Log Page Identifier of Changed Zone List?\n60. Which bits of Command Dword 13 of the Zone Management Send command are Zone Send Action (ZSA)?\n61. Which bits of Command Dword 11 of the Key Value Store command are Key Length (KL)?\n62. Which bits of Command Dword 11 of the Get Log Page command are Number of Dwords Upper (NUMDU)?\n63. At which byte of the NVM Command Set Identify Namespace data structure is Formatted LBA Size (FLBAS)?\n64. At which byte of the NVM Command Set Identify Namespace data structure is Number of LBA Formats (NLBAF)?\n65. At which byte of the NVM Command Set Identify Namespace data structure is End-to-end Data Protection Type Settings (DPS)?\n66. At which byte of the I/O Command Set Independent Identify Namespace data structure is Namespace Multi-path I/O and Namespace Sharing Capabilities (NMIC)?\n67. What is the opcode of the NVMe-MI VPD Read command?\n68. What is the Log Page Identifier of Cross-Controller Reset?\n69. Which CNS value of the Identify command returns the I/O Command Set Independent Identify Namespace data structure?\n70. What is the status code of the Zoned Namespace Command Set's Zone Boundary Error?\n71. What is the status code of the Key Value Command Set's KV Key Does Not Exist?",
+ "result": "```json\n{\n\"1\": {\"answer\": \"01h\", \"confidence\": \"high\"},\n\"2\": {\"answer\": \"06h\", \"confidence\": \"high\"},\n\"3\": {\"answer\": \"30\", \"confidence\": \"high\"},\n\"4\": {\"answer\": \"07h\", \"confidence\": \"high\"},\n\"5\": {\"answer\": \"02h\", \"confidence\": \"high\"},\n\"6\": {\"answer\": \"7Dh\", \"confidence\": \"high\"},\n\"7\": {\"answer\": \"77\", \"confidence\": \"high\"},\n\"8\": {\"answer\": \"14h\", \"confidence\": \"high\"},\n\"9\": {\"answer\": \"3Dh\", \"confidence\": \"medium\"},\n\"10\": {\"answer\": \"41h\", \"confidence\": \"medium\"},\n\"11\": {\"answer\": \"45h\", \"confidence\": \"medium\"},\n\"12\": {\"answer\": \"85h\", \"confidence\": \"low\"},\n\"13\": {\"answer\": \"38h\", \"confidence\": \"low\"},\n\"14\": {\"answer\": \"21h\", \"confidence\": \"low\"},\n\"15\": {\"answer\": \"14h\", \"confidence\": \"medium\"},\n\"16\": {\"answer\": \"22h\", \"confidence\": \"low\"},\n\"17\": {\"answer\": \"26h\", \"confidence\": \"low\"},\n\"18\": {\"answer\": \"1Eh\", \"confidence\": \"medium\"},\n\"19\": {\"answer\": \"16h\", \"confidence\": \"medium\"},\n\"20\": {\"answer\": \"1Dh\", \"confidence\": \"low\"},\n\"21\": {\"answer\": \"1Ah\", \"confidence\": \"medium\"},\n\"22\": {\"answer\": \"29:26\", \"confidence\": \"high\"},\n\"23\": {\"answer\": \"24\", \"confidence\": \"high\"},\n\"24\": {\"answer\": \"10\", \"confidence\": \"medium\"},\n\"25\": {\"answer\": \"11\", \"confidence\": \"low\"},\n\"26\": {\"answer\": \"24:22\", \"confidence\": \"medium\"},\n\"27\": {\"answer\": \"24\", \"confidence\": \"high\"},\n\"28\": {\"answer\": \"6\", \"confidence\": \"high\"},\n\"29\": {\"answer\": \"31:16\", \"confidence\": \"high\"},\n\"30\": {\"answer\": \"31:16\", \"confidence\": \"high\"},\n\"31\": {\"answer\": \"1805:1804\", \"confidence\": \"medium\"},\n\"32\": {\"answer\": \"1795:1792\", \"confidence\": \"high\"},\n\"33\": {\"answer\": \"60:59\", \"confidence\": \"high\"},\n\"34\": {\"answer\": \"61\", \"confidence\": \"medium\"},\n\"35\": {\"answer\": \"23:20\", \"confidence\": \"high\"},\n\"36\": {\"answer\": \"5\", \"confidence\": \"high\"},\n\"37\": {\"answer\": \"31:16\", \"confidence\": \"high\"},\n\"38\": {\"answer\": \"01h\", \"confidence\": \"high\"},\n\"39\": {\"answer\": \"06h\", \"confidence\": \"high\"},\n\"40\": {\"answer\": \"10h\", \"confidence\": \"high\"},\n\"41\": {\"answer\": \"79h\", \"confidence\": \"high\"},\n\"42\": {\"answer\": \"7Ah\", \"confidence\": \"high\"},\n\"43\": {\"answer\": \"01h\", \"confidence\": \"low\"},\n\"44\": {\"answer\": \"02h\", \"confidence\": \"low\"},\n\"45\": {\"answer\": \"01h\", \"confidence\": \"low\"},\n\"46\": {\"answer\": \"0Fh\", \"confidence\": \"medium\"},\n\"47\": {\"answer\": \"20h\", \"confidence\": \"medium\"},\n\"48\": {\"answer\": \"0Fh\", \"confidence\": \"low\"},\n\"49\": {\"answer\": \"1Fh\", \"confidence\": \"medium\"},\n\"50\": {\"answer\": \"20h\", \"confidence\": \"medium\"},\n\"51\": {\"answer\": \"23h\", \"confidence\": \"low\"},\n\"52\": {\"answer\": \"25h\", \"confidence\": \"low\"},\n\"53\": {\"answer\": \"1Bh\", \"confidence\": \"medium\"},\n\"54\": {\"answer\": \"1Fh\", \"confidence\": \"low\"},\n\"55\": {\"answer\": \"1Eh\", \"confidence\": \"low\"},\n\"56\": {\"answer\": \"73h\", \"confidence\": \"medium\"},\n\"57\": {\"answer\": \"24h\", \"confidence\": \"low\"},\n\"58\": {\"answer\": \"25h\", \"confidence\": \"low\"},\n\"59\": {\"answer\": \"BFh\", \"confidence\": \"high\"},\n\"60\": {\"answer\": \"7:0\", \"confidence\": \"high\"},\n\"61\": {\"answer\": \"7:0\", \"confidence\": \"medium\"},\n\"62\": {\"answer\": \"15:0\", \"confidence\": \"high\"},\n\"63\": {\"answer\": \"26\", \"confidence\": \"high\"},\n\"64\": {\"answer\": \"25\", \"confidence\": \"high\"},\n\"65\": {\"answer\": \"29\", \"confidence\": \"high\"},\n\"66\": {\"answer\": \"1\", \"confidence\": \"medium\"},\n\"67\": {\"answer\": \"05h\", \"confidence\": \"medium\"},\n\"68\": {\"answer\": \"1Dh\", \"confidence\": \"low\"},\n\"69\": {\"answer\": \"08h\", \"confidence\": \"high\"},\n\"70\": {\"answer\": \"B8h\", \"confidence\": \"high\"},\n\"71\": {\"answer\": \"87h\", \"confidence\": \"medium\"}\n}\n```",
+ "answers": {
+  "1": {
+   "answer": "01h",
+   "confidence": "high"
+  },
+  "2": {
+   "answer": "06h",
+   "confidence": "high"
+  },
+  "3": {
+   "answer": "30",
+   "confidence": "high"
+  },
+  "4": {
+   "answer": "07h",
+   "confidence": "high"
+  },
+  "5": {
+   "answer": "02h",
+   "confidence": "high"
+  },
+  "6": {
+   "answer": "7Dh",
+   "confidence": "high"
+  },
+  "7": {
+   "answer": "77",
+   "confidence": "high"
+  },
+  "8": {
+   "answer": "14h",
+   "confidence": "high"
+  },
+  "9": {
+   "answer": "3Dh",
+   "confidence": "medium"
+  },
+  "10": {
+   "answer": "41h",
+   "confidence": "medium"
+  },
+  "11": {
+   "answer": "45h",
+   "confidence": "medium"
+  },
+  "12": {
+   "answer": "85h",
+   "confidence": "low"
+  },
+  "13": {
+   "answer": "38h",
+   "confidence": "low"
+  },
+  "14": {
+   "answer": "21h",
+   "confidence": "low"
+  },
+  "15": {
+   "answer": "14h",
+   "confidence": "medium"
+  },
+  "16": {
+   "answer": "22h",
+   "confidence": "low"
+  },
+  "17": {
+   "answer": "26h",
+   "confidence": "low"
+  },
+  "18": {
+   "answer": "1Eh",
+   "confidence": "medium"
+  },
+  "19": {
+   "answer": "16h",
+   "confidence": "medium"
+  },
+  "20": {
+   "answer": "1Dh",
+   "confidence": "low"
+  },
+  "21": {
+   "answer": "1Ah",
+   "confidence": "medium"
+  },
+  "22": {
+   "answer": "29:26",
+   "confidence": "high"
+  },
+  "23": {
+   "answer": "24",
+   "confidence": "high"
+  },
+  "24": {
+   "answer": "10",
+   "confidence": "medium"
+  },
+  "25": {
+   "answer": "11",
+   "confidence": "low"
+  },
+  "26": {
+   "answer": "24:22",
+   "confidence": "medium"
+  },
+  "27": {
+   "answer": "24",
+   "confidence": "high"
+  },
+  "28": {
+   "answer": "6",
+   "confidence": "high"
+  },
+  "29": {
+   "answer": "31:16",
+   "confidence": "high"
+  },
+  "30": {
+   "answer": "31:16",
+   "confidence": "high"
+  },
+  "31": {
+   "answer": "1805:1804",
+   "confidence": "medium"
+  },
+  "32": {
+   "answer": "1795:1792",
+   "confidence": "high"
+  },
+  "33": {
+   "answer": "60:59",
+   "confidence": "high"
+  },
+  "34": {
+   "answer": "61",
+   "confidence": "medium"
+  },
+  "35": {
+   "answer": "23:20",
+   "confidence": "high"
+  },
+  "36": {
+   "answer": "5",
+   "confidence": "high"
+  },
+  "37": {
+   "answer": "31:16",
+   "confidence": "high"
+  },
+  "38": {
+   "answer": "01h",
+   "confidence": "high"
+  },
+  "39": {
+   "answer": "06h",
+   "confidence": "high"
+  },
+  "40": {
+   "answer": "10h",
+   "confidence": "high"
+  },
+  "41": {
+   "answer": "79h",
+   "confidence": "high"
+  },
+  "42": {
+   "answer": "7Ah",
+   "confidence": "high"
+  },
+  "43": {
+   "answer": "01h",
+   "confidence": "low"
+  },
+  "44": {
+   "answer": "02h",
+   "confidence": "low"
+  },
+  "45": {
+   "answer": "01h",
+   "confidence": "low"
+  },
+  "46": {
+   "answer": "0Fh",
+   "confidence": "medium"
+  },
+  "47": {
+   "answer": "20h",
+   "confidence": "medium"
+  },
+  "48": {
+   "answer": "0Fh",
+   "confidence": "low"
+  },
+  "49": {
+   "answer": "1Fh",
+   "confidence": "medium"
+  },
+  "50": {
+   "answer": "20h",
+   "confidence": "medium"
+  },
+  "51": {
+   "answer": "23h",
+   "confidence": "low"
+  },
+  "52": {
+   "answer": "25h",
+   "confidence": "low"
+  },
+  "53": {
+   "answer": "1Bh",
+   "confidence": "medium"
+  },
+  "54": {
+   "answer": "1Fh",
+   "confidence": "low"
+  },
+  "55": {
+   "answer": "1Eh",
+   "confidence": "low"
+  },
+  "56": {
+   "answer": "73h",
+   "confidence": "medium"
+  },
+  "57": {
+   "answer": "24h",
+   "confidence": "low"
+  },
+  "58": {
+   "answer": "25h",
+   "confidence": "low"
+  },
+  "59": {
+   "answer": "BFh",
+   "confidence": "high"
+  },
+  "60": {
+   "answer": "7:0",
+   "confidence": "high"
+  },
+  "61": {
+   "answer": "7:0",
+   "confidence": "medium"
+  },
+  "62": {
+   "answer": "15:0",
+   "confidence": "high"
+  },
+  "63": {
+   "answer": "26",
+   "confidence": "high"
+  },
+  "64": {
+   "answer": "25",
+   "confidence": "high"
+  },
+  "65": {
+   "answer": "29",
+   "confidence": "high"
+  },
+  "66": {
+   "answer": "1",
+   "confidence": "medium"
+  },
+  "67": {
+   "answer": "05h",
+   "confidence": "medium"
+  },
+  "68": {
+   "answer": "1Dh",
+   "confidence": "low"
+  },
+  "69": {
+   "answer": "08h",
+   "confidence": "high"
+  },
+  "70": {
+   "answer": "B8h",
+   "confidence": "high"
+  },
+  "71": {
+   "answer": "87h",
+   "confidence": "medium"
+  }
+ },
+ "cost_usd": 0.0944662,
+ "seconds": 46.28
+}
