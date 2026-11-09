@@ -19,7 +19,7 @@ from typing import Dict, List, NamedTuple, Optional, Sequence, Set, Tuple
 from pdfplumber.utils import extract_text as text_of_chars
 
 from senfd.errors import Error
-from senfd.pdf.pages import LINE, NEAR, Box, Pages, Vertical, grid, spans, union
+from senfd.pdf.pages import LINE, Box, Pages, Vertical, grid, spans, union
 from senfd.pdf.tree import Leaf, TaggedCell, paragraphs, rows
 from senfd.tables import Cell, Row, Table
 
@@ -28,6 +28,9 @@ from senfd.tables import Cell, Row, Table
 # rule separates its rows to say: the padding of a cell, with room to spare,
 # but less than the margin a change bar is drawn in
 PADDING = 12
+# How far past the end of a rule a border it ends at may be; less than the 2
+# points between a nested table's border and that of the cell holding it
+REACH = 1.5
 
 
 # A range of bytes or bits wrapped inside its lower number by a narrow column
@@ -178,6 +181,14 @@ def strays_left_out(
     return found
 
 
+def bordered(x0: float, top: float, x1: float, bottom: float) -> Box:
+    """Where the borders of a nested table of this extent are. Across, the
+    extent has them, and those of the cell holding it stand 2 points outside;
+    down, it is that of the text, inside them."""
+
+    return (x0 - 1, top - 3, x1 + 1, bottom + 3)
+
+
 def read_cell(
     pages: Pages,
     cell: TaggedCell,
@@ -204,7 +215,7 @@ def read_cell(
         inner, inner_extent = table_of(pages, rows(element, page), errors)
         tables.append(Table(rows=inner))
         for number, (x0, top, x1, bottom) in inner_extent.items():
-            nested[number].append((x0 - 3, top - 3, x1 + 3, bottom + 3))
+            nested[number].append(bordered(x0, top, x1, bottom))
     start: Optional[int] = next(iter(boxes), None)
     if start is None and cell.page is not None:
         start = pages.number(cell.page)
@@ -242,7 +253,7 @@ def columns_of(
 
     def column_edge(x: float) -> bool:
         if separators:
-            return any(x0 - NEAR <= x <= x1 + NEAR for x0, x1 in separators)
+            return any(x0 - REACH <= x <= x1 + REACH for x0, x1 in separators)
         return extent[0] - PADDING <= x <= extent[2] + PADDING
 
     verticals = [
