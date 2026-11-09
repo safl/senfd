@@ -2,8 +2,8 @@
 ..
 .. SPDX-License-Identifier: LGPL-2.1-only
 
-senfd: the NVMe specifications, as data
-=======================================
+senfd and sate
+==============
 
 .. image:: https://github.com/safl/senfd/actions/workflows/bd.yaml/badge.svg
     :target: https://github.com/safl/senfd/actions/workflows/bd.yaml
@@ -45,6 +45,74 @@ senfd: the NVMe specifications, as data
     :target: https://safl.dk/senfd/sate/
     :alt: MCP server
 
+**Warning:** senfd is not endorsed by NVM Express, it is experimental, and
+you must be a member of NVM Express, Inc. to make its data model or make use
+of it. Read the `notices`_ at the end first.
+
+**senfd** makes a data model of the NVMe specifications. It reads the PDFs
+NVM Express publishes, or the ``.docx`` its members hold, and turns the
+figures into data: every command with its dwords and fields, every data
+structure, register, feature, log page and table of values. Each fact cites
+the document, section, figure and page it is from, and links to that page
+of the PDF where NVM Express publishes it. It is a data model, not a
+language model: JSON validated by a schema, nothing in it trained or
+generated, and the same documents give the same data model every time.
+
+**sate** answers questions from that data model, as an expert would. Ask it
+as you would ask a colleague, and it answers at once, citing the figure to
+check the answer against. It is a session with completion, a question on
+the command line, or an MCP server for a coding agent.
+
+Get started
+-----------
+
+.. code-block:: console
+
+   $ pipx install "senfd[sate,pdf]"
+   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
+   $ sate "Which bits of CDW12 of Write are PRINFO?"
+   $ senfd-query lint
+   $ claude mcp add sate -- sate-mcp
+
+with the eleven specifications ratified in 2026 downloaded from
+`nvmexpress.org <https://nvmexpress.org/specifications/>`_ into
+``~/specs``. The `documentation <https://safl.dk/senfd/>`__ walks through
+them, from nothing to a data model and an expert to ask.
+
+What it gets right
+------------------
+
+Asked 71 questions with one exact answer each, an opcode, an identifier, a
+status code, a bit or a byte offset, mostly about what the revisions
+ratified in 2026 added or moved:
+
+* ``sate``, by the words of the question: **71 of 71 right**, in 4 ms
+  each, for free.
+* ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **70 of 71
+  right, none wrong**, one not known, in 2.7 s each, for free, on your own
+  hardware.
+* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **15.3
+  and 32.3 wrong** on average, stated as surely as the right ones, at USD
+  0.10 and 0.02 a run and 0.66 s and 0.13 s a question.
+
+The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
+how to run it again. senfd is the third tool of its line, after
+`nvme-lint <https://github.com/linux-nvme/nvme-lint>`_ and `Spex
+<https://github.com/SamsungDS/Spex>`_; the `documentation
+<https://safl.dk/senfd/prior-art/>`__ says what it changed.
+
+The names
+---------
+
+senfd reads the **S**\ pecification documents, **E**\ xtracts and
+**N**\ ormalises their **F**\ igures, and makes a **D**\ ata model.
+``sate`` is **S**\ enfd **A**\ sk **T**\ he **E**\ xpert. *Senf* is
+Danish for mustard, as the logo's documents drenched in it show, and a sate
+is what comes of the marinade.
+
+Notices
+-------
+
 **Not endorsed by NVM Express.** senfd is an independent project. It is not
 endorsed by NVM Express, Inc., nor made by it, and its data model is not a
 publication of NVM Express. NVM Express and NVMe are trademarks of NVM
@@ -62,78 +130,6 @@ Company's Intellectual Property Policy and Bylaws. To anyone else, the notice
 grants only the right to review, refer to or cite the specification, and
 not to make derivatives of it or implement it: **you must be a member of NVM
 Express, Inc. to make the data model or make use of it.**
-
-**And yet, see what it gets right.** Asked 71 questions with one exact
-answer each, an opcode, an identifier, a status code, a bit or a byte
-offset, mostly about what the revisions ratified in 2026 added or moved:
-
-* ``sate``, by the words of the question: **71 of 71 right**, in 4 ms
-  each, for free.
-* ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **70 of 71
-  right, none wrong**, one not known, in 2.7 s each, for free, on your own
-  hardware.
-* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **15.3
-  and 32.3 wrong** on average, stated as surely as the right ones, at USD
-  0.10 and 0.02 a run and 0.66 s and 0.13 s a question.
-
-The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
-how to run it again.
-
-What it is
-----------
-
-**senfd** reads the **S**\ pecification documents, as the PDFs NVM Express
-publishes or the ``.docx`` its members hold, **E**\ xtracts and
-**N**\ ormalises their **F**\ igures, and makes a structured **D**\ ata
-model of them: every command with its dwords and fields, every data
-structure, register, feature, log page and table of values, each fact
-citing the document, section, figure and page it is from, and linking to
-that page of the PDF where NVM Express publishes it. It is a data model,
-not a language model: JSON validated by a schema, nothing in it trained or
-generated, and the same documents give the same data model every time.
-
-Get started
------------
-
-.. code-block:: console
-
-   $ pipx install "senfd[sate,pdf]"
-   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ sate "Which bits of CDW12 of Write are PRINFO?"
-   $ senfd-query lint
-   $ claude mcp add sate -- sate-mcp
-
-with the eleven specifications ratified in 2026 downloaded from
-`nvmexpress.org <https://nvmexpress.org/specifications/>`_ into
-``~/specs``. The `tutorial <https://safl.dk/senfd/tutorial/>`_ walks
-through them, from nothing to a data model and an expert to ask.
-
-The package has two tools. ``senfd`` makes the data model, and ``sate``,
-for **S**\ enfd **A**\ sk **T**\ he **E**\ xpert, answers questions from it
-at once, citing the figure, as a session with completion, as a question on
-the command line, and as an MCP server for a coding agent; *Senf* is Danish
-for mustard, as the logo's documents drenched in it show, and a sate is
-what comes of the marinade.
-
-Prior art
----------
-
-senfd is the third tool of its line: `nvme-lint
-<https://github.com/linux-nvme/nvme-lint>`_ (2022) checked the figures of
-the published PDFs with rules over tables found on the page, and `Spex
-<https://github.com/SamsungDS/Spex>`_ (2023) read the ``.docx`` instead and
-extracted the figures to JSON under a schema, with the lint as part of it.
-senfd was a change of direction: one plain markup for every figure, rows of
-cells, from which the figures are normalised and the data behind them
-structured, so that linting is a side effect of reading, no format is
-forced, and the ``.docx`` and the PDF come to the same data model. Above
-all the goal moved, from checks tossed at the documents to an NVMe data
-model, useful where a lint is not: an expert to ask, tools for a coding
-agent, a driver's headers, two revisions compared by their facts; the
-`documentation <https://safl.dk/senfd/prior-art/>`_ says more.
-
-On what terms the documents are read
-------------------------------------
 
 **The specifications are NVM Express's,** under its copyright. NVM Express
 publishes the ratified specifications as PDF, which anyone can download from

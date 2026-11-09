@@ -2,8 +2,79 @@
 ..
 .. SPDX-License-Identifier: LGPL-2.1-only
 
-senfd: the NVMe specifications, as data
-=======================================
+senfd and sate
+==============
+
+.. warning::
+
+   senfd is not endorsed by NVM Express, it is experimental, and you must be
+   a member of NVM Express, Inc. to make its data model or make use of it.
+   Read the :ref:`notices <sec-notices>` at the end of this page first.
+
+**senfd** makes a data model of the NVMe specifications. It reads the PDFs
+NVM Express publishes, or the ``.docx`` its members hold, and turns the
+figures into data: every command with its dwords and fields, every data
+structure, register, feature, log page and table of values. Each fact cites
+the document, section, figure and page it is from. It is a data model, not
+a language model: JSON validated by a :ref:`schema <sec-schema>`, nothing
+in it trained or generated, and the same documents give the same data
+model every time.
+
+**sate** answers questions from that data model, as an expert would. Ask it
+as you would ask a colleague, and it answers at once, citing the figure to
+check the answer against. It is a session with completion, a question on
+the command line, or an MCP server for a coding agent.
+
+.. code-block:: console
+
+   $ pipx install "senfd[sate,pdf]"
+   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
+   $ sate "Which bits of CDW12 of Write are PRINFO?"
+
+:ref:`Get started <sec-tutorial>` walks through these, from downloading the
+documents to the first answer.
+
+What it gets right
+------------------
+
+Asked 71 questions with one exact answer each, mostly about what the
+revisions ratified in 2026 added or moved, ``sate`` answered all 71 right,
+in 4 ms each. With Llama 3.1 8B on a CPU choosing the lookup, it answered
+70 and said of one that it is not known. Claude Opus 5.5 and Sonnet 5.5,
+from memory and told to answer, got 15.3 and 32.3 wrong on average, stated
+as surely as the right ones. The :ref:`benchmark <sec-benchmark>` shows
+every answer.
+
+What the data model is for
+--------------------------
+
+* **Precise answers, at once.** ``sate`` and ``senfd-query`` answer a
+  question about a command, a field, a register, a feature or a log page in
+  milliseconds; see :ref:`the expert <sec-ask>`.
+* **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
+  coding agent the data model as tools, and ``sate --llm`` has a small
+  language model on your own CPU choose the lookup and write nothing of the
+  answer.
+* **Code generated from the figures.** An early prototype writes xNVMe's
+  specification headers from the data model, every member citing its
+  figure; see :ref:`code from the figures <sec-codegen>`.
+* **A linter of the documents.** What does not read as data is listed with
+  its figure and page, for the authors to fix; see :ref:`the linter
+  <sec-linting>`.
+
+The names
+---------
+
+senfd reads the **S**\ pecification documents, **E**\ xtracts and
+**N**\ ormalises their **F**\ igures, and makes a **D**\ ata model.
+``sate`` is **S**\ enfd **A**\ sk **T**\ he **E**\ xpert. *Senf* is
+Danish for mustard, as the logo's documents drenched in it show, and a sate
+is what comes of the marinade.
+
+.. _sec-notices:
+
+Notices
+-------
 
 **Not endorsed by NVM Express.** senfd is an independent project. It is not
 endorsed by NVM Express, Inc., nor made by it, and its data model is not a
@@ -23,75 +94,8 @@ grants only the right to review, refer to or cite the specification, and
 not to make derivatives of it or implement it: **you must be a member of NVM
 Express, Inc. to make the data model or make use of it.**
 
-**And yet, see what it gets right.** Asked 71 questions with one exact
-answer each, mostly about what the revisions ratified in 2026 added or moved,
-``sate`` answered **all 71 right**, in 4 ms each, for free; Llama 3.1 8B on
-a CPU choosing its lookups answered 70 and said of one that it is not
-known, in 2.7 s each. Claude Opus 5.5 and Sonnet 5.5, from memory and told
-to answer, got **15.3 and 32.3 wrong** on average, stated as surely as the
-right ones. The :ref:`benchmark <sec-benchmark>` shows every answer.
-
-The NVMe specifications are published as documents, thousands of pages of
-figures that every driver, tool, emulator, firmware and test suite
-transcribes by hand. **senfd** reads the **S**\ pecification documents, as
-the PDFs NVM Express publishes or the ``.docx`` its members hold,
-**E**\ xtracts and **N**\ ormalises their **F**\ igures, and makes a
-structured **D**\ ata model of them: every command with its dwords and
-fields, every data structure, register, feature, log page and table of
-values, each fact citing the document, section, figure and page it is from.
-It is a data model, not a language model: JSON validated by a :ref:`schema
-<sec-schema>`, nothing in it trained, sampled or generated, and the same
-documents give the same data model every time. A language model comes in
-only where senfd hands it the data model, and then as a reader of it, never
-as the source of a fact.
-
-The package has two tools. ``senfd`` makes the data model. ``sate``, for
-**S**\ enfd **A**\ sk **T**\ he **E**\ xpert, puts an expert on the
-specifications at your fingertips: ask it as you would a colleague, and it
-answers at once from the data model, citing the figure. *Senf* is Danish for
-mustard, as the logo's documents drenched in it show, and a sate is what
-comes of the marinade.
-
-From that one data model, today:
-
-* **Precise answers, at once.** ``senfd-query`` and ``sate`` answer a
-  question about a command, a field, a register, a feature or a log page in
-  milliseconds, with the figure to check the answer against; see :ref:`the
-  expert <sec-ask>`.
-* **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
-  coding agent the data model as tools, and ``sate --llm`` has a small
-  language model, run for free on your own CPU, choose the lookup and write
-  nothing of the answer; the :ref:`benchmark <sec-benchmark>` sets it
-  against frontier language models answering from memory.
-* **Code generated from the figures.** An early prototype writes xNVMe's
-  specification headers from the data model, one header per document, every
-  member citing its figure; see :ref:`code from the figures <sec-codegen>`.
-* **A linter of the documents.** Reading the figures as data checks them,
-  and what does not read as data is listed with its figure and page for the
-  authors to fix; see :ref:`the linter <sec-linting>`.
-
-Get started
------------
-
-.. code-block:: console
-
-   $ pipx install "senfd[sate,pdf]"
-   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ sate "Which bits of CDW12 of Write are PRINFO?"
-
-with the eleven specifications ratified in 2026 downloaded from
-nvmexpress.org into ``~/specs``: Base 2.4, the NVM, Zoned Namespace, Key
-Value, Subsystem Local Memory and Computational Programs command sets,
-Management Interface 2.2, Boot 1.4 and the PCIe, RDMA and TCP transports.
-They read into a data model of 5 MB in about a minute from the ``.docx``
-and a few minutes from the PDFs. :ref:`Get started <sec-tutorial>` walks
-through it, and :ref:`the stages <sec-stages>` follow a figure from the
-document to the data model.
-
-.. _sec-terms:
-
 On what terms the documents are read
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The specifications are NVM Express's, under its copyright. NVM Express
 publishes the ratified specifications as PDF, which anyone can download from
@@ -111,23 +115,32 @@ makes of each, download the public PDFs into a cache, checked by their
 SHA-256, and upload nothing. The CI job also merges them into one data
 model and has ``sate`` answer the :ref:`benchmark's <sec-benchmark>`
 questions from it, failing unless every one is right; that data model is
-not offered for download either. Make your own: the commands above, on the
-PDFs downloaded from nvmexpress.org, give the same data model the CI job
-checks.
+not offered for download either. Make your own: the commands of :ref:`Get started
+<sec-tutorial>`, on the PDFs downloaded from nvmexpress.org, give the same
+data model the CI job checks.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :caption: Use
    :hidden:
 
    tutorial/index.rst
    install/index.rst
-   usage/index.rst
-   stages/index.rst
    sate/index.rst
-   benchmark/index.rst
+   usage/index.rst
    linting/index.rst
-   codegen/index.rst
+
+.. toctree::
+   :caption: How it works
+   :hidden:
+
+   stages/index.rst
    schema/index.rst
+   codegen/index.rst
+   benchmark/index.rst
    prior-art/index.rst
+
+.. toctree::
+   :caption: Project
+   :hidden:
+
    contributors/index.rst
