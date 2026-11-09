@@ -67,15 +67,6 @@ What the data model is for
   its figure and page, for the authors to fix; see :ref:`the linter
   <sec-linting>`.
 
-The names
----------
-
-senfd reads the **S**\ pecification documents, **E**\ xtracts and
-**N**\ ormalises their **F**\ igures, and makes a **D**\ ata model.
-``sate`` is **S**\ enfd **A**\ sk **T**\ he **E**\ xpert. *Senf* is
-Danish for mustard, as the logo's documents drenched in it show, and a sate
-is what comes of the marinade.
-
 .. _sec-notices:
 
 Notices
@@ -148,6 +139,7 @@ same data model the CI job checks.
    :hidden:
 
    contributors/index.rst
+   names/index.rst
 
 .. raw:: html
 

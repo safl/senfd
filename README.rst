@@ -104,15 +104,6 @@ how to run it again. senfd is the third tool of its line, after
 <https://github.com/SamsungDS/Spex>`_; the `documentation
 <https://safl.dk/senfd/prior-art/>`__ says what it changed.
 
-The names
----------
-
-senfd reads the **S**\ pecification documents, **E**\ xtracts and
-**N**\ ormalises their **F**\ igures, and makes a **D**\ ata model.
-``sate`` is **S**\ enfd **A**\ sk **T**\ he **E**\ xpert. *Senf* is
-Danish for mustard, as the logo's documents drenched in it show, and a sate
-is what comes of the marinade.
-
 Notices
 -------
 
