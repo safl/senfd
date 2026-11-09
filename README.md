@@ -61,8 +61,8 @@ The [documentation](https://safl.dk/senfd/) has the rest: how to
 NVM Express publishes, [lint the documents](https://safl.dk/senfd/linting/),
 [ask the expert](https://safl.dk/senfd/sate/), and use it
 [with a language model](https://safl.dk/senfd/llm/). The
-[benchmark](https://safl.dk/senfd/benchmark/) shows what it gets right, and
-what language models get wrong from memory; [prior art](https://safl.dk/senfd/prior-art/)
+[benchmark](https://safl.dk/senfd/benchmark/) sets sate's answers beside
+those of language models answering from memory; [prior art](https://safl.dk/senfd/prior-art/)
 tells where senfd comes from, and [the names](https://safl.dk/senfd/names/)
 what they mean.
 

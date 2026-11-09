@@ -48,17 +48,6 @@ model <sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the
 expert <sec-ask>`, and, if you like, use it :ref:`with a language model
 <sec-llm>`.
 
-What it gets right
-------------------
-
-Asked 71 questions with one exact answer each, mostly about what the
-revisions ratified in 2026 added or moved, ``sate`` answered all 71 right,
-in 4 ms each. With Llama 3.1 8B on a CPU choosing the lookup, it answered
-70 and said of one that it is not known. Claude Opus 5.5 and Sonnet 5.5,
-from memory and told to answer, got 15.3 and 32.3 wrong on average, stated
-as surely as the right ones. The :ref:`benchmark <sec-benchmark>` shows
-every answer.
-
 What the data model is for
 --------------------------
 
