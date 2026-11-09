@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 import senfd.query
-from senfd.documents.spec import Source
+from senfd.documents.spec import Source, Structure
 
 
 @pytest.fixture(scope="module")
@@ -131,6 +131,49 @@ def test_a_structure_of_the_name_given_comes_before_those_containing_it(spec):
     assert lines[0].startswith("Foo Statistics, bytes")
     assert senfd.query.structure(spec, "nothing") == ["No structure 'nothing'"]
     assert senfd.query.structure(spec, " ") == ["Give the name of a structure"]
+
+
+def test_structures_of_one_name_come_with_the_base_specification_s_first(spec):
+    def structure(name: str, document: str) -> Structure:
+        source = Source(document=document, figure_nr=1)
+        return Structure(name=name, kind="data_structure", unit="bytes", source=source)
+
+    revision = "Specification, Revision 1-3 Ratified 2026-07-31"
+    shared = spec.model_copy(
+        update={
+            "structures": [
+                structure(
+                    "Identify Controller", f"NVM Express Computational {revision}"
+                ),
+                structure(
+                    "I/O Command Set Specific Identify Controller",
+                    f"NVM Express NVM {revision}",
+                ),
+                structure(
+                    "Identify Controller",
+                    f"NVM Express Subsystem Local Memory {revision}",
+                ),
+                structure(
+                    "Identify - Identify Controller", f"NVM Express Base {revision}"
+                ),
+            ]
+        }
+    )
+    lines = senfd.query.structure(shared, "identify controller")
+    assert [line.split(" [")[0] for line in lines if " bytes [" in line] == [
+        "Identify - Identify Controller, bytes",
+        "Identify Controller, bytes",
+        "Identify Controller, bytes",
+        "I/O Command Set Specific Identify Controller, bytes",
+    ]
+    assert [
+        line.split("[")[1].split(" ")[0] for line in lines if " bytes [" in line
+    ] == [
+        "Base",
+        "Computational",
+        "Subsystem",
+        "NVM",
+    ]
 
 
 def test_a_register_says_its_offset(spec):
