@@ -62,8 +62,8 @@ made and what to look at:
 
 .. code-block:: text
 
-   11 documents into /home/me/.cache/senfd/merged.spec.document.json: 100 commands, 51 features, 59 log pages and 613 structures.
-   For the authors: 2 candidate errata and 6 document errors. For senfd, or the figures: 39 figures not modelled and 19 unassigned dwords.
+   11 documents into ~/.cache/senfd/merged.spec.document.json: 100 commands, 51 features, 59 log pages and 613 structures.
+   For the authors: 2 candidate errata and 6 document errors. For senfd, or the figures: 23 figures not modelled, 16 worked examples and 19 unassigned dwords.
    List them: senfd-query lint
 
 Reading the figures as data checks them, and the last line says how to
@@ -78,8 +78,9 @@ be, as a footnote marker run into a flag, or a field whose bits lie beyond
 its dwords; the document errors are what the documents get wrong as
 documents, as a caption not of its form, or a heading that the PDF's
 tagging puts inside a table; the rest is senfd's to learn, figures of a
-shape it does not model yet. Each finding cites the document, the figure
-and the page. :ref:`The linter <sec-linting>` says what each category is.
+shape it does not model yet, and the worked examples, which are figures
+of no shape to model. Each finding cites the document, the figure and the
+page. :ref:`The linter <sec-linting>` says what each category is.
 
 .. raw:: html
 
