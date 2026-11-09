@@ -313,9 +313,21 @@ def structure(
     key = alias(name)
     if not key:
         return ["Give the name of a structure"]
-    named = [s for s in spec.structures if alias(s.name) == key] + [
-        s for s in spec.structures if key in alias(s.name) and alias(s.name) != key
-    ]
+
+    def exact(s: Structure) -> bool:
+        # "Identify Controller" names "Identify - Identify Controller" too
+        return key in (alias(s.name), alias(s.name.partition(" - ")[2]))
+
+    def base_first(s: Structure) -> Tuple[bool, str]:
+        document = document_name(s.source.document)
+        return not document.startswith("Base "), document
+
+    # Of the structures of the name given, and then of those whose names
+    # contain it, the Base specification's before the command sets'
+    named = sorted((s for s in spec.structures if exact(s)), key=base_first) + sorted(
+        (s for s in spec.structures if key in alias(s.name) and not exact(s)),
+        key=base_first,
+    )
     if len(named) > 8:
         return [f"{len(named)} structures; be more specific:"] + [
             f"  {s.name} [{cite(s.source)}]" for s in named[:40]
