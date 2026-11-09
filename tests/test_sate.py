@@ -504,6 +504,22 @@ def test_a_search_asked_for_is_answered(spec, vocabulary):
     assert "so this is not known" not in text
 
 
+def test_the_identifier_of_a_name_a_command_and_a_log_page_share_is_the_log_page_s(
+    vocabulary,
+):
+    both = senfd.sate.Vocabulary(
+        commands=set(vocabulary.commands) | {"Get Log Page"},
+        log_pages=set(vocabulary.log_pages) | {"Ding"},
+    )
+    understood = senfd.sate.understand("What is the Log Page Identifier of Ding?", both)
+    assert str(understood) == "log_page('ding')"
+    assert str(senfd.sate.understand("the LID of Ding", both)) == "log_page('ding')"
+    # The identifier in the command carrying the log pages is the command's
+    carrier = senfd.sate.understand("the log page identifier of Get Log Page", both)
+    assert str(carrier) == "command('Get Log Page')"
+    assert reading.kind_asked("the feature identifier for foo") == "feature"
+
+
 def test_a_command_named_in_a_structure_s_name_does_not_answer_for_it(spec, vocabulary):
     vocabulary = senfd.sate.Vocabulary(
         commands=set(vocabulary.commands),
