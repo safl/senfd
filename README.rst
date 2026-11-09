@@ -63,17 +63,18 @@ grants only the right to review, refer to or cite the specification, and
 not to make derivatives of it or implement it: **you must be a member of NVM
 Express, Inc. to make the data model or make use of it.**
 
-**And yet, see what it gets right.** Asked 30 questions with one exact
-answer each, an opcode, an identifier, a bit or a byte offset, mostly about
-what the revisions ratified in 2026 added or moved:
+**And yet, see what it gets right.** Asked 71 questions with one exact
+answer each, an opcode, an identifier, a status code, a bit or a byte
+offset, mostly about what the revisions ratified in 2026 added or moved:
 
-* ``sate``, by the words of the question: **30 of 30 right**, in 4 ms
+* ``sate``, by the words of the question: **71 of 71 right**, in 4 ms
   each, for free.
-* ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **30 of 30
-  right**, in 3.3 s each, for free, on your own hardware.
-* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **4.3 and
-  7.3 wrong** on average, stated as surely as the right ones, at USD 0.16
-  and 0.07 a run.
+* ``sate`` with Llama 3.1 8B on a CPU choosing the lookup: **70 of 71
+  right, none wrong**, one not known, in 2.7 s each, for free, on your own
+  hardware.
+* Claude Opus 5.5 and Sonnet 5.5, from memory and told to answer: **15.3
+  and 32.3 wrong** on average, stated as surely as the right ones, at USD
+  0.10 and 0.02 a run.
 
 The `benchmark <https://safl.dk/senfd/benchmark/>`_ shows every answer, and
 how to run it again.
