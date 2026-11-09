@@ -37,14 +37,6 @@ with a link to its page of the specification on nvmexpress.org, to check the
 answer against:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
-
-<details>
-<summary><b>Scripted</b>: senfd making the data model, and sate answering on the command line</summary>
-
-[![senfd making the data model of the eleven specifications ratified in 2026, and sate answering three questions from it](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/intro.svg)](https://safl.dk/senfd/)
-
-</details>
-
 ## What the data model is for
 
 * **Precise answers, at once.** `sate` and `senfd-query` answer a question
