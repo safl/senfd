@@ -33,14 +33,10 @@ to check the answer against:
    a member of NVM Express, Inc. to make its data model or make use of it.
    Read the :ref:`notices <sec-notices>` at the end of this page first.
 
-.. code-block:: console
-
-   $ pipx install "senfd[sate,pdf]"
-   $ senfd ~/specs/*.pdf --output ~/.cache/senfd
-   $ sate "Which bits of CDW12 of Write are PRINFO?"
-
-:ref:`Get started <sec-tutorial>` walks through these, from downloading the
-documents to the first answer.
+To use them: :ref:`install <sec-install>`, :ref:`make the data model
+<sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the expert
+<sec-ask>`, and, if you like, use it :ref:`with a language model
+<sec-llm>`.
 
 What it gets right
 ------------------
@@ -123,20 +119,19 @@ makes of each, download the public PDFs into a cache, checked by their
 SHA-256, and upload nothing. The CI job also merges them into one data
 model and has ``sate`` answer the :ref:`benchmark's <sec-benchmark>`
 questions from it, failing unless every one is right; that data model is
-not offered for download either. Make your own: the commands of :ref:`Get started
-<sec-tutorial>`, on the PDFs downloaded from nvmexpress.org, give the same
-data model the CI job checks.
+not offered for download either. Make your own: :ref:`making the data
+model <sec-usage>` from the PDFs downloaded from nvmexpress.org gives the
+same data model the CI job checks.
 
 .. toctree::
    :caption: Use
    :hidden:
 
-   tutorial/index.rst
    install/index.rst
-   sate/index.rst
-   llm/index.rst
    usage/index.rst
    linting/index.rst
+   sate/index.rst
+   llm/index.rst
 
 .. toctree::
    :caption: How it works

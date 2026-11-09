@@ -16,6 +16,10 @@ commands in a virtual environment of their own:
 
    $ pipx install "senfd[sate,pdf]"
 
+This installs four commands: ``senfd`` makes the data model,
+``senfd-query`` and ``sate`` answer from it, and ``sate-mcp`` serves it to
+a coding agent.
+
 The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
 
 * ``sate`` brings prompt_toolkit and rich for the expert's prompt and its
