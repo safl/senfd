@@ -153,7 +153,7 @@ class Document(Model):
     def html_filename(self) -> str:
         return f"{self.meta.stem}{self.SUFFIX_HTML}"
 
-    def to_html(self, errors: List[Error] = []) -> str:
+    def to_html(self, errors: Optional[List[Error]] = None) -> str:
         """Returns the document as a HTML-formatted string"""
 
         env = Environment(
@@ -165,7 +165,7 @@ class Document(Model):
         template = env.get_template(self.FILENAME_HTML_TEMPLATE)
 
         figure_errors: Dict[int, List[Error]] = {}
-        for error in errors:
+        for error in errors or []:
             if not hasattr(error, "figure_nr"):
                 continue
 
@@ -176,7 +176,7 @@ class Document(Model):
         return template.render(document=self.model_dump(), figure_errors=figure_errors)
 
     def to_html_file(
-        self, path: Optional[Path] = None, errors: List[Error] = []
+        self, path: Optional[Path] = None, errors: Optional[List[Error]] = None
     ) -> Path:
         """Writes the document to HTML-formatted file"""
 

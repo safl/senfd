@@ -60,6 +60,13 @@ testpaths = [
 [tool.ruff]
 line-length = 88
 
+[tool.ruff.lint]
+# Beyond the defaults: bugbear, and a name rebound over an argument or the
+# variable of its own loop. zip() is left without strict=, as making it
+# strict would change what the code does where lengths differ.
+extend-select = ["B", "PLR1704", "PLW2901"]
+ignore = ["B905"]
+
 # sate is held to annotated code throughout
 [[tool.mypy.overrides]]
 module = "senfd.sate.*"
