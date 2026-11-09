@@ -22,10 +22,10 @@ first 30 from a data model made of the `.docx`, at 0.8.0.
 | `sate`, no language model | 71 | 0 | 0 | free, 4 ms a question |
 | `sate --llm`, Llama 3.1 8B Q4_K_M, CPU only | 70 | 0 | 1 | free, 2.7 s a question |
 | `sate --llm`, Llama 3.2 1B Q4_K_M, CPU only | 37 | 0 | 34 | free, 1.3 s a question |
-| Claude Opus 5.5, from memory, "unknown" allowed | 50.3 | 1.3 | 19.3 | USD 0.08 a run |
-| Claude Opus 5.5, from memory, answer required | 55.7 | 15.3 | 0 | USD 0.10 a run |
-| Claude Sonnet 5.5, from memory, "unknown" allowed | 38.7 | 4.3 | 28 | USD 0.03 a run |
-| Claude Sonnet 5.5, from memory, answer required | 38.7 | 32.3 | 0 | USD 0.02 a run |
+| Claude Opus 5.5, from memory, "unknown" allowed | 50.3 | 1.3 | 19.3 | USD 0.08 a run, 0.51 s a question |
+| Claude Opus 5.5, from memory, answer required | 55.7 | 15.3 | 0 | USD 0.10 a run, 0.66 s a question |
+| Claude Sonnet 5.5, from memory, "unknown" allowed | 38.7 | 4.3 | 28 | USD 0.03 a run, 0.30 s a question |
+| Claude Sonnet 5.5, from memory, answer required | 38.7 | 32.3 | 0 | USD 0.02 a run, 0.13 s a question |
 
 A frontier lane is the mean of three runs. `results/2026-11-09/bench/`
 keeps every answer of every run: `report.html` shows them side by side,
@@ -55,12 +55,14 @@ runs the lanes:
   lookups. The server is stopped and the tunnel closed after each language
   model.
 * Each frontier model answers from memory, by `claude -p --safe-mode --tools
-  ''`, in a fresh context of about 570 tokens, three times in each of two
+  ''`, in a fresh context of about 1,300 tokens, three times in each of two
   modes: allowed to say "unknown", with a wrong answer counting against it,
-  and told to answer every question.
+  and told to answer every question. A run is one call answering them all,
+  so its time a question is the call's time shared out.
 
 Then `scripts/report.py` grades them, by `scripts/grade.py`, and writes
-`summary.json` and `report.html`. A run takes about seven minutes.
+`summary.json` and `report.html`. A run takes about a quarter of an hour,
+most of it the frontier lanes.
 `tests/` holds the tests of the scripts, which senfd's `make test` runs.
 
 The documents are not here and nothing made from them is, beyond the

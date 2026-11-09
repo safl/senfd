@@ -44,22 +44,22 @@ few long-standing facts among them.
      - 50.3
      - 1.3
      - 19.3
-     - USD 0.08 a run
+     - USD 0.08 a run, 0.51 s a question
    * - Claude Opus 5.5, from memory, answer required
      - 55.7
      - 15.3
      - 0
-     - USD 0.10 a run
+     - USD 0.10 a run, 0.66 s a question
    * - Claude Sonnet 5.5, from memory, "unknown" allowed
      - 38.7
      - 4.3
      - 28
-     - USD 0.03 a run
+     - USD 0.03 a run, 0.30 s a question
    * - Claude Sonnet 5.5, from memory, answer required
      - 38.7
      - 32.3
      - 0
-     - USD 0.02 a run
+     - USD 0.02 a run, 0.13 s a question
 
 `The transcript <../_static/benchmark/report-2026-11-09.html>`_ has every
 question, the right answer, and the answer of every lane and run, with what
@@ -98,12 +98,14 @@ Method
 ------
 
 Each frontier model answered from memory, with no tools and a system prompt
-of its own, in a fresh context of about 570 tokens, by ``claude -p
+of its own, in a fresh context of about 1,300 tokens, by ``claude -p
 --safe-mode --tools ''``, three times in each of two modes: allowed to say
 "unknown", with a wrong answer counting against it, and told to answer
-every question, as a chat does. The local lanes ran ``llama-server`` of
-llama.cpp on an AMD EPYC 7532, 16 threads and no GPU offload, with the
-language models as published, Q4_K_M, checked by their SHA-256. ``sate``
+every question, as a chat does. Each run is one call answering all the
+questions, so its time a question is the call's time shared out. The local
+lanes ran ``llama-server`` of llama.cpp on an AMD EPYC 7532, 16 threads and
+no GPU offload, with the language models as published, Q4_K_M, checked by
+their SHA-256. ``sate``
 ran from a pinned commit of senfd, against the data model it made of the
 eleven documents ratified in 2026, the documents checked by their SHA-256
 too.
