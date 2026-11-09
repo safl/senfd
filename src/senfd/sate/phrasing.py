@@ -16,7 +16,8 @@ HELP = """\
 
 | Ask | As |
 |---|---|
-| a command, with its dwords | `write`, `zone append`, `opcode of sanitize` |
+| a command, with its dwords | `write`, `zone append` |
+| a command's opcode alone | `opcode of sanitize` |
 | one dword of a command | `cdw12 of write`, `dword 10 of get log page` |
 | a feature or a log page | `feature 07h`, `feature number of queues`, `log page 1Fh` |
 | what an identifier is | `1Fh` |

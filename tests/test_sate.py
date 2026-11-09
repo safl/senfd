@@ -29,7 +29,7 @@ def vocabulary(spec):
 @pytest.mark.parametrize(
     "question, understood",
     [
-        ("opcode of ding", "command('Ding')"),
+        ("opcode of ding", "command('Ding', opcode=True)"),
         ("What is in cdw10 of the Ding command?", "command('Ding', dword=10)"),
         ("Where is FCNT?", "acronym('FCNT')"),
         ("feature C0h", "feature('c0h')"),
@@ -421,8 +421,8 @@ def test_mentioning_is_of_whole_words():
 @pytest.mark.parametrize(
     "question, understood",
     [
-        ("What is the opcode of Ding in NVMe 2.0?", "command('Ding')"),
-        ("opcode of migrate", "command('Foo Migrate')"),
+        ("What is the opcode of Ding in NVMe 2.0?", "command('Ding', opcode=True)"),
+        ("opcode of migrate", "command('Foo Migrate', opcode=True)"),
         ("What is FOOCAP of Ding?", "register('FOOCAP')"),
     ],
 )
@@ -881,3 +881,12 @@ def test_after_the_words_of_a_kind_only_names_of_that_kind_are_offered():
     # Asked of a structure, the figure of the event is what is offered
     offered = completions(vocabulary, "structure Timestamp")
     assert [o.kind for o in offered] == ["structure"]
+
+
+def test_the_opcode_asked_alone_is_answered_alone(spec, vocabulary):
+    from senfd.sate.lookup import answer
+
+    lines = answer(spec, senfd.sate.understand("opcode of ding", vocabulary))
+    assert len(lines) == 1 and "opcode 01h" in lines[0] and "Ding" in lines[0]
+    whole = answer(spec, senfd.sate.understand("ding", vocabulary))
+    assert len(whole) > 1 and whole[0] == lines[0]
