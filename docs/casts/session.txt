@@ -1,3 +1,5 @@
 which b\t12 of wri\t is FU\t\r
+describe cdw10 of write\r
+CSTS\r
 which f\tnum\t\r
-Which bit of Write enables the hyperdrive?
+Which bit of Write enables the hyperdrive?\r
