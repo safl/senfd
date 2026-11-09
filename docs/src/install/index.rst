@@ -14,19 +14,11 @@ commands in a virtual environment of their own:
 
 .. code-block:: console
 
-   $ pipx install "senfd[sate,pdf]"
+   $ pipx install senfd
 
 This installs four commands: ``senfd`` makes the data model,
 ``senfd-query`` and ``sate`` answer from it, and ``sate-mcp`` serves it to
 a coding agent.
-
-The extras are what the commands beyond ``senfd`` and ``senfd-query`` need:
-
-* ``sate`` brings prompt_toolkit and rich for the expert's prompt and its
-  rendering, and mcp for ``sate-mcp``. Without it, ``sate`` reads a question
-  a line and prints Markdown, and ``sate-mcp`` does not start.
-* ``pdf`` brings pikepdf and pdfplumber, to read the PDFs NVM Express
-  publishes. Without it, senfd reads the ``.docx`` only.
 
 A PDF must keep the structure of its tables, as NVM Express's do, being
 exported from Word with its document structure tags; one without is

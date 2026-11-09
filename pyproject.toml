@@ -13,23 +13,23 @@ license = { text = "LGPL-2.1-only" }
 requires-python = ">=3.11"
 dependencies = [
     "jinja2",
+    "mcp>=2",
+    "pdfplumber>=0.10",
+    "pikepdf>=8",
+    "prompt_toolkit>=3",
     "pydantic",
     "python-docx",
+    "rich>=13",
 ]
 readme = { file = "README.rst", content-type = "text/x-rst" }
 
 [project.optional-dependencies]
-sate = ["mcp>=2", "prompt_toolkit>=3", "rich>=13"]
-pdf = ["pikepdf>=8", "pdfplumber>=0.10"]
-dev = [
-    "mcp>=2",
-    "pdfplumber>=0.10",
-    "pikepdf>=8",
-    "pyte",
-    "pytest",
-    "pytest-cov",
-]
-all = ["senfd[dev,sate,pdf]"]
+# Empty, as what they brought is always installed; kept, so that installing
+# senfd[sate,pdf], of a version before, still works
+sate = []
+pdf = []
+dev = ["pyte", "pytest", "pytest-cov"]
+all = ["senfd[dev]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"

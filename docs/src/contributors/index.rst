@@ -17,7 +17,7 @@ Set up
 
    $ python3 -m venv .venv
    $ source .venv/bin/activate
-   $ pip install -e ".[all]" pre-commit
+   $ pip install -e ".[dev]" pre-commit
 
 The tests run ``senfd`` and ``sate`` as commands, so the environment must
 be active, or its ``bin`` first on ``PATH``. ``make`` does the same with
