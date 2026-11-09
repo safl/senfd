@@ -33,14 +33,14 @@ the same data model every time.
 **sate** is an expert on the subject a data model describes. Here that is
 the data model senfd makes of the NVMe specifications, as above. Ask it
 about a command, a field, a register, a feature or a log page, in a session
-with completion or on the command line, and it answers at once, citing the
+with completion or on the command line, and it answers instantly, citing the
 figure with a link to its page of the specification on nvmexpress.org, to
 check the answer against:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
 ## What the data model is for
 
-* **Precise answers, at once.** `sate` answers a question
+* **Precise answers, instantly.** `sate` answers a question
   about a command, a field, a register, a feature or a log page in
   milliseconds; see [the expert](https://safl.dk/senfd/sate/).
 * **Language models that cannot make NVMe facts up.** `sate --llm`

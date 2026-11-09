@@ -53,7 +53,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             "Look up a command, feature, log page, structure, section or value",
         )
     parser = argparse.ArgumentParser(
-        description="Ask the data model questions, as of an expert who answers at once"
+        description="Ask the data model questions, as of an expert who answers instantly"
     )
     parser.add_argument(
         "question",

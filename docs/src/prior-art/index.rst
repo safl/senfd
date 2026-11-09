@@ -51,7 +51,7 @@ came to give the same data model as the ``.docx``.
 The larger change is the goal itself. The tools before tossed checks at the
 documents, and what they extracted served the checks. senfd's goal is the
 NVMe data model, and the checks fall out of reaching it. A data model is
-useful where a lint is not: it answers a question at once, as the
+useful where a lint is not: it answers a question instantly, as the
 :ref:`expert <sec-ask>` does; it hands a coding agent the specification as
 tools, through the MCP server; it writes a driver's headers, as the
 :ref:`code generator <sec-codegen>` does; it compares two revisions by
