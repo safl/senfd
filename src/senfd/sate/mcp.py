@@ -85,6 +85,16 @@ def structure(name: str, verbose: bool = False) -> str:
 
 
 @tool
+def value(text: str, verbose: bool = False) -> str:
+    """An entry of a table of values by the kind of table, the value and words
+    of the entry's name, as "status code 82h", "status code type 1h", "CNS 05h"
+    or "status code zone boundary error"; with 'verbose', its description and
+    other columns too"""
+
+    return "\n".join(linked(spec(), senfd.query.value(spec(), text, verbose)))
+
+
+@tool
 def search(text: str) -> str:
     """Fields by acronym or name, and commands, features, log pages and
     structures by name, each with where it is"""

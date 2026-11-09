@@ -49,6 +49,43 @@ def test_a_search_finds_a_field_by_its_acronym(spec):
     assert any(line.startswith("Ding cdw10") for line in lines)
 
 
+def test_a_value_is_found_in_the_tables_of_its_kind_by_value_or_by_name(spec):
+    assert senfd.query.value(spec, "status code 82h") == [
+        "82h Foo Lost, Command Specific status code of Foo Get "
+        "[example, 4, Figure 70, page 70]"
+    ]
+    assert senfd.query.value(spec, "status code type 7h") == [
+        "7h Vendor Specific, Status Code Type (SCT) [example, 4, Figure 47, page 47]"
+    ]
+    assert senfd.query.value(spec, "CNS 0x1c")[0].startswith(
+        "1Ch Foo namespace data, CNS value of Identify ["
+    )
+    assert senfd.query.value(spec, "status code of foo lost")[0].startswith("82h ")
+    assert senfd.query.value(spec, "cns foo namespace")[0].startswith("1Ch ")
+    assert senfd.query.value(spec, "status code type")[0].startswith("0h Generic")
+    assert senfd.query.value(spec, "status code 99h") == [
+        "No table of values has 'status code 99h'"
+    ]
+    assert senfd.query.value(spec, "status code 82h", verbose=True)[0].endswith(
+        "]: Foo is lost.; section: Foo Errors"
+    )
+
+
+def test_a_value_of_no_kind_is_found_in_every_table_holding_it(spec):
+    tables = [line.split(", ", 1)[1] for line in senfd.query.value(spec, "C0h")]
+    assert tables[0].startswith("Generic Command status code, Foobar Command Set [")
+    assert [t.split(" [")[0] for t in tables[1:4]] == [
+        "log page identifier of Get Log Page",
+        "feature identifier of Foobar Command Set",
+        "requirement of Foo Feature",
+    ]
+    assert any(
+        line.startswith("C1h to C3h ") for line in senfd.query.value(spec, "C2h")
+    )
+    assert senfd.query.within("C1h to C3h", 0xC2) and not senfd.query.within("Yes", 1)
+    assert senfd.query.value(spec, "")[0].startswith("Give the kind of table")
+
+
 def test_nothing_found_says_so(spec):
     assert senfd.query.command(spec, "nothing") == ["No command 'nothing'"]
 
@@ -147,10 +184,12 @@ def test_every_question_of_the_command_line(spec_path, capsys):
         ["structure", "Bar"],
         ["search", "FCNT"],
         ["-v", "command", "ding"],
+        ["value", "status code 82h"],
     ):
         assert senfd.query.main(["--spec", str(spec_path), *argv]) == 0
     out = capsys.readouterr().out
     assert "Foo Config" in out and "Foo Statistics" in out and "Ding cdw10" in out
+    assert "82h Foo Lost" in out
 
 
 def test_the_model_is_found_by_the_environment_or_in_the_cache(monkeypatch, tmp_path):

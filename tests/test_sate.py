@@ -41,6 +41,15 @@ def vocabulary(spec):
         ("Is there a log page about foo, and what is its id?", "log_page('foo')"),
         ("errata", "errata('')"),
         ("help", "help('')"),
+        ("What is status code 82h?", "value('status code 82h')"),
+        ("status 0x82", "value('status 82h')"),
+        ("SCT 7h", "value('status code type 7h')"),
+        ("CNS 1Ch", "value('cns 1ch')"),
+        ("What is the status code of Foo Lost?", "value('status code foo lost')"),
+        ("What are the status codes of Ding?", "value('status code ding')"),
+        ("Which CNS value gives the Foo namespace data?", "value('cns foo namespace')"),
+        ("Where is SCT?", "name('sct')"),
+        ("the status code type field of Ding", "command('Ding')"),
     ],
 )
 def test_a_question_is_understood_by_its_words_names_and_acronyms(
@@ -60,6 +69,17 @@ def test_what_the_model_does_not_have_is_said_to_be_not_known(spec, vocabulary):
     for question in ("teleport", "Which bit of cdw10 of Ding is the hyperdrive?"):
         text, _ = senfd.sate.respond(spec, question, vocabulary)
         assert "so this is not known" in text
+
+
+def test_a_value_is_answered_from_its_table_with_where_it_is(spec, vocabulary):
+    text, _ = senfd.sate.respond(
+        spec, "Which CNS value gives the Foo namespace data?", vocabulary
+    )
+    assert "- **1Ch** Foo namespace data, CNS value of Identify [example, 2," in text
+    text, _ = senfd.sate.respond(spec, "What is status code 83h?", vocabulary)
+    assert "- **83h** Foo Late, Command Specific status code of Foo Get [" in text
+    text, _ = senfd.sate.respond(spec, "What is status code 99h?", vocabulary)
+    assert "so this is not known" in text
 
 
 def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
@@ -91,6 +111,7 @@ def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
 def test_the_words_of_questions_complete_first(vocabulary):
     assert offered(vocabulary, "o")[0] == "opcode of "
     assert offered(vocabulary, "cdw1")[:2] == ["cdw10 of ", "cdw11 of "]
+    assert offered(vocabulary, "sta")[0] == "status code "
 
 
 def test_names_complete_before_acronyms_unless_typed_in_capitals(vocabulary):

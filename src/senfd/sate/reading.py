@@ -120,6 +120,10 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     if match:
         return Understood("search", match[1])
     asks_command = re.search(ASKS_COMMAND, lower)
+    # "status code 82h" and "which CNS value gives ..." ask of a table of values
+    asked_value = value_asked(text, named) if not asks_command else ""
+    if asked_value:
+        return Understood("value", asked_value)
     # "opcode of write" asks the opcode alone; "cdw12 of write" a dword
     asks_opcode = bool(re.search(r"\b(?:opcodes?|opc)\b", lower))
     if asks_command:  # "opcode of identify controller" is the command
@@ -207,6 +211,46 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     if not rest:  # Nothing that names anything, as "[" or "what is the"
         return Understood("help")
     return Understood("name", rest)
+
+
+# A table of values as a question names its kind: a status code, a status
+# code type, or a CNS value; "sct", "cns" and "status" alone with a value only,
+# since alone they are a field's acronym or a word of a name
+VALUE_KIND = re.compile(
+    r"\b(?P<kind>status code types?|sct|status(?: codes?| values?)?|cns(?: values?)?)"
+    r"(?:\s+(?:0x)?(?P<value>[0-9a-f]{1,2})h?\b)?"
+)
+HEX = r"\b(?:0x([0-9a-f]{1,2})|([0-9a-f]{1,2})h)\b"
+KIND_WORDS = {"status", "code", "type", "sct", "cns", "value"}
+
+
+def value_asked(text: str, named: Optional[Tuple[str, str]]) -> str:
+    """What a question asks of a table of values, as senfd.query.value() takes
+    it: "status code 82h" of "what is status code 82h?", or "status code zone
+    boundary error" of a question naming the entry; "" where it asks of none,
+    as "the CNS field of Identify" asks of the command's field; a command
+    named is the command whose table it is, "the status codes of Ding" """
+
+    lower = text.lower()
+    match = VALUE_KIND.search(lower)
+    if not match:
+        return ""
+    kind = re.sub(r"(code|type|value)s\b", r"\1", match["kind"])
+    kind = {"sct": "status code type", "status value": "status code"}.get(kind, kind)
+    kind = kind.replace("cns value", "cns")
+    value = match["value"]
+    if not value:
+        anywhere = re.search(HEX, lower)
+        value = (anywhere[1] or anywhere[2]) if anywhere else None
+    if value:
+        return f"{kind} {value}h"
+    bare = match["kind"] in ("sct", "cns", "status")
+    if bare or re.search(r"\bfields?\b", lower):
+        return ""
+    if named and named[0] != "command":  # "the Sanitize Status log page"
+        return ""
+    rest = [t for t in terms(text) if t not in KIND_WORDS]
+    return f"{kind} {' '.join(rest)}" if rest else kind
 
 
 # The commands that carry a feature or a log page, rather than are one
