@@ -35,26 +35,26 @@ libraries ``libxml2`` and ``libxslt``.
 In a container
 --------------
 
-Where installing the dependencies is a problem, the image built from the
-repository's ``Dockerfile`` holds senfd with all of them:
+Where installing the dependencies is a problem, use the image published
+with each release, which holds senfd with all of them:
 
 .. code-block:: console
 
-   $ git clone https://github.com/safl/senfd
-   $ docker build -t senfd senfd
+   $ docker pull ghcr.io/safl/senfd
 
-The image holds no specification. Mount the directory holding the
-documents, and one to keep the data model in, and run as yourself, so the
-files written are yours:
+Each release is also tagged with its version, as
+``ghcr.io/safl/senfd:X.Y.Z``. The image holds no specification. Mount the
+directory holding the documents, and one to keep the data model in, and run
+as yourself, so the files written are yours:
 
 .. code-block:: console
 
    $ mkdir -p ~/.cache/senfd
    $ docker run --rm --user "$(id -u):$(id -g)" \
        -v ~/specs:/specs:ro -v ~/.cache/senfd:/home/senfd/.cache/senfd \
-       senfd sh -c 'senfd /specs/*.pdf --output ~/.cache/senfd'
+       ghcr.io/safl/senfd sh -c 'senfd /specs/*.pdf --output ~/.cache/senfd'
    $ docker run --rm -it --user "$(id -u):$(id -g)" \
-       -v ~/.cache/senfd:/home/senfd/.cache/senfd senfd
+       -v ~/.cache/senfd:/home/senfd/.cache/senfd ghcr.io/safl/senfd
 
 The first makes the data model, and the second opens the expert's session.
 Rootless Podman runs as you already: leave out ``--user``. The documents
