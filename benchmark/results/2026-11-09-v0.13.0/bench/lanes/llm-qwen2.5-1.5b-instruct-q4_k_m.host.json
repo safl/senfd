@@ -1,0 +1,12 @@
+{
+ "model": {
+  "name": "qwen2.5-1.5b-instruct-q4_k_m",
+  "path": "/models/Qwen2.5-1.5B-Instruct-Q4_K_M.gguf",
+  "sha256": "1adf0b11065d8ad2e8123ea110d1ec956dab4ab038eab665614adba04b6c3370"
+ },
+ "threads": 16,
+ "context": 8192,
+ "server": "version: 0.6.0-dev (build 1, commit 1bb2b9f)\nbuilt with GNU 15.2.0 for Linux x86_64",
+ "cpu": "CPU(s):                                  64\nModel name:                              AMD EPYC 7532 32-Core Processor\nCPU(s) scaling MHz:                      52%",
+ "gpu": "none; llama-server run with no GPU offload"
+}
