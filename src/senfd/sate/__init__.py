@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 """
-Ask the data model questions, as of an expert who answers at once
+Ask the data model questions, as of an expert who answers instantly
 
     sate
     sate> opcode of zone append

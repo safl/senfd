@@ -8,7 +8,7 @@ Ask the expert
 ==============
 
 ``sate`` answers questions about the specifications from senfd's data
-model, at once. Ask it in a session, which helps you put the question, or
+model, instantly. Ask it in a session, which helps you put the question, or
 put the question on the command line, to have it answered and done, or from
 a script.
 
@@ -101,7 +101,7 @@ read by an identifier, as ``1Fh``. And it is read by the names and acronyms
 of the data model it mentions, the longest first, so "the controller status
 register" is ``CSTS`` and "dword 13 of Zone Append" is that dword of that
 command. Each answer starts by saying what the question was understood as,
-``command('Zone Append', dword=13)``, so a misreading shows at once.
+``command('Zone Append', dword=13)``, so a misreading shows instantly.
 
 An answer is shown only when it mentions every term of the question that
 names something. Ask for the bit of Write that "enables the hyperdrive",
