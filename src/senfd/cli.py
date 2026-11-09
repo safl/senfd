@@ -215,19 +215,32 @@ def summary(spec: SpecDocument, documents: int, written: Path) -> str:
     commands = sum(len(s.commands) for s in spec.command_sets.values())
     errata = senfd.query.errata(spec, none=[])
     unassigned = sum(len(d) for d in spec.unassigned.values())
+    examples = sum(
+        d.code == "figure-not-modelled" and senfd.query.is_example(d.message)
+        for d in spec.diagnostics
+    )
     default = written.resolve() == senfd.query.default_spec_path().resolve()
-    spec_option = "" if default else f" --spec {written}"
+    spec_option = "" if default else f" --spec {at_home(written)}"
     return (
-        f"{documents} document{'s' if documents != 1 else ''} into {written}: "
+        f"{documents} document{'s' if documents != 1 else ''} into {at_home(written)}: "
         f"{commands} commands, {len(spec.features)} features, "
         f"{len(spec.log_pages)} log pages and {len(spec.structures)} structures.\n"
         f"For the authors: {plural(len(errata), 'candidate erratum', 'candidate errata')}"
         f" and {plural(counted('document-error'), 'document error')}. "
         f"For senfd, or the figures: "
-        f"{plural(counted('figure-not-modelled'), 'figure')} not modelled and "
+        f"{plural(counted('figure-not-modelled') - examples, 'figure')} not modelled, "
+        f"{plural(examples, 'worked example')} and "
         f"{plural(unassigned, 'unassigned dwords', 'unassigned dwords')}.\n"
         f"List them: senfd-query{spec_option} lint"
     )
+
+
+def at_home(path: Path) -> str:
+    """'path' as the shell shows it, with the home directory as ~"""
+
+    home = str(Path.home())
+    shown = str(path.resolve())
+    return "~" + shown[len(home) :] if shown.startswith(home + "/") else shown
 
 
 if __name__ == "__main__":
