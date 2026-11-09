@@ -2,92 +2,24 @@
 ..
 .. SPDX-License-Identifier: LGPL-2.1-only
 
-Contributors Guide
-==================
+Contributing
+============
 
-Thank you for your interest in contributing to **senfd**! Please follow the
-guidelines below to ensure a smooth and effective collaboration.
+Fork the repository, make the change on a branch, check it as below, and
+open a pull request.
 
-Commit Message Guidelines
--------------------------
+Commits follow `Conventional Commits v1.0.0
+<https://www.conventionalcommits.org/en/v1.0.0/>`_: a type, as ``feat``,
+``fix`` or ``refactor``, and a summary in the imperative mood, with lines
+of at most 78 characters including the newline; the history of the
+repository shows the form. Every commit is signed off, acknowledging the
+Developer Certificate of Origin: that you wrote the change or have the
+right to pass it on under the project's license.
 
-**senfd** follow the
-`Conventional Commits v1.0.0 <https://www.conventionalcommits.org/en/v1.0.0/>`_ 
-specification for commit messages. A clear and consistent commit message format
-helps us understand the history of **senfd**. Each commit message should:
-
-- Start with a type (e.g., feat, fix, refactor) and a brief summary.
-- Be written in the imperative mood.
-- Have a line-width of at most 78 characters, including newline.
-
-For examples, please refer to the structure of the current git commit messages
-in our repository.
-
-Sign Off Your Commits / DCO
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-All commits must be signed off to acknowledge the Developer Certificate of
-Origin (DCO). This certifies that you wrote the patch or have the right to pass
-it on as an open-source patch.
-
-Code Formatting
----------------
-
-To ensure all code adheres to senfd's formatting and type-info guidelines, run:
-
-.. code-block:: sh
-
-    make format
-
-This will perform code auto-formatting where possible and guide you to fix what
-needs to be addressed manually.
-
-
-Building and Testing
---------------------
-
-To build, install, and test the project, run:
-
-.. code-block:: sh
-
-    make
-
-Prerequisites
-~~~~~~~~~~~~~
-
-On your system you need a couple of tools and libraries:
-
-* On the system
-
-  - pipx, to install ``senfd`` and dependencies
-  - libxml2, library needed by ``python-docx``
-  - libxslt, library needed by ``python-docx``
-
-* The install of ``senfd`` itself is done via ``pipx`` with dependencies
-
-  - This installs ``senfd`` and **pytest** into the same pipx-managed virtual
-    environment, ensuring that test written in **pytest** can ``import senfd``
-
-  - Notice that ``pipx`` makes the executable endpoints that ``senfd`` provides,
-    and its dependencies, available. That is, your system ``pytest`` will with
-    this point to the one install here
-  
-* The ``Makefile`` will install the following via ``pipx``
-
-  - pre-commit (for formating and type-checking)
-  - twine (only for maintainers needing to push packages manually)
-
-
-Contributing Process
---------------------
-
-1. Fork the repository.
-
-2. Make your changes in your forked repository.
-
-3. Check the items above (Commits, DCO, Format)
-
-3. Create a pull request with your changes.
-
-
-Thank you for contributing!
+``make format`` formats the code and runs the type checker, and says what
+is left to fix by hand. ``make`` builds, installs and tests. Both need
+pipx, which installs senfd and pytest into one virtual environment, so
+that the tests can ``import senfd``, and installs pre-commit for the
+formatting and type checks and twine for maintainers pushing a package by
+hand; python-docx needs the system libraries ``libxml2`` and ``libxslt``
+where its lxml is not a prebuilt wheel.
