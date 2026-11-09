@@ -17,32 +17,20 @@ senfd and sate
     :target: https://pypi.org/project/senfd/
     :alt: PyPI
 
-.. image:: https://img.shields.io/pypi/pyversions/senfd
-    :target: https://pypi.org/project/senfd/
-    :alt: Python versions
-
 .. image:: https://img.shields.io/badge/docs-safl.dk%2Fsenfd-blue
     :target: https://safl.dk/senfd/
     :alt: Documentation
 
 .. image:: https://img.shields.io/badge/license-LGPL--2.1--only-blue
-    :target: https://spdx.org/licenses/LGPL-2.1-only.html
+    :target: https://github.com/safl/senfd/blob/main/LICENSE
     :alt: License
 
-.. image:: https://img.shields.io/badge/REUSE-compliant-green
-    :target: https://reuse.software/
-    :alt: REUSE compliant, checked by pre-commit in CI
-
-.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
-    :target: https://github.com/astral-sh/ruff
-    :alt: Ruff
-
-.. image:: https://img.shields.io/badge/types-mypy-blue
-    :target: https://mypy-lang.org/
-    :alt: Checked with mypy
+.. image:: https://api.reuse.software/badge/github.com/safl/senfd
+    :target: https://api.reuse.software/info/github.com/safl/senfd
+    :alt: REUSE status
 
 .. image:: https://img.shields.io/badge/MCP-server-8A2BE2
-    :target: https://safl.dk/senfd/sate/
+    :target: https://safl.dk/senfd/llm/
     :alt: MCP server
 
 **senfd** reads the NVMe specifications, the PDFs NVM Express publishes or
