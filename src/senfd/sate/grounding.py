@@ -63,6 +63,9 @@ def elsewhere(
     the thing named, not another whose name contains it, as "Memory Copy" of
     "Copy". Another lookup must mention what the question names."""
 
+    if understood.query == "value":
+        # An entry found by every word of the question is about what it names
+        return None
     found = answered(lines)
     kind, name = found if found else (None, None)
     named = spot(question, vocabulary)
@@ -113,8 +116,9 @@ def elsewhere(
     if understood.query in ("feature", "log_page", "structure", "register"):
         if name is None:
             return named[1]
-        head = name.partition(" - ")[0]
-        return None if alias(named[1]) in (alias(name), alias(head)) else named[1]
+        head, _, rest = name.partition(" - ")
+        names = {alias(name), alias(head), alias(rest)}
+        return None if alias(named[1]) in names else named[1]
     return None if words_of(named[1]) in text else named[1]
 
 

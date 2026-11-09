@@ -45,7 +45,8 @@ def spot(
 ) -> Optional[Tuple[str, str]]:
     """The longest name of the data model the question names, with its kind, or of
     the kind 'only'; a register by its name, as "controller status" of
-    "CSTS - Controller Status" """
+    "CSTS - Controller Status", and a structure by what its command
+    qualifies, as "Identify Namespace" of "Identify - Identify Namespace" """
 
     asked = words_of(question)
     found: List[Tuple[int, int, str, str]] = []
@@ -60,14 +61,19 @@ def spot(
             continue
         for name in names:
             head, dash, rest = name.partition(" - ")
-            # A register is named by its name, a caption not by its qualifier
-            for form in {name, rest} if dash and head.isupper() else {name}:
+            register = bool(dash) and head.isupper()
+            # A register is named by its name, a caption not by its qualifier;
+            # a structure by what its command qualifies, "Identify Namespace"
+            # of "Identify - Identify Namespace", where that is more than a word
+            qualified = kind == "structure" and len(words_of(rest).split()) > 1
+            forms = {name, rest} if register or (dash and qualified) else {name}
+            for form in forms:
                 key = words_of(form)
                 if len(key.split()) == 1 and not set(key.split()) - GENERIC:
                     continue  # As "Command" of "CMD - Command", it names nothing
                 if len(key) > 3 and key in asked:
-                    argument = head if dash and kind == "structure" else name
-                    query = "register" if dash and head.isupper() else kind
+                    argument = head if register else name
+                    query = "register" if register else kind
                     found.append((len(key), -rank, query, argument))
     if not found:
         return None
@@ -247,7 +253,9 @@ def value_asked(text: str, named: Optional[Tuple[str, str]]) -> str:
     bare = match["kind"] in ("sct", "cns", "status")
     if bare or re.search(r"\bfields?\b", lower):
         return ""
-    if named and named[0] != "command":  # "the Sanitize Status log page"
+    # A structure named is what a CNS value returns; a status code asked of a
+    # log page or a structure named is a question of that, not of a table
+    if named and named[0] != "command" and kind != "cns":
         return ""
     rest = [t for t in terms(text) if t not in KIND_WORDS]
     return f"{kind} {' '.join(rest)}" if rest else kind
