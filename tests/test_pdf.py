@@ -373,6 +373,30 @@ def test_the_rest_of_a_broken_row_goes_to_the_cell_it_is_the_rest_of():
     ]
 
 
+def test_the_pages_of_a_figure_are_joined_in_their_order_not_their_tags():
+    """As byte 261 of Base 2.4's Identify Controller, a row filling a page of
+    its own, which Word tags as a table after the rest of the figure"""
+
+    from senfd.pdf.reader import assembled
+
+    header = ["Bytes", "Type", "Description"]
+    figure = Figure(
+        figure_nr=42,
+        caption="Figure 42: CSTS",
+        description="CSTS",
+        table=spanned(page(CAPTION_ROW, header, ["260", "M", "FRMW"])),
+    )
+    later = spanned(page(CAPTION_ROW, header, ["", "", "b"], ["262", "M", "ELPE"]))
+    alone = spanned(page(["261", "M", "LPA: a"]))
+    assembled(figure, [(381, later), (380, alone)])
+    rows = [[c.text for c in r.cells] for r in figure.table.rows[2:]]
+    assert rows == [
+        ["260", "M", "FRMW"],
+        ["261", "M", "LPA: a\nb"],
+        ["262", "M", "ELPE"],
+    ]
+
+
 def test_a_row_with_text_before_its_last_cell_is_a_row_of_its_own():
     first = spanned(
         page(CAPTION_ROW, ["Bits", "Type", "Description"], ["03:02", "RO", "a"])
