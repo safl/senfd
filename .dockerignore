@@ -6,7 +6,7 @@
 # what senfd made of them, which must never go into an image
 *
 !pyproject.toml
-!README.rst
+!README.md
 !LICENSE
 !LICENSES
 !src
