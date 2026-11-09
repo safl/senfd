@@ -10,6 +10,27 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.14.0
+
+senfd now requires Python 3.13 or later, and is tested on 3.13, 3.14 and
+3.15. The container image is built on Python 3.15.
+
+Two kinds of field name are read as the figures mean them. A name that only
+begins with "Reserved", "Obsolete", "Vendor Specific" or "Ignored" is now a
+field's name, so fields such as Vendor Specific Information Available no
+longer get the role `vendor_specific`. A name followed by its acronym and an
+aside in parentheses, without a colon, now keeps its acronym, so the last
+entry of NVM 1.3, Figure 41, matches the entries before it.
+
+Continuous integration now runs `sate --llm` in the container image against
+a llama-server with a small language model, with and without
+`--llm-model`.
+
+The benchmark was run again with Qwen 2.5 7B and 1.5B as the local language
+models, and the documentation's recordings were made again. The
+documentation says that sate answers instantly, and its copyright runs to
+the year it is built.
+
 ## 0.13.0
 
 A data model made by an earlier senfd no longer loads and must be made

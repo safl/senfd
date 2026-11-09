@@ -410,7 +410,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "version": {
-                    "default": "0.13.0",
+                    "default": "0.14.0",
                     "description": "The version of senfd that made it",
                     "title": "Version",
                     "type": "string"
