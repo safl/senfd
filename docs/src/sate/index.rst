@@ -8,16 +8,26 @@ Ask the expert
 ==============
 
 ``sate`` answers questions about the specifications from senfd's data
-model, at once, citing the figure. Alone on the command line it opens a
-session. Given a question, it answers that and leaves. ``--raw`` prints the
-answer as Markdown, unrendered, with the links as addresses. The same
-lookups answer ``senfd-query`` on the command line. No language model is
-involved, and none is needed; :ref:`with a language model <sec-llm>` says
-how to use one anyway, and what it costs.
+model, at once. Alone on the command line it opens a session. Given a
+question, it answers that and leaves. ``--raw`` prints the answer as
+Markdown, unrendered, with the links as addresses. The same lookups answer
+``senfd-query`` on the command line.
 
 .. raw:: html
 
    <div id="cast-session"></div>
+
+Straight to the specification
+-----------------------------
+
+An answer says where to read, and the specification has the last word.
+Every answer cites the document, section, figure and page it is from, as
+``[NVM 1.3, 3.3.6, Figure 71, page 54, PDF page 54]``. Where NVM Express
+publishes the document as PDF, the citation is a link to that page of it on
+nvmexpress.org: a terminal that shows links opens it in the browser, at the
+figure, to read what the specification says of the matter at hand. The
+citation gives the page of the file too, ``PDF page 54``, for a PDF saved
+rather than shown.
 
 The forms of a question
 -----------------------
@@ -111,11 +121,6 @@ the Reservation Capabilities of a namespace, the bits stand in a column of
 their own, named by both acronyms, as ``RESCAP.PTPLS``. ``describe`` or
 ``explain`` before a question adds the first line of each field's
 description.
-
-Every citation of a document NVM Express publishes as PDF is a link to the
-page of that PDF, which a terminal that shows links opens in the browser.
-The citation gives the page of the file too, ``PDF page 54``, for a PDF
-saved rather than shown.
 
 .. _sec-usage-query:
 
