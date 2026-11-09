@@ -268,12 +268,20 @@ def carries(command: str, kind: str) -> bool:
 
 def kind_asked(lower: str) -> str:
     """The kind of thing a question asks which of, as "which log page", or
-    "" where it asks which of none"""
+    the identifier of, as "the log page identifier of Cross-Controller
+    Reset", which is the log page's, not the command's of that name; ""
+    where it asks which of none"""
 
-    match = re.search(r"\b(?:which|what)\s+(log ?page|feature)s?\b", lower)
+    match = re.search(
+        r"\b(?:which|what)\s+(log ?page|feature)s?\b"
+        r"|\b(log ?page|feature)\s+identifiers?\s+(?:of|for)\b"
+        r"|\b(lid|fid)\s+(?:of|for)\b",
+        lower,
+    )
     if not match:
         return ""
-    return "feature" if match[1] == "feature" else "log_page"
+    asked = match[1] or match[2] or match[3]
+    return "feature" if asked in ("feature", "fid") else "log_page"
 
 
 def command_named(question: str, vocabulary: Vocabulary) -> Optional[str]:
