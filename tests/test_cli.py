@@ -110,9 +110,22 @@ def test_a_run_says_what_it_made_and_what_to_look_at(tmp_path):
     assert result.returncode == 0
     assert f"{len(documents)} documents into" in result.stdout
     assert "candidate errata" in result.stdout and "document errors" in result.stdout
-    assert f"senfd-query --spec {tmp_path / 'merged.spec.document.json'} lint" in (
+    assert f"senfd lint --spec {tmp_path / 'merged.spec.document.json'}" in (
         result.stdout
     )
+    listed = run(
+        ["senfd", "lint", "--spec", str(tmp_path / "merged.spec.document.json")],
+        capture_output=True,
+        text=True,
+    )
+    assert listed.returncode == 0
+    assert listed.stdout.startswith("The authors': candidate errata")
+    errata = run(
+        ["senfd", "errata", "--spec", str(tmp_path / "merged.spec.document.json")],
+        capture_output=True,
+        text=True,
+    )
+    assert errata.returncode == 0 and "beyond the 64 bits" in errata.stdout
     logs = sorted(p.name for p in tmp_path.glob("*.error.log"))
     assert logs and all("." not in name.removesuffix(".error.log") for name in logs)
 

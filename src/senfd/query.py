@@ -12,7 +12,7 @@ reader rather than read by an agent. The data model is the
 merged specification document that senfd writes, by default in the cache:
 
     senfd *.docx --output ~/.cache/senfd
-    senfd-query command write 12
+    sate command write 12
 """
 
 import argparse
@@ -688,85 +688,82 @@ def lint(spec: SpecDocument, document: str = "") -> List[str]:
     return lines
 
 
-def main(argv: Optional[List[str]] = None) -> int:
-    parser = argparse.ArgumentParser(
-        description="Answer questions about the specification from its data model"
-    )
-    parser.add_argument(
+# The lookups sate answers on its command line, and the findings senfd lists
+LOOKUPS = ("command", "feature", "log-page", "structure", "section", "search", "value")
+FINDINGS = ("lint", "errata")
+
+HELP = {
+    "command": "A command and its dwords, as 'write' or 'write 12'",
+    "feature": "A feature, by hexadecimal identifier or name",
+    "log-page": "A log page, by hexadecimal identifier or name",
+    "structure": "A data structure or register",
+    "section": "What a section describes, by number or title",
+    "search": "Fields and things by acronym or name",
+    "value": "An entry of a table of values, as 'status code 82h' or 'CNS 05h'",
+    "lint": "What reading the figures as data found, for authors and senfd",
+    "errata": "Candidate errata of the documents, with where they are",
+}
+
+
+def run(prog: str, argv: List[str], names: Iterable[str], description: str) -> int:
+    """The answer to the lookup or finding of 'names' that 'argv' names, as
+    "command write 12", printed; each with the options of the data model"""
+
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument(
         "--spec",
         type=Path,
         default=None,
-        help=f"The merged specification document (default: {default_spec_path()})",
+        help=f"The merged data model (default: {default_spec_path()})",
     )
-    parser.add_argument(
+    common.add_argument(
         "-v", "--verbose", action="store_true", help="Give the descriptions too"
     )
-    parser.add_argument(
+    common.add_argument(
         "--markdown",
         action="store_true",
         help="Give the fields of an answer as Markdown tables, for reading",
     )
+    parser = argparse.ArgumentParser(prog=prog, description=description)
     sub = parser.add_subparsers(dest="what", required=True)
-    p = sub.add_parser("command", help="A command and its dwords")
-    p.add_argument("name")
-    p.add_argument("dword", nargs="?", type=int)
-    sub.add_parser(
-        "feature", help="A feature, by hexadecimal identifier or name"
-    ).add_argument("key")
-    sub.add_parser(
-        "log-page", help="A log page, by hexadecimal identifier or name"
-    ).add_argument("key")
-    sub.add_parser("structure", help="A data structure or register").add_argument(
-        "name"
-    )
-    sub.add_parser(
-        "section", help="What a section describes, by number or title"
-    ).add_argument("key")
-    sub.add_parser(
-        "errata", help="Candidate errata of the documents, with where they are"
-    ).add_argument("document", nargs="?", default="")
-    sub.add_parser(
-        "lint", help="What reading the figures as data found, for authors and senfd"
-    ).add_argument("document", nargs="?", default="")
-    sub.add_parser("search", help="Fields and things by acronym or name").add_argument(
-        "text"
-    )
-    sub.add_parser(
-        "value",
-        help='An entry of a table of values, as "status code 82h" or "CNS 05h"',
-    ).add_argument("text")
+    for name in names:
+        p = sub.add_parser(name, parents=[common], help=HELP[name])
+        if name in FINDINGS:
+            p.add_argument("document", nargs="?", default="")
+        else:
+            p.add_argument("words", nargs="+")
     args = parser.parse_args(argv)
 
     try:
         spec = load(args.spec)
     except OSError as exc:
         print(
-            f"senfd-query: no data model to answer from: {exc}. Make one from "
+            f"{prog}: no data model to answer from: {exc}. Make one from "
             "the documents with: senfd <documents>.docx --output ~/.cache/senfd",
             file=sys.stderr,
         )
         return 1
+    text = " ".join(getattr(args, "words", []))
     if args.what == "command":
-        lines = command(spec, args.name, args.dword, args.verbose, args.markdown)
+        words, dword = args.words, None
+        if len(words) > 1 and words[-1].isdigit():  # "write 12", of cdw12
+            words, dword = words[:-1], int(words[-1])
+        lines = command(spec, " ".join(words), dword, args.verbose, args.markdown)
     elif args.what == "feature":
-        lines = feature(spec, args.key, args.verbose, args.markdown)
+        lines = feature(spec, text, args.verbose, args.markdown)
     elif args.what == "log-page":
-        lines = log_page(spec, args.key, args.verbose, args.markdown)
+        lines = log_page(spec, text, args.verbose, args.markdown)
     elif args.what == "structure":
-        lines = structure(spec, args.name, args.verbose, args.markdown)
+        lines = structure(spec, text, args.verbose, args.markdown)
     elif args.what == "section":
-        lines = section(spec, args.key)
+        lines = section(spec, text)
     elif args.what == "errata":
         lines = errata(spec, args.document)
     elif args.what == "lint":
         lines = lint(spec, args.document)
     elif args.what == "value":
-        lines = value(spec, args.text, args.verbose, args.markdown)
+        lines = value(spec, text, args.verbose, args.markdown)
     else:
-        lines = search(spec, args.text)
+        lines = search(spec, text)
     print("\n".join(linked(spec, lines) if args.markdown else lines))
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

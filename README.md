@@ -40,7 +40,7 @@ check the answer against:
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
 ## What the data model is for
 
-* **Precise answers, at once.** `sate` and `senfd-query` answer a question
+* **Precise answers, at once.** `sate` answers a question
   about a command, a field, a register, a feature or a log page in
   milliseconds; see [the expert](https://safl.dk/senfd/sate/).
 * **Language models that cannot make NVMe facts up.** `sate-mcp` gives a
@@ -93,7 +93,7 @@ are available to members of NVM Express only; senfd reads those too, for
 those who hold them, and gives the same data model of either. The `.docx`
 is the simpler source, as it states what the PDF only shows, and it is the
 one an editor has while a specification is under revision: run on the
-draft, `senfd-query lint` lists what does not read as data, for the
+draft, `senfd lint` lists what does not read as data, for the
 figure to be corrected before it is ratified rather than after.
 
 **Neither the documents nor anything made from them is distributed with

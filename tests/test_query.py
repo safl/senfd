@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 import senfd.query
+import senfd.sate.cli
 from senfd.documents.spec import Source, Structure
 
 
@@ -105,9 +106,21 @@ def test_a_source_is_cited_by_the_short_name_of_its_document():
     assert senfd.query.cite(source) == "NVM 1.1, Figure 12"
 
 
-def test_the_command_line_prints_the_answer(spec_path, capsys):
-    assert senfd.query.main(["--spec", str(spec_path), "command", "ding", "10"]) == 0
+def test_sate_looks_up_by_the_name_of_the_lookup(spec_path, capsys):
+    assert senfd.sate.cli.main(["--spec", str(spec_path), "command", "ding", "10"]) == 0
     assert "Foo Count (FCNT)" in capsys.readouterr().out
+
+
+def test_a_lookup_of_several_words_needs_no_quotes(spec_path, capsys):
+    argv = ["command", "foo", "directive", "send", "--spec", str(spec_path)]
+    assert senfd.sate.cli.main(argv) == 0
+    assert "Bar Reset Count (BRC)" in capsys.readouterr().out
+
+
+def test_a_question_in_quotes_is_a_question_whatever_its_first_word(spec_path, capsys):
+    argv = ["--spec", str(spec_path), "--raw", "command ding, what is FCNT?"]
+    assert senfd.sate.cli.main(argv) == 0
+    assert capsys.readouterr().out.startswith("_Understood as")
 
 
 def test_a_command_has_its_operations_with_their_selectors(spec):
@@ -229,7 +242,7 @@ def test_every_question_of_the_command_line(spec_path, capsys):
         ["-v", "command", "ding"],
         ["value", "status code 82h"],
     ):
-        assert senfd.query.main(["--spec", str(spec_path), *argv]) == 0
+        assert senfd.sate.cli.main(["--spec", str(spec_path), *argv]) == 0
     out = capsys.readouterr().out
     assert "Foo Config" in out and "Foo Statistics" in out and "Ding cdw10" in out
     assert "82h Foo Lost" in out
@@ -314,7 +327,7 @@ def test_a_cell_keeps_a_table_a_table():
 
 def test_the_command_line_gives_markdown(spec_path, capsys):
     argv = ["--spec", str(spec_path), "--markdown", "structure", "Bar"]
-    assert senfd.query.main(argv) == 0
+    assert senfd.sate.cli.main(argv) == 0
     assert "| Bytes | Name | Acronym |" in capsys.readouterr().out
 
 
@@ -349,8 +362,9 @@ def test_a_command_is_found_by_its_opcode(spec):
     assert senfd.query.command(spec, "Ding") == senfd.query.command(spec, "01h")
 
 
-def test_without_a_data_model_the_query_says_how_to_make_one(capsys):
-    assert senfd.query.main(["--spec", "/no/such/model.json", "errata"]) == 1
+def test_without_a_data_model_the_lookup_says_how_to_make_one(capsys):
+    argv = ["errata", "--spec", "/no/such/model.json"]
+    assert senfd.query.run("senfd", argv, senfd.query.FINDINGS, "") == 1
     assert "senfd <documents>.docx --output" in capsys.readouterr().err
 
 

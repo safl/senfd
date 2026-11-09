@@ -55,7 +55,7 @@ a few lines, rather than by reading the documents:
 
    $ claude mcp add sate -- sate-mcp
 
-Its answers are those of ``senfd-query --markdown``, each citation a link to
+Its answers are those of ``sate``'s lookups with ``--markdown``, each citation a link to
 the page of the published PDF, so the agent can open the figure it was told
 of.
 

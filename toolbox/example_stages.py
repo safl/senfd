@@ -151,7 +151,7 @@ def write(into: Path) -> None:
     command = spec["command_sets"][COMMAND[0]]["commands"][COMMAND[1]]
     (into / f"{COMMAND[1]}.json").write_text(json.dumps(command, indent=2) + "\n")
     errata = subprocess.run(
-        ["senfd-query", "--spec", str(OUTPUT / "merged.spec.document.json"), "errata"],
+        ["senfd", "errata", "--spec", str(OUTPUT / "merged.spec.document.json")],
         check=True,
         capture_output=True,
         text=True,

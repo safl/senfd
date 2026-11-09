@@ -57,7 +57,7 @@ def parse_args() -> Namespace:
         description=(
             "Reads specification documents, .pdf or .docx, extracts and\n"
             "normalises their figures, and makes a structured data model of\n"
-            "them; senfd-query lint lists what reading them found."
+            "them; senfd lint lists what reading them found."
         ),
         epilog=PARSEARGS_EPILOG,
         formatter_class=RawTextHelpFormatter,
@@ -96,6 +96,13 @@ def parse_args() -> Namespace:
 def main() -> int:
     """Command-line entrypoint"""
 
+    if sys.argv[1:2] and sys.argv[1] in senfd.query.FINDINGS:
+        return senfd.query.run(
+            "senfd",
+            sys.argv[1:],
+            senfd.query.FINDINGS,
+            "What reading the documents into the data model found",
+        )
     args = parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
 
@@ -216,7 +223,7 @@ def summary(spec: SpecDocument, documents: int, written: Path) -> str:
         f"{plural(counted('figure-not-modelled') - examples, 'figure')} not modelled, "
         f"{plural(examples, 'worked example')} and "
         f"{plural(unassigned, 'unassigned dwords', 'unassigned dwords')}.\n"
-        f"List them: senfd-query{spec_option} lint"
+        f"List them: senfd lint{spec_option}"
     )
 
 

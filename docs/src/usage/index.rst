@@ -25,7 +25,7 @@ what the data model may be used for.
 
 This takes a few minutes, two of them for the Base specification. The run
 ends by saying what it made, and how many of the figures to look at, which
-``senfd-query lint`` lists; see :ref:`linting the documents <sec-linting>`.
+``senfd lint`` lists; see :ref:`linting the documents <sec-linting>`.
 
 The files
 ---------
@@ -71,5 +71,4 @@ It ends by saying:
 The output of this run is kept in the repository, in `example/output
 <https://github.com/safl/senfd/tree/main/example/output>`_. `jless
 <https://jless.io/>`_ and `jq <https://jqlang.github.io/jq/>`_ are handy
-for reading the JSON. ``senfd-query`` and ``sate`` read the merged data
-model; see :ref:`the expert <sec-ask>`.
+for reading the JSON. ``sate`` reads the merged data model; see :ref:`the expert <sec-ask>`.
