@@ -42,9 +42,9 @@ answer against:
    Express, Inc. to make it or use it. Read the :ref:`notices <sec-notices>`
    at the end of this page first.
 
-To use them: :ref:`install <sec-install>`, :ref:`make the data model
-<sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the expert
-<sec-ask>`, and, if you like, use it :ref:`with a language model
+To use senfd and sate: :ref:`install <sec-install>`, :ref:`make the data
+model <sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the
+expert <sec-ask>`, and, if you like, use it :ref:`with a language model
 <sec-llm>`.
 
 What it gets right
