@@ -177,3 +177,52 @@ jobs:
           -v ~/container-cache:/home/senfd/.cache/senfd \
           senfd sate --raw "opcode of ding" | tee answer.md
         grep -q "opcode 01h" answer.md
+
+    # sate --llm against a real llama-server in router mode, which refuses a
+    # request naming no model. The language model is a tiny one, so what this
+    # checks is the plumbing, the request, its schema and the reply read,
+    # and not how well it chooses.
+    - name: Cache the tiny language model
+      uses: actions/cache@v4
+      with:
+        path: ~/llm-models
+        key: smollm2-135m-instruct-q4_k_m-2e8040ce
+
+    - name: Fetch the tiny language model, checked by its SHA-256
+      run: |
+        mkdir -p ~/llm-models
+        model=~/llm-models/SmolLM2-135M-Instruct-Q4_K_M.gguf
+        test -f "$model" || curl -sSfL -o "$model" \
+          https://huggingface.co/bartowski/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q4_K_M.gguf
+        echo "2e8040ceae7815abe0dcb3540b9995eaa1fa0d2ca9e797d0a635ae4433c68c2d  $model" \
+          | sha256sum -c
+
+    - name: Serve it from llama-server in router mode
+      run: |
+        docker run -d --name llm --network host -v ~/llm-models:/models:ro \
+          ghcr.io/ggml-org/llama.cpp:server-b11889 \
+          --models-dir /models --host 127.0.0.1 --port 8088
+        for i in $(seq 60); do
+          curl -sf http://127.0.0.1:8088/health > /dev/null && break
+          sleep 1
+        done
+        curl -sf http://127.0.0.1:8088/models
+
+    - name: Ask sate in the image through it, the language model named
+      run: |
+        ask() {
+          docker run --rm --network host --user "$(id -u):$(id -g)" \
+            -v ~/container-cache:/home/senfd/.cache/senfd \
+            senfd sate --raw --llm http://127.0.0.1:8088 "$@" "what is FCNT of ding?"
+        }
+        # Unnamed, the router refuses it, so the check below can fail
+        ask | tee unnamed.md
+        grep -q "did not choose a lookup" unnamed.md
+        ask --llm-model SmolLM2-135M-Instruct-Q4_K_M | tee named.md
+        ! grep -q "did not choose a lookup" named.md
+        grep -q "Understood as" named.md
+
+    - name: The server's log
+      if: always()
+      run: |
+        docker logs llm 2>&1 | tail -50 || true
