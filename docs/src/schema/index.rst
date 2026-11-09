@@ -63,8 +63,8 @@ coded.
 
 .. _sec-schema-figure-document:
 
-Figure Document
----------------
+FigureDocument
+--------------
 
 * https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/plain.figure.document.schema.json
 
@@ -73,8 +73,8 @@ Figure Document
 
 .. _sec-schema-normalized-figure-document:
 
-Normalized Figure Document
---------------------------
+NormalizedFigureDocument
+------------------------
 
 * https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/normalized.figure.document.schema.json
 
@@ -83,8 +83,8 @@ Normalized Figure Document
 
 .. _sec-schema-spec-document:
 
-Spec Document
--------------
+SpecDocument
+------------
 
 * https://raw.githubusercontent.com/safl/senfd/main/src/senfd/schemas/spec.document.schema.json
 
