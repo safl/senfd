@@ -10,6 +10,15 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.9.2
+
+The package is as in 0.9.1; this release brings its description on PyPI,
+the README, up to date. The benchmark's report and tables give the
+frontier language models the time they took beside their cost, the time
+of the one call that answers every question and its share for each, and
+the transcripts of the run of 2026-11-09, which the pages send a reader
+to for every answer, are back in `benchmark/results/2026-11-09/bench`.
+
 ## 0.9.1
 
 `sate` answers from the tables of values: `status code 82h`, `status code
