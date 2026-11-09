@@ -5,7 +5,7 @@
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, Optional, Tuple
+from typing import Any, ClassVar, Dict, List, Literal, Optional, Tuple
 
 import docx
 import docx.text.paragraph
@@ -470,7 +470,7 @@ class FromDocx(Converter):
 
                 docx_cells = docx_row.cells
                 for idx, docx_cell in enumerate(docx_cells):
-                    merged = None
+                    merged: Optional[Literal["left", "up"]] = None
                     if idx and docx_cell._tc is docx_cells[idx - 1]._tc:
                         merged = "left"
                     elif idx < len(above) and docx_cell._tc is above[idx]._tc:
@@ -493,7 +493,7 @@ class FromDocx(Converter):
         figures: Dict[int, Figure] = {}
         errors: List[Error] = []
 
-        docx_document = docx.Document(path)
+        docx_document = docx.Document(str(path))
         labels.update(Numbering(docx_document).labels)
 
         # Add tabular figures -- page_nr unavailable

@@ -1277,10 +1277,10 @@ def link_operations(document: SpecDocument, used: set) -> None:
                         ):
                             continue
                         for name in value_names(value):
-                            for key, described in document.dwords.items():
+                            for key, listed in document.dwords.items():
                                 if key in used:
                                     continue
-                                for d in described:
+                                for d in listed:
                                     if d.source.document != selecting.source.document:
                                         continue
                                     if named(d, name, key):

@@ -59,7 +59,8 @@ def destination(
     """The page and the place down it an outline item points at, by its
     destination, given outright or by name; None where it has none"""
 
-    dest = item.destination
+    # An array, or a name to look the array up by, which may give a dictionary
+    dest: object = item.destination
     if isinstance(dest, (pikepdf.Name, pikepdf.String)):
         names = pdf.Root.get("/Names")
         trees = names.get("/Dests") if names is not None else None
@@ -95,7 +96,7 @@ def outline(pdf: pikepdf.Pdf) -> List[Section]:
     the page and place its heading is at"""
 
     found: List[Section] = []
-    index = {page.objgen: i for i, page in enumerate(pdf.pages)}
+    index = {page.obj.objgen: i for i, page in enumerate(pdf.pages)}
 
     def visit(items: list) -> None:
         for item in items:
@@ -215,7 +216,7 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 "Export it from Word with the document structure tags kept, or "
                 "give senfd the .docx"
             )
-        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        pages = Pages(plumb, {page.obj.objgen: i for i, page in enumerate(pdf.pages)})
         numbered = outline(pdf)
         at = 0
         section = Section(None, None)

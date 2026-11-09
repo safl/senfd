@@ -13,7 +13,7 @@ reported, and fixed in the documents, without stopping the output.
 """
 
 import re
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -343,7 +343,9 @@ def parse_caption(caption: str) -> Subject:
             match = re.match(pattern, caption, flags=re.IGNORECASE)
             if not match:
                 continue
-            groups = {k: v for k, v in match.groupdict().items() if v is not None}
+            groups: Dict[str, Any] = {
+                k: v for k, v in match.groupdict().items() if v is not None
+            }
             if "qualifier2" in groups:
                 groups["qualifier"] = groups.pop("qualifier2")
             for bound in ("lower", "upper"):
