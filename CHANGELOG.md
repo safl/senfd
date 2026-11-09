@@ -10,6 +10,26 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.11.0
+
+A data structure laid out in both bytes and bits, a heading row naming each
+byte range with the rows of its bits below it, is read as such: each byte
+range is a field named by its heading, and its bits are a layout nested in
+it. Before, the byte ranges were lost and the headings became fields of
+their own. The files senfd writes are indented JSON, so that a diff of two
+data models shows what changed.
+
+The README says what senfd and sate are and what the data model is for,
+with the cautions in a box, and points to the documentation for the rest.
+The documentation shows the expert's session and its command line in tabs,
+and tells where the names come from on a page of their own.
+
+The benchmark's configuration runs on any machine, with the public PDFs,
+llama-server from PATH and language models downloaded from Hugging Face,
+rather than being that of one lab machine. senfd is type-checked against
+its dependencies, pydantic among them, and ruff catches a name rebound over
+an argument or its own loop variable.
+
 ## 0.10.0
 
 `pipx install senfd` installs all of senfd: the PDF reader, and the

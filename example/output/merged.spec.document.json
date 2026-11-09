@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "0.10.0",
+    "version": "0.11.0",
     "stem": "merged",
     "file": null,
     "sha256": null
@@ -5993,13 +5993,13 @@
   ],
   "documents": {
     "example": {
-      "version": "0.10.0",
+      "version": "0.11.0",
       "stem": "example",
       "file": "example.docx",
       "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
     },
     "invalid": {
-      "version": "0.10.0",
+      "version": "0.11.0",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b"
