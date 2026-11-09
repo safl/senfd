@@ -21,7 +21,8 @@ same documents give the same data model every time.
 **sate** is an expert with the knowledge of that data model. Ask it about a
 command, a field, a register, a feature or a log page, in a session with
 completion or on the command line, and it answers at once, citing the figure
-to check the answer against:
+with a link to its page of the specification on nvmexpress.org, to check the
+answer against:
 
 .. raw:: html
 
