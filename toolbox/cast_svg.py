@@ -12,7 +12,7 @@ shows a recording as an animated SVG, rendered by svg-term-cli through npx.
 svg-term does not know a terminal's links, and prints their escapes as
 text, so they are taken out first; the underline of a link stays:
 
-    toolbox/cast_svg.py docs/_static/casts/intro.cast docs/_static/casts/intro.svg
+    toolbox/cast_svg.py docs/_static/casts/session.cast docs/_static/casts/session.svg
 """
 
 import argparse

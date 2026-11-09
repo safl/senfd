@@ -26,7 +26,14 @@ answer against:
 
 .. raw:: html
 
-   <div id="cast-intro"></div>
+   <div class="casts">
+     <div class="cast-tabs" role="tablist">
+       <button role="tab" aria-selected="true" data-cast="session">Interactive</button>
+       <button role="tab" aria-selected="false" data-cast="intro">Scripted</button>
+     </div>
+     <div class="cast-pane" id="cast-session"></div>
+     <div class="cast-pane" id="cast-intro" hidden></div>
+   </div>
 
 .. caution::
 
@@ -146,8 +153,29 @@ same data model the CI job checks.
 
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
+   <style>
+     .cast-tabs { display: flex; gap: 0.25rem; border-bottom: 1px solid var(--color-background-border); margin-bottom: 0.5rem; }
+     .cast-tabs button { background: none; border: none; border-bottom: 2px solid transparent; padding: 0.4rem 0.9rem; color: var(--color-foreground-secondary); cursor: pointer; font: inherit; }
+     .cast-tabs button[aria-selected="true"] { border-bottom-color: var(--color-brand-primary); color: var(--color-foreground-primary); font-weight: 600; }
+   </style>
    <script>
-     AsciinemaPlayer.create("_static/casts/intro.cast", document.getElementById("cast-intro"),
-       {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
-        poster: "npt:0:12"});
+     // A player made in a hidden pane has no width to fit, so each is made
+     // when its pane is first shown
+     const made = {};
+     function show(cast) {
+       for (const button of document.querySelectorAll(".cast-tabs button")) {
+         const on = button.dataset.cast === cast;
+         button.setAttribute("aria-selected", on);
+         document.getElementById(`cast-${button.dataset.cast}`).hidden = !on;
+       }
+       if (!made[cast]) {
+         made[cast] = AsciinemaPlayer.create(`_static/casts/${cast}.cast`, document.getElementById(`cast-${cast}`),
+           {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
+            poster: "npt:0:12"});
+       }
+     }
+     for (const button of document.querySelectorAll(".cast-tabs button")) {
+       button.addEventListener("click", () => show(button.dataset.cast));
+     }
+     show("session");
    </script>
