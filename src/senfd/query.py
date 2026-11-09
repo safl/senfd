@@ -479,6 +479,13 @@ def errata(
     return lines or (["No errata"] if none is None else none)
 
 
+def is_example(message: str) -> bool:
+    """Whether a figure not modelled is a worked example, by its caption's
+    word, and so no data the figure fails to give"""
+
+    return bool(re.search(r"\bexamples?\b", message, re.I))
+
+
 def lint(spec: SpecDocument, document: str = "") -> List[str]:
     """What reading the figures as data found to look at, of the documents
     whose short name has 'document' in it. First what is the authors': the
@@ -494,7 +501,7 @@ def lint(spec: SpecDocument, document: str = "") -> List[str]:
         return [d.message for d in spec.diagnostics if d.code == code and of(d.message)]
 
     unmodelled = coded("figure-not-modelled")
-    examples = [m for m in unmodelled if re.search(r"\bexamples?\b", m, re.I)]
+    examples = [m for m in unmodelled if is_example(m)]
     unassigned = [
         f"{cite(d.source)}: {dwords_named(name, d)}"
         for name, dwords in sorted(spec.unassigned.items())
