@@ -10,6 +10,34 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.13.0
+
+A data model made by an earlier senfd no longer loads and must be made
+again: a field now says what it is, by `role` and `kind`.
+
+A figure's range is made by its type or reported. It is a span of numbers,
+a formula of values the figure names, written plainly as `upper:lower`, or
+left open; text that is none of these is a candidate erratum, as are
+bounds whose upper is below the lower whatever the values they name. A
+field is made with a name, or as what holds a place, reserved, obsolete,
+vendor specific or ignored; a row giving neither is listed by `senfd lint`
+as a row that names no field. A figure laying out a whole data structure,
+log page or register is held to covering it, unless it leaves rows out
+or gives a formula between. The eleven public PDFs go from 3 candidate
+errata to 11.
+
+The kinds of ranges, roles, captions, typed values and errata are in the
+JSON schema, so a data model can be verified for its format by any JSON
+Schema validator, with no part of senfd.
+
+`sate --llm-model NAME` asks a server holding several language models for
+that one. With verbose, a field's description is given whole. A value of a
+typed column can be not applicable, with its footnotes. The PDF reader
+joins the pages of a figure in the order of the pages, and no longer takes
+the borders of a cell for those of a table nested in it.
+
+The documentation says what `sate --llm` and `sate-mcp` are each for.
+
 ## 0.12.0
 
 `senfd-query` is gone. What reading the documents found is senfd's to
