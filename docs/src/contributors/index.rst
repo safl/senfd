@@ -70,6 +70,8 @@ The documentation is built with ``cd docs && make deps html``, and a
 warning fails the build. The recordings in ``docs/_static/casts`` are made
 by ``toolbox/record_cast.py`` and ``toolbox/record_session.py`` from the
 scripts in ``docs/casts``; they need a data model of the public documents.
+The README shows the opening recording as an animated SVG, rendered by
+``toolbox/cast_svg.py``.
 The diagram ``docs/_static/senfd.svg`` is drawn from ``senfd.mmd`` beside
 it, in that directory by ``mmdc -i senfd.mmd -o senfd.svg -c
 senfd.mmd.json -b white``.
