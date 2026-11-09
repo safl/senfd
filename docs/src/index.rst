@@ -54,10 +54,12 @@ What the data model is for
 * **Precise answers, at once.** ``sate`` answers a
   question about a command, a field, a register, a feature or a log page in
   milliseconds; see :ref:`the expert <sec-ask>`.
-* **Language models that cannot make NVMe facts up.** ``sate-mcp`` gives a
-  coding agent the data model as tools, and ``sate --llm`` has a small
-  language model on your own CPU choose the lookup and write nothing of the
-  answer; see :ref:`with a language model <sec-llm>`.
+* **Language models that cannot make NVMe facts up.** ``sate --llm``
+  answers questions put in your own words, a small language model on your
+  own CPU choosing the lookup and writing nothing of the answer.
+  ``sate-mcp`` gives a coding agent the lookups as tools, to check an
+  opcode, a bit or an offset against its figure rather than recall it;
+  see :ref:`with a language model <sec-llm>`.
 * **Code generated from the figures.** An early prototype writes xNVMe's
   specification headers from the data model, every member citing its
   figure; see :ref:`code from the figures <sec-codegen>`.
