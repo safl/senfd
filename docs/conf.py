@@ -7,6 +7,7 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import datetime
 import os
 import sys
 
@@ -16,7 +17,7 @@ from senfd import __version__  # noqa: E402
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 project = "senfd"
-copyright = "2024, Simon A. F. Lund"
+copyright = f"2024-{datetime.date.today().year}, Simon A. F. Lund"
 author = "Simon A. F. Lund"
 release = __version__
 
