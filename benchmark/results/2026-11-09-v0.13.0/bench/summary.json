@@ -1,0 +1,154 @@
+{
+ "claude-opus-5-5, unknown allowed": {
+  "runs": [
+   {
+    "right": 54,
+    "wrong": 0,
+    "unknown": 17
+   },
+   {
+    "right": 51,
+    "wrong": 0,
+    "unknown": 20
+   },
+   {
+    "right": 54,
+    "wrong": 0,
+    "unknown": 17
+   }
+  ],
+  "mean": {
+   "right": 53,
+   "wrong": 0,
+   "unknown": 18
+  },
+  "seconds_per_question": 0.821,
+  "cost_usd": 0.4158328
+ },
+ "claude-opus-5-5, answer required": {
+  "runs": [
+   {
+    "right": 59,
+    "wrong": 12,
+    "unknown": 0
+   },
+   {
+    "right": 62,
+    "wrong": 9,
+    "unknown": 0
+   },
+   {
+    "right": 60,
+    "wrong": 11,
+    "unknown": 0
+   }
+  ],
+  "mean": {
+   "right": 60.3,
+   "wrong": 10.7,
+   "unknown": 0
+  },
+  "seconds_per_question": 0.878,
+  "cost_usd": 0.43411560000000005
+ },
+ "claude-sonnet-5-5, unknown allowed": {
+  "runs": [
+   {
+    "right": 25,
+    "wrong": 5,
+    "unknown": 41
+   },
+   {
+    "right": 30,
+    "wrong": 9,
+    "unknown": 32
+   },
+   {
+    "right": 35,
+    "wrong": 4,
+    "unknown": 32
+   }
+  ],
+  "mean": {
+   "right": 30,
+   "wrong": 6,
+   "unknown": 35
+  },
+  "seconds_per_question": 0.143,
+  "cost_usd": 0.0570132
+ },
+ "claude-sonnet-5-5, answer required": {
+  "runs": [
+   {
+    "right": 38,
+    "wrong": 33,
+    "unknown": 0
+   },
+   {
+    "right": 38,
+    "wrong": 33,
+    "unknown": 0
+   },
+   {
+    "right": 39,
+    "wrong": 32,
+    "unknown": 0
+   }
+  ],
+  "mean": {
+   "right": 38.3,
+   "wrong": 32.7,
+   "unknown": 0
+  },
+  "seconds_per_question": 0.158,
+  "cost_usd": 0.0574946
+ },
+ "llm-qwen2.5-1.5b-instruct-q4_k_m": {
+  "runs": [
+   {
+    "right": 44,
+    "wrong": 0,
+    "unknown": 27
+   }
+  ],
+  "mean": {
+   "right": 44,
+   "wrong": 0,
+   "unknown": 27
+  },
+  "seconds_per_question": 1.51,
+  "cost_usd": 0
+ },
+ "llm-qwen2.5-7b-instruct-q4_k_m": {
+  "runs": [
+   {
+    "right": 69,
+    "wrong": 0,
+    "unknown": 2
+   }
+  ],
+  "mean": {
+   "right": 69,
+   "wrong": 0,
+   "unknown": 2
+  },
+  "seconds_per_question": 2.438,
+  "cost_usd": 0
+ },
+ "sate": {
+  "runs": [
+   {
+    "right": 71,
+    "wrong": 0,
+    "unknown": 0
+   }
+  ],
+  "mean": {
+   "right": 71,
+   "wrong": 0,
+   "unknown": 0
+  },
+  "seconds_per_question": 0.011,
+  "cost_usd": 0
+ }
+}

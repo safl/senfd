@@ -32,7 +32,7 @@ no GPU, no account and no fee. Where a question names what it asks about,
 
 .. code-block:: console
 
-   $ llama-server -m Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf --port 8088 --jinja
+   $ llama-server -m Qwen2.5-7B-Instruct-Q4_K_M.gguf --port 8088 --jinja
    $ sate --llm http://127.0.0.1:8088
 
 A server holding several language models needs to be told which:
@@ -44,8 +44,8 @@ of a query and its argument; the answer shown is what the query found, so
 it can state no field, bit or opcode that is not in the figures. When a
 lookup finds nothing, or nothing mentioning the question's terms, it is
 told so and chooses again, three times at most, and then the answer is that
-it is not known. A language model of 8 billion parameters on a CPU is
-enough. One of 1 billion parameters chooses worse: it answers fewer of the
+it is not known. A language model of 7 billion parameters on a CPU is
+enough. One of 1.5 billion parameters chooses worse: it answers fewer of the
 questions, and none of them wrongly.
 
 .. raw:: html

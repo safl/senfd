@@ -12,22 +12,33 @@ ratified in 2026: the commands, features, log pages and fields that recent
 revisions added or moved, the bits of the registers, the opcodes of every
 command set and the fields of the Identify data structures, with a few
 long-standing facts among them. Each right answer was checked against the
-figure that gives it. `questions.json` holds them. The run of 2026-11-09
-made its data model from the PDFs NVM Express publishes, at senfd 75c370d
-on the way to 0.9.1; the run of 2026-11-08, kept beside it, asked the
-first 30 from a data model made of the `.docx`, at 0.8.0.
+figure that gives it. `questions.json` holds them. The latest run,
+`results/2026-11-09-v0.13.0`, made its data model from the PDFs NVM
+Express publishes, at senfd 0.13.0. Kept beside it are the run of
+2026-11-09 at senfd 75c370d, on the way to 0.9.1, with Llama 3.1 8B and
+3.2 1B in place of Qwen, and the run of 2026-11-08, which asked the first
+30 from a data model made of the `.docx`, at 0.8.0.
 
-| Lane, 2026-11-09 | Right | Wrong | Unknown | Cost and time |
+| Lane, 2026-11-09, senfd 0.13.0 | Right | Wrong | Unknown | Cost and time |
 |---|---|---|---|---|
-| `sate`, no language model | 71 | 0 | 0 | free, 4 ms a question |
-| `sate --llm`, Llama 3.1 8B Q4_K_M, CPU only | 70 | 0 | 1 | free, 2.7 s a question |
-| `sate --llm`, Llama 3.2 1B Q4_K_M, CPU only | 37 | 0 | 34 | free, 1.3 s a question |
-| Claude Opus 5.5, from memory, "unknown" allowed | 50.3 | 1.3 | 19.3 | USD 0.08 a run, 0.51 s a question |
-| Claude Opus 5.5, from memory, answer required | 55.7 | 15.3 | 0 | USD 0.10 a run, 0.66 s a question |
-| Claude Sonnet 5.5, from memory, "unknown" allowed | 38.7 | 4.3 | 28 | USD 0.03 a run, 0.30 s a question |
-| Claude Sonnet 5.5, from memory, answer required | 38.7 | 32.3 | 0 | USD 0.02 a run, 0.13 s a question |
+| `sate`, no language model | 71 | 0 | 0 | free, 11 ms a question |
+| `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 69 | 0 | 2 | free, 2.4 s a question |
+| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 44 | 0 | 27 | free, 1.5 s a question |
+| Claude Opus 5.5, from memory, "unknown" allowed[^allowed] | 53 | 0 | 18 | USD 0.14 a run, 0.82 s a question |
+| Claude Opus 5.5, from memory, answer required[^required] | 60.3 | 10.7 | 0 | USD 0.14 a run, 0.88 s a question |
+| Claude Sonnet 5.5, from memory, "unknown" allowed[^allowed] | 30 | 6 | 35 | USD 0.02 a run, 0.14 s a question |
+| Claude Sonnet 5.5, from memory, answer required[^required] | 38.3 | 32.7 | 0 | USD 0.02 a run, 0.16 s a question |
 
-A frontier lane is the mean of three runs. `results/2026-11-09/bench/`
+[^allowed]: The frontier model is told: "If you do not know, or are
+    guessing, answer "unknown" rather than a guess", and that a wrong
+    answer counts against it. This measures whether it knows what it does
+    not know.
+
+[^required]: The frontier model is told to give its best answer to every
+    question, with a confidence of high, medium or low, and may not answer
+    "unknown". This is how a chat answers a question put to it.
+
+A frontier lane is the mean of three runs. Each run's `bench/`
 keeps every answer of every run: `report.html` shows them side by side,
 right in green, wrong in red and unknown in grey, and `lanes/` holds the
 transcripts, with what `sate` understood each question as and each
@@ -56,8 +67,8 @@ runs the lanes:
   model.
 * Each frontier model answers from memory, by `claude -p --safe-mode --tools
   ''`, in a fresh context of about 1,300 tokens, three times in each of two
-  modes: allowed to say "unknown", with a wrong answer counting against it,
-  and told to answer every question. A run is one call answering them all,
+  modes: "unknown" allowed, with a wrong answer counting against it, and
+  answer required, every question answered. A run is one call answering them all,
   so its time a question is the call's time shared out.
 
 Then `scripts/report.py` grades them, by `scripts/grade.py`, and writes
