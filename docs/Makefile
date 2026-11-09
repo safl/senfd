@@ -29,7 +29,7 @@ kmdo:
 
 html:
 	mkdir -p $(BUILD_DIR)/html
-	PATH="$(PATH):../src" ${PYTHON} -m sphinx -E -b html -c $(CONFIG_DIR) $(DOCS_DIR) $(BUILD_DIR)
+	PATH="$(PATH):../src" ${PYTHON} -m sphinx -E -W --keep-going -b html -c $(CONFIG_DIR) $(DOCS_DIR) $(BUILD_DIR)
 	touch $(BUILD_DIR)/html/.nojekyll
 
 linkcheck:

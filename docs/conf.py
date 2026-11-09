@@ -24,10 +24,6 @@ release = __version__
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = [
-    "sphinx.ext.autodoc",
-]
-
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
@@ -40,17 +36,5 @@ html_theme_options = {
 }
 html_static_path = ["_static"]
 html_logo = "_static/logo.png"
-
-# -- Autodoc configuration ---------------------------------------------------
-# Options for autodoc
-autodoc_default_options = {
-    "members": True,
-    "undoc-members": True,
-    "private-members": False,
-    "special-members": False,
-    "inherited-members": False,
-    "show-inheritance": True,
-}
-
 
 linkcheck_report_timeouts_as_broken = False
