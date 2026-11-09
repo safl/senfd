@@ -13,7 +13,7 @@ reported, and fixed in the documents, without stopping the output.
 """
 
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -30,7 +30,7 @@ class Diagnostic(Model):
 
     figure_nr: Optional[int] = None
     """The number of the figure, where it is known"""
-    severity: str
+    severity: Literal["note", "warning"]
     """'note' or 'warning'"""
     code: str
     """What kind it is, as "figure-not-modelled" or 'dwords-unassigned'"""
@@ -263,6 +263,28 @@ def is_name(text: str) -> bool:
     )
 
 
+CaptionKind = Literal[
+    "example",
+    "opcodes",
+    "command_dword",
+    "completion_dword",
+    "data_pointer",
+    "metadata_pointer",
+    "data_buffer",
+    "management_dword",
+    "pcie_request_dword",
+    "register",
+    "cns_values",
+    "feature_identifiers",
+    "log_page_identifiers",
+    "status_values",
+    "requirements",
+    "log_page",
+    "data_structure",
+    "other",
+]
+
+
 class Subject(BaseModel):
     """
     What a figure describes, from its caption
@@ -271,7 +293,7 @@ class Subject(BaseModel):
     them; 'name' is the command, data structure, log page or other thing named.
     """
 
-    kind: str
+    kind: CaptionKind
     name: Optional[str] = None
     lower: Optional[int] = None
     upper: Optional[int] = None
@@ -289,7 +311,7 @@ DWORDS = (
 
 # The kinds of captions, by the patterns of the captions; the first kind with a
 # pattern matching the normalised caption is the subject's kind
-CAPTIONS: List[Tuple[str, List[str]]] = [
+CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
     ("example", [r"^Example\b.*", r".*\bExample$"]),
     (
         "opcodes",

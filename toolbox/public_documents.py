@@ -23,6 +23,7 @@ them, and so under the notice printed in each.
 import argparse
 import hashlib
 import json
+import jsonschema
 import lzma
 import os
 import subprocess
@@ -114,6 +115,18 @@ def made(path: Path, output: Path) -> Dict:
     return json.loads((output / "merged.spec.document.json").read_text())
 
 
+def formats(model: Dict) -> List[str]:
+    """What of 'model' is not of the format the schema of a data model says"""
+
+    from senfd.documents.spec import SpecDocument
+
+    validator = jsonschema.Draft202012Validator(SpecDocument.schema_static())
+    return [
+        f"{'/'.join(str(p) for p in error.absolute_path)}: {error.message}"
+        for error in validator.iter_errors(model)
+    ]
+
+
 def check(names: Optional[List[str]] = None) -> int:
     """Each document, or those of 'names', read by senfd and its counts
     compared with the manifest's"""
@@ -123,7 +136,11 @@ def check(names: Optional[List[str]] = None) -> int:
         if names and document["name"] not in names:
             continue
         with tempfile.TemporaryDirectory() as output:
-            found = counts(made(fetched(document), Path(output)))
+            model = made(fetched(document), Path(output))
+        found = counts(model)
+        for wrong in formats(model):
+            failed += 1
+            print(f"{document['name']}: not of the schema: {wrong}")
         expected = {key: document[key] for key in COUNTED}
         differ = {
             k: (expected[k], found[k]) for k in COUNTED if expected[k] != found[k]

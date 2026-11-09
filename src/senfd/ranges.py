@@ -15,23 +15,27 @@ says why.
 """
 
 import re
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Literal, Optional, Tuple
 
 from pydantic import BaseModel
 
 
 class Unconstructible(ValueError):
-    """What a figure gives that a value of the data model cannot be made
-    from: 'code' says what kind of wrong, and the message why"""
+    """What a figure gives that a value of the data model cannot be made from,
+    and the message why"""
 
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
+
+RangeCode = Literal["range", "range-reversed", "range-outside"]
+Unit = Literal["bits", "bytes"]
+RangeKind = Literal["span", "formula", "open"]
 
 
 class RangeError(Unconstructible):
-    """Text that is no range, with the code "range", "range-reversed" or
-    'range-outside'"""
+    """Text that is no range; 'code' says what kind of wrong"""
+
+    def __init__(self, code: RangeCode, message: str):
+        super().__init__(message)
+        self.code: RangeCode = code
 
 
 # A product of named values, by their names in order; () is the integer 1
@@ -208,9 +212,9 @@ class Range(BaseModel):
     it so, as "n/a"; 'text' as the figure writes it
     """
 
-    unit: str
+    unit: Unit
     text: str
-    kind: str = "span"
+    kind: RangeKind = "span"
     upper: Optional[int] = None
     lower: Optional[int] = None
     formula: Optional[str] = None
@@ -220,7 +224,7 @@ class Range(BaseModel):
     """How many bits or bytes it is, where its bounds give it"""
 
 
-def parse(unit: str, text: str, holds: Optional[int] = None) -> Range:
+def parse(unit: Unit, text: str, holds: Optional[int] = None) -> Range:
     """
     The range of 'text' counting 'unit', "bits" or 'bytes'; where 'holds'
     bits hold it, it must lie within them. Raises RangeError where it is no

@@ -1,20 +1,98 @@
 {
     "$defs": {
         "Bits": {
-            "description": "A field of bits or bytes; 'upper' and 'lower' are None where the document\ngives the range by a formula, or leaves it open, as 'kind' says",
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "const": "span"
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "upper": {
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "lower": {
+                                "minimum": 0,
+                                "type": "integer"
+                            },
+                            "formula": {
+                                "type": "null"
+                            },
+                            "width": {
+                                "minimum": 1,
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "upper",
+                            "lower",
+                            "width"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "const": "formula"
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "upper": {
+                                "type": "null"
+                            },
+                            "lower": {
+                                "type": "null"
+                            },
+                            "formula": {
+                                "pattern": "^[-A-Za-z0-9_ .*+\\u2026]+:[-A-Za-z0-9_ .*+\\u2026]+$",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "formula"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "const": "open"
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "upper": {
+                                "type": "null"
+                            },
+                            "lower": {
+                                "type": "null"
+                            },
+                            "formula": {
+                                "type": "null"
+                            },
+                            "width": {
+                                "type": "null"
+                            }
+                        }
+                    }
+                }
+            ],
+            "description": "A field of bits or bytes, made with what it needs; 'upper' and 'lower'\nare None where the document gives the range by a formula, or leaves it\nopen, as 'kind' says",
             "properties": {
                 "name": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "description": "The name of the field, as 'Force Unit Access'",
-                    "title": "Name"
+                    "description": "The name of the field, as 'Force Unit Access', or of the place it\nholds, as 'Reserved'",
+                    "title": "Name",
+                    "type": "string"
                 },
                 "acronym": {
                     "anyOf": [
@@ -28,11 +106,6 @@
                     "default": null,
                     "description": "Its acronym, as \"FUA\"; None where it has none or the document's is not\none, which is then an erratum",
                     "title": "Acronym"
-                },
-                "unit": {
-                    "description": "What the range counts: \"bits\" or 'bytes'",
-                    "title": "Unit",
-                    "type": "string"
                 },
                 "upper": {
                     "anyOf": [
@@ -64,44 +137,6 @@
                     "description": "The range as the document writes it, as \"29:26\" or '03:00'",
                     "title": "Range",
                     "type": "string"
-                },
-                "role": {
-                    "default": "field",
-                    "description": "What the field is: a \"field\" of its name, or what holds a place,\n\"reserved\", \"obsolete\", \"vendor_specific\" or 'ignored'",
-                    "title": "Role",
-                    "type": "string"
-                },
-                "kind": {
-                    "default": "span",
-                    "description": "What the range is: a \"span\" of numbers, a \"formula\" of values the\nfigure names, as \"(N*16)+15:N*16\", or \"open\", as 'n/a' or 'Impl Spec'",
-                    "title": "Kind",
-                    "type": "string"
-                },
-                "formula": {
-                    "anyOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "description": "Of a formula, its bounds written plainly, \"upper:lower\", as\n'16*N + 15:16*N'",
-                    "title": "Formula"
-                },
-                "width": {
-                    "anyOf": [
-                        {
-                            "type": "integer"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "description": "How many bits or bytes the range is, where its bounds give it, as 16\nof '16*N + 15:16*N'",
-                    "title": "Width"
                 },
                 "description": {
                     "default": "",
@@ -136,14 +171,6 @@
                     "title": "Columns",
                     "type": "object"
                 },
-                "fields": {
-                    "description": "The fields within this one, as its description lays them out",
-                    "items": {
-                        "$ref": "#/$defs/Bits"
-                    },
-                    "title": "Fields",
-                    "type": "array"
-                },
                 "union": {
                     "anyOf": [
                         {
@@ -177,11 +204,79 @@
                     },
                     "title": "Values",
                     "type": "array"
+                },
+                "unit": {
+                    "description": "What the range counts: \"bits\" or 'bytes'",
+                    "enum": [
+                        "bits",
+                        "bytes"
+                    ],
+                    "title": "Unit",
+                    "type": "string"
+                },
+                "role": {
+                    "description": "What the field is: a \"field\" of its name, or what holds a place,\n\"reserved\", \"obsolete\", \"vendor_specific\" or 'ignored'",
+                    "enum": [
+                        "field",
+                        "reserved",
+                        "obsolete",
+                        "vendor_specific",
+                        "ignored"
+                    ],
+                    "title": "Role",
+                    "type": "string"
+                },
+                "kind": {
+                    "description": "What the range is: a \"span\" of numbers, a \"formula\" of values the\nfigure names, as \"(N*16)+15:N*16\", or \"open\", as 'n/a' or 'Impl Spec'",
+                    "enum": [
+                        "span",
+                        "formula",
+                        "open"
+                    ],
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "formula": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Of a formula, its bounds written plainly, \"upper:lower\", as\n'16*N + 15:16*N'",
+                    "title": "Formula"
+                },
+                "width": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "How many bits or bytes the range is, where its bounds give it, as 16\nof '16*N + 15:16*N'",
+                    "title": "Width"
+                },
+                "fields": {
+                    "description": "The fields within this one, as its description lays them out",
+                    "items": {
+                        "$ref": "#/$defs/Bits"
+                    },
+                    "title": "Fields",
+                    "type": "array"
                 }
             },
             "required": [
+                "name",
+                "range",
                 "unit",
-                "range"
+                "role",
+                "kind"
             ],
             "title": "Bits",
             "type": "object"
@@ -285,6 +380,10 @@
                 },
                 "severity": {
                     "description": "'note' or 'warning'",
+                    "enum": [
+                        "note",
+                        "warning"
+                    ],
                     "title": "Severity",
                     "type": "string"
                 },
@@ -471,7 +570,17 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "What kind it is, as \"value\", \"acronym\", \"range\" (text that is no\nrange), \"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords) or 'layout-gap' (of a structure)",
+                    "description": "What kind it is: \"value\", \"acronym\", \"range\" (text that is no range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords) or 'layout-gap' (of a structure)",
+                    "enum": [
+                        "value",
+                        "acronym",
+                        "range",
+                        "range-outside",
+                        "range-reversed",
+                        "opcode",
+                        "gap",
+                        "layout-gap"
+                    ],
                     "title": "Code",
                     "type": "string"
                 },
@@ -730,11 +839,35 @@
                 },
                 "kind": {
                     "description": "What its caption says it is, as \"data_structure\", \"log_page\" or\n\"register\", or 'other'",
+                    "enum": [
+                        "example",
+                        "opcodes",
+                        "command_dword",
+                        "completion_dword",
+                        "data_pointer",
+                        "metadata_pointer",
+                        "data_buffer",
+                        "management_dword",
+                        "pcie_request_dword",
+                        "register",
+                        "cns_values",
+                        "feature_identifiers",
+                        "log_page_identifiers",
+                        "status_values",
+                        "requirements",
+                        "log_page",
+                        "data_structure",
+                        "other"
+                    ],
                     "title": "Kind",
                     "type": "string"
                 },
                 "unit": {
                     "description": "What its fields' ranges count: \"bits\" or 'bytes'",
+                    "enum": [
+                        "bits",
+                        "bytes"
+                    ],
                     "title": "Unit",
                     "type": "string"
                 },
@@ -795,10 +928,128 @@
             "type": "object"
         },
         "Typed": {
+            "allOf": [
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
+                                    "level"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "level": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "level"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
+                                    "flag"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "flag": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "flag"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
+                                    "identifier",
+                                    "number"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "lower": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "lower"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
+                                    "note"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "note": {
+                                "type": "integer"
+                            }
+                        },
+                        "required": [
+                            "note"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
+                                    "reference"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "reference": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "reference"
+                        ]
+                    }
+                }
+            ],
             "description": "A value of a table as what it is: a requirement \"level\" (M, O, P, NR, R),\na yes or no \"flag\", an \"identifier\" or a range of them, a \"note\" it is\ngiven by, a \"reference\" to another specification, or \"reserved\" or\n\"vendor_specific\"; with the footnotes marked on it",
             "properties": {
                 "kind": {
                     "description": "Which of those it is",
+                    "enum": [
+                        "level",
+                        "flag",
+                        "identifier",
+                        "number",
+                        "note",
+                        "reference",
+                        "reserved",
+                        "vendor_specific"
+                    ],
                     "title": "Kind",
                     "type": "string"
                 },
@@ -900,6 +1151,26 @@
             "properties": {
                 "kind": {
                     "description": "What its caption says it is, as \"status_values\", \"requirements\" or\n\"log_page_identifiers\", or 'other'",
+                    "enum": [
+                        "example",
+                        "opcodes",
+                        "command_dword",
+                        "completion_dword",
+                        "data_pointer",
+                        "metadata_pointer",
+                        "data_buffer",
+                        "management_dword",
+                        "pcie_request_dword",
+                        "register",
+                        "cns_values",
+                        "feature_identifiers",
+                        "log_page_identifiers",
+                        "status_values",
+                        "requirements",
+                        "log_page",
+                        "data_structure",
+                        "other"
+                    ],
                     "title": "Kind",
                     "type": "string"
                 },

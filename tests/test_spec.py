@@ -335,7 +335,7 @@ def test_a_layout_of_bytes_and_bits_nests_the_bits_in_their_byte_range(tmp_path)
 
 
 def test_the_unions_of_a_layout_and_those_nested_in_it_have_numbers_of_their_own():
-    from senfd.documents.spec import Bits, number_unions
+    from senfd.documents.spec import ReadBits as Bits, number_unions
 
     def bits(range_, union, fields=()):
         return Bits(
@@ -517,7 +517,7 @@ def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
     """A field of one byte whose nested bits run to bit 15, as "15:3 Reserved"
     under byte 362 of Base 2.4's Identify Controller"""
 
-    from senfd.documents.spec import Bits, Source, checked
+    from senfd.documents.spec import ReadBits as Bits, Source, checked
 
     source = Source(document="example", figure_nr=338)
     byte = Bits(
@@ -532,7 +532,7 @@ def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
         ],
     )
     wide = byte.model_copy(update={"upper": 363, "range": "363:362"})
-    kept, errata = checked([byte, wide], None, source)
+    kept, errata, _ = checked([byte, wide], None, source)
     assert [(e.code, e.found, e.message) for e in errata] == [
         (
             "range-outside",
@@ -549,7 +549,7 @@ def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
     it never opened, and "4*(N+1)+3: 4 * (N+4)" of Figure 404, whose upper
     bound is below its lower whatever N is"""
 
-    from senfd.documents.spec import Bits, Source, checked
+    from senfd.documents.spec import ReadBits as Bits, Source, checked
 
     source = Source(document="example", figure_nr=361)
     fields = [
@@ -558,7 +558,7 @@ def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
         Bits(unit="bytes", range="(NUMENT-1)*32+63): ((NUMENT-1)*32+32)", name="Last"),
         Bits(unit="bytes", range="4*(N+1)+3: 4 * (N+4)", name="Exported"),
     ]
-    kept, errata = checked(fields, None, source)
+    kept, errata, _ = checked(fields, None, source)
     assert [(f.name, f.kind, f.formula, f.width) for f in kept] == [
         ("Entry", "formula", "32*n - 1:32*n - 32", 32),
         ("Open", "open", None, None),
@@ -577,7 +577,7 @@ def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
 
 
 def test_bits_nested_in_a_formula_of_bytes_lie_within_its_width():
-    from senfd.documents.spec import Bits, Source, checked
+    from senfd.documents.spec import ReadBits as Bits, Source, checked
 
     entry = Bits(
         unit="bytes",
@@ -585,7 +585,7 @@ def test_bits_nested_in_a_formula_of_bytes_lie_within_its_width():
         name="Entry",
         fields=[Bits(unit="bits", range="16:00", name="Wide")],
     )
-    kept, errata = checked([entry], None, Source(document="example", figure_nr=1))
+    kept, errata, _ = checked([entry], None, Source(document="example", figure_nr=1))
     assert [e.message for e in errata] == [
         "Field 16:00 Wide: bit 16 beyond the 16 bits of bytes (n*2)+1:(n*2)"
     ]
@@ -606,15 +606,25 @@ def test_bytes_of_no_field_between_two_fields_are_a_gap_unless_rows_are_left_out
             unit="bytes",
             range=rng,
             name=name,
+            role="field",
+            kind="span",
             upper=int(upper),
             lower=int(lower or upper),
+            width=int(upper) - int(lower or upper) + 1,
             elided=elided,
         )
 
     entries = [span("31:00", "Entry 0"), span("63:32", "Entry 1")]
     left_out = entries + [span("127:96", "Entry 3", elided=True)]
     assert uncovered(left_out, "bytes", source) == []
-    formula = Bits(unit="bytes", range="N+3:N", kind="formula", name="Entry N")
+    formula = Bits(
+        unit="bytes",
+        range="N+3:N",
+        role="field",
+        kind="formula",
+        formula="N + 3:N",
+        name="Entry N",
+    )
     assert (
         uncovered(entries + [formula, span("199:196", "Last")], "bytes", source) == []
     )
@@ -641,14 +651,14 @@ def test_bytes_of_no_field_between_two_fields_are_a_gap_unless_rows_are_left_out
 def test_a_field_is_made_with_what_it_needs_or_is_left_out():
     """A name, or the place it holds; a row giving neither makes no field"""
 
-    from senfd.documents.spec import Bits, Source, checked
+    from senfd.documents.spec import ReadBits as Bits, Source, checked
 
     source = Source(document="example", figure_nr=49)
 
     def bytes_of(rng, name=None, description=""):
         return Bits(unit="bytes", range=rng, name=name, description=description)
 
-    kept, errata = checked(
+    kept, errata, unnamed = checked(
         [
             bytes_of("03:00", "Foo"),
             bytes_of("07:04", description="Reserved for future use."),
@@ -664,7 +674,11 @@ def test_a_field_is_made_with_what_it_needs_or_is_left_out():
         ("Reserved", "reserved", "Reserved for future use."),
         ("Most significant 16 bits of the LBST", "field", ""),
     ]
-    assert [e.code for e in errata] == ["field-name", "field-name"]
+    assert errata == []
+    assert unnamed == [
+        "Field n/a: no name in 'These bytes have no equivalent.'",
+        "Field 15:12: no name in 'Bus Master Enable (BME'",
+    ]
 
 
 def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it(tmp_path):

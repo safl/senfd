@@ -18,6 +18,10 @@
                 },
                 "severity": {
                     "description": "'note' or 'warning'",
+                    "enum": [
+                        "note",
+                        "warning"
+                    ],
                     "title": "Severity",
                     "type": "string"
                 },
@@ -87,6 +91,10 @@
         "Layout": {
             "properties": {
                 "unit": {
+                    "enum": [
+                        "bits",
+                        "bytes"
+                    ],
                     "title": "Unit",
                     "type": "string"
                 },
@@ -375,6 +383,26 @@
             "description": "What a figure describes, from its caption\n\n'kind' is one of the kinds of CAPTIONS, or \"other\" for a caption of none of\nthem; 'name' is the command, data structure, log page or other thing named.",
             "properties": {
                 "kind": {
+                    "enum": [
+                        "example",
+                        "opcodes",
+                        "command_dword",
+                        "completion_dword",
+                        "data_pointer",
+                        "metadata_pointer",
+                        "data_buffer",
+                        "management_dword",
+                        "pcie_request_dword",
+                        "register",
+                        "cns_values",
+                        "feature_identifiers",
+                        "log_page_identifiers",
+                        "status_values",
+                        "requirements",
+                        "log_page",
+                        "data_structure",
+                        "other"
+                    ],
                     "title": "Kind",
                     "type": "string"
                 },

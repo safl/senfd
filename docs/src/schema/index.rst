@@ -54,6 +54,29 @@ range, a note, a reference, reserved or vendor specific. Every part has a
 page, and, where the document was read from a PDF, the page of the file,
 ``pdf_page``, where a link to the PDF opens.
 
+A field also says what it is: its ``role``, a ``field`` or what holds a
+place, and the ``kind`` of its range, a ``span`` with integer bounds and a
+``width``, a ``formula`` written plainly as ``upper:lower``, or ``open``.
+The kinds of a caption, a typed value and an erratum are enumerated too.
+
+A data model can be verified for its format against the schema alone, by
+a JSON Schema validator and with no part of senfd, as with the Python
+package ``jsonschema``:
+
+.. code-block:: python
+
+   import json
+   import jsonschema
+
+   with open("schema/spec.document.schema.json") as schema:
+       with open("merged.spec.document.json") as document:
+           jsonschema.validate(json.load(document), json.load(schema))
+
+``senfd --dump-schema --output schema`` writes the schema. It says what each
+kind must hold. It cannot say what depends on the values, as that an upper
+bound is not below its lower; reading the data model into senfd's types
+does, and refuses one that is not.
+
 The schema is versioned with senfd, and changes in a release are said in
 its changelog. It is a starting point for a data model of the
 specifications, not a standard: what is likely to stay is the commands with

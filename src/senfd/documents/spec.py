@@ -14,9 +14,10 @@ model leaves out is a diagnostic.
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import ClassVar, Dict, List, Optional, Tuple
+from typing import ClassVar, Dict, List, Literal, Optional, Tuple
 
-from pydantic import Field
+from pydantic import ConfigDict, Field, model_validator
+from pydantic.config import JsonDict
 
 from senfd.documents.base import (
     DocumentMeta,
@@ -32,7 +33,9 @@ from senfd.documents.normalized import (
     NormalizedFigureDocument,
 )
 from senfd.errors import Error
-from senfd.normalize import Diagnostic, note, warning
+from senfd.fields import Role
+from senfd.normalize import CaptionKind, Diagnostic, note, warning
+from senfd.ranges import RangeKind, Unit
 import senfd.fields
 import senfd.ranges
 
@@ -57,37 +60,65 @@ class Source(Model):
     """The title of that section"""
 
 
-class Bits(Model):
-    """
-    A field of bits or bytes; 'upper' and 'lower' are None where the document
-    gives the range by a formula, or leaves it open, as 'kind' says
-    """
+# What a field's JSON must hold for each kind of range, as a JSON Schema can
+# say it; what its values must be besides is Bits.of_its_kind's to say
+BITS_BY_KIND: JsonDict = {
+    "allOf": [
+        {
+            "if": {"properties": {"kind": {"const": "span"}}},
+            "then": {
+                "properties": {
+                    "upper": {"type": "integer", "minimum": 0},
+                    "lower": {"type": "integer", "minimum": 0},
+                    "formula": {"type": "null"},
+                    "width": {"type": "integer", "minimum": 1},
+                },
+                "required": ["upper", "lower", "width"],
+            },
+        },
+        {
+            "if": {"properties": {"kind": {"const": "formula"}}},
+            "then": {
+                "properties": {
+                    "upper": {"type": "null"},
+                    "lower": {"type": "null"},
+                    "formula": {
+                        "type": "string",
+                        "pattern": r"^[-A-Za-z0-9_ .*+\u2026]+:[-A-Za-z0-9_ .*+\u2026]+$",
+                    },
+                },
+                "required": ["formula"],
+            },
+        },
+        {
+            "if": {"properties": {"kind": {"const": "open"}}},
+            "then": {
+                "properties": {
+                    "upper": {"type": "null"},
+                    "lower": {"type": "null"},
+                    "formula": {"type": "null"},
+                    "width": {"type": "null"},
+                }
+            },
+        },
+    ]
+}
+
+
+class BitsCommon(Model):
+    """What a field has however far it is made"""
 
     name: Optional[str] = None
     """The name of the field, as 'Force Unit Access'"""
     acronym: Optional[str] = None
     """Its acronym, as "FUA"; None where it has none or the document's is not
     one, which is then an erratum"""
-    unit: str
-    """What the range counts: "bits" or 'bytes'"""
     upper: Optional[int] = None
     """The upper bound of the range, inclusive"""
     lower: Optional[int] = None
     """The lower bound of the range"""
     range: str
     """The range as the document writes it, as "29:26" or '03:00'"""
-    role: str = "field"
-    """What the field is: a "field" of its name, or what holds a place,
-    "reserved", "obsolete", "vendor_specific" or 'ignored'"""
-    kind: str = "span"
-    """What the range is: a "span" of numbers, a "formula" of values the
-    figure names, as "(N*16)+15:N*16", or "open", as 'n/a' or 'Impl Spec'"""
-    formula: Optional[str] = None
-    """Of a formula, its bounds written plainly, "upper:lower", as
-    '16*N + 15:16*N'"""
-    width: Optional[int] = None
-    """How many bits or bytes the range is, where its bounds give it, as 16
-    of '16*N + 15:16*N'"""
     description: str = ""
     """The text of the field's description"""
     section: Optional[str] = None
@@ -99,8 +130,6 @@ class Bits(Model):
     columns: Dict[str, str] = Field(default_factory=dict)
     """The figure's other columns of the field, by their keys, as "reset" or
     'type'"""
-    fields: List["Bits"] = Field(default_factory=list)
-    """The fields within this one, as its description lays them out"""
     union: Optional[int] = None
     """Of fields sharing bits, the union of the layout they are of"""
     alternative: Optional[int] = None
@@ -110,6 +139,64 @@ class Bits(Model):
     values: List["Entry"] = Field(default_factory=list)
     """The values the field takes, as the table in its description gives
     them"""
+
+
+class ReadBits(BitsCommon):
+    """A row of a layout as read, from which checked() makes a field or not"""
+
+    unit: Unit
+    """What the range counts: "bits" or 'bytes'"""
+    fields: List["ReadBits"] = Field(default_factory=list)
+    """The rows within this one, as its description lays them out"""
+
+
+class Bits(BitsCommon):
+    """
+    A field of bits or bytes, made with what it needs; 'upper' and 'lower'
+    are None where the document gives the range by a formula, or leaves it
+    open, as 'kind' says
+    """
+
+    model_config = ConfigDict(
+        use_attribute_docstrings=True, json_schema_extra=BITS_BY_KIND
+    )
+
+    name: str
+    """The name of the field, as 'Force Unit Access', or of the place it
+    holds, as 'Reserved'"""
+    unit: Unit
+    """What the range counts: "bits" or 'bytes'"""
+    role: Role
+    """What the field is: a "field" of its name, or what holds a place,
+    "reserved", "obsolete", "vendor_specific" or 'ignored'"""
+    kind: RangeKind
+    """What the range is: a "span" of numbers, a "formula" of values the
+    figure names, as "(N*16)+15:N*16", or "open", as 'n/a' or 'Impl Spec'"""
+    formula: Optional[str] = None
+    """Of a formula, its bounds written plainly, "upper:lower", as
+    '16*N + 15:16*N'"""
+    width: Optional[int] = None
+    """How many bits or bytes the range is, where its bounds give it, as 16
+    of '16*N + 15:16*N'"""
+    fields: List["Bits"] = Field(default_factory=list)
+    """The fields within this one, as its description lays them out"""
+
+    @model_validator(mode="after")
+    def of_its_kind(self) -> "Bits":
+        """A span has its bounds, the upper not below the lower, and its
+        width by them; a formula its text and no bounds; an open range none"""
+
+        bounds = (self.upper, self.lower)
+        if self.kind == "span":
+            if self.upper is None or self.lower is None:
+                raise ValueError(f"The span '{self.range}' has no bounds")
+            if self.upper < self.lower or self.formula is not None:
+                raise ValueError(f"'{self.range}' is no span")
+            if self.width != self.upper - self.lower + 1:
+                raise ValueError(f"'{self.range}' is not {self.width} wide")
+        elif bounds != (None, None) or (self.formula is None) != (self.kind == "open"):
+            raise ValueError(f"'{self.range}' is no {self.kind} range")
+        return self
 
 
 class Dwords(Model):
@@ -189,10 +276,10 @@ class Structure(Model):
 
     name: str
     """The name its caption gives, as 'CC - Controller Configuration'"""
-    kind: str
+    kind: CaptionKind
     """What its caption says it is, as "data_structure", "log_page" or
     "register", or 'other'"""
-    unit: str
+    unit: Unit
     """What its fields' ranges count: "bits" or 'bytes'"""
     qualifier: Optional[str] = None
     """What the caption says it is of, as 'Log Specific Field'"""
@@ -206,6 +293,34 @@ class Structure(Model):
     """The figure laying it out"""
 
 
+TypedKind = Literal[
+    "level",
+    "flag",
+    "identifier",
+    "number",
+    "note",
+    "reference",
+    "reserved",
+    "vendor_specific",
+]
+# What each kind of typed value must hold, as a JSON Schema can say it
+TYPED_BY_KIND: JsonDict = {
+    "allOf": [
+        {
+            "if": {"properties": {"kind": {"enum": [*kinds]}}},
+            "then": {"properties": {name: {"type": of}}, "required": [name]},
+        }
+        for kinds, name, of in (
+            (["level"], "level", "string"),
+            (["flag"], "flag", "boolean"),
+            (["identifier", "number"], "lower", "integer"),
+            (["note"], "note", "integer"),
+            (["reference"], "reference", "string"),
+        )
+    ]
+}
+
+
 class Typed(Model):
     """
     A value of a table as what it is: a requirement "level" (M, O, P, NR, R),
@@ -214,7 +329,11 @@ class Typed(Model):
     "vendor_specific"; with the footnotes marked on it
     """
 
-    kind: str
+    model_config = ConfigDict(
+        use_attribute_docstrings=True, json_schema_extra=TYPED_BY_KIND
+    )
+
+    kind: TypedKind
     """Which of those it is"""
     level: Optional[str] = None
     """Of a level, the level"""
@@ -254,7 +373,7 @@ class Values(Model):
     """A table of values, by the kind of its caption and what it names; the
     scope is what the caption confines it to, as "I/O Commands" """
 
-    kind: str
+    kind: CaptionKind
     """What its caption says it is, as "status_values", "requirements" or
     "log_page_identifiers", or 'other'"""
     name: Optional[str] = None
@@ -305,6 +424,18 @@ class LogPage(Model):
     """The log page identifier table listing it"""
 
 
+ErratumCode = Literal[
+    "value",
+    "acronym",
+    "range",
+    "range-outside",
+    "range-reversed",
+    "opcode",
+    "gap",
+    "layout-gap",
+]
+
+
 class Erratum(Model):
     """
     Something of a figure that is not what its kind of value must be, as a
@@ -313,9 +444,9 @@ class Erratum(Model):
     a candidate erratum of the specification, saying where it is.
     """
 
-    code: str
-    """What kind it is, as "value", "acronym", "range" (text that is no
-    range), "range-outside", "range-reversed", "opcode", "gap" (of a command's
+    code: ErratumCode
+    """What kind it is: "value", "acronym", "range" (text that is no range),
+    "range-outside", "range-reversed", "opcode", "gap" (of a command's
     dwords) or 'layout-gap' (of a structure)"""
     message: str
     """What is wrong, said for a person"""
@@ -454,8 +585,8 @@ def alias(name: str) -> str:
 REGEX_HEX = re.compile(r"^(?P<hex>[0-9A-Fa-f]+)h$")
 
 
-def bits_of(field: LayoutField, unit: str) -> Bits:
-    return Bits(
+def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
+    return ReadBits(
         name=field.name,
         acronym=field.acronym,
         unit=unit,
@@ -488,13 +619,13 @@ def value_of(entry: Dict[str, str]) -> "Entry":
     return value
 
 
-def fields_of(layout: Layout) -> List[Bits]:
+def fields_of(layout: Layout) -> List[ReadBits]:
     fields = unions_of([bits_of(field, layout.unit) for field in layout.fields])
     number_unions(fields)
     return fields
 
 
-def same_structure(a: Bits, b: Bits) -> bool:
+def same_structure(a: ReadBits, b: ReadBits) -> bool:
     """Whether fields are of one structure, as a table listing the fields of
     several, by a column naming the structure of each, gives fields of others"""
 
@@ -504,7 +635,7 @@ def same_structure(a: Bits, b: Bits) -> bool:
     return True
 
 
-def number_unions(fields: List[Bits], start: int = 0) -> int:
+def number_unions(fields: List[ReadBits], start: int = 0) -> int:
     """Number the unions of 'fields' and of the fields nested in them anew, in
     one sequence, so that no two unions of a layout have the same number;
     returns the next number"""
@@ -521,7 +652,7 @@ def number_unions(fields: List[Bits], start: int = 0) -> int:
     return start
 
 
-def unions_of(fields: List[Bits]) -> List[Bits]:
+def unions_of(fields: List[ReadBits]) -> List[ReadBits]:
     """
     'fields' with those sharing bits, of a section, made alternatives of a
     union: the fields of bits some other shares are a region, and each is,
@@ -529,7 +660,7 @@ def unions_of(fields: List[Bits]) -> List[Bits]:
     fields it shares no bits with
     """
 
-    def overlaps(a: Bits, b: Bits) -> bool:
+    def overlaps(a: ReadBits, b: ReadBits) -> bool:
         return (
             a.lower is not None
             and b.lower is not None
@@ -543,7 +674,7 @@ def unions_of(fields: List[Bits]) -> List[Bits]:
     for section in dict.fromkeys(f.section for f in fields):
         these = [f for f in fields if f.section == section and f.lower is not None]
         # The regions: fields joined by sharing bits, directly or through others
-        regions: List[List[Bits]] = []
+        regions: List[List[ReadBits]] = []
         for field in these:
             joined = [
                 r
@@ -555,7 +686,7 @@ def unions_of(fields: List[Bits]) -> List[Bits]:
         for region in regions:
             if len(region) < 2:
                 continue
-            alternatives: List[List[Bits]] = []
+            alternatives: List[List[ReadBits]] = []
             for field in sorted(region, key=fields.index):
                 at = next(
                     (
@@ -589,36 +720,41 @@ REGEX_ACRONYM = re.compile(r"^[A-Za-z0-9]+(?:[-_/.][A-Za-z0-9]+)*$")
 
 
 def checked(
-    fields: List[Bits], width: Optional[int], source: Source, of: str = "its dwords"
-) -> Tuple[List[Bits], List[Erratum]]:
+    fields: List[ReadBits],
+    width: Optional[int],
+    source: Source,
+    of: str = "its dwords",
+) -> Tuple[List[Bits], List[Erratum], List[str]]:
     """
-    The fields of a layout that are what fields must be, and the errata of
-    those that are not: an acronym that is not one is left out, and a field
-    whose range is none, by senfd.ranges, is left out whole, as one of
-    reversed bounds or beyond the 'width' in bits of what it is 'of', its
-    dwords or the bytes holding it; fields sharing bits are not errata, as a
-    layout can give either of two, as an IPv4 or an IPv6 address
+    The fields made from the rows of a layout, the errata of those that are
+    not what fields must be, and what is said of the rows naming no field: an
+    acronym that is not one is left out, and a row whose range is none, by
+    senfd.ranges, is left out whole, as one of reversed bounds or beyond the
+    'width' in bits of what it is 'of', its dwords or the bytes holding it;
+    fields sharing bits are not errata, as a layout can give either of two,
+    as an IPv4 or an IPv6 address
     """
 
     errata: List[Erratum] = []
+    unnamed: List[str] = []
     kept: List[Bits] = []
-    for given in fields:
-        field = given
+    for field in fields:
         what = f"{field.range} {field.name or ''}".strip()
-        if field.acronym and not REGEX_ACRONYM.match(field.acronym):
+        acronym = field.acronym
+        if acronym and not REGEX_ACRONYM.match(acronym):
             errata.append(
                 Erratum(
                     code="acronym",
-                    message=f"Field {what}: acronym '{field.acronym}' is not one",
-                    found=field.acronym,
+                    message=f"Field {what}: acronym '{acronym}' is not one",
+                    found=acronym,
                     source=source,
                 )
             )
-            field = field.model_copy(update={"acronym": None})
+            acronym = None
         try:
             rng = senfd.ranges.parse(field.unit, field.range, width)
-            made = senfd.fields.identity(field.name, field.acronym, field.description)
-        except senfd.ranges.Unconstructible as exc:
+            made = senfd.fields.identity(field.name, acronym, field.description)
+        except senfd.ranges.RangeError as exc:
             said = f"{exc} of {of}" if exc.code == "range-outside" else str(exc)
             errata.append(
                 Erratum(
@@ -629,32 +765,58 @@ def checked(
                 )
             )
             continue
+        except senfd.fields.Unnamed as exc:
+            unnamed.append(f"Field {what}: {exc}")
+            continue
         # Bits nested in a range of bytes lie within its bytes
         within, holding = None, "its dwords"
         if rng.unit == "bytes" and rng.width is not None:
             within = 8 * rng.width
             holding = f"byte {field.range}" if within == 8 else f"bytes {field.range}"
-        nested, nested_errata = checked(field.fields, within, source, holding)
+        nested, nested_errata, nested_unnamed = checked(
+            field.fields, within, source, holding
+        )
         errata += nested_errata
+        unnamed += nested_unnamed
+        named_by_its_text = field.name is None and made.role == "field"
         kept.append(
-            field.model_copy(
-                update={
-                    "fields": nested,
-                    "name": made.name,
-                    "role": made.role,
-                    "description": ""
-                    if field.name is None and made.role == "field"
-                    else field.description,
-                    "upper": rng.upper,
-                    "lower": rng.lower,
-                    "kind": rng.kind,
-                    "formula": rng.formula,
-                    "width": rng.width,
-                }
+            Bits(
+                name=made.name,
+                acronym=made.acronym,
+                unit=rng.unit,
+                role=made.role,
+                kind=rng.kind,
+                upper=rng.upper,
+                lower=rng.lower,
+                range=field.range,
+                formula=rng.formula,
+                width=rng.width,
+                description="" if named_by_its_text else field.description,
+                section=field.section,
+                elided=field.elided,
+                columns=field.columns,
+                fields=nested,
+                union=field.union,
+                alternative=field.alternative,
+                values=field.values,
             )
         )
 
-    return kept, errata
+    return kept, errata, unnamed
+
+
+def took(
+    document: "SpecDocument",
+    errata: List[Erratum],
+    unnamed: List[str],
+    source: Source,
+) -> None:
+    """What making the fields of a figure found, taken into 'document'"""
+
+    document.errata += errata
+    document.diagnostics += [
+        note("field-name", f"{cite(source)}: {said}") for said in unnamed
+    ]
 
 
 # The kinds of a figure that lay out the whole of something, by its caption;
@@ -802,15 +964,10 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         # A caption can give the acronym of the command after its name
         name = re.sub(r"\s*\([A-Z0-9]+\)$", "", subject.name)
         key = ("cqe:" if subject.kind == "completion_dword" else "") + alias(name)
-        fields, errata = checked(
+        fields, errata, unnamed = checked(
             fields_of(figure.layout), 32 * (dwords[1] - dwords[0] + 1), source
         )
-        document.errata += [e for e in errata if e.code != "field-name"]
-        document.diagnostics += [
-            note("field-name", f"{cite(e.source)}: {e.message}")
-            for e in errata
-            if e.code == "field-name"
-        ]
+        took(document, errata, unnamed, source)
         document.dwords.setdefault(key, []).append(
             Dwords(
                 lower=dwords[0],
@@ -823,15 +980,10 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         )
         return
 
-    fields, errata = checked(fields_of(figure.layout), None, source)
-    if subject.kind in WHOLE and not errata:
+    fields, errata, unnamed = checked(fields_of(figure.layout), None, source)
+    if subject.kind in WHOLE and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
-    document.errata += [e for e in errata if e.code != "field-name"]
-    document.diagnostics += [
-        note("field-name", f"{cite(e.source)}: {e.message}")
-        for e in errata
-        if e.code == "field-name"
-    ]
+    took(document, errata, unnamed, source)
     document.structures.append(
         Structure(
             name=subject.name or figure.caption,
@@ -847,7 +999,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
 
 
 FOOTNOTES = r"(?P<footnotes>(?:\s*\d+(?:,\s*\d+)*)?)"
-TYPED_FORMS = [
+TYPED_FORMS: List[Tuple[TypedKind, re.Pattern]] = [
     ("level", re.compile(r"^(?P<level>M|O|P|NR|R)" + FOOTNOTES + r"$")),
     ("flag", re.compile(r"^(?P<flag>Yes|No|Y|N)" + FOOTNOTES + r"$", re.IGNORECASE)),
     (
