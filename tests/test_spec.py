@@ -542,3 +542,51 @@ def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
     ]
     assert [f.range for f in kept[0].fields] == ["2:0"]
     assert [f.range for f in kept[1].fields] == ["15:3", "2:0"]
+
+
+def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
+    """As "(NUMENT-1)*32+63)" of Base 2.4, Figure 361, closing a parenthesis
+    it never opened, and "4*(N+1)+3: 4 * (N+4)" of Figure 404, whose upper
+    bound is below its lower whatever N is"""
+
+    from senfd.documents.spec import Bits, Source, checked
+
+    source = Source(document="example", figure_nr=361)
+    fields = [
+        Bits(unit="bytes", range="(n*32)-1:(n-1)*32", name="Entry"),
+        Bits(unit="bytes", range="n/a", name="Open"),
+        Bits(unit="bytes", range="(NUMENT-1)*32+63): ((NUMENT-1)*32+32)", name="Last"),
+        Bits(unit="bytes", range="4*(N+1)+3: 4 * (N+4)", name="Exported"),
+    ]
+    kept, errata = checked(fields, None, source)
+    assert [(f.name, f.kind, f.formula, f.width) for f in kept] == [
+        ("Entry", "formula", "32*n - 1:32*n - 32", 32),
+        ("Open", "open", None, None),
+    ]
+    assert [(e.code, e.message) for e in errata] == [
+        (
+            "range",
+            "Field (NUMENT-1)*32+63): ((NUMENT-1)*32+32) Last: "
+            "'(NUMENT-1)*32+63)' has ')' after a whole value",
+        ),
+        (
+            "range-reversed",
+            "Field 4*(N+1)+3: 4 * (N+4) Exported: upper bound below the lower",
+        ),
+    ]
+
+
+def test_bits_nested_in_a_formula_of_bytes_lie_within_its_width():
+    from senfd.documents.spec import Bits, Source, checked
+
+    entry = Bits(
+        unit="bytes",
+        range="(n*2)+1:(n*2)",
+        name="Entry",
+        fields=[Bits(unit="bits", range="16:00", name="Wide")],
+    )
+    kept, errata = checked([entry], None, Source(document="example", figure_nr=1))
+    assert [e.message for e in errata] == [
+        "Field 16:00 Wide: bit 16 beyond the 16 bits of bytes (n*2)+1:(n*2)"
+    ]
+    assert kept[0].fields == []

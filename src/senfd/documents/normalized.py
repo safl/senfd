@@ -131,6 +131,9 @@ def header_of(row: Row) -> Tuple[List[str], List[str]]:
 
 REGEX_NOTES = re.compile(r"^notes?\b", flags=re.IGNORECASE)
 REGEX_ELISION = re.compile(r"^(?:\.\.\.|\u2026)$")
+# A condition heading columns of ranges, as "HDGSTF=1" over the bytes a field
+# is when the header digest is present, and "HDGSTF=0" over those when not
+REGEX_CONDITION = re.compile(r"^[A-Z][A-Z0-9_]*\s*=\s*\w+$")
 
 
 def is_header_again(texts: List[str], headers: List[str]) -> bool:
@@ -254,6 +257,15 @@ def parse_layout(
         filled = [t for t in texts.values() if t]
         if filled and all(REGEX_ELISION.match(t) for t in filled):
             continue  # Entries left out, as between the first and the last
+
+        # Conditions heading the ranges below them are neither a field nor a
+        # heading of its fields
+        conditions = [normalize_text(c.text) for c in values.cells.get(unit, [])]
+        if conditions and all(REGEX_CONDITION.match(c) for c in conditions):
+            diagnostics.append(
+                note("range-condition", f"Ranges by condition: {conditions}")
+            )
+            continue
 
         # A row of one cell spanning the table is its notes, or heads the rows
         # below it; so does a row of one text
