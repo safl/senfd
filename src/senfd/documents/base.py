@@ -140,9 +140,10 @@ class Document(Model):
         return f"{self.meta.stem}{self.SUFFIX_JSON}"
 
     def to_json(self) -> str:
-        """Returns the document as a JSON-formatted string"""
+        """Returns the document as JSON, indented, so that two versions of it
+        differ by the lines that changed"""
 
-        return self.model_dump_json()
+        return self.model_dump_json(indent=2) + "\n"
 
     def to_json_file(self, path: Optional[Path] = None) -> Path:
         """Writes the document, formatted as JSON, to file at the given 'path'"""
