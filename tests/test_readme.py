@@ -12,8 +12,8 @@ def test_the_images_of_the_readme_are_files_of_the_repository():
     """PyPI shows the README away from the repository, so its images are
     addresses of main; each must name a file that is there"""
 
-    readme = Path("README.rst").read_text()
-    paths = re.findall(re.escape(RAW) + r"(\S+)", readme)
+    readme = Path("README.md").read_text()
+    paths = re.findall(re.escape(RAW) + r"([^\s)]+)", readme)
     assert paths
     for path in paths:
         assert Path(path).is_file(), path

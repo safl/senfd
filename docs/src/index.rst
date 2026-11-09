@@ -28,11 +28,12 @@ answer against:
 
    <div id="cast-intro"></div>
 
-.. warning::
+.. caution::
 
-   senfd is not endorsed by NVM Express, it is experimental, and you must be
-   a member of NVM Express, Inc. to make its data model or make use of it.
-   Read the :ref:`notices <sec-notices>` at the end of this page first.
+   senfd is experimental and is not endorsed by NVM Express. Its data model
+   is derived from the NVMe specifications, and you must be a member of NVM
+   Express, Inc. to make it or use it. Read the :ref:`notices <sec-notices>`
+   at the end of this page first.
 
 To use them: :ref:`install <sec-install>`, :ref:`make the data model
 <sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the expert
