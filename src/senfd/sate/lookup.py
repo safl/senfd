@@ -94,9 +94,12 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     if understood.query == "help":
         return [str(line) for line in HELP.splitlines()]
     if understood.query == "command":
-        return q.command(
+        lines = q.command(
             spec, understood.argument, understood.dword, verbose=describe, markdown=True
         )
+        if understood.opcode and lines and not nothing(lines):
+            return lines[:1]  # The command's own line: its set, opcode and figure
+        return lines
     if understood.query == "structure":
         return q.structure(spec, understood.argument, verbose=describe, markdown=True)
     if understood.query == "section":

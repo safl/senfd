@@ -24,11 +24,15 @@ class Understood:
     dword: Optional[int] = None
     describe: bool = False
     """Whether the answer gives the fields' descriptions too"""
+    opcode: bool = False
+    """Whether only the command's opcode is asked, as "opcode of write", and
+    not its dwords"""
 
     def __str__(self) -> str:
         dword = f", dword={self.dword}" if self.dword is not None else ""
         describe = ", describe=True" if self.describe else ""
-        return f"{self.query}({self.argument!r}{dword}{describe})"
+        opcode = ", opcode=True" if self.opcode else ""
+        return f"{self.query}({self.argument!r}{dword}{describe}{opcode})"
 
     def json(self) -> str:
         return json.dumps(
@@ -116,6 +120,8 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     if match:
         return Understood("search", match[1])
     asks_command = re.search(ASKS_COMMAND, lower)
+    # "opcode of write" asks the opcode alone; "cdw12 of write" a dword
+    asks_opcode = bool(re.search(r"\b(?:opcodes?|opc)\b", lower))
     if asks_command:  # "opcode of identify controller" is the command
         command = command_named(text, vocabulary)
         named = ("command", command) if command else named
@@ -170,10 +176,20 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     ):
         return Understood(asked_kind, rest)
     if named and named[0] == "command":
-        return Understood("command", named[1], int(dword[1]) if dword else None)
+        return Understood(
+            "command",
+            named[1],
+            int(dword[1]) if dword else None,
+            opcode=asks_opcode and not dword,
+        )
     if asks_command and not named and not registers and rest:
         argument = command_named(text, vocabulary) or rest
-        return Understood("command", argument, int(dword[1]) if dword else None)
+        return Understood(
+            "command",
+            argument,
+            int(dword[1]) if dword else None,
+            opcode=asks_opcode and not dword,
+        )
     if registers and not field_of_other(named, lower):
         return Understood("register", registers[0])
     if named:
