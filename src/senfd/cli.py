@@ -6,8 +6,9 @@
 Command-Line Interface
 ======================
 
-Produces normalised figure documents and a model of the specification, as
-``.json``, from the ``.docx`` documents of the specification.
+Reads the documents of the specification, ``.pdf`` or ``.docx``, into
+normalised figure documents and a data model of the specification, as
+``.json``.
 """
 
 import json
@@ -28,31 +29,15 @@ from senfd.errors import Error
 from senfd.normalize import Diagnostic
 
 PARSEARGS_EPILOG = """\
-Senfd
-=====
+--skip-figures names a TOML file of figures to leave out, each by a regular
+expression of its caption and the number of figures it must match:
 
-The --skip-figures flag specifies a path to a TOML file containing a list of
-figures to be skipped during processing.
+  [[skip]]
+  regex = "^Byte, Word, and Dword Relationships$"
+  matches = 1
+  description = "why it is left out"
 
-The TOML file must follow this format:
-
-[[skip]]
-regex = "^Decimal.and.Binary.Units$"
-matches = 1
-description = ""
-
-[[skip]]
-regex = "^Byte, Word, and Dword Relationships$"
-matches = 1
-description = ""
-
-
-Each entry under [[skip]] consists of:
-  - regex: A regular expression matching the figure description.
-  - matches: The expected number of occurrences of this figure in the document.
-  - description: An optional text field describing the reason for skipping.
-
-This allows flexible and pattern-based skipping of figures during execution.
+skiplists/ in senfd's repository holds those of the ratified documents.
 """
 
 
@@ -70,9 +55,9 @@ def parse_args() -> Namespace:
 
     parser = ArgumentParser(
         description=(
-            "Reads specification documents, .pdf or .docx, extracts and normalizes "
-            "their figures, and makes a structured data model of them; "
-            "senfd-query lint lists what reading them found"
+            "Reads specification documents, .pdf or .docx, extracts and\n"
+            "normalises their figures, and makes a structured data model of\n"
+            "them; senfd-query lint lists what reading them found."
         ),
         epilog=PARSEARGS_EPILOG,
         formatter_class=RawTextHelpFormatter,
@@ -94,7 +79,7 @@ def parse_args() -> Namespace:
     parser.add_argument(
         "--skip-figures",
         type=Path,
-        help="Path to toml file that contains list of figure classifiers to skip",
+        help="TOML file of figures to leave out, see below",
     )
     parser.add_argument(
         "--version",

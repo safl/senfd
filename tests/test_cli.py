@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+import os
 from pathlib import Path
 from subprocess import run
 
@@ -114,3 +115,17 @@ def test_a_run_says_what_it_made_and_what_to_look_at(tmp_path):
     )
     logs = sorted(p.name for p in tmp_path.glob("*.error.log"))
     assert logs and all("." not in name.removesuffix(".error.log") for name in logs)
+
+
+def test_cli_tool_help_is_the_one_the_documentation_shows():
+    """docs/src/usage/usage.out is what kmdo wrote of senfd --help"""
+
+    result = run(
+        ["senfd", "--help"],
+        capture_output=True,
+        text=True,
+        env={**os.environ, "COLUMNS": "80"},
+    )
+
+    assert not result.returncode
+    assert result.stdout == Path("docs/src/usage/usage.out").read_text()
