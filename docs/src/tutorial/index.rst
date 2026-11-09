@@ -116,19 +116,13 @@ A question on the command line is answered and that is all:
 
    <div id="cast-lookups"></div>
 
-Give it to an agent
--------------------
+With a language model
+---------------------
 
-The same answers are the tools of an MCP server, for a coding agent to ask
-the specification rather than remember it:
-
-.. code-block:: console
-
-   $ claude mcp add sate -- sate-mcp
-
-Each tool answers in Markdown with its citations linked, so the agent can
-open the figure it was told of. The :ref:`benchmark <sec-benchmark>` shows
-what answering from the data model is worth.
+The expert needs none. To have a small language model read the questions,
+or to give a coding agent the data model as tools, see :ref:`with a
+language model <sec-llm>`; the :ref:`benchmark <sec-benchmark>` says what
+each costs.
 
 .. raw:: html
 

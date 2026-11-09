@@ -11,9 +11,13 @@ Ask the expert
 model, at once, citing the figure. Alone on the command line it opens a
 session. Given a question, it answers that and leaves. ``--raw`` prints the
 answer as Markdown, unrendered, with the links as addresses. The same
-lookups answer ``senfd-query`` on the command line and are the tools of
-``sate-mcp`` for a coding agent. :ref:`Get started <sec-tutorial>` walks
-through a session; this page is the reference.
+lookups answer ``senfd-query`` on the command line. No language model is
+involved, and none is needed; :ref:`with a language model <sec-llm>` says
+how to use one anyway, and what it costs.
+
+.. raw:: html
+
+   <div id="cast-session"></div>
 
 The forms of a question
 -----------------------
@@ -69,6 +73,10 @@ the question's other words. An answer is also shown only when it is about
 what the question names. Asked for the opcode of Read, the answer must be
 Read, not Memory Read or Copy. Asked for the opcode of "Track", a word of
 several commands' names, the answer is that it is not known.
+
+.. raw:: html
+
+   <div id="cast-lookups"></div>
 
 The session
 -----------
@@ -146,56 +154,14 @@ Markdown table and makes each citation a link to the page of the published
 PDF. ``--spec``, or the environment variable ``SENFD_SPEC``, names another
 data model than ``~/.cache/senfd/merged.spec.document.json``.
 
-With a language model, for free, on your own hardware
------------------------------------------------------
-
-``--llm URL`` has a language model served at URL, as by llama.cpp's
-``llama-server``, understand the questions instead, for questions phrased
-in ways no rule foresees:
-
-.. code-block:: console
-
-   $ llama-server -m Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf --port 8088 --jinja
-   $ sate --llm http://127.0.0.1:8088
-
-The language model chooses the lookup and nothing else. Its output is
-constrained, by a JSON schema the server turns into a grammar, to the name
-of a query and its argument; the answer shown is what the query found. It
-writes no part of the answer, so it can state no field, bit or opcode that
-is not in the figures. When a lookup finds nothing, or nothing mentioning
-the question's terms, it is told so and chooses again, three times at most,
-and then the answer is that it is not known. A language model of 8 billion
-parameters on a CPU is enough, as the :ref:`benchmark <sec-benchmark>`
-shows; no GPU, no service and no fee. A smaller language model chooses
-worse, and what it cannot find it says is not known: the language model of
-1 billion parameters answers fewer of the questions, and none of them
-wrongly.
-
-.. raw:: html
-
-   <div id="cast-llm"></div>
-
-For an agent: the MCP server
-----------------------------
-
-``sate-mcp`` is an MCP server whose tools are the same lookups. A coding
-agent answers a question about the specification with a tool call costing
-a few lines, rather than by reading the documents:
-
-.. code-block:: console
-
-   $ claude mcp add sate -- sate-mcp
-
-Its answers are those of ``senfd-query --markdown``, each citation a link to
-the page of the published PDF, so the agent can open the figure it was told
-of.
-
 .. raw:: html
 
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
    <script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.min.js"></script>
    <script>
-     AsciinemaPlayer.create("../_static/casts/llm.cast", document.getElementById("cast-llm"),
-       {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
-        poster: "npt:0:12"});
+     for (const [id, cast] of [["cast-session", "session"], ["cast-lookups", "lookups"]]) {
+       AsciinemaPlayer.create(`../_static/casts/${cast}.cast`, document.getElementById(id),
+         {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
+          poster: "npt:0:12"});
+     }
    </script>
