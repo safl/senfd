@@ -62,6 +62,7 @@ last where the data model was made from a PDF:
    $ senfd-query log-page 02h
    $ senfd-query structure "Controller Status"
    $ senfd-query search FUA
+   $ senfd-query value "status code 82h"
    $ senfd-query section 5.2.6
    $ senfd-query errata Base
    $ senfd-query lint
@@ -69,7 +70,9 @@ last where the data model was made from a PDF:
 ``command`` takes a command's name and, after it, the number of one of its
 dwords; ``feature`` and ``log-page`` a name or an identifier; ``structure``
 a name or an acronym; ``search`` a word or an acronym, found everywhere it
-is; ``section`` a section's number; ``errata`` and ``lint`` a document to
+is; ``value`` an entry of a table of values, by the kind of table, the
+value or words of the entry's name, as ``"CNS 05h"`` or ``"status code of
+zone boundary error"``; ``section`` a section's number; ``errata`` and ``lint`` a document to
 confine the findings to, see :ref:`the linter <sec-linting>`. ``--verbose``
 adds the descriptions. ``--markdown`` gives the fields as a Markdown table
 and makes each citation of a document NVM Express publishes a link to the
