@@ -123,9 +123,9 @@ jobs:
       with:
         python-version: '3.12'
 
-    - name: Install senfd, to read PDFs
+    - name: Install senfd
       run: |
-        python -m pip install ".[pdf]"
+        python -m pip install .
 
     - name: Cache the public specifications
       uses: actions/cache@v4

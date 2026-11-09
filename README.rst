@@ -80,7 +80,7 @@ Use
 
 .. code-block:: console
 
-   $ pipx install "senfd[sate,pdf]"
+   $ pipx install senfd
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
    $ senfd-query lint
    $ sate "Which bits of CDW12 of Write are PRINFO?"
