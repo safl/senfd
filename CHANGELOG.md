@@ -10,6 +10,39 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.9.1
+
+`sate` answers from the tables of values: `status code 82h`, `status code
+type 1h`, `CNS 05h`, or `status code of zone boundary error`, each entry
+with its table and the figure it is in; `senfd-query value` and the `value`
+tool of `sate-mcp` do the same. A name asked as a log page's identifier,
+"the log page identifier of Cross-Controller Reset", is the log page's, not
+the command's of that name; a structure is named by what its command
+qualifies, "Identify Namespace" of "Identify - Identify Namespace", and
+where several documents define a structure of one name, the Base
+specification's comes first. The opcode asked alone, "opcode of sanitize",
+is answered with the opcode alone, and `describe` before a field asked by
+its acronym adds its description. Completion offers only names of the
+kind the question asks for.
+
+The benchmark asks 71 questions, where it asked 30: the bits of the CAP,
+CC, CSTS and CRTO registers, the byte offsets of fields of the Identify
+data structures, the opcodes of the Key Value, Zoned Namespace, Subsystem
+Local Memory, Computational Programs and NVMe-MI commands, the identifiers
+of the features and log pages added in 2026, status codes and CNS values,
+each checked against its figure. Its grader reads a closed-book answer by
+the values it writes, so "1Fh (Namespace Admin Label)" is right and "82h
+or 83h" is wrong, and a text answer by the line about the field asked, a
+row marked in bold or not.
+
+The documentation opens with a Get started page, from nothing to a data
+model and an expert to ask, and the pages and the README are cut to what
+they must say. Two recordings are new: the eleven published PDFs read into
+one data model and linted, and a session that walks from completion to a
+question the data model cannot answer. `senfd` says where it wrote from
+the home directory, and counts the worked examples apart from the figures
+it does not model.
+
 ## 0.9.0
 
 senfd is a package of two tools: `senfd` makes the data model, and `sate`,
