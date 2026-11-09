@@ -1,0 +1,40 @@
+flowchart LR
+    pdf["`**.pdf**
+        published by
+        NVM Express`"]
+    docx["`**.docx**
+        held by
+        its members`"]
+
+    subgraph senfd["`**senfd**`"]
+        direction LR
+        read["`**Read**
+        the tables
+        as written`"]
+        norm["`**Normalise**
+        each figure
+        as its kind`"]
+        define["`**Define**
+        commands, fields,
+        registers, log pages`"]
+        merge["`**Merge**
+        the documents
+        into one`"]
+        read --> norm --> define --> merge
+    end
+
+    model[("`**Data model**
+        JSON, each fact
+        citing its figure`")]
+
+    pdf --> read
+    docx --> read
+    merge --> model
+
+    classDef doc fill:#fff8e1,stroke:#c99a00,color:#3b2f00
+    classDef stage fill:#ffffff,stroke:#8a6d00,color:#3b2f00
+    classDef out fill:#e3a400,stroke:#7a5c00,color:#1f1800
+    class pdf,docx doc
+    class read,norm,define,merge stage
+    class model out
+    style senfd fill:#fdf3d0,stroke:#c99a00,color:#3b2f00

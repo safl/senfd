@@ -63,3 +63,14 @@ def test_the_commands_are_asked_for_colour(record_cast, tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "argv", ["record_cast.py", str(script), str(cast)])
     assert record_cast.main() == 0
     assert f"colour=1 width={record_cast.WIDTH}" in cast.read_text()
+
+
+def test_each_script_of_the_documentation_has_its_recording():
+    """The pages load a recording by a path in raw HTML, which the docs build
+    does not check"""
+
+    root = Path(__file__).parents[1] / "docs"
+    scripts = sorted(p.stem for p in (root / "casts").glob("*.sh"))
+    assert "intro" in scripts
+    for name in scripts:
+        assert (root / "_static" / "casts" / f"{name}.cast").is_file(), name
