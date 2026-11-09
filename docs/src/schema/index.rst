@@ -7,24 +7,20 @@
 Schema
 ======
 
-Senfd has the following documents:
-
-* FigureDocument, the figures of a document as their tables are
-* NormalizedFigureDocument, each figure by the shape of its table and the
-  subject of its caption
-* SpecDocument, the data model of the specification
-
-Their **JSON** representation is validated against a **JSON** schema. Links to
-the schema files and the schemas themselves, in verbatim, are provided in the
-sections below.
+senfd writes three documents, each JSON validated against a JSON schema:
+the ``FigureDocument``, the figures of a document as their tables are; the
+``NormalizedFigureDocument``, each figure by the shape of its table and the
+subject of its caption; and the ``SpecDocument``, the data model of the
+specification. The schemas are in the repository, under
+``src/senfd/schemas``, and in full below.
 
 .. _sec-schema-data-model:
 
 The data model
 --------------
 
-The SpecDocument is the data model; ``merged.spec.document.json`` merges
-those of every document given. Its parts:
+The ``SpecDocument`` is the data model; ``merged.spec.document.json``
+merges those of every document given. Its parts:
 
 * ``meta``: the version of senfd that made it, the name of the document it
   is of, ``merged`` for the merged one, and the file it was made from with
@@ -35,9 +31,9 @@ those of every document given. Its parts:
   command has its ``opcode``, its submission queue entry dwords ``sqe`` and
   completion queue entry dwords ``cqe``, and its ``operations``, what it
   does for the values of a selecting field, as each directive operation.
-* ``features`` and ``log_pages``: by identifier. A feature has the dwords of
-  the commands setting and getting it; a log page the ``structure`` laying
-  it out.
+* ``features`` and ``log_pages``: by identifier. A feature has the dwords
+  of the commands setting and getting it; a log page the ``structure``
+  laying it out.
 * ``structures``: every layout that is no command's dwords: data
   structures, log pages' layouts, registers.
 * ``values``: the tables of values, as status codes or identifiers, by the
@@ -58,11 +54,12 @@ range, a note, a reference, reserved or vendor specific. Every part has a
 page, and, where the document was read from a PDF, the page of the file,
 ``pdf_page``, where a link to the PDF opens.
 
-The schema is versioned with senfd, and changes in a release are said in its
-changelog. It is a starting point for a data model of the specifications, not
-a standard: what is likely to stay is the commands with their dwords and
-fields, features, log pages, structures and their sources; what is likely to
-move is how values are typed and how diagnostics are coded.
+The schema is versioned with senfd, and changes in a release are said in
+its changelog. It is a starting point for a data model of the
+specifications, not a standard: what is likely to stay is the commands with
+their dwords and fields, features, log pages, structures and their sources;
+what is likely to move is how values are typed and how diagnostics are
+coded.
 
 .. _sec-schema-figure-document:
 
