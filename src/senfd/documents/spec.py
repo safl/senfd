@@ -302,6 +302,7 @@ TypedKind = Literal[
     "reference",
     "reserved",
     "vendor_specific",
+    "not_applicable",
 ]
 # What each kind of typed value must hold, as a JSON Schema can say it
 TYPED_BY_KIND: JsonDict = {
@@ -325,8 +326,8 @@ class Typed(Model):
     """
     A value of a table as what it is: a requirement "level" (M, O, P, NR, R),
     a yes or no "flag", an "identifier" or a range of them, a "note" it is
-    given by, a "reference" to another specification, or "reserved" or
-    "vendor_specific"; with the footnotes marked on it
+    given by, a "reference" to another specification, or "reserved",
+    "vendor_specific" or "not_applicable"; with the footnotes marked on it
     """
 
     model_config = ConfigDict(
@@ -1029,9 +1030,13 @@ TYPED_FORMS: List[Tuple[TypedKind, re.Pattern]] = [
         "vendor_specific",
         re.compile(r"^Vendor Specific" + FOOTNOTES + r"$", re.IGNORECASE),
     ),
+    (
+        "not_applicable",
+        re.compile(r"^(?:n/a|not applicable)" + FOOTNOTES + r"$", re.IGNORECASE),
+    ),
 ]
 # The forms any typed column can hold besides its own
-COMMON = {"note", "reference", "reserved", "vendor_specific"}
+COMMON = {"note", "reference", "reserved", "vendor_specific", "not_applicable"}
 
 
 def typed_of(text: str) -> Optional[Typed]:

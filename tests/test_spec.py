@@ -7,6 +7,8 @@ import runpy
 from argparse import Namespace
 from pathlib import Path
 
+import pytest
+
 import senfd.pipeline
 from senfd.documents.spec import SpecDocument, merge
 
@@ -494,6 +496,39 @@ def test_fields_named_by_their_index_keep_their_offsets_with_rows_left_out(
 def test_a_range_of_identifiers_may_give_the_h_once():
     typed = senfd.documents.spec.typed_of("86 to BFh")
     assert (typed.kind, typed.lower, typed.upper) == ("identifier", 0x86, 0xBF)
+
+
+@pytest.mark.parametrize(
+    "text, footnotes",
+    [("n/a", []), ("N/A 2", [2]), ("n/a9", [9]), ("Not Applicable", [])],
+)
+def test_a_value_left_not_applicable_is_said_so_with_its_footnotes(text, footnotes):
+    typed = senfd.documents.spec.typed_of(text)
+    assert (typed.kind, typed.footnotes) == ("not_applicable", footnotes)
+
+
+def test_a_column_of_flags_may_leave_a_row_not_applicable():
+    """As Base 2.4, Figure 466, where a footnote marks "n/a"; and a value of no
+    form the column holds stays an erratum"""
+
+    values = senfd.documents.spec.Values(
+        kind="requirements",
+        columns=["field", "persistent"],
+        entries=[
+            senfd.documents.spec.Entry(
+                value=field,
+                value_column="field",
+                name=field,
+                columns={"persistent": said},
+            )
+            for field, said in (("F0", "Yes"), ("F1", "n/a9"), ("F2", "Maybe"))
+        ],
+        source=senfd.documents.spec.Source(document="example", figure_nr=1),
+    )
+    errata = senfd.documents.spec.type_values(values)
+    assert [e.found for e in errata] == ["Maybe"]
+    typed = values.entries[1].typed["persistent"]
+    assert (typed.kind, typed.footnotes) == ("not_applicable", [9])
 
 
 def test_a_column_of_sentences_is_text_whatever_its_name():
