@@ -621,7 +621,7 @@ def test_bytes_of_no_field_between_two_fields_are_a_gap_unless_rows_are_left_out
 
     (gap,) = uncovered(entries + [span("127:96", "Entry 3")], "bytes", source)
     assert (gap.code, gap.message) == (
-        "gap",
+        "layout-gap",
         "Bytes 64 to 95 are of no field, before 127:96 Entry 3",
     )
     highest_first = [span("31:16", "High"), span("15:14", "Mid", elided=True)]
@@ -638,29 +638,59 @@ def test_bytes_of_no_field_between_two_fields_are_a_gap_unless_rows_are_left_out
     assert uncovered(union, "bytes", source) == []
 
 
-def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it():
+def test_a_field_is_made_with_what_it_needs_or_is_left_out():
+    """A name, or the place it holds; a row giving neither makes no field"""
+
+    from senfd.documents.spec import Bits, Source, checked
+
+    source = Source(document="example", figure_nr=49)
+
+    def bytes_of(rng, name=None, description=""):
+        return Bits(unit="bytes", range=rng, name=name, description=description)
+
+    kept, errata = checked(
+        [
+            bytes_of("03:00", "Foo"),
+            bytes_of("07:04", description="Reserved for future use."),
+            bytes_of("11:08", description="Most significant 16 bits of the LBST"),
+            bytes_of("n/a", description="These bytes have no equivalent."),
+            bytes_of("15:12", description="Bus Master Enable (BME"),
+        ],
+        None,
+        source,
+    )
+    assert [(f.name, f.role, f.description) for f in kept] == [
+        ("Foo", "field", ""),
+        ("Reserved", "reserved", "Reserved for future use."),
+        ("Most significant 16 bits of the LBST", "field", ""),
+    ]
+    assert [e.code for e in errata] == ["field-name", "field-name"]
+
+
+def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it(tmp_path):
     """A figure of some fields, as those a reference value is given for, is
     of the kind "other" by its caption, and leaves the rest out on purpose"""
 
-    from senfd.documents.spec import Bits, Source, Structure, resolve
+    from senfd.documents.normalized import Layout, LayoutField, NormalizedFigure
+    from senfd.documents.spec import add_figure
+    from senfd.normalize import Subject, parse_range
 
-    source = Source(document="example", figure_nr=33)
-    fields = [
-        Bits(unit="bytes", range="05:02", upper=5, lower=2, name="NMR"),
-        Bits(unit="bytes", range="31:16", upper=31, lower=16, name="Reserved"),
-    ]
-
-    def gaps_of(kind):
-        structure = Structure(
-            name="Foo", kind=kind, unit="bytes", fields=fields, source=source
-        )
-        return [
-            e.message
-            for e in resolve(SpecDocument(structures=[structure])).errata
-            if e.code == "gap"
+    def errata_of(kind):
+        fields = [
+            LayoutField(range=parse_range("bytes", "05:02"), name="NMR"),
+            LayoutField(range=parse_range("bytes", "31:16"), name="Reserved"),
         ]
+        figure = NormalizedFigure(
+            figure_nr=33,
+            caption="Foo",
+            subject=Subject(kind=kind, name="Foo"),
+            layout=Layout(unit="bytes", fields=fields),
+        )
+        document = SpecDocument()
+        add_figure(document, figure, "example")
+        return [(e.code, e.message) for e in document.errata]
 
-    assert gaps_of("data_structure") == [
-        "Bytes 6 to 15 are of no field, before 31:16 Reserved"
+    assert errata_of("data_structure") == [
+        ("layout-gap", "Bytes 6 to 15 are of no field, before 31:16 Reserved")
     ]
-    assert gaps_of("other") == []
+    assert errata_of("other") == []

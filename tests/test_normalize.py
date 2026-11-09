@@ -424,3 +424,20 @@ def test_a_row_of_conditions_over_the_ranges_heads_them_and_is_no_field():
     )
     assert [(f.range.text, f.acronym) for f in layout.fields] == [("75:72", "HDGST")]
     assert [d.code for d in diagnostics] == ["range-condition"]
+
+
+def test_a_name_wrapped_by_a_narrow_column_is_one_name():
+    """As Base 2.4's nested bit tables, where the acronym falls on the next
+    line of the first paragraph"""
+
+    assert parse_field_description(
+        "Sanitize Media Verification Event Support\n(SMVES)"
+    ) == ("Sanitize Media Verification Event Support", "SMVES", "")
+    assert parse_field_description(
+        "Predictable Latency Event\nAggregate (PLEAN): If set.\nMore."
+    ) == ("Predictable Latency Event Aggregate", "PLEAN", "If set.\nMore.")
+    assert parse_field_description("Reserved\nFoo (F): not a wrap.")[0] == "Reserved"
+    assert (
+        parse_field_description("Foo bar baz qux quux\nsee (refer to Figure 3)")[1]
+        is None
+    )

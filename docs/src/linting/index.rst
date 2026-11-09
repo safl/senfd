@@ -51,6 +51,11 @@ said once a document with how much and where it starts. Each says the
 document and the figure it follows; the errors are also in
 each document's ``.error.log``.
 
+**Rows that name no field**, senfd's or the figure's: a field is made with
+a name, or as what holds a place, reserved, obsolete, vendor specific or
+ignored; a row giving neither, as a sentence about bytes with no equivalent
+here, makes no field and is listed.
+
 **Figures of no shape senfd models**, senfd's or the figure's: a figure
 that either does not follow the conventions of the others or is of a shape
 senfd does not model yet. Worked examples are listed apart, since they are
@@ -67,8 +72,8 @@ Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
 On the eleven documents ratified in 2026, as NVM Express publishes them as
 PDF, senfd reports 13 candidate errata and 9 document errors for the
-authors, and 23 figures it does not model, 16 worked examples and 19
-unassigned dwords. Two of the candidate errata are senfd's: the "n/a9" of
+authors, and 15 rows that name no field, 23 figures it does not model, 16
+worked examples and 19 unassigned dwords. Two of the candidate errata are senfd's: the "n/a9" of
 Base 2.4, Figure 466, is "n/a" and the marker of the figure's note 9, and
 the gap of Zoned Namespace 1.5, Figure 49, is a row senfd misreads.
 Six are the formulas of Base 2.4, Figure 432, five of them a range

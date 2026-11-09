@@ -33,6 +33,7 @@ from senfd.documents.normalized import (
 )
 from senfd.errors import Error
 from senfd.normalize import Diagnostic, note, warning
+import senfd.fields
 import senfd.ranges
 
 
@@ -75,6 +76,9 @@ class Bits(Model):
     """The lower bound of the range"""
     range: str
     """The range as the document writes it, as "29:26" or '03:00'"""
+    role: str = "field"
+    """What the field is: a "field" of its name, or what holds a place,
+    "reserved", "obsolete", "vendor_specific" or 'ignored'"""
     kind: str = "span"
     """What the range is: a "span" of numbers, a "formula" of values the
     figure names, as "(N*16)+15:N*16", or "open", as 'n/a' or 'Impl Spec'"""
@@ -311,7 +315,8 @@ class Erratum(Model):
 
     code: str
     """What kind it is, as "value", "acronym", "range" (text that is no
-    range), "range-outside", "range-reversed", "opcode" or 'gap'"""
+    range), "range-outside", "range-reversed", "opcode", "gap" (of a command's
+    dwords) or 'layout-gap' (of a structure)"""
     message: str
     """What is wrong, said for a person"""
     found: str = ""
@@ -612,7 +617,8 @@ def checked(
             field = field.model_copy(update={"acronym": None})
         try:
             rng = senfd.ranges.parse(field.unit, field.range, width)
-        except senfd.ranges.RangeError as exc:
+            made = senfd.fields.identity(field.name, field.acronym, field.description)
+        except senfd.ranges.Unconstructible as exc:
             said = f"{exc} of {of}" if exc.code == "range-outside" else str(exc)
             errata.append(
                 Erratum(
@@ -634,6 +640,11 @@ def checked(
             field.model_copy(
                 update={
                     "fields": nested,
+                    "name": made.name,
+                    "role": made.role,
+                    "description": ""
+                    if field.name is None and made.role == "field"
+                    else field.description,
                     "upper": rng.upper,
                     "lower": rng.lower,
                     "kind": rng.kind,
@@ -679,7 +690,7 @@ def uncovered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
                 named = f"{field.range} {field.name or ''}".strip()
                 errata.append(
                     Erratum(
-                        code="gap",
+                        code="layout-gap",
                         message=f"{missing} of no field, before {named}",
                         found=field.range,
                         source=source,
@@ -794,7 +805,12 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         fields, errata = checked(
             fields_of(figure.layout), 32 * (dwords[1] - dwords[0] + 1), source
         )
-        document.errata += errata
+        document.errata += [e for e in errata if e.code != "field-name"]
+        document.diagnostics += [
+            note("field-name", f"{cite(e.source)}: {e.message}")
+            for e in errata
+            if e.code == "field-name"
+        ]
         document.dwords.setdefault(key, []).append(
             Dwords(
                 lower=dwords[0],
@@ -808,7 +824,14 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         return
 
     fields, errata = checked(fields_of(figure.layout), None, source)
-    document.errata += errata
+    if subject.kind in WHOLE and not errata:
+        errata = uncovered(fields, figure.layout.unit, source)
+    document.errata += [e for e in errata if e.code != "field-name"]
+    document.diagnostics += [
+        note("field-name", f"{cite(e.source)}: {e.message}")
+        for e in errata
+        if e.code == "field-name"
+    ]
     document.structures.append(
         Structure(
             name=subject.name or figure.caption,
@@ -1439,12 +1462,6 @@ def resolve(document: SpecDocument) -> SpecDocument:
                 for e in gaps(command)
                 if (e.source.document, e.source.figure_nr) not in excluded
             ]
-    for structure in document.structures:
-        cited = (structure.source.document, structure.source.figure_nr)
-        if structure.kind in WHOLE and cited not in excluded:
-            document.errata += uncovered(
-                structure.fields, structure.unit, structure.source
-            )
 
     document.unassigned = {
         key: described for key, described in document.dwords.items() if key not in used

@@ -262,6 +262,11 @@ def parse_layout(
         if filled and all(REGEX_ELISION.match(t) for t in filled):
             elided = True  # Entries left out, as between the first and the last
             continue
+        if REGEX_ELISION.match(texts.get(unit, "")) and REGEX_ELISION.match(
+            texts.get(text_column, "")
+        ):
+            elided = True  # The same, with something in another column
+            continue
 
         # Conditions heading the ranges below them are neither a field nor a
         # heading of its fields

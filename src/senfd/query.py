@@ -674,6 +674,7 @@ def lint(spec: SpecDocument, document: str = "") -> List[str]:
     sections = [
         ("The authors': candidate errata", errata(spec, document, none=[])),
         ("The authors': document errors", coded("document-error")),
+        ("senfd's, or the figure's: rows that name no field", coded("field-name")),
         (
             "senfd's, or the figure's: figures of no shape senfd models",
             [m for m in unmodelled if m not in examples],

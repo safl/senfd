@@ -344,6 +344,7 @@ def test_the_lint_says_what_is_the_authors_and_what_is_senfds(spec):
     assert [h.rsplit(" (", 1)[0] for h in headings] == [
         "The authors': candidate errata",
         "The authors': document errors",
+        "senfd's, or the figure's: rows that name no field",
         "senfd's, or the figure's: figures of no shape senfd models",
         "Worked examples, not data",
         "senfd's, or the caption's: dwords no command claims",
