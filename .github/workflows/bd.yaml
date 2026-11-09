@@ -149,3 +149,31 @@ jobs:
       run: |
         python toolbox/public_documents.py ask ~/public-model
 
+
+  # The image for where installing senfd's dependencies is a problem: built,
+  # then made to read the synthetic example and answer from it, as its user
+  # would, with the documents and the data model in directories mounted
+  container:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Grab source
+      uses: actions/checkout@v4
+
+    - name: Build the image
+      run: |
+        docker build -t senfd .
+
+    - name: Make the data model of the example in it
+      run: |
+        mkdir -p ~/container-cache
+        docker run --rm --user "$(id -u):$(id -g)" \
+          -v "$PWD/example:/docs:ro" \
+          -v ~/container-cache:/home/senfd/.cache/senfd \
+          senfd sh -c 'senfd /docs/example.docx --output ~/.cache/senfd'
+
+    - name: Ask sate in it
+      run: |
+        docker run --rm --user "$(id -u):$(id -g)" \
+          -v ~/container-cache:/home/senfd/.cache/senfd \
+          senfd sate --raw "opcode of ding" | tee answer.md
+        grep -q "opcode 01h" answer.md

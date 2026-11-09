@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+# Only what installing senfd needs: a checkout may hold specifications, and
+# what senfd made of them, which must never go into an image
+*
+!pyproject.toml
+!README.rst
+!LICENSE
+!LICENSES
+!src
+**/__pycache__
