@@ -81,72 +81,55 @@ how to run it again.
 What it is
 ----------
 
-**senfd** reads **S**\ pecification documents, **E**\ xtracts and
-**N**\ ormalizes their **F**\ igures, and makes a structured **D**\ ata model
-of them: every command with its dwords and fields, every data structure,
-register, feature, log page and table of values, each fact citing the
-document, section, figure and page it is from, and linking to that page of
-the PDF where NVM Express publishes it. It is a data model, not a
-language model: JSON validated by a schema, with nothing in it trained or
-generated, and the same documents give the same data model every time. It
-reads the specifications as NVM Express publishes them, as PDF, or as the
-.docx its members hold.
+**senfd** reads the **S**\ pecification documents, as the PDFs NVM Express
+publishes or the ``.docx`` its members hold, **E**\ xtracts and
+**N**\ ormalises their **F**\ igures, and makes a structured **D**\ ata
+model of them: every command with its dwords and fields, every data
+structure, register, feature, log page and table of values, each fact
+citing the document, section, figure and page it is from, and linking to
+that page of the PDF where NVM Express publishes it. It is a data model,
+not a language model: JSON validated by a schema, nothing in it trained or
+generated, and the same documents give the same data model every time.
 
-The package has two tools. ``senfd`` makes the data model. ``sate``, for
-**S**\ enfd **A**\ sk **T**\ he **E**\ xpert, puts an expert on the
-specifications at your fingertips: ask it as you would a colleague, and it
-answers at once from the data model, citing the figure. *Senf* is Danish for
-mustard, as the logo's documents drenched in it show, and a sate is what
-comes of the marinade.
-
-From that one data model:
-
-* **Precise answers, at once**, with ``senfd-query`` and ``sate``, the
-  expert to ask, which completes names as you type and answers in
-  milliseconds, citing the figure.
-* **Language models that cannot make NVMe facts up**: ``sate-mcp`` gives a
-  coding agent the data model as tools, and ``sate --llm`` has a small
-  language model, free, on your own CPU, choose the lookup and write nothing
-  of the answer.
-* **Code generated from the figures**, as an early prototype for xNVMe writes
-  its specification headers: structs, masks, opcodes, constructors and
-  registers, citing their figures.
-* **A linter of the documents**: what does not read as data is listed, with
-  its figure and page, for the authors to fix.
+Get started
+-----------
 
 .. code-block:: console
 
    $ pipx install "senfd[sate,pdf]"
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
    $ sate "Which bits of CDW12 of Write are PRINFO?"
+   $ senfd-query lint
+   $ claude mcp add sate -- sate-mcp
 
-with the specifications downloaded from `nvmexpress.org
-<https://nvmexpress.org/specifications/>`_ into ``~/specs``, or, for a
-member of NVM Express, their ``.docx``. It runs on the eleven documents
-ratified in 2026, from Base 2.4 to the TCP transport, in about a minute from
-the .docx and a few minutes from the PDFs. To see what a figure becomes,
-the `documentation <https://safl.dk/senfd/stages/>`_ follows two figures of
-senfd's example document through every stage, to the candidate errata an
-author would see.
+with the eleven specifications ratified in 2026 downloaded from
+`nvmexpress.org <https://nvmexpress.org/specifications/>`_ into
+``~/specs``. The `tutorial <https://safl.dk/senfd/tutorial/>`_ walks
+through them, from nothing to a data model and an expert to ask.
+
+The package has two tools. ``senfd`` makes the data model, and ``sate``,
+for **S**\ enfd **A**\ sk **T**\ he **E**\ xpert, answers questions from it
+at once, citing the figure, as a session with completion, as a question on
+the command line, and as an MCP server for a coding agent; *Senf* is Danish
+for mustard, as the logo's documents drenched in it show, and a sate is
+what comes of the marinade.
 
 Prior art
 ---------
 
-senfd is the third tool of its line. `nvme-lint
+senfd is the third tool of its line: `nvme-lint
 <https://github.com/linux-nvme/nvme-lint>`_ (2022) checked the figures of
-the published PDFs with rules over tables found on the page; `Spex
+the published PDFs with rules over tables found on the page, and `Spex
 <https://github.com/SamsungDS/Spex>`_ (2023) read the ``.docx`` instead and
 extracted the figures to JSON under a schema, with the lint as part of it.
-senfd was a change of direction: no rule for each kind of figure, but one
-plain markup for every figure, rows of cells, from which the figures are
-normalised and the data behind them structured. Linting is then a side
-effect, since to read a figure as data is to check it, and no format is
-forced, since the markup is all a reader has to produce, which is how the
-``.docx`` and the PDF come to the same data model. Above all the goal moved,
-from checks tossed at the documents to an NVMe data model, which is useful
-where a lint is not: an expert to ask, tools for a coding agent, a driver's
-headers, two revisions compared by their facts. The `documentation
-<https://safl.dk/senfd/prior-art/>`_ says more.
+senfd was a change of direction: one plain markup for every figure, rows of
+cells, from which the figures are normalised and the data behind them
+structured, so that linting is a side effect of reading, no format is
+forced, and the ``.docx`` and the PDF come to the same data model. Above
+all the goal moved, from checks tossed at the documents to an NVMe data
+model, useful where a lint is not: an expert to ask, tools for a coding
+agent, a driver's headers, two revisions compared by their facts; the
+`documentation <https://safl.dk/senfd/prior-art/>`_ says more.
 
 On what terms the documents are read
 ------------------------------------
@@ -165,13 +148,7 @@ figure to be corrected before it is ratified rather than after.
 senfd.** Its examples and most of its tests use synthetic documents of its
 own. The tests that read the specifications, and the CI job checking what
 senfd makes of each, download the public PDFs from nvmexpress.org into a
-cache, checked by their SHA-256, and keep them and the data model there,
-uploading neither. The job also merges them into one data model and has
-``sate`` answer the benchmark's questions from it, failing unless every one
-is right; that data model is not offered for download either. **Make your
-own**: the commands above, on the PDFs downloaded from nvmexpress.org, give
-the same data model the CI job checks.
-
-See the `documentation <https://safl.dk/senfd/>`_ for the commands,
-the benchmark against frontier language models, and the schema of the data
-model.
+cache, checked by their SHA-256, and upload neither them nor the data model
+made of them, which the job merges and has ``sate`` answer the benchmark's
+questions from, failing unless every one is right. **Make your own**: the
+commands above give the same data model the CI job checks.
