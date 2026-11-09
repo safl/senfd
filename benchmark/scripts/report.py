@@ -66,14 +66,24 @@ def column_of(lane) -> str:
 
 
 def graded(questions, lane):
-    """Each question's (verdict, shown, how) in 'lane'"""
+    """Each question's (verdict, shown, how) in 'lane'. A frontier model
+    answers every question in one call, so the time under its answer is the
+    call's, and what it shares of it by question."""
 
     out = {}
     for q in questions:
         if lane["kind"] == "value":
             given = (lane["answers"].get(str(q["id"])) or {}).get("answer", "unknown")
             confidence = (lane["answers"].get(str(q["id"])) or {}).get("confidence", "")
-            out[q["id"]] = (grade.grade_value(q, given), given, confidence)
+            seconds = lane.get("seconds")
+            took = (
+                f"{seconds}s for all {len(questions)}, "
+                f"{seconds / len(questions):.3f}s each"
+                if seconds
+                else ""
+            )
+            how = ", ".join(part for part in (confidence, took) if part)
+            out[q["id"]] = (grade.grade_value(q, given), given, how)
         else:
             entry = next(a for a in lane["answers"] if a["id"] == q["id"])
             verdict = grade.grade_text(q, entry["answer"])
