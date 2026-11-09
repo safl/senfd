@@ -64,6 +64,13 @@ def bits(field: Bits) -> str:
     return f"{rng} {field.name or ''}{acronym}{either}"
 
 
+def joined(description: str) -> str:
+    """'description' on one line, whatever lines a column of a PDF broke it
+    over; a hyphen ending a line stays, and joins the words beside it"""
+
+    return " ".join(re.sub(r"-\s*\n\s*", "-", description).split())
+
+
 def lines_of_fields(
     fields: List[Bits], verbose: bool, indent: str = "  "
 ) -> Iterable[str]:
@@ -74,7 +81,7 @@ def lines_of_fields(
         section = field.section
         yield indent + bits(field)
         if verbose and field.description:
-            yield indent + "  " + field.description.split("\n")[0][:160]
+            yield indent + "  " + joined(field.description)
         if verbose:
             for value in field.values:
                 # The name, else the start of the description, for reading
@@ -136,7 +143,7 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
             where[units.index(field.unit) if field.unit in units else 0] = field.range
             row = where + [cell((field.name or "") + either), cell(path)]
             if verbose:
-                text = (field.description or "").split("\n")[0][:160]
+                text = joined(field.description or "")
                 values = [
                     f"{v.value} {(senfd_value_names(v) or [v.description[:60]])[0]}"
                     for v in field.values

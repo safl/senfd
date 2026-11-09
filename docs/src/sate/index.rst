@@ -125,8 +125,7 @@ terminal opens in a pager, and stays on the screen when the pager is quit.
 A data structure's table is headed by bytes. Where a byte holds bits, as
 the Reservation Capabilities of a namespace, the bits stand in a column of
 their own, named by both acronyms, as ``RESCAP.PTPLS``. ``describe`` or
-``explain`` before a question adds the first line of each field's
-description.
+``explain`` before a question adds each field's description, whole.
 
 .. _sec-usage-query:
 
