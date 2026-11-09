@@ -504,6 +504,27 @@ def test_a_search_asked_for_is_answered(spec, vocabulary):
     assert "so this is not known" not in text
 
 
+def test_a_structure_is_named_by_what_its_command_qualifies(spec, vocabulary):
+    question = "At which byte of the Foo Namespace data structure is FSZE?"
+    assert reading.spot(question, vocabulary) == (
+        "structure",
+        "Identify - Foo Namespace",
+    )
+    text, _ = senfd.sate.respond(spec, question, vocabulary)
+    assert "**Identify - Foo Namespace, bytes [example, 4, Figure 36" in text
+    assert "| 07:00 | Foo Size | FSZE |" in text
+    # A word after the dash is a qualifier, "Data" of "Dong - Data", not a name
+    assert reading.spot("What is the Dong data?", vocabulary) == (
+        "structure",
+        "Dong - Data",
+    )
+    assert reading.spot("Is there a log page about foo?", vocabulary) is None
+    assert phrasing.terms("the opcode of the NVMe-MI VPD Read command") == [
+        "vpd",
+        "read",
+    ]
+
+
 def test_the_identifier_of_a_name_a_command_and_a_log_page_share_is_the_log_page_s(
     vocabulary,
 ):
