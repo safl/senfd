@@ -511,3 +511,34 @@ def test_a_column_of_sentences_is_text_whatever_its_name():
         source=senfd.documents.spec.Source(document="example", figure_nr=1),
     )
     assert senfd.documents.spec.type_values(values) == []
+
+
+def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
+    """A field of one byte whose nested bits run to bit 15, as "15:3 Reserved"
+    under byte 362 of Base 2.4's Identify Controller"""
+
+    from senfd.documents.spec import Bits, Source, checked
+
+    source = Source(document="example", figure_nr=338)
+    byte = Bits(
+        unit="bytes",
+        upper=362,
+        lower=362,
+        range="362",
+        name="Restore Attributes",
+        fields=[
+            Bits(unit="bits", upper=15, lower=3, range="15:3", name="Reserved"),
+            Bits(unit="bits", upper=2, lower=0, range="2:0", name="Supported"),
+        ],
+    )
+    wide = byte.model_copy(update={"upper": 363, "range": "363:362"})
+    kept, errata = checked([byte, wide], None, source)
+    assert [(e.code, e.found, e.message) for e in errata] == [
+        (
+            "range-outside",
+            "15:3",
+            "Field 15:3 Reserved: bit 15 beyond the 8 bits of byte 362",
+        )
+    ]
+    assert [f.range for f in kept[0].fields] == ["2:0"]
+    assert [f.range for f in kept[1].fields] == ["15:3", "2:0"]

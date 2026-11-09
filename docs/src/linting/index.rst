@@ -26,8 +26,8 @@ by saying how many of each it found; ``senfd lint``, or the MCP tool
    <div id="cast-lint"></div>
 
 **Candidate errata**, the authors', also listed by ``senfd errata``:
-a value that is not of its column's kind, as a footnote marker run into a
-flag; a field whose bits lie beyond the dwords that hold it; an acronym
+a value that is not of its column's kind; a field whose bits lie beyond
+the dwords or the bytes that hold it; an acronym
 that is not one; bits of a command's dwords that no figure gives a field.
 Such a value is left out of the data model. The same value in many rows of
 a figure is one erratum, said once with the number of rows. A column of
@@ -59,15 +59,13 @@ the caption names it otherwise than the figure defining it.
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
 On the eleven documents ratified in 2026, as NVM Express publishes them as
-PDF, senfd reports 2 candidate errata and 9 document errors for the
+PDF, senfd reports 3 candidate errata and 9 document errors for the
 authors, and 23 figures it does not model, 16 worked examples and 19
-unassigned dwords. Three of the document errors are the tracked changes
-the PDFs of Base 2.4, Boot 1.4 and Management Interface 2.2 are printed
-with.
-The figures of the ratified documents are consistent by this measure;
-the value is in running senfd on every draft, where it takes a minute and
-checks every figure the same way, and in keeping each revision as
-consistent as the last.
+unassigned dwords. One of the candidate errata is senfd's: the "n/a9" of
+Base 2.4, Figure 466, is "n/a" and the marker of the figure's note 9.
+Three of the document errors are the tracked changes the PDFs of Base
+2.4, Boot 1.4 and Management Interface 2.2 are printed with. On a draft,
+the same run takes minutes and checks every figure the same way.
 
 .. raw:: html
 
