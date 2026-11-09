@@ -24,7 +24,7 @@ from senfd.pdf.reader import (
     section_at,
     stem_of,
 )
-from senfd.pdf.tables import Columns, astray, columns_of, unwrapped
+from senfd.pdf.tables import Columns, astray, bordered, columns_of, unwrapped
 from senfd.pdf.tree import Leaf
 from senfd.tables import Cell, Row, Table
 
@@ -110,6 +110,31 @@ def test_a_line_no_separator_reaches_is_no_edge():
     beside = [(336.0, 98, 112), (306.0, 95, 135)]
     page = Ruled(lines + beside, RULES)
     assert columns_of(page, 0, HEADER + ROW, []).edges == [72.0, 220.0, 300.0]
+
+
+def test_the_borders_of_a_cell_holding_a_table_are_not_the_table_s():
+    # As Figure 49 of the Zoned Namespace Command Set 1.5: the table nested in
+    # the third column stands 2.2 points inside the borders of its cell
+    cell = [(72.0, 95, 135), (166.6, 95, 135), (468.1, 95, 135), (523.4, 95, 135)]
+    table = [(168.8, 100, 133), (200.4, 100, 133), (465.9, 100, 133)]
+    rules = [(95.0, 72.0, 523.4), (98.0, 72.0, 523.4), (135.0, 72.0, 523.4)]
+    text = [(80.0, 96.0, 120.0, 97.0), (172.0, 99.0, 460.0, 134.0)]
+    nested = [bordered(168.8, 100.0, 465.9, 133.0)]
+    assert columns_of(Ruled(cell + table, rules), 0, text, nested).edges == [
+        72.0,
+        166.6,
+        468.1,
+        523.4,
+    ]
+
+    # Nor are they the nested table's own, its rules ending at its own borders
+    rules = [(100.0, 169.0, 465.6), (116.0, 169.0, 465.6), (133.0, 169.0, 465.6)]
+    text = [(172.0, 101.0, 460.0, 115.0), (172.0, 117.0, 460.0, 132.0)]
+    assert columns_of(Ruled(cell + table, rules), 0, text, []).edges == [
+        168.8,
+        200.4,
+        465.9,
+    ]
 
 
 def test_a_table_whose_rows_no_rule_separates_has_the_borders_beside_its_text():

@@ -147,6 +147,6 @@ commands = 3
 features = 0
 log_pages = 1
 structures = 11
-errata = 1
+errata = 0
 document_errors = 0
 not_modelled = 1
