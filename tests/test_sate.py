@@ -251,6 +251,18 @@ def test_a_language_model_chooses_the_lookup_and_writes_nothing(
     assert tried == ["command('ding', dword=10)"]
 
 
+def test_a_language_model_may_choose_the_tables_of_values(
+    spec, vocabulary, monkeypatch
+):
+    assert "value" in language_model.SCHEMA["properties"]["query"]["enum"]
+    choosing(monkeypatch, senfd.sate.Understood("value", "status code foo lost"))
+    text, tried = senfd.sate.respond(
+        spec, "Which status is returned when a foo is lost?", vocabulary, llm="x"
+    )
+    assert "82h" in text and "Foo Lost" in text
+    assert tried == ["value('status code foo lost')"]
+
+
 def test_a_lookup_found_wanting_is_said_to_the_language_model(
     spec, vocabulary, monkeypatch
 ):
