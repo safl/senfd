@@ -43,7 +43,7 @@ same data model.
 The documents are NVM Express's, and the data model made from them is
 under the notice printed in each specification, which lets members use it
 and lets anyone else review, refer to and cite the specification; see
-:ref:`the terms <sec-terms>`.
+:ref:`the notices <sec-notices>`.
 
 Make the data model
 -------------------
