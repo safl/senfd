@@ -222,10 +222,13 @@ def parse_layout(
     diagnostics: List[Diagnostic],
     headers: Optional[List[str]] = None,
 ) -> Layout:
-    unit = "bits" if "bits" in grid else "bytes"
+    # A header of both bytes and bits gives each byte range the bits in it, a
+    # row each, the range of the bytes merged down over the rows of its bits
+    nests_bits = "bytes" in grid and "bits" in grid
+    unit = "bytes" if nests_bits or "bits" not in grid else "bits"
     text_column = "name" if "name" in grid else "description"
     columns = unique(grid)
-    others = [c for c in columns if c not in (unit, "name", "description")]
+    others = [c for c in columns if c not in ("bytes", "bits", "name", "description")]
 
     layout = Layout(unit=unit)
     section = None
@@ -260,6 +263,11 @@ def parse_layout(
                 layout.notes.append(text)
             else:
                 section = text
+            continue
+
+        if nests_bits:
+            if nest_bits(layout, values, text_column, section, diagnostics):
+                section = None  # It named the byte range, and heads no more
             continue
 
         if all(cell.merged == "up" for cell in values.cells.get(unit, [])):
@@ -324,6 +332,81 @@ def parse_layout(
             )
         )
     return layout
+
+
+def nest_bits(
+    layout: Layout,
+    values: Values,
+    text_column: str,
+    section: Optional[str],
+    diagnostics: List[Diagnostic],
+) -> bool:
+    """The bits of a row of a layout of bytes and bits, into the byte range of
+    the row above where the range is merged with it, else into a byte range of
+    its own, named by the heading above it, which names the range rather than
+    heading it, and True where it did; a row of no bits, "n/a", is a byte
+    range alone, named by its own text"""
+
+    texts = {c: normalize_text(t) for c, t in values.texts.items()}
+    name, acronym, description = parse_field_description(
+        values.texts.get(text_column, "")
+    )
+    byte_cells = values.cells.get("bytes", [])
+    byte_text = byte_cells[0].text if byte_cells else values.texts.get("bytes", "")
+    if texts.get("bits", "").lower() in ("", "n/a"):
+        rng = parse_range("bytes", byte_text)
+        if rng is None:
+            diagnostics.append(
+                warning("range", f"Row without a range: {list(texts.values())}")
+            )
+            return False
+        layout.fields.append(
+            LayoutField(
+                range=rng,
+                name=name,
+                acronym=acronym,
+                description=description,
+                section=section,
+            )
+        )
+        return False
+
+    bits = parse_range("bits", values.texts.get("bits", ""))
+    if bits is None:
+        diagnostics.append(
+            warning("range", f"Row without a range: {list(texts.values())}")
+        )
+        return False
+    field = LayoutField(
+        range=bits,
+        name=name,
+        acronym=acronym,
+        description=description,
+    )
+
+    above = layout.fields[-1] if layout.fields else None
+    if (
+        above
+        and above.layouts
+        and byte_cells
+        and all(c.merged == "up" for c in byte_cells)
+    ):
+        above.layouts[0].fields.append(field)
+        return False
+    rng = parse_range("bytes", byte_text)
+    if rng is None:
+        diagnostics.append(
+            warning("range", f"Row without a range: {list(texts.values())}")
+        )
+        return False
+    layout.fields.append(
+        LayoutField(
+            range=rng,
+            name=section,
+            layouts=[Layout(unit="bits", fields=[field])],
+        )
+    )
+    return section is not None
 
 
 def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout]:
