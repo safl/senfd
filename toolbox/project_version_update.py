@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 
-REGEX = r"^(?P<before>.*?version.*?=.*?)(?P<version>\d\.\d\.\d)(?P<after>.*?)$"
+REGEX = r"^(?P<before>.*?version.*?=.*?)(?P<version>\d+\.\d+\.\d+)(?P<after>.*?)$"
 FILES = [
     (Path("docs") / "pyproject.toml", REGEX),
     (Path("src") / "senfd" / "__init__.py", REGEX),
