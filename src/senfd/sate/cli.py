@@ -31,7 +31,7 @@ def first_word(argv: List[str]) -> Optional[int]:
 
     at = 0
     while at < len(argv):
-        if argv[at] in ("--spec", "--llm"):
+        if argv[at] in ("--spec", "--llm", "--llm-model"):
             at += 2
         elif argv[at].startswith("-"):
             at += 1
@@ -78,6 +78,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         metavar="URL",
         help="Have the language model served at URL understand the questions",
     )
+    parser.add_argument(
+        "--llm-model",
+        default=None,
+        metavar="NAME",
+        help="The language model to ask for, where the server at --llm has several",
+    )
     args = parser.parse_args(argv)
     try:
         spec = senfd.query.load(args.spec)
@@ -86,8 +92,9 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
     if args.question:
         question = " ".join(args.question)
-        show(reply(spec, question, Vocabulary.of(spec), args.llm), args.raw)
+        answer = reply(spec, question, Vocabulary.of(spec), args.llm, args.llm_model)
+        show(answer, args.raw)
         return 0
     from senfd.sate.session import interact
 
-    return interact(spec, args.llm, args.spec)
+    return interact(spec, args.llm, args.spec, args.llm_model)

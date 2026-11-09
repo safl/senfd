@@ -254,7 +254,7 @@ def choosing(monkeypatch, *choices):
     given = iter(choices)
     told = []
 
-    def choose(url, messages):
+    def choose(url, messages, model=None):
         told.append(messages[-1]["content"])
         return next(given)
 
@@ -335,6 +335,56 @@ def test_the_language_model_is_asked_for_a_lookup_by_its_schema():
     assert str(chosen) == "command('ding', dword=10)"
     schema = asked["response_format"]["json_schema"]["schema"]
     assert schema == language_model.SCHEMA and asked["temperature"] == 0
+    assert "model" not in asked
+
+
+def test_the_language_model_asked_for_is_named_to_a_server_with_several():
+    import json
+    import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    asked = {}
+
+    class Server(BaseHTTPRequestHandler):
+        def do_POST(self):
+            asked.update(
+                json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            )
+            chosen = {"query": "command", "argument": "ding", "dword": 10}
+            body = json.dumps(
+                {"choices": [{"message": {"content": json.dumps(chosen)}}]}
+            )
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(body.encode())
+
+        def log_message(self, *args):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Server)
+    threading.Thread(target=server.handle_request, daemon=True).start()
+    url = f"http://127.0.0.1:{server.server_port}"
+    language_model.choose(url, [{"role": "user", "content": "FCNT?"}], "qwen2.5-7b")
+    server.server_close()
+    assert asked["model"] == "qwen2.5-7b"
+
+
+def test_the_name_of_a_language_model_reaches_the_server(spec, vocabulary, monkeypatch):
+    named = []
+
+    def choose(url, messages, model=None):
+        named.append(model)
+        return senfd.sate.Understood("command", "ding", 10)
+
+    monkeypatch.setattr(language_model, "choose", choose)
+    senfd.sate.reply(spec, "FCNT?", vocabulary, "x", "qwen2.5-7b")
+    assert named == ["qwen2.5-7b"]
+
+
+def test_the_name_of_a_language_model_is_no_first_word_of_a_question():
+    from senfd.sate.cli import first_word
+
+    assert first_word(["--llm-model", "command", "what is FCNT"]) == 2
 
 
 def test_a_command_named_with_its_command_set_is_the_command(
@@ -457,7 +507,7 @@ def test_a_question_asking_for_an_opcode_is_of_a_command(
 
 
 def test_a_language_model_not_answering_is_said_so(spec, vocabulary, monkeypatch):
-    def unreachable(url, messages):
+    def unreachable(url, messages, model=None):
         raise OSError("connection refused")
 
     monkeypatch.setattr(language_model, "choose", unreachable)

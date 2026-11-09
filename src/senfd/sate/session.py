@@ -221,7 +221,10 @@ def show(console: Console, question: str, markdown: str, status: str) -> None:
 
 
 def interact(
-    spec: SpecDocument, llm: Optional[str] = None, source: Optional[Path] = None
+    spec: SpecDocument,
+    llm: Optional[str] = None,
+    source: Optional[Path] = None,
+    llm_model: Optional[str] = None,
 ) -> int:
     """Ask questions of 'spec', each answered as it is asked, until the input
     ends; 'source' is the file it was read from, shown at the start"""
@@ -280,7 +283,9 @@ def interact(
         if not question.strip():
             continue
         try:
-            markdown, status = exchange(spec, question, vocabulary, llm, said_as=False)
+            markdown, status = exchange(
+                spec, question, vocabulary, llm, said_as=False, llm_model=llm_model
+            )
         except Exception as exc:  # A lookup failing ends the answer, not the session
             console.print(f"[red]sate failed to answer:[/red] {exc}", highlight=False)
             continue

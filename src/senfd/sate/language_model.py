@@ -9,7 +9,7 @@ query and its argument, as served by llama.cpp's llama-server
 
 import json
 import urllib.request
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 from senfd.sate.reading import Understood
 
@@ -59,14 +59,19 @@ SCHEMA = {
 }
 
 
-def choose(url: str, messages: List[Dict[str, str]]) -> Understood:
-    """The lookup a language model at 'url' chooses, constrained to SCHEMA"""
+def choose(
+    url: str, messages: List[Dict[str, str]], model: Optional[str] = None
+) -> Understood:
+    """The lookup a language model at 'url' chooses, constrained to SCHEMA;
+    'model' names it, where the server has several to route between"""
 
-    body = {
+    body: Dict[str, Any] = {
         "messages": messages,
         "temperature": 0,
         "response_format": {"type": "json_schema", "json_schema": {"schema": SCHEMA}},
     }
+    if model:
+        body["model"] = model
     request = urllib.request.Request(
         f"{url.rstrip('/')}/v1/chat/completions",
         data=json.dumps(body).encode(),
