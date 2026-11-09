@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 import senfd.sate
+import senfd.sate.answering
 import senfd.sate.completion
 import senfd.sate.session
 import senfd.query
@@ -176,6 +177,26 @@ def test_the_field_asked_of_is_said_and_its_row_marked(spec, vocabulary):
             "[example, 1.2, Figure 2, page 2]"
         )
     assert "is bits" not in senfd.sate.reply(spec, "cdw10 of ding", vocabulary)
+
+
+def test_the_field_asked_of_is_said_with_a_linked_citation():
+    """A data model of the published PDFs links each citation to its page"""
+
+    url = "https://example.org/spec.pdf#page=2"
+    markdown = (
+        f"### Ding: Foo command, opcode C0h [example, 1.2, Figure 1, page 1]({url})\n"
+        "\n"
+        f"**cdw10 [example, 1.2, Figure 2, page 2]({url})**\n"
+        "\n"
+        "| Bits | Name | Acronym |\n"
+        "|---|---|---|\n"
+        "| 15:00 | Foo Count | FCNT |"
+    )
+    text = senfd.sate.answering.focused("Which bits are FCNT?", markdown)
+    assert text.endswith(
+        "> **FCNT**, Foo Count, is bits 15:00 of cdw10 of Ding "
+        f"[example, 1.2, Figure 2, page 2]({url})"
+    )
 
 
 def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):

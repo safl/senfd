@@ -179,8 +179,9 @@ def reply(
 
 
 # A heading citing its figure: "### Write: NVM command, opcode 01h [...]" of
-# a command, feature or log page, "**cdw12 [...]**" of the table below it
-CITED = re.compile(r"^(?:###|\*\*)\s*(.*?)\s*(\[[^\]]*\])\**\s*$")
+# a command, feature or log page, "**cdw12 [...]**" of the table below it;
+# the citation a link, "[...](url)", where the PDF is published
+CITED = re.compile(r"^(?:###|\*\*)\s*(.*?)\s*(\[[^\]]*\](?:\([^)\s]*\))?)\**\s*$")
 
 
 def cells(line: str) -> Optional[List[str]]:
