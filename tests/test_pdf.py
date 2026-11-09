@@ -170,6 +170,54 @@ def test_text_underlined_is_an_insertion_shown_and_read(tmp_path):
     assert marked_text(tmp_path, "100 199 52 0.5 re f") == "Figure 338"
 
 
+def struck_pages(tmp_path, drawn):
+    """The Pages of a page drawing "Figure 338" and then 'drawn'"""
+
+    path = one_page(
+        tmp_path / "page.pdf",
+        "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Figure 338) Tj ET EMC " + drawn,
+    )
+    with pikepdf.open(path) as pdf, pdfplumber.open(path) as plumb:
+        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        return pages.deletions()
+
+
+def test_a_deletion_shown_is_counted_and_quoted(tmp_path):
+    said = struck_pages(tmp_path, "100 203 52 0.5 re f")
+    assert said is not None
+    assert "10 characters in 1 place on 1 page of the file" in said
+    assert said.endswith("the first on page 1: 'Figure 338'")
+
+
+def test_a_line_drawn_through_a_label_strikes_nothing(tmp_path):
+    # An arrow of a diagram, stroked through the middle of its label
+    assert marked_text(tmp_path, "90 203 m 162 203 l S") == "Figure 338"
+    assert struck_pages(tmp_path, "90 203 m 162 203 l S") is None
+
+
+def test_a_page_with_no_deletion_shown_says_nothing(tmp_path):
+    assert struck_pages(tmp_path, "100 199 52 0.5 re f") is None
+
+
+def test_reading_a_pdf_reports_its_deletions_shown_as_an_error(tmp_path):
+    path = one_page(
+        tmp_path / "page.pdf",
+        "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Figure 338) Tj ET EMC "
+        "100 203 52 0.5 re f",
+    )
+    with pikepdf.open(path, allow_overwriting_input=True) as pdf:
+        pdf.Root.StructTreeRoot = pdf.make_indirect(
+            pikepdf.Dictionary(Type=pikepdf.Name.StructTreeRoot, K=pikepdf.Array())
+        )
+        pdf.save(path)
+    _, errors = read(path)
+    assert [e.message for e in errors if "struck through" in e.message] == [
+        "Text struck through, a deletion of tracked changes shown, left out: "
+        "10 characters in 1 place on 1 page of the file, the first on page 1: "
+        "'Figure 338'"
+    ]
+
+
 def test_a_pdf_without_a_structure_tree_is_refused(tmp_path):
     untagged = tmp_path / "untagged.pdf"
     pdf = pikepdf.new()

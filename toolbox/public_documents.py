@@ -38,7 +38,15 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "tests" / "public" / "documents.toml"
 BENCHMARK = ROOT / "benchmark"
 AGENT = "senfd (https://github.com/safl/senfd), testing with the public specifications"
-COUNTED = ("commands", "features", "log_pages", "structures", "errata", "not_modelled")
+COUNTED = (
+    "commands",
+    "features",
+    "log_pages",
+    "structures",
+    "errata",
+    "document_errors",
+    "not_modelled",
+)
 
 
 def documents() -> List[Dict]:
@@ -88,6 +96,9 @@ def counts(model: Dict) -> Dict[str, int]:
         "log_pages": len(model["log_pages"]),
         "structures": len(model["structures"]),
         "errata": len(model["errata"]),
+        "document_errors": sum(
+            d["code"] == "document-error" for d in model["diagnostics"]
+        ),
         "not_modelled": sum(
             d["code"] == "figure-not-modelled" for d in model["diagnostics"]
         ),

@@ -38,8 +38,10 @@ sentences is read as text whatever its name.
 the rows of two figures, an entry of the table of figures not of its form,
 a section whose number in the headings differs from the table of contents,
 and, in a PDF, text tagged inside a table's cell but printed outside its
-borders, as a heading or a list that Word tagged into the table before it.
-Each says the document and the figure it follows; the errors are also in
+borders, as a heading or a list that Word tagged into the table before it,
+and text struck through, a PDF printed with its tracked changes shown,
+said once a document with how much and where it starts. Each says the
+document and the figure it follows; the errors are also in
 each document's ``.error.log``.
 
 **Figures of no shape senfd models**, senfd's or the figure's: a figure
@@ -57,9 +59,12 @@ the caption names it otherwise than the figure defining it.
 Each finding is a candidate: a person decides whether the figure or senfd
 is wrong, and a figure of a shape senfd does not know is senfd's to learn.
 On the eleven documents ratified in 2026, as NVM Express publishes them as
-PDF, senfd reports 2 candidate errata and 6 document errors for the
+PDF, senfd reports 2 candidate errata and 9 document errors for the
 authors, and 23 figures it does not model, 16 worked examples and 19
-unassigned dwords. The ratified documents are consistent by this measure;
+unassigned dwords. Three of the document errors are the tracked changes
+the PDFs of Base 2.4, Boot 1.4 and Management Interface 2.2 are printed
+with.
+The figures of the ratified documents are consistent by this measure;
 the value is in running senfd on every draft, where it takes a minute and
 checks every figure the same way, and in keeping each revision as
 consistent as the last.
