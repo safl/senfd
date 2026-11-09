@@ -204,6 +204,16 @@ def joined(figure: Figure, table: Table) -> None:
     extended(figure.table, table)
 
 
+def assembled(figure: Figure, pieces: List[Tuple[int, Table]]) -> None:
+    """The tables of 'figure' going on past its page breaks, each with the
+    page it begins on, joined in the order of their pages rather than of
+    their tags: Word tags a row filling a page of its own as a table after
+    the rest of the figure"""
+
+    for _, table in sorted(pieces, key=lambda piece: piece[0]):
+        joined(figure, table)
+
+
 def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
     """The figure document of the tagged PDF at 'path'"""
 
@@ -222,7 +232,9 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
         section = Section(None, None)
         entries: Dict[int, int] = {}
         figures: Dict[int, Figure] = {}
+        pieces: Dict[int, List[Tuple[int, Table]]] = {}
         last: Optional[Figure] = None
+        begun = 0
         for node in walk(root["/K"]):
             if node.name in HEADINGS:
                 text = words(pages.text(paragraphs(node.element, node.page))[0])
@@ -247,7 +259,7 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 # The section is the outline's, by where the table is; the
                 # headings walked above stand in where the outline says not
                 where = section
-                if extent:
+                if extent:  # Else it begins on the page the one before did
                     begun = min(extent)
                     placed = section_at(numbered, begun, extent[begun][1])
                     where = placed if placed is not None else section
@@ -257,11 +269,11 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 match = CAPTION.match(caption)
                 if not match:
                     if last is not None:  # Going on past a page break
-                        joined(last, table)
+                        pieces[last.figure_nr].append((begun, table))
                     continue
                 number = int(match[1])
                 if last is not None and number == last.figure_nr:
-                    joined(last, table)
+                    pieces[number].append((begun, table))
                     continue
                 if number in figures:
                     errors.append(
@@ -285,6 +297,9 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     section_title=where.title,
                     table=table,
                 )
+                pieces[number] = []
+        for number, more in pieces.items():
+            assembled(figures[number], more)
         for number, page in entries.items():
             if number in figures:
                 figures[number].page_nr = page
