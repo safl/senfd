@@ -23,6 +23,9 @@ QUERIES = {
     "search": "fields by acronym, 'FUA', or by name, and commands, features, "
     "log pages and structures by a word of their name",
     "section": "what a section describes, by number: '5.2.6'",
+    "value": "an entry of a table of values: a status code, 'status code 82h' "
+    "or 'status code zone boundary error', a status code type, or a CNS value, "
+    "'CNS 05h' or 'CNS identify namespace'",
     "unknown": "the question is not about the NVMe specifications",
 }
 
@@ -37,6 +40,8 @@ SYSTEM = (
     "- 'Which feature is Number of Queues?' -> feature, 'number of queues', null\n"
     "- 'Which bits of CC select the arbitration mechanism?' -> register, 'CC', null\n"
     "- 'What does STC stand for?' -> search, 'STC', null\n"
+    "- 'What is the status code of Zone Boundary Error?' -> value, "
+    "'status code zone boundary error', null\n"
     "- 'What is the capital of France?' -> unknown, '', null\n"
     "If you are told a lookup found nothing, or nothing mentioning the "
     "question, choose another; if none fits, choose unknown."
