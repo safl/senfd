@@ -36,14 +36,14 @@ lookup it tried, and the llama-server logs.
 ## How it is run
 
 The benchmark is a cijoe workflow, `workflows/benchmark.yaml`, with its steps
-in `scripts/`. `configs/epyc-02.toml` names everything a run depends on: the
-documents, by a glob; the senfd commit; the machine running llama-server,
-its binary, threads and context; the language models, by path and SHA-256;
-and the frontier language models; it is the lab's, so make one of your own
-for your machine and documents. Claim the machine with dibs, then, in
-`benchmark/`:
+in `scripts/`. `configs/default.toml` names everything a run depends on: the
+documents, by a glob; the senfd release; llama-server, its threads and
+context; the language models, by path and SHA-256, with where to download
+them; and the frontier language models. It runs everything on this
+machine, or llama-server on another one named by ssh; copy it, and change
+what differs on yours. Then, in `benchmark/`:
 
-    cijoe workflows/benchmark.yaml -c configs/epyc-02.toml -o results/<date>
+    cijoe workflows/benchmark.yaml -c configs/default.toml -o results/<date>
 
 It records the machine, the documents' SHA-256 and the senfd commit; makes a
 virtual environment of that senfd and its data model of the documents; and
