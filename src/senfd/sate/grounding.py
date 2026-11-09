@@ -45,7 +45,7 @@ def answered(lines: List[str]) -> Optional[Tuple[str, str]]:
         if match:
             head, dash, _ = match[1].partition(" - ")
             if kind == "structure" and dash and head.isupper():
-                kind = "register"
+                return "register", match[1]
             return kind, match[1]
     return None
 

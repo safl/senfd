@@ -582,7 +582,8 @@ def checked(
 
     errata: List[Erratum] = []
     kept: List[Bits] = []
-    for field in fields:
+    for given in fields:
+        field = given
         what = f"{field.range} {field.name or ''}".strip()
         if field.acronym and not REGEX_ACRONYM.match(field.acronym):
             errata.append(
@@ -1289,12 +1290,15 @@ def link_operations(document: SpecDocument, used: set) -> None:
                                         )
                                         described_by[id(d)] = (key, d)
 
-    for ident, claimed in claims.items():
+    for ident, all_claimed in claims.items():
         key, described = described_by[ident]
+        claimed = all_claimed
         if len({id(c[0]) for c in claimed}) > 1:
 
-            def nearness(claim: Claim) -> int:
-                return shared_prefix(claim[4].source.section, described.source.section)
+            def nearness(
+                claim: Claim, section: Optional[str] = described.source.section
+            ) -> int:
+                return shared_prefix(claim[4].source.section, section)
 
             nearest = max(nearness(c) for c in claimed)
             claimed = [c for c in claimed if nearness(c) == nearest]

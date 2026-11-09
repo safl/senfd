@@ -252,7 +252,7 @@ def interact(
         """F1: the forms a question can take, with examples"""
         run_in_terminal(lambda: console.print(Markdown(HELP)))
 
-    vocabulary.names  # The pattern of names, built before the first key
+    _ = vocabulary.names  # The pattern of names, built before the first key
     session: PromptSession[str] = PromptSession(
         completer=Names(vocabulary),
         complete_while_typing=True,

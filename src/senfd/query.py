@@ -587,7 +587,7 @@ def section(spec: SpecDocument, key: str) -> List[str]:
         found.append((v.source, f"table of {kind} {v.name or ''} [{cite(v.source)}]"))
 
     lines = []
-    for source, line in sorted(
+    for _, line in sorted(
         (f for f in found if within(f[0])),
         key=lambda f: (f[0].document, f[0].figure_nr),
     ):

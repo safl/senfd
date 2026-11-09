@@ -158,7 +158,7 @@ def write(output: Path) -> int:
     body = []
     for q in questions:
         cells = []
-        for column, runs in columns.items():
+        for runs in columns.values():
             parts = []
             for _, g in runs:
                 verdict, shown, how = g[q["id"]]

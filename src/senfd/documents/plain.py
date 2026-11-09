@@ -497,7 +497,8 @@ class FromDocx(Converter):
         labels.update(Numbering(docx_document).labels)
 
         # Add tabular figures -- page_nr unavailable
-        for table_nr, docx_table in enumerate(docx_document.tables, 1):
+        for table_nr, outer in enumerate(docx_document.tables, 1):
+            docx_table = outer
             # A table of one cell holding a table and no text wraps that table
             only = docx_table.rows[0].cells[0] if len(docx_table.rows) == 1 else None
             if (

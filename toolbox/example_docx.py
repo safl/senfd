@@ -851,8 +851,8 @@ def write(path, figures):
 
     headings = [entry for entry in figures if entry[0] == "heading"]
     for (_, level, title), number in zip(headings, number_headings(figures)):
-        number = TOC_NUMBERS.get(title, number)
-        document.add_paragraph(f"{number}\t{title}\t1", style=f"toc {level}")
+        shown = TOC_NUMBERS.get(title, number)
+        document.add_paragraph(f"{shown}\t{title}\t1", style=f"toc {level}")
 
     captions = [entry for entry in figures if entry[0] != "heading"]
     for number, (caption, _) in enumerate(captions, 1):

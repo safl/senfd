@@ -204,6 +204,7 @@ def focused(question: str, markdown: str, most: int = 3) -> str:
     title, label, cite, unit = "", "", "", "bits"
     lines, said = [], []
     for line in markdown.split("\n"):
+        shown = line
         heading = CITED.match(line)
         if heading and line.startswith("###"):  # Of a command, feature, log page
             title, label = heading[1].split(":")[0], ""
@@ -217,13 +218,13 @@ def focused(question: str, markdown: str, most: int = 3) -> str:
             at, name, acronym = row
             named = " " in name and words_of(name) in spoken
             if acronym.upper() in acronyms or named:
-                line = "| " + " | ".join(f"**{c}**" if c else c for c in row) + " |"
+                shown = "| " + " | ".join(f"**{c}**" if c else c for c in row) + " |"
                 dword = title and label.startswith(("cdw", "cqe"))
                 of = f"{label} of {title}" if dword else label or title
                 field = f"**{acronym}**, {name}," if acronym else f"**{name}**"
                 units = unit if ":" in at else unit[:-1]
                 said.append(f"{field} is {units} {at} of {of} {cite}")
-        lines.append(line)
+        lines.append(shown)
     if not said:
         return markdown
     more = f" And {len(said) - most} more." if len(said) > most else ""
