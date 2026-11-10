@@ -15,7 +15,7 @@ senfd on PATH is never used. Records the version and commit.
 Config Arguments
 ----------------
 
-senfd.repo, senfd.commit, senfd.python (default: 3.12)
+senfd.repo, senfd.commit, senfd.python (default: 3.13)
 
 Retargetable: False
 -------------------
@@ -29,6 +29,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 import bench  # noqa: E402
 
+# The oldest Python senfd installs on
+PYTHON = "3.13"
+
 
 def main(args, cijoe):
     repo, commit = cijoe.getconf("senfd.repo"), cijoe.getconf("senfd.commit")
@@ -36,7 +39,7 @@ def main(args, cijoe):
     spec = shlex.quote(f"senfd[sate,pdf] @ git+{repo}@{commit}")
     for cmd in (
         f"rm -rf {venv}",
-        f"uv venv -q -p {cijoe.getconf('senfd.python', '3.12')} {venv}",
+        f"uv venv -q -p {cijoe.getconf('senfd.python', PYTHON)} {venv}",
         f"VIRTUAL_ENV={venv} uv pip install -q {spec}",
     ):
         err, _ = cijoe.run_local(cmd)
