@@ -24,6 +24,21 @@ defaults:
     shell: bash
 
 jobs:
+  release-ready:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Grab source
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
+
+    - name: Require that a release pull request holds all of its base
+      env:
+        BASE: ${{ github.event.pull_request.base.ref }}
+      run: .github/scripts/release_ready.sh "$BASE"
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:
