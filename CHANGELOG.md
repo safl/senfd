@@ -25,6 +25,8 @@ entry of NVM 1.3, Figure 41, matches the entries before it.
 Continuous integration now runs `sate --llm` in the container image against
 a llama-server with a small language model, with and without
 `--llm-model`.
+A release pull request now fails its checks when it lacks commits of
+`main`, since it could not be released once merged.
 
 The benchmark was run again with Qwen 2.5 7B and 1.5B as the local language
 models, and the documentation's recordings were made again. The
