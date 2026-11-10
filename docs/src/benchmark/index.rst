@@ -16,7 +16,7 @@ ratified in 2026 added or moved, the bits of the registers, the opcodes of
 every command set and the fields of the Identify data structures, with a
 few long-standing facts among them.
 
-.. list-table:: 2026-11-09, senfd 0.13.0, 71 questions; a frontier lane is the mean of three runs
+.. list-table:: 2026-11-10, senfd 0.14.0, 71 questions; a frontier lane is the mean of three runs
    :header-rows: 1
    :widths: 46 10 10 10 24
 
@@ -29,37 +29,37 @@ few long-standing facts among them.
      - **71**
      - **0**
      - 0
-     - free, 11 ms a question
+     - free, 5 ms a question
    * - ``sate --llm``, Qwen 2.5 7B (Q4_K_M), CPU only
      - **69**
      - **0**
      - 2
-     - free, 2.4 s a question
+     - free, 2.3 s a question
    * - ``sate --llm``, Qwen 2.5 1.5B (Q4_K_M), CPU only
      - 44
      - **0**
      - 27
-     - free, 1.5 s a question
+     - free, 1.3 s a question
    * - Claude Opus 5.5, from memory, "unknown" allowed [#allowed]_
-     - 53
-     - 0
-     - 18
-     - USD 0.14 a run, 0.82 s a question
+     - 50.7
+     - 1.3
+     - 19
+     - USD 0.11 a run, 0.59 s a question
    * - Claude Opus 5.5, from memory, answer required [#required]_
-     - 60.3
-     - 10.7
+     - 54.3
+     - 16.7
      - 0
-     - USD 0.14 a run, 0.88 s a question
+     - USD 0.13 a run, 0.74 s a question
    * - Claude Sonnet 5.5, from memory, "unknown" allowed [#allowed]_
-     - 30
-     - 6
-     - 35
+     - 36.3
+     - 6.7
+     - 28
      - USD 0.02 a run, 0.14 s a question
    * - Claude Sonnet 5.5, from memory, answer required [#required]_
-     - 38.3
-     - 32.7
+     - 39
+     - 32
      - 0
-     - USD 0.02 a run, 0.16 s a question
+     - USD 0.02 a run, 0.19 s a question
 
 .. [#allowed] The frontier model is told: "If you do not know, or are
    guessing, answer "unknown" rather than a guess", and that a wrong answer
@@ -69,23 +69,25 @@ few long-standing facts among them.
    question, with a confidence of high, medium or low, and may not answer
    "unknown". This is how a chat answers a question put to it.
 
-`The transcript <../_static/benchmark/report-2026-11-09-v0.13.0.html>`_ has
+`The transcript <../_static/benchmark/report-2026-11-10-v0.14.0.html>`_ has
 every question, the right answer, and the answer of every lane and run, with
 what ``sate`` understood each question as and the time it took.
 
 With answers required, a frontier model states wrong opcodes, identifiers
-and bits in the same form as right ones. Opus gave the Host Addressable
-Namespaces log page the identifier 83h in all three runs, where the figure
-says 85h, and Sonnet gave Sanitize Namespace the opcode 84h, that of
-Sanitize, in all three. Eight questions Opus got wrong in every run and
-Sonnet twenty-seven, nearly all of them opcodes and identifiers. Asked for a
-confidence, Opus marked 31 of its 32 wrong answers low and Sonnet 78 of its
-98, so the guesses are there to be seen when asked for; a chat asks for
-none. With "unknown" allowed, Opus said it of a quarter of the questions and
-got none wrong, and Sonnet said it of half and still got six wrong. The
-means move a little between runs of the workflow. Their training predates
-the documents, which is the point: what a language model knows is the
-revisions it was trained on, and the specifications move on.
+and bits in the same form as right ones. Opus gave Sanitize Namespace the
+opcode 85h in all three runs, where the figure says 8Ch, and Sonnet gave it
+84h, that of Sanitize, in all three. Thirteen questions Opus got wrong in
+every run and Sonnet twenty-eight, nearly all of them opcodes and
+identifiers. Asked for a confidence, Opus marked 45 of its 50 wrong answers
+low and Sonnet 73 of its 96, so the guesses are there to be seen when asked
+for; a chat asks for none. With "unknown" allowed, Opus said it of a
+quarter of the questions and still got four wrong in one of its three runs,
+and Sonnet said it of two fifths and got about seven wrong. The frontier
+lanes move between runs of the workflow: the run of the day before, at
+senfd 0.13.0, had Opus answer 10.7 wrongly where this run has 16.7, on the
+same questions. Their training predates the documents, which is the point:
+what a language model knows is the revisions it was trained on, and the
+specifications move on.
 
 A small language model on a CPU, used as ``sate --llm`` uses it, cannot
 make the same mistake. It chooses the lookup, constrained to a query and
@@ -128,8 +130,9 @@ in ``benchmark/tests``. Each right answer was checked against the figure
 that gives it.
 
 The run shown made its data model from the PDFs NVM Express publishes, at
-senfd 0.13.0, so anyone can repeat it. Two earlier runs are kept beside it.
-That of 2026-11-09 at the commit before 0.9.1 had Llama 3.1 8B and Llama
+senfd 0.14.0, so anyone can repeat it. Three earlier runs are kept beside
+it. That of 2026-11-09 at senfd 0.13.0 asked the same language models the
+same questions; that of 2026-11-09 at the commit before 0.9.1 had Llama 3.1 8B and Llama
 3.2 1B choose the lookups, the first answering 70 and the second 37, none
 wrongly; that of 2026-11-08 asked the first 30 of the questions from a data
 model made of the ``.docx`` of the same documents, and ``sate`` answered
