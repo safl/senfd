@@ -13,21 +13,22 @@ revisions added or moved, the bits of the registers, the opcodes of every
 command set and the fields of the Identify data structures, with a few
 long-standing facts among them. Each right answer was checked against the
 figure that gives it. `questions.json` holds them. The latest run,
-`results/2026-11-09-v0.13.0`, made its data model from the PDFs NVM
-Express publishes, at senfd 0.13.0. Kept beside it are the run of
+`results/2026-11-10-v0.14.0`, made its data model from the PDFs NVM
+Express publishes, at senfd 0.14.0. Kept beside it are the run of
+2026-11-09 at senfd 0.13.0, with the same language models, the run of
 2026-11-09 at senfd 75c370d, on the way to 0.9.1, with Llama 3.1 8B and
 3.2 1B in place of Qwen, and the run of 2026-11-08, which asked the first
 30 from a data model made of the `.docx`, at 0.8.0.
 
-| Lane, 2026-11-09, senfd 0.13.0 | Right | Wrong | Unknown | Cost and time |
+| Lane, 2026-11-10, senfd 0.14.0 | Right | Wrong | Unknown | Cost and time |
 |---|---|---|---|---|
-| `sate`, no language model | 71 | 0 | 0 | free, 11 ms a question |
-| `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 69 | 0 | 2 | free, 2.4 s a question |
-| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 44 | 0 | 27 | free, 1.5 s a question |
-| Claude Opus 5.5, from memory, "unknown" allowed[^allowed] | 53 | 0 | 18 | USD 0.14 a run, 0.82 s a question |
-| Claude Opus 5.5, from memory, answer required[^required] | 60.3 | 10.7 | 0 | USD 0.14 a run, 0.88 s a question |
-| Claude Sonnet 5.5, from memory, "unknown" allowed[^allowed] | 30 | 6 | 35 | USD 0.02 a run, 0.14 s a question |
-| Claude Sonnet 5.5, from memory, answer required[^required] | 38.3 | 32.7 | 0 | USD 0.02 a run, 0.16 s a question |
+| `sate`, no language model | 71 | 0 | 0 | free, 5 ms a question |
+| `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 69 | 0 | 2 | free, 2.3 s a question |
+| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 44 | 0 | 27 | free, 1.3 s a question |
+| Claude Opus 5.5, from memory, "unknown" allowed[^allowed] | 50.7 | 1.3 | 19 | USD 0.11 a run, 0.59 s a question |
+| Claude Opus 5.5, from memory, answer required[^required] | 54.3 | 16.7 | 0 | USD 0.13 a run, 0.74 s a question |
+| Claude Sonnet 5.5, from memory, "unknown" allowed[^allowed] | 36.3 | 6.7 | 28 | USD 0.02 a run, 0.14 s a question |
+| Claude Sonnet 5.5, from memory, answer required[^required] | 39 | 32 | 0 | USD 0.02 a run, 0.19 s a question |
 
 [^allowed]: The frontier model is told: "If you do not know, or are
     guessing, answer "unknown" rather than a guess", and that a wrong
