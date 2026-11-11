@@ -206,6 +206,54 @@ def test_a_missing_data_model_is_reported_and_fails(tmp_path, capsys):
     assert "no data model to answer from" in capsys.readouterr().err
 
 
+@pytest.fixture
+def served():
+    """A client of sate-web serving the tools of sate-mcp at /mcp to the
+    token 'secret'"""
+
+    import senfd.sate.mcp
+
+    with TestClient(web.app(senfd.query.load(SPEC), "secret")) as client:
+        yield client
+    senfd.sate.mcp.given = None
+
+
+CALL = {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/call",
+    "params": {"name": "command", "arguments": {"name": "ding", "dword": 10}},
+}
+ACCEPT = {"Accept": "application/json, text/event-stream"}
+
+
+def test_mcp_answers_a_request_with_the_token(served):
+    response = served.post(
+        "/mcp", json=CALL, headers={**ACCEPT, "Authorization": "Bearer secret"}
+    )
+
+    assert response.status_code == 200
+    (content,) = response.json()["result"]["content"]
+    assert content["text"].splitlines()[1:] == [
+        "cdw10 [example, 1.2, Figure 2, page 2]",
+        "  31:16 Reserved",
+        "  15:00 Foo Count (FCNT)",
+    ]
+
+
+@pytest.mark.parametrize("authorization", [None, "Bearer wrong", "secret"])
+def test_mcp_refuses_a_request_without_the_token(served, authorization):
+    headers = {**ACCEPT, **({"Authorization": authorization} if authorization else {})}
+    response = served.post("/mcp", json=CALL, headers=headers)
+
+    assert response.status_code == 401
+    assert response.headers["WWW-Authenticate"] == "Bearer"
+
+
+def test_mcp_is_absent_without_a_token(client):
+    assert client.post("/mcp", json=CALL, headers=ACCEPT).status_code == 404
+
+
 def test_the_status_shows_the_icon_and_the_reading_of_the_question(client):
     response = client.get("/", params={"q": "cdw10 of ding"})
 

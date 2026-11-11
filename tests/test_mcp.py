@@ -61,17 +61,17 @@ def test_a_missing_model_is_said_to_the_client(tmp_path, monkeypatch):
     import senfd.sate.mcp
 
     monkeypatch.setenv("SENFD_SPEC", str(tmp_path / "missing.json"))
-    senfd.sate.mcp.spec.cache_clear()
+    senfd.sate.mcp.loaded.cache_clear()
     with pytest.raises(RuntimeError, match="No data model of the specification at"):
         senfd.sate.mcp.command("ding")
-    senfd.sate.mcp.spec.cache_clear()
+    senfd.sate.mcp.loaded.cache_clear()
 
 
 def test_every_tool_answers_from_the_model(monkeypatch):
     import senfd.sate.mcp
 
     monkeypatch.setenv("SENFD_SPEC", str(SPEC.resolve()))
-    senfd.sate.mcp.spec.cache_clear()
+    senfd.sate.mcp.loaded.cache_clear()
     assert senfd.sate.mcp.feature("C0h").startswith("C0h Foo Config")
     assert senfd.sate.mcp.log_page("C0h").startswith("C0h Foo Statistics")
     assert senfd.sate.mcp.structure("FOOCAP").startswith("FOOCAP")
@@ -79,4 +79,4 @@ def test_every_tool_answers_from_the_model(monkeypatch):
     assert senfd.sate.mcp.value("status code 82h").startswith("82h Foo Lost")
     assert senfd.sate.mcp.section("1.2").startswith("example 1.2 Ding command")
     assert "beyond the 64 bits" in senfd.sate.mcp.errata("example")
-    senfd.sate.mcp.spec.cache_clear()
+    senfd.sate.mcp.loaded.cache_clear()
