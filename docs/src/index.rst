@@ -29,12 +29,22 @@ check the answer against:
 
    <div class="casts">
      <div class="cast-tabs" role="tablist">
-       <button role="tab" aria-selected="true" data-cast="session">Interactive</button>
-       <button role="tab" aria-selected="false" data-cast="intro">Scripted</button>
+       <button role="tab" aria-selected="true" data-cast="session">Interactive (TUI)</button>
+       <button role="tab" aria-selected="false" data-cast="intro">Scripted (CLI)</button>
+       <button role="tab" aria-selected="false" data-cast="web">Interactive (Web UI)</button>
      </div>
      <div class="cast-pane" id="cast-session"></div>
      <div class="cast-pane" id="cast-intro" hidden></div>
+     <div class="cast-pane" id="cast-web" data-still hidden>
+       <img class="only-light" src="_static/web-light.png" alt="sate's web page answering cdw12 of write, with the fields of the dword and the figures they are from">
+       <img class="only-dark" src="_static/web-dark.png" alt="sate's web page answering cdw12 of write, with the fields of the dword and the figures they are from">
+     </div>
    </div>
+
+To try the web page on your own machine, without installing senfd, run
+``pipx run --spec senfd sate-preview-wizard``. The wizard lists the
+specifications it will download from nvmexpress.org, and asks before it
+makes the data model; see :ref:`on the web <sec-sate-web>`.
 
 .. caution::
 
@@ -136,7 +146,8 @@ as :ref:`making the data model <sec-usage>` shows.
          button.setAttribute("aria-selected", on);
          document.getElementById(`cast-${button.dataset.cast}`).hidden = !on;
        }
-       if (!made[cast]) {
+       // A pane marked data-still holds a picture rather than a recording
+       if (!made[cast] && !("still" in document.getElementById(`cast-${cast}`).dataset)) {
          made[cast] = AsciinemaPlayer.create(`_static/casts/${cast}.cast`, document.getElementById(`cast-${cast}`),
            {cols: 110, rows: 32, idleTimeLimit: 2, fit: "width", terminalFontSize: "small",
             poster: "npt:0:12"});
