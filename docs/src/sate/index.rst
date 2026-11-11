@@ -172,6 +172,33 @@ A coding agent can be given these lookups as tools, and a small language
 model can choose the lookup for a question put loosely; :ref:`with a
 language model <sec-llm>` says how, and what each costs.
 
+.. _sec-sate-web:
+
+On the web
+----------
+
+``sate-web`` answers the same questions on a web page, for a browser
+rather than a terminal:
+
+.. code-block:: console
+
+   $ sate-web
+   $ sate-web --host 0.0.0.0 --port 8080
+
+It listens on ``127.0.0.1:8000`` unless told otherwise, and ``--spec``
+names the data model, as for ``sate``. The page completes a question as it
+is typed, and Enter or a click on a menu entry submits it. The keys are
+listed under the input field. Each answer cites its figures as links to the
+PDF pages on nvmexpress.org. The count of documents above the field opens a
+table of the documents in the data model. The question is in the URL, such
+as ``/?q=cdw12+of+write``, so an answer can be bookmarked. The page has five
+colour themes, each with a light and a dark mode, and the mode follows the
+system unless one is chosen.
+
+``sate-web`` has no login. Whoever reaches it is served the data model,
+which only members of NVM Express, Inc. may use. Where it is reached over a
+network, put it behind a proxy that lets only members in.
+
 .. raw:: html
 
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.9.0/dist/bundle/asciinema-player.css">
