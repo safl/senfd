@@ -2,3 +2,4 @@ which b\t12 of wri\t is FU\t\r
 describe cdw10 of write\r
 CSTS\r
 which f\tnum\t\r
+what does status 0x4281 mean?\r
