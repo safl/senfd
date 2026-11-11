@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
-__version__ = "0.16.0"
+__version__ = "0.17.0"

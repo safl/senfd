@@ -10,6 +10,32 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.17.0
+
+sate says what a status of a completion means. Ask "what does status
+0x4281 mean?" with the status as nvme-cli and Linux print it, "dw3
+0x80050007" with Dword 3 of the completion, or "what does SCT 1 SC 80h
+mean for Write?" with its type and code. The status is split by the bits
+the data model holds of the figure of the Status Field, and its code is
+looked up in the tables of status codes of its type, each cited. `sate
+status 4281h` and the MCP tool `status` do the same. "status 82h" is now
+read as a status, SCT 0h and SC 82h; "status code 82h" and "SC 82h" still
+ask of a code of any type.
+
+The menu of common questions shows each as an example with names from the
+data model, as "which bit of cdw12 of Write is FUA?", rather than with
+placeholders, the names marked as what to swap for your own.
+
+The front page of the documentation has a third tab, Interactive (Web UI),
+which shows sate's web page answering a question, beside the recordings of
+sate in a terminal, now named Interactive (TUI) and Scripted (CLI). The
+command that starts the wizard follows the tabs.
+`toolbox/web_screenshots.py` takes the screenshots again when the page
+changes, with playwright, now in the extra `dev`.
+
+`sate-preview-wizard` looks for a free port from 8899 rather than 8000,
+which many development servers use.
+
 ## 0.16.0
 
 The new command `sate-preview-wizard` gives sate's web page on your own
