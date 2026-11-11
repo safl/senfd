@@ -13,6 +13,7 @@ license = { text = "LGPL-2.1-only" }
 requires-python = ">=3.13"
 dependencies = [
     "jinja2",
+    "markdown-it-py",
     "mcp>=2",
     "pdfplumber>=0.10",
     "pikepdf>=8",
@@ -20,6 +21,8 @@ dependencies = [
     "pydantic",
     "python-docx",
     "rich>=13",
+    "starlette",
+    "uvicorn",
 ]
 readme = { file = "README.md", content-type = "text/markdown" }
 
@@ -28,12 +31,13 @@ readme = { file = "README.md", content-type = "text/markdown" }
 # senfd[sate,pdf], of a version before, still works
 sate = []
 pdf = []
-dev = ["jsonschema", "pyte", "pytest", "pytest-cov"]
+dev = ["httpx", "jsonschema", "pyte", "pytest", "pytest-cov"]
 all = ["senfd[dev]"]
 
 [project.scripts]
 senfd = "senfd.cli:main"
 sate-mcp = "senfd.sate.mcp:main"
+sate-web = "senfd.sate.web:main"
 sate = "senfd.sate:main"
 
 

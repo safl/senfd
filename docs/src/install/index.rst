@@ -16,9 +16,9 @@ commands in a virtual environment of their own:
 
    $ pipx install senfd
 
-This installs three commands: ``senfd`` makes the data model and lints
-the documents, ``sate`` answers from it, and ``sate-mcp`` serves it to a
-coding agent.
+This installs four commands: ``senfd`` makes the data model and lints
+the documents, ``sate`` answers from it, ``sate-web`` answers on a web
+page, and ``sate-mcp`` serves it to a coding agent.
 
 A PDF must keep the structure of its tables, as NVM Express's do, being
 exported from Word with its document structure tags; one without is
