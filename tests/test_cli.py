@@ -51,7 +51,9 @@ def senfd_main(monkeypatch, *args):
     return senfd.cli.main()
 
 
-def test_the_documents_and_their_merged_model_are_written(tmp_path, monkeypatch):
+def test_the_documents_and_their_merged_model_are_written(
+    tmp_path, monkeypatch, unsourced
+):
     import json
 
     docs = sorted(Path("example").glob("*.docx"))
@@ -61,9 +63,9 @@ def test_the_documents_and_their_merged_model_are_written(tmp_path, monkeypatch)
         assert (tmp_path / f"{doc.stem}.error.log").is_file()
     merged = "merged.spec.document.json"
     expected = Path("example") / "output" / merged
-    assert json.loads((tmp_path / merged).read_text(encoding="utf-8")) == json.loads(
-        expected.read_text(encoding="utf-8")
-    )
+    assert json.loads(
+        unsourced((tmp_path / merged).read_text(encoding="utf-8"))
+    ) == json.loads(unsourced(expected.read_text(encoding="utf-8")))
 
 
 def test_the_version_and_the_schemas_are_printed_in_process(

@@ -9,7 +9,6 @@ them knows the file it was read from by its hash, and so can cite it by a
 link to the page.
 """
 
-import hashlib
 import shutil
 import subprocess
 import sys
@@ -19,6 +18,8 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 import tomllib
+
+from senfd.identity import input_sha256, sha256_of
 
 TABLE = Path(__file__).with_name("published.toml")
 AGENT = "senfd (https://github.com/safl/senfd)"
@@ -50,12 +51,10 @@ def url_of(sha256: Optional[str]) -> Optional[str]:
     return next((d["url"] for d in documents() if d["sha256"] == sha256), None)
 
 
-def sha256_of(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as file:
-        for block in iter(lambda: file.read(1 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()
+def published_input_sha256() -> str:
+    """The input SHA-256 of a data model made from every published document"""
+
+    return input_sha256(d["sha256"] for d in documents())
 
 
 def fetched(directory: Path, say: Callable[[str], None] = print) -> List[Path]:

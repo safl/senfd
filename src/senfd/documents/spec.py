@@ -37,6 +37,7 @@ from senfd.fields import Role
 from senfd.normalize import CaptionKind, Diagnostic, note, warning
 from senfd.ranges import RangeKind, Unit
 import senfd.fields
+import senfd.identity
 import senfd.ranges
 
 
@@ -1683,4 +1684,11 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
         merged.diagnostics += [
             d for d in document.diagnostics if d.code != "dwords-unassigned"
         ]
-    return resolve(merged)
+    merged = resolve(merged)
+    hashes = [meta.sha256 for meta in merged.documents.values()]
+    if hashes and all(hashes):
+        merged.meta.input_sha256 = senfd.identity.input_sha256(h for h in hashes if h)
+        merged.meta.combined_sha256 = senfd.identity.combined_sha256(
+            merged.meta.input_sha256, merged.meta.senfd_sha256
+        )
+    return merged

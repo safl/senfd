@@ -35,7 +35,7 @@ def test_to_file_with_a_filepath(tmp_path):
     assert back == CONTENT
 
 
-def test_the_example_outputs_are_those_senfd_makes(tmp_path):
+def test_the_example_outputs_are_those_senfd_makes(tmp_path, unsourced):
     """example/output is what 'make version' writes; a change to what senfd
     makes of the example documents shows here, rather than going unseen. They
     are compared byte for byte, as the JSON is written to be diffed: indented,
@@ -55,12 +55,12 @@ def test_the_example_outputs_are_those_senfd_makes(tmp_path):
         if expected.name.startswith("merged."):
             continue
         made = tmp_path / expected.name
-        assert made.read_text(encoding="utf-8") == expected.read_text(
-            encoding="utf-8"
+        assert unsourced(made.read_text(encoding="utf-8")) == unsourced(
+            expected.read_text(encoding="utf-8")
         ), f"{expected} is not what senfd makes; regenerate it with 'make version'"
 
 
-def test_the_example_is_the_one_the_toolbox_writes(tmp_path):
+def test_the_example_is_the_one_the_toolbox_writes(tmp_path, unsourced):
     """example/example.docx is written by toolbox/example_docx.py; edit the
     script rather than the document"""
 
@@ -82,8 +82,10 @@ def test_the_example_is_the_one_the_toolbox_writes(tmp_path):
     senfd.pipeline.process(path, tmp_path, Namespace(skip_figures=None))
 
     name = "example.plain.figure.document.json"
-    made = json.loads((tmp_path / name).read_text(encoding="utf-8"))
-    expected = json.loads((Path("example/output") / name).read_text(encoding="utf-8"))
+    made = json.loads(unsourced((tmp_path / name).read_text(encoding="utf-8")))
+    expected = json.loads(
+        unsourced((Path("example/output") / name).read_text(encoding="utf-8"))
+    )
     # The document knows the file it was made from, through every stage; the
     # file written here is not byte for byte the committed one, so its hash
     # is checked against itself and left out of the comparison

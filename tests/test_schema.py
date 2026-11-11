@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 import copy
+import hashlib
 import json
 import typing
 from pathlib import Path
@@ -12,6 +13,7 @@ import pydantic
 import pytest
 
 from senfd.documents import get_document_classes
+from senfd.identity import FORMAT
 from senfd.documents.spec import TYPED_FORMS, Bits, SpecDocument, TypedKind
 from senfd.normalize import CAPTIONS, CaptionKind
 
@@ -148,3 +150,57 @@ def test_the_schema_enumerates_every_kind_senfd_makes():
 def test_what_a_schema_cannot_say_loading_the_data_model_refuses(values):
     with pytest.raises(pydantic.ValidationError):
         Bits(name="Foo", unit="bytes", range="x", role="field", **values)
+
+
+# The format of the data model, and the SHA-256 of the shape its schemas give
+FORMAT_SHAPE = (1, "11eea7557b8f2fdb4c34ad801e9ec23c962ea7274efbe585c6bae03ad8012491")
+
+
+def shape(node: typing.Any) -> typing.Any:
+    """'node' of a schema without its descriptions and titles"""
+
+    if isinstance(node, dict):
+        return {
+            k: shape(v) for k, v in node.items() if k not in ("description", "title")
+        }
+    if isinstance(node, list):
+        return [shape(v) for v in node]
+    return node
+
+
+def shape_sha256(schemas: typing.List[typing.Dict]) -> str:
+    """The SHA-256 of what 'schemas' say of the shape of the data model,
+    leaving out the default version of senfd, which changes at each release"""
+
+    shapes = []
+    for schema in schemas:
+        shaped = shape(copy.deepcopy(schema))
+        shaped["$defs"]["DocumentMeta"]["properties"]["version"].pop("default")
+        shapes.append(shaped)
+    return hashlib.sha256(json.dumps(shapes, sort_keys=True).encode()).hexdigest()
+
+
+def committed_schemas() -> typing.List[typing.Dict]:
+    return [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted(Path("src/senfd/schemas").glob("*.schema.json"))
+    ]
+
+
+def test_the_format_is_bumped_when_the_shape_of_the_schemas_changes():
+    """When this fails, the shape of the data model changed: bump FORMAT in
+    src/senfd/identity.py, and set FORMAT_SHAPE to it and the hash given"""
+
+    assert (FORMAT, shape_sha256(committed_schemas())) == FORMAT_SHAPE
+
+
+def test_the_shape_leaves_out_descriptions_and_the_version_of_senfd():
+    schemas = committed_schemas()
+    reworded = copy.deepcopy(schemas)
+    reworded[0]["description"] = "reworded"
+    reworded[0]["$defs"]["DocumentMeta"]["properties"]["version"]["default"] = "9.9"
+    retyped = copy.deepcopy(schemas)
+    retyped[0]["$defs"]["DocumentMeta"]["properties"]["format"]["type"] = "string"
+
+    assert shape_sha256(reworded) == shape_sha256(schemas)
+    assert shape_sha256(retyped) != shape_sha256(schemas)

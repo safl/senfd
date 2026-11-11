@@ -1,9 +1,13 @@
 {
   "meta": {
+    "format": 1,
     "version": "0.15.0",
+    "senfd_sha256": "3cb9423402d60123ad5e1dc642c7f32d163b24fd724b000634a3b9751c2d3904",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
+    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
+    "input_sha256": null,
+    "combined_sha256": null
   },
   "command_sets": {
     "foobar": {
@@ -6512,10 +6516,14 @@
   ],
   "documents": {
     "example": {
+      "format": 1,
       "version": "0.15.0",
+      "senfd_sha256": "3cb9423402d60123ad5e1dc642c7f32d163b24fd724b000634a3b9751c2d3904",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
+      "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
+      "input_sha256": null,
+      "combined_sha256": null
     }
   }
 }
