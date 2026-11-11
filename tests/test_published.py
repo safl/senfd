@@ -27,6 +27,8 @@ def test_a_published_document_is_known_by_its_hash():
     assert senfd.published.url_of(base["sha256"]) == base["url"]
     assert senfd.published.url_of("0" * 64) is None
     assert senfd.published.url_of(None) is None
+    assert senfd.published.name_of(base["sha256"]) == "Base 2.4"
+    assert senfd.published.name_of("0" * 64) is None
 
 
 def test_a_citation_of_a_published_document_links_to_its_page():
