@@ -1013,6 +1013,20 @@ def test_a_field_searched_for_with_describe_has_its_description(spec, vocabulary
     assert any("Foo Count" in line and "How many." in line for line in told)
 
 
+@pytest.mark.parametrize(
+    "text, query, near",
+    [
+        ("dimg", "command", ["Ding"]),
+        ("foo", "command", ["Foo Get", "Foo Set", "Foo Migrate"]),
+        ("foo statistic", "log_page", ["Foo Statistics"]),
+        ("fcnt", "", ["FCNT", "RCNT"]),
+        ("c0h", "feature", []),
+    ],
+)
+def test_near_suggests_names_for_an_unknown_question(vocabulary, text, query, near):
+    assert vocabulary.near(text, query, most=3) == near
+
+
 def test_a_name_typed_in_full_is_listed_in_any_case(vocabulary):
     assert offered(vocabulary, "Ding")[:1] == ["Ding"]
     assert offered(vocabulary, "ding")[:1] == ["Ding"]

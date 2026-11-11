@@ -6,6 +6,7 @@
 commands, features, log pages and structures, and the acronyms of their
 fields, by the thing and the dword they are of"""
 
+import difflib
 import re
 from dataclasses import dataclass, field
 from functools import cached_property
@@ -93,6 +94,39 @@ class Vocabulary:
         return self.fields.get((name.lower(), dword)) or self.fields.get(
             (name.lower(), None), []
         )
+
+    def near(self, text: str, query: str = "", most: int = 5) -> List[str]:
+        """Up to 'most' names close to 'text', for a question that is not
+        known, such as Zone Append for "zone apend". Where 'query' is
+        "command", "feature" or "log_page", only names of that kind are
+        considered; otherwise every name, acronym and register name is.
+        Names that contain 'text' as a whole word come first, then names
+        that difflib.get_close_matches() finds. For an identifier, such as
+        "ffh", the list is empty."""
+
+        if re.fullmatch(r"[0-9a-f]+h|\d+", text.strip().lower()):
+            return []
+        kinds = {
+            "command": self.commands,
+            "feature": self.features,
+            "log_page": self.log_pages,
+        }
+        names = set(kinds.get(query, set()))
+        if not names:
+            names = self.commands | self.features | self.log_pages
+            names |= self.structures | self.acronyms
+            for name in self.structures:  # Also a register's name after "CAP - "
+                head, dash, rest = name.partition(" - ")
+                if dash and head.isupper() and rest:
+                    names.add(rest)
+        lowered = {name.lower(): name for name in names}
+        word = re.compile(rf"(?<!\w){re.escape(text.strip().lower())}(?!\w)")
+        holding = sorted(
+            (n for n in lowered if word.search(n)), key=lambda n: (len(n), n)
+        )
+        alike = difflib.get_close_matches(text.lower(), lowered, n=most, cutoff=0.7)
+        found = list(dict.fromkeys(holding + alike))[:most]
+        return [lowered[name] for name in found]
 
     @cached_property
     def names(self) -> re.Pattern:
