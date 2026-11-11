@@ -245,8 +245,8 @@ def test_a_word_of_no_meaning_alone_completes_nothing(vocabulary):
     assert offered(vocabulary, "the hyperdrive of") == []
 
 
-def test_what_is_typed_out_is_not_offered_again(vocabulary):
-    assert "Ding" not in offered(vocabulary, "opcode of Ding")
+def test_a_name_typed_in_full_is_listed_first(vocabulary):
+    assert offered(vocabulary, "opcode of Ding")[:1] == ["Ding"]
     assert offered(vocabulary, "zzz") == []
 
 
@@ -986,9 +986,9 @@ def test_after_the_words_of_a_kind_only_names_of_that_kind_are_offered():
     )
     offered = completions(vocabulary, "which feature is Timest")
     assert [(o.text, o.kind) for o in offered] == [("Timestamp", "feature")]
-    # The name typed whole leaves nothing to offer, so Enter asks of it, and
-    # takes no longer name of another kind
-    assert completions(vocabulary, "which feature is Timestamp") == []
+    # The feature typed in full is listed, without the longer structure name
+    offered = completions(vocabulary, "which feature is Timestamp")
+    assert [(o.text, o.kind) for o in offered] == [("Timestamp", "feature")]
     # Asked of a structure, the figure of the event is what is offered
     offered = completions(vocabulary, "structure Timestamp")
     assert [o.kind for o in offered] == ["structure"]
@@ -1011,3 +1011,8 @@ def test_a_field_searched_for_with_describe_has_its_description(spec, vocabulary
     assert any("Foo Count" in line for line in plain)
     assert not any("How many." in line for line in plain)
     assert any("Foo Count" in line and "How many." in line for line in told)
+
+
+def test_a_name_typed_in_full_is_listed_in_any_case(vocabulary):
+    assert offered(vocabulary, "Ding")[:1] == ["Ding"]
+    assert offered(vocabulary, "ding")[:1] == ["Ding"]

@@ -128,8 +128,9 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     name, as "controller sta" to Controller Status. After the words of a
     kind, as "log page ", "opcode of " or "is ", names of that kind come
     first, offered before a letter of them is typed, and names of other
-    kinds not at all while a name of that kind matches what was typed, nor
-    once a name of that kind is typed whole, so Enter asks. After "is",
+    kinds not at all while a name of that kind matches what was typed. A
+    name typed in full is listed first among the names that begin with it,
+    which shows that sate knows the name. After "is",
     the acronyms of the fields of what the question asks of come first, in
     the order of its figure. Then the most words matched come first, then the
     words of questions, commands, features, log pages, structures and
@@ -156,11 +157,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
             _, dash, rest = name.partition(" - ")
             for text in (name, rest) if dash and rest else (name,):
                 tail = next(
-                    (
-                        t
-                        for t in ends
-                        if text.lower().startswith(t.typed.lower()) and text != t.typed
-                    ),
+                    (t for t in ends if text.lower().startswith(t.typed.lower())),
                     None,
                 )
                 if tail is None:
@@ -185,8 +182,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     ranked = [offer for _, offer in sorted(best.values())]
     # After the words of a kind, as "feature ", a name of another kind is no
     # answer while a name of that kind matches what was typed: "Timestamp"
-    # the feature, not the figure of the event named so, and nothing once the
-    # feature's name is typed whole
+    # the feature, not the figure of the event named so
     known = {
         "command": vocabulary.commands,
         "feature": vocabulary.features,
