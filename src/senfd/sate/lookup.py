@@ -106,6 +106,10 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
         return bullets(
             q.value(spec, understood.argument, verbose=describe, markdown=True)
         )
+    if understood.query == "status":
+        return bullets(
+            q.status(spec, understood.argument, verbose=describe, markdown=True)
+        )
     if understood.query == "section":
         return bullets(q.section(spec, understood.argument))
     if understood.query == "errata":

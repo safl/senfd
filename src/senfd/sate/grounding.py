@@ -63,8 +63,9 @@ def elsewhere(
     the thing named, not another whose name contains it, as "Memory Copy" of
     "Copy". Another lookup must mention what the question names."""
 
-    if understood.query == "value":
-        # An entry found by every word of the question is about what it names
+    if understood.query in ("value", "status"):
+        # An entry found by every word of the question is about what it
+        # names, and a status is what its value says
         return None
     found = answered(lines)
     kind, name = found if found else (None, None)

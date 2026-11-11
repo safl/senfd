@@ -555,6 +555,140 @@ def value(
     return lines
 
 
+# What 'status' is asked with: Dword 3 of a completion, a status code type and
+# a status code, or a status as a completion holds it, each in hexadecimal
+HEX_OF = r"\s*[=:]?\s*(?:0x)?([0-9a-f]+)h?\b"
+DWORD_3 = re.compile(rf"\bdw(?:ord)?\s?3{HEX_OF}")
+SCT = re.compile(rf"\bsct{HEX_OF}")
+SC = re.compile(rf"\bsc{HEX_OF}")
+STATUS_ONLY = re.compile(rf"^(?:status(?: field)?)?{HEX_OF}$")
+FOR_COMMAND = re.compile(r"\s+(?:of|for)\s+(.+)$")
+
+
+def status_field(spec: SpecDocument) -> Optional[Structure]:
+    """The figure of the Status Field of a completion queue entry"""
+
+    for structure in spec.structures:
+        acronyms = {f.acronym for f in structure.fields}
+        if "status field" in structure.name.lower() and {"SC", "SCT"} <= acronyms:
+            return structure
+    return None
+
+
+def stem(text: str) -> List[str]:
+    """The words of 'text' without a plural s, as "Errors" of "error" """
+
+    return [
+        w[:-1] if w.endswith("s") else w for w in re.findall(r"[a-z]+", text.lower())
+    ]
+
+
+def of_type(table: Values, named: str) -> bool:
+    """Whether 'table' holds status codes of the status code type 'named', as
+    the Media and Data Integrity Error status codes of "Media and Data
+    Integrity Errors" """
+
+    if not of_kind(table, "status_values") or not table.qualifier:
+        return False
+    qualifier = stem(table.qualifier)
+    return stem(named)[: len(qualifier)] == qualifier
+
+
+def status(spec: SpecDocument, text: str, verbose=False, markdown=False) -> List[str]:
+    """What a status means. 'text' is the status as a completion holds it and
+    nvme-cli prints it, "4281h", or Dword 3 of a completion, "dw3 85020000h",
+    either split into its fields by the figure of the Status Field; or a
+    status code type and a status code, "sct 2h sc 81h". The status code is
+    looked up in the tables of its type, and " of Write" keeps those of a
+    command where a table is of that command."""
+
+    lower = " ".join(text.lower().split())
+    command = None
+    match = FOR_COMMAND.search(lower)
+    if match:
+        command, lower = match[1], lower[: match.start()]
+    field = status_field(spec)
+    lines: List[str] = []
+    sct = re.search(SCT, lower)
+    sc = re.search(SC, lower)
+    dword = re.search(DWORD_3, lower)
+    whole = re.fullmatch(STATUS_ONLY, lower)
+    if sct and sc:
+        type_of, code = int(sct[1], 16), int(sc[1], 16)
+    elif dword or whole:
+        given = dword or whole
+        assert given is not None
+        if field is None:
+            return ["No figure of the Status Field in the data model"]
+        fields = [
+            f for f in field.fields if f.lower is not None and f.upper is not None
+        ]
+        shift = min(f.lower for f in fields if f.lower is not None)
+        held = int(given[1], 16)
+        dw3 = held if dword else held << shift
+        if dw3 >> 32:
+            return [f"Status {held:X}h has more bits than the Status Field"]
+        values = {}
+        parts = []
+        for f in fields:
+            assert f.lower is not None and f.upper is not None
+            width = f.upper - f.lower + 1
+            values[f.acronym] = (dw3 >> f.lower) & ((1 << width) - 1)
+            digits = (width + 3) // 4
+            shown = (
+                f"{values[f.acronym]:0{digits}X}h"
+                if width > 1
+                else str(values[f.acronym])
+            )
+            set_flag = width == 1 and values[f.acronym]
+            parts.append(f"{f.acronym} {shown}" + (f" ({f.name})" if set_flag else ""))
+        status_value = dw3 >> shift
+        head = f"Status {status_value:X}h of a completion"
+        if dword:
+            head = f"DW3 {held:X}h of a completion holds status {status_value:X}h"
+        lines.append(f"{head}: {', '.join(parts)} [{cite(field.source)}]")
+        type_of, code = values["SCT"], values["SC"]
+    else:
+        return ["Give a status, as '4281h', or a type and a code, as 'sct 2h sc 81h'"]
+
+    types = [t for t in spec.values if of_kind(t, "status_code_type")]
+    named = next(
+        ((t, e) for t in types for e in t.entries if within(e.value, type_of)), None
+    )
+    if named is None:
+        lines.append(f"SCT {type_of:X}h, which no table of status code types has")
+        return lines
+    table, entry = named
+    lines.append(f"SCT {type_of:X}h {entry.name or entry.value} [{cite(table.source)}]")
+
+    found = [
+        (t, e)
+        for t in spec.values
+        if of_type(t, entry.name or "")
+        for e in t.entries
+        if within(e.value, code)
+    ]
+    # A code of its own is what the code means; a range only points elsewhere
+    exact = [(t, e) for t, e in found if "to" not in e.value and "-" not in e.value]
+    found = exact or found
+    if command:
+        of_command = [(t, e) for t, e in found if (t.name or "").lower() == command]
+        found = of_command or found
+    if not found:
+        lines.append(f"SC {code:02X}h, which no table of {entry.name} has")
+        return lines
+    for t, e in sorted(
+        found, key=lambda f: (f[0].source.document, f[0].source.figure_nr)
+    ):
+        meaning = e.name or e.description.split("\n")[0][:160]
+        head = f"**SC {e.value}**" if markdown else f"SC {e.value}"
+        line = f"{head} {meaning}, {table_title(t)} [{cite(t.source)}]"
+        if verbose and e.name and e.description:
+            line += ": " + e.description.split("\n")[0][:160]
+        lines.append(line)
+    return lines
+
+
 def section(spec: SpecDocument, key: str) -> List[str]:
     """What the figures of a section describe, the section by its number, with
     its subsections, or by a word of its title"""
@@ -697,7 +831,16 @@ def lint(spec: SpecDocument, document: str = "") -> List[str]:
 
 
 # The lookups sate answers on its command line, and the findings senfd lists
-LOOKUPS = ("command", "feature", "log-page", "structure", "section", "search", "value")
+LOOKUPS = (
+    "command",
+    "feature",
+    "log-page",
+    "structure",
+    "section",
+    "search",
+    "value",
+    "status",
+)
 FINDINGS = ("lint", "errata")
 
 HELP = {
@@ -708,6 +851,7 @@ HELP = {
     "section": "What a section describes, by number or title",
     "search": "Fields and things by acronym or name",
     "value": "An entry of a table of values, as 'status code 82h' or 'CNS 05h'",
+    "status": "What a status means, as '4281h' or 'sct 2h sc 81h of write'",
     "lint": "What reading the figures as data found, for authors and senfd",
     "errata": "Candidate errata of the documents, with where they are",
 }
@@ -771,6 +915,8 @@ def run(prog: str, argv: List[str], names: Iterable[str], description: str) -> i
         lines = lint(spec, args.document)
     elif args.what == "value":
         lines = value(spec, text, args.verbose, args.markdown)
+    elif args.what == "status":
+        lines = status(spec, text, args.verbose, args.markdown)
     else:
         lines = search(spec, text)
     print("\n".join(linked(spec, lines) if args.markdown else lines))

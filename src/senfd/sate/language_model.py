@@ -26,6 +26,9 @@ QUERIES = {
     "value": "an entry of a table of values: a status code, 'status code 82h' "
     "or 'status code zone boundary error', a status code type, or a CNS value, "
     "'CNS 05h' or 'CNS identify namespace'",
+    "status": "what a status of a completion means: the status as nvme-cli "
+    "prints it, '4281h', or a status code type and a status code, "
+    "'sct 2h sc 81h', with ' of <command>' where a command is named",
     "unknown": "the question is not about the NVMe specifications",
 }
 
@@ -42,6 +45,7 @@ SYSTEM = (
     "- 'What does STC stand for?' -> search, 'STC', null\n"
     "- 'What is the status code of Zone Boundary Error?' -> value, "
     "'status code zone boundary error', null\n"
+    "- 'What does status 0x4281 mean?' -> status, '4281h', null\n"
     "- 'What is the capital of France?' -> unknown, '', null\n"
     "If you are told a lookup found nothing, or nothing mentioning the "
     "question, choose another; if none fits, choose unknown."

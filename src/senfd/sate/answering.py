@@ -110,6 +110,13 @@ def respond(
         return "\n".join(lines), tried
 
     missing = unmentioned(question, lines) if lines else []
+    if understood.query in ("status", "value"):
+        # "sc" and "sct" were read as what is asked, and a command named
+        # with a status only narrows its codes
+        read = {"sc", "sct"}
+        if understood.query == "status":
+            read |= set(understood.argument.partition(" of ")[2].lower().split())
+        missing = [t for t in missing if t not in read]
     other = elsewhere(question, understood, lines, vocabulary) if lines else None
     # A language model's choice is grounded by what the question names
     ungrounded = (

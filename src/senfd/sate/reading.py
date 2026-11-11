@@ -125,6 +125,12 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     match = re.match(r"search\s+(.+)$", lower)
     if match:
         return Understood("search", match[1])
+    asked_status = status_asked(lower, command_named(text, vocabulary))
+    if asked_status:
+        return Understood("status", asked_status)
+    code = hex_after(r"sc", lower)
+    if code:  # A status code of any type, as "sc 81h"
+        return Understood("value", f"status code {code}h")
     asks_command = re.search(ASKS_COMMAND, lower)
     # "status code 82h" and "which CNS value gives ..." ask of a table of values
     asked_value = value_asked(text, named) if not asks_command else ""
@@ -217,6 +223,40 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     if not rest:  # Nothing that names anything, as "[" or "what is the"
         return Understood("help")
     return Understood("name", rest)
+
+
+def hex_after(words: str, lower: str, most: int = 8) -> Optional[str]:
+    """The hexadecimal value that follows 'words' in 'lower', as "81" of "sc
+    0x81", "sc 81h" or "sc=81"; a value of letters alone must be written as
+    hexadecimal, so "status bad" has none"""
+
+    match = re.search(
+        rf"\b(?:{words})\s*[=:]?\s*"
+        rf"(?:0x([0-9a-f]{{1,{most}}})|([0-9a-f]{{1,{most}}})h|"
+        rf"([0-9a-f]{{0,{most - 1}}}\d[0-9a-f]{{0,{most - 1}}}))\b",
+        lower,
+    )
+    if not match:
+        return None
+    return (match[1] or match[2] or match[3]).upper()
+
+
+def status_asked(lower: str, command: Optional[str]) -> str:
+    """What a question asks of a status, as senfd.query.status() takes it:
+    "4281h" of "what does status 0x4281 mean?", "dw3 85020000h" of "dword 3
+    85020000h", or "sct 2h sc 81h" of "SCT 2 SC 81h", with " of Write" where
+    it names a command; "" where it asks of none. "status code 82h" asks of a
+    table of values, and "sc 81h" alone of a code of any type."""
+
+    of = f" of {command}" if command else ""
+    sct, sc = hex_after("sct", lower, 2), hex_after("sc", lower, 2)
+    if sct and sc:
+        return f"sct {sct}h sc {sc}h{of}"
+    dword = hex_after(r"dw(?:ord)?\s?3", lower)
+    if dword:
+        return f"dw3 {dword}h{of}"
+    held = hex_after(r"status(?:\s+field)?", lower, 4)
+    return f"{held}h{of}" if held else ""
 
 
 # A table of values as a question names its kind: a status code, a status
