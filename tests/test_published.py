@@ -2,8 +2,14 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+import hashlib
+import io
+import subprocess
 import tomllib
 from pathlib import Path
+from typing import List
+
+import pytest
 
 import senfd.published
 from senfd.documents.base import DocumentMeta
@@ -52,3 +58,103 @@ def test_a_citation_of_a_published_document_links_to_its_page():
     ]
     # A data model of documents no hash knows is left as it is
     assert linked(SpecDocument(), lines) == lines
+
+
+PDF = b"%PDF-1.7 a published document"
+
+
+@pytest.fixture
+def table(monkeypatch):
+    """One published document, whose PDF is PDF, at a URL that serves it"""
+
+    document = {
+        "name": "Base 9.9",
+        "file": "base.pdf",
+        "url": "https://nvmexpress.org/base.pdf",
+        "sha256": hashlib.sha256(PDF).hexdigest(),
+    }
+    monkeypatch.setattr(senfd.published, "documents", lambda: [document])
+    return document
+
+
+def serving(monkeypatch, content: bytes) -> List[str]:
+    """Make urlopen serve 'content'; returns the URLs requested"""
+
+    requested: List[str] = []
+
+    def urlopen(request, timeout):
+        requested.append(request.full_url)
+        assert request.get_header("User-agent") == senfd.published.AGENT
+        return io.BytesIO(content)
+
+    monkeypatch.setattr(senfd.published.urllib.request, "urlopen", urlopen)
+    return requested
+
+
+def test_fetched_downloads_a_missing_pdf(tmp_path, monkeypatch, table):
+    requested = serving(monkeypatch, PDF)
+
+    assert senfd.published.fetched(tmp_path / "pdfs", say=lambda _: None) == [
+        tmp_path / "pdfs" / "base.pdf"
+    ]
+    assert requested == [table["url"]]
+    assert (tmp_path / "pdfs" / "base.pdf").read_bytes() == PDF
+
+
+def test_fetched_keeps_a_pdf_with_the_right_hash(tmp_path, monkeypatch, table):
+    (tmp_path / "base.pdf").write_bytes(PDF)
+    requested = serving(monkeypatch, b"not fetched")
+
+    senfd.published.fetched(tmp_path, say=lambda _: None)
+
+    assert requested == []
+
+
+def test_fetched_replaces_a_pdf_with_another_hash(tmp_path, monkeypatch, table):
+    (tmp_path / "base.pdf").write_bytes(b"an older revision")
+    serving(monkeypatch, PDF)
+
+    senfd.published.fetched(tmp_path, say=lambda _: None)
+
+    assert (tmp_path / "base.pdf").read_bytes() == PDF
+
+
+def test_fetched_keeps_nothing_of_a_download_with_another_hash(
+    tmp_path, monkeypatch, table
+):
+    serving(monkeypatch, b"a replaced document")
+
+    with pytest.raises(ValueError, match="NVM Express may have replaced it"):
+        senfd.published.fetched(tmp_path, say=lambda _: None)
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_make_data_model_writes_the_merged_data_model(tmp_path):
+    spec = tmp_path / "cache" / "merged.spec.document.json"
+
+    made = senfd.published.make_data_model(
+        [Path("example") / "example.docx"], spec, say=lambda _: None
+    )
+
+    assert made == spec
+    assert SpecDocument.model_validate_json(spec.read_text()).meta.stem == "merged"
+    assert sorted(p.name for p in spec.parent.iterdir()) == [spec.name]
+
+
+def test_make_data_model_writes_nothing_when_senfd_fails(tmp_path):
+    spec = tmp_path / "merged.spec.document.json"
+
+    with pytest.raises(subprocess.CalledProcessError):
+        senfd.published.make_data_model(
+            [tmp_path / "missing.pdf"], spec, say=lambda _: None
+        )
+    assert not spec.exists()
+
+
+def test_make_data_model_writes_nothing_when_senfd_makes_none(tmp_path, monkeypatch):
+    monkeypatch.setattr(senfd.published.subprocess, "run", lambda *a, **k: None)
+    spec = tmp_path / "merged.spec.document.json"
+
+    with pytest.raises(ValueError, match="made no data model"):
+        senfd.published.make_data_model([], spec, say=lambda _: None)
+    assert not spec.exists()
