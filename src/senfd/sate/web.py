@@ -29,7 +29,7 @@ import re
 import sys
 from urllib.parse import quote_plus
 from pathlib import Path
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from markdown_it import MarkdownIt
 from starlette.applications import Starlette
@@ -48,6 +48,9 @@ from senfd.sate.reading import understand
 from senfd.sate.session import holds
 from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
+
+if TYPE_CHECKING:
+    import uvicorn
 
 # Each theme maps its name to its title and two strings of colours, the
 # first for light mode and the second for dark mode. The colours are in the
@@ -449,12 +452,48 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"sate-web: no data model to answer from: {exc}", file=sys.stderr)
         return 1
 
+    serve(spec, args.host, args.port)
+    return 0
+
+
+def open_when_started(server: "uvicorn.Server", url: str, timeout: float = 30) -> bool:
+    """Open 'url' in the default browser once 'server', a uvicorn.Server,
+    listens. Returns False when the server has not started within 'timeout'
+    seconds, and then opens nothing."""
+
+    import time
+    import webbrowser
+
+    waited = 0.0
+    while not server.started:
+        if waited >= timeout:
+            return False
+        time.sleep(0.1)
+        waited += 0.1
+    webbrowser.open(url)
+    return True
+
+
+def serve(spec: SpecDocument, host: str, port: int, browse: bool = False) -> None:
+    """Serve sate-web answering from 'spec' on 'host' and 'port' until the
+    process is stopped. With 'browse', open the page in the default browser
+    once the server listens."""
+
+    import threading
+
     import uvicorn
 
-    uvicorn.run(
-        app(spec, os.environ.get("SATE_MCP_TOKEN")), host=args.host, port=args.port
+    config = uvicorn.Config(
+        app(spec, os.environ.get("SATE_MCP_TOKEN")), host=host, port=port
     )
-    return 0
+    server = uvicorn.Server(config)
+    if browse:
+        threading.Thread(
+            target=open_when_started,
+            args=(server, f"http://{host}:{port}/"),
+            daemon=True,
+        ).start()
+    server.run()
 
 
 PAGE = """<!doctype html>
