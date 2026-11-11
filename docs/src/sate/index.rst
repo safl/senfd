@@ -212,12 +212,21 @@ colour themes, each with a light and a dark mode, and the mode follows the
 system unless one is chosen.
 
 To try the page without installing senfd, run ``sate-preview-wizard``
-with pipx or uvx:
+with uvx:
 
 .. code-block:: console
 
-   $ pipx run --spec senfd sate-preview-wizard
-   $ uvx --from senfd sate-preview-wizard
+   $ uvx --from senfd@latest sate-preview-wizard
+
+Or with pipx:
+
+.. code-block:: console
+
+   $ pipx run --no-cache --spec senfd sate-preview-wizard
+
+``@latest`` and ``--no-cache`` fetch the latest release each time. Without
+them, uvx and pipx run the version they ran before, which pipx keeps for 14
+days.
 
 Where there is no data model, the wizard lists the specifications it will
 download from nvmexpress.org, and asks before it makes the data model,

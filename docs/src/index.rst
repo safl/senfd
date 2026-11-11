@@ -41,10 +41,22 @@ check the answer against:
      </div>
    </div>
 
-To try the web page on your own machine, without installing senfd, run
-``pipx run --spec senfd sate-preview-wizard``. The wizard lists the
-specifications it will download from nvmexpress.org, and asks before it
-makes the data model; see :ref:`on the web <sec-sate-web>`.
+To try the web page on your own machine, without installing senfd, run the
+wizard with uvx:
+
+.. code-block:: console
+
+   $ uvx --from senfd@latest sate-preview-wizard
+
+Or with pipx:
+
+.. code-block:: console
+
+   $ pipx run --no-cache --spec senfd sate-preview-wizard
+
+The wizard lists the specifications it will download from nvmexpress.org,
+and asks before it makes the data model; see :ref:`on the web
+<sec-sate-web>`.
 
 .. caution::
 

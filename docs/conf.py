@@ -25,6 +25,12 @@ release = __version__
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+extensions = ["sphinx_copybutton"]
+
+# The copy button of a console block copies its commands without the prompt
+# and without their output, ready to paste into a shell
+copybutton_prompt_text = "$ "
+
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
