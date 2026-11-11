@@ -174,7 +174,7 @@ def test_complete_returns_the_completions_of_the_text(client):
     found = client.get("/complete", params={"q": "opcode of di"}).json()
 
     assert found["offers"] == [
-        {"text": "Ding", "start": -2, "kind": "command", "shown": "Ding"}
+        {"text": "Ding", "start": -2, "kind": "command", "shown": "Ding", "parts": []}
     ]
 
 

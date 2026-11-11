@@ -61,15 +61,18 @@ WORDS = [
 ]
 
 
-# The common questions, as typed and as shown with what goes in them
+# The common questions, as typed and as shown: an example, its names in
+# braces filled from the data model, so that what to swap is a real name
 QUESTIONS = [
-    ("what is the opcode of ", "what is the opcode of <command>?"),
-    ("which bit of cdw", "which bit of cdw<N> of <command> is <acronym>?"),
-    ("which bits of cdw", "which bits of cdw<N> of <command> are <acronym>?"),
-    ("what are the fields of the ", "what are the fields of the <structure>?"),
-    ("which feature is ", "which feature is <name or identifier>?"),
-    ("which log page is ", "which log page is <name or identifier>?"),
-    ("what is status code ", "what is status code <value or name>?"),
+    ("what is the opcode of ", "what is the opcode of {command}?"),
+    ("which bit of cdw", "which bit of cdw{dword} of {command} is {acronym}?"),
+    ("which bits of cdw", "which bits of cdw{dword} of {command} are {acronyms}?"),
+    ("what are the fields of the ", "what are the fields of the {structure}?"),
+    ("which feature is ", "which feature is {feature}?"),
+    ("which log page is ", "which log page is {log_page}?"),
+    ("what is status code ", "what is status code {code}?"),
+    ("what does status ", "what does status {status} mean?"),
+    ("what does sct ", "what does SCT {sct} SC {sc} mean for {command}?"),
 ]
 
 

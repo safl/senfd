@@ -35,7 +35,7 @@ from rich.text import Text
 import senfd
 import senfd.query
 from senfd.sate.answering import exchange
-from senfd.sate.completion import completions, recognised, wanted
+from senfd.sate.completion import Offer, completions, recognised, wanted
 from senfd.sate.phrasing import HELP
 from senfd.sate.reading import understand
 from senfd.sate.vocabulary import Vocabulary
@@ -64,8 +64,17 @@ class Names(Completer):
     ) -> Iterator[Completion]:
         for offer in completions(self.vocabulary, document.text_before_cursor):
             yield Completion(
-                offer.text, offer.start, display=offer.shown, display_meta=offer.kind
+                offer.text, offer.start, display=shown(offer), display_meta=offer.kind
             )
+
+
+def shown(offer: Offer) -> StyleAndTextTuples:
+    """What the menu shows of 'offer': of a question, its names in the colours
+    of their kinds, as the input line shows them, for the reader to swap"""
+
+    if not offer.parts:
+        return [("", offer.shown)]
+    return [(f"class:{kind}" if kind else "", text) for text, kind in offer.parts]
 
 
 class Recognised(Lexer):

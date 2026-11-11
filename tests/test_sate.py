@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -105,11 +106,11 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
 
 
 def offered(vocabulary, typed):
-    return [text for text, _, _, _ in completions(vocabulary, typed, most=1000)]
+    return [text for text, *_ in completions(vocabulary, typed, most=1000)]
 
 
 def test_a_name_completes_from_where_it_starts_in_the_question(vocabulary):
-    assert completions(vocabulary, "opcode of foo sta")[0] == (
+    assert completions(vocabulary, "opcode of foo sta")[0][:4] == (
         "Foo Statistics",
         -len("foo sta"),
         "log page",
@@ -142,22 +143,66 @@ def test_names_complete_before_acronyms_unless_typed_in_capitals(vocabulary):
     ],
 )
 def test_after_the_words_of_a_kind_its_names_come_first(vocabulary, typed, kind):
-    kinds = [k for _, _, k, _ in completions(vocabulary, typed, most=1000)]
+    kinds = [k for _, _, k, _, _ in completions(vocabulary, typed, most=1000)]
     asked = kinds.count(kind)
     assert asked >= 2 and kinds[:asked] == [kind] * asked
 
 
 def test_with_nothing_typed_the_questions_to_ask_are_offered(vocabulary):
     offered = completions(vocabulary, "")
-    shown = [s for _, _, kind, s in offered if kind == "question"]
-    assert shown == [s for _, s in phrasing.QUESTIONS]
-    assert [t for t, _, kind, _ in offered if kind == "form"] == phrasing.WORDS
+    shown = [o.shown for o in offered if o.kind == "question"]
+    assert shown == [
+        "what is the opcode of Ding?",
+        "which bit of cdw10 of Ding is FCNT?",
+        "which bits of cdw10 of Ding are FCNT?",
+        "what are the fields of the Bar?",
+        "which feature is Foo Odd?",
+        "which log page is Foo Events?",
+        "what is status code 02h?",
+    ]
+    assert [o.text for o in offered if o.kind == "form"] == phrasing.WORDS
 
 
 def test_a_question_begun_completes_to_the_questions_it_may_be(vocabulary):
-    text, start, kind, shown = completions(vocabulary, "which b")[0]
-    assert (text, start, kind) == ("which bit of cdw", -7, "question")
-    assert shown == "which bit of cdw<N> of <command> is <acronym>?"
+    offer = completions(vocabulary, "which b")[0]
+    assert (offer.text, offer.start, offer.kind) == ("which bit of cdw", -7, "question")
+    assert offer.shown == "which bit of cdw10 of Ding is FCNT?"
+    assert offer.parts == (
+        ("which bit of cdw", ""),
+        ("10", "name"),
+        (" of ", ""),
+        ("Ding", "name"),
+        (" is ", ""),
+        ("FCNT", "acronym"),
+        ("?", ""),
+    )
+
+
+def test_each_question_shown_is_read_as_its_form_is(vocabulary):
+    """An example question asks what its form asks, so choosing it and typing
+    one's own names over the example's gives the same reading"""
+
+    for offer in completions(vocabulary, ""):
+        if offer.kind == "question":
+            assert senfd.sate.understand(offer.shown, vocabulary).query != "help", (
+                offer.shown
+            )
+
+
+def test_the_examples_are_write_and_its_fields_where_there_are(vocabulary):
+    from senfd.sate.completion import examples
+
+    vocabulary = replace(
+        vocabulary,
+        commands=vocabulary.commands | {"Write"},
+        structures=vocabulary.structures | {"Completion Queue Entry: Status Field"},
+        fields={**vocabulary.fields, ("write", 12): ["LR", "FUA", "PRINFO"]},
+    )
+    found = examples(vocabulary)
+
+    assert (found["command"], found["dword"]) == ("Write", "12")
+    assert (found["acronym"], found["acronyms"]) == ("FUA", "PRINFO")
+    assert (found["status"], found["sct"], found["sc"]) == ("0x4281", "1", "80h")
 
 
 def test_after_is_the_acronyms_of_what_is_asked_of_come_first(vocabulary):
@@ -790,7 +835,9 @@ def test_is_alone_does_not_ask_for_an_acronym(vocabulary):
 
 
 def test_a_begun_question_offers_only_the_questions_it_may_be(vocabulary):
-    assert {kind for _, _, kind, _ in completions(vocabulary, "which ")} == {"question"}
+    assert {kind for _, _, kind, _, _ in completions(vocabulary, "which ")} == {
+        "question"
+    }
 
 
 def test_a_one_letter_acronym_comes_after_the_longer(vocabulary):
@@ -1040,3 +1087,17 @@ def test_near_suggests_names_for_an_unknown_question(vocabulary, text, query, ne
 def test_a_name_typed_in_full_is_listed_in_any_case(vocabulary):
     assert offered(vocabulary, "Ding")[:1] == ["Ding"]
     assert offered(vocabulary, "ding")[:1] == ["Ding"]
+
+
+def test_the_session_menu_colours_the_names_of_a_question(vocabulary):
+    offer = completions(vocabulary, "which b")[0]
+
+    assert senfd.sate.session.shown(offer)[:4] == [
+        ("", "which bit of cdw"),
+        ("class:name", "10"),
+        ("", " of "),
+        ("class:name", "Ding"),
+    ]
+    assert ("class:acronym", "FCNT") in senfd.sate.session.shown(offer)
+    plain = completions(vocabulary, "opcode of di")[0]
+    assert senfd.sate.session.shown(plain) == [("", "Ding")]
