@@ -39,11 +39,17 @@ check the answer against:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
 
-To try sate in the browser without installing senfd, run it with pipx, or
-with `uvx --from senfd sate-preview-wizard`:
+To try sate in the browser without installing senfd, run the wizard with
+uvx:
 
 ```
-pipx run --spec senfd sate-preview-wizard
+uvx --from senfd@latest sate-preview-wizard
+```
+
+Or with pipx:
+
+```
+pipx run --no-cache --spec senfd sate-preview-wizard
 ```
 
 The wizard lists the specifications it will download from nvmexpress.org,
