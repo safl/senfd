@@ -10,6 +10,31 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.15.0
+
+The new command `sate-web` serves sate's answers on a web page. The page
+completes a question as it is typed, and Enter or a click on a menu entry
+submits it. The keys are listed under the input field. Answers cite their
+figures as links to the PDF pages on nvmexpress.org. When a question names
+nothing in the data model, the page suggests up to five names close to it.
+The count of documents above the field opens a table of the documents in
+the data model, with links to the PDFs. The page has five colour themes,
+One, Solarized, Gruvbox, Catppuccin and Rosé Pine, each with a light and a
+dark mode, and every theme meets the WCAG contrast ratios for text, links
+and borders. `sate-web` has no login. When `sate-web` is reachable over a
+network, put it behind a proxy that admits only NVM Express members.
+
+When `SATE_MCP_TOKEN` is set, `sate-web` also serves the tools of
+`sate-mcp` at `/mcp`, over MCP's streamable HTTP transport, to clients that
+send the token as a bearer token.
+
+Making the data model of the 11 published PDFs now peaks at 423 MB of
+memory instead of 4.76 GB. The PDF reader keeps only the 16 most recently
+read pages, and of each character only the keys that senfd uses.
+
+The completion menu in `sate` and `sate-web` now lists a name that is typed
+in full, first among the names that begin with it.
+
 ## 0.14.0
 
 senfd now requires Python 3.13 or later, and is tested on 3.13, 3.14 and

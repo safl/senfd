@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": "0.14.0",
+    "version": "0.15.0",
     "stem": "example",
     "file": "example.docx",
     "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
@@ -6512,7 +6512,7 @@
   ],
   "documents": {
     "example": {
-      "version": "0.14.0",
+      "version": "0.15.0",
       "stem": "example",
       "file": "example.docx",
       "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0"
