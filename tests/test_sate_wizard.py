@@ -206,3 +206,11 @@ def test_the_wizard_stops_on_ctrl_c_while_making(setup, monkeypatch, capsys):
     assert wizard.main(["--yes"]) == 1
     assert "Stopped; the wizard made no data model." in capsys.readouterr().err
     assert setup["served"] == []
+
+
+def test_the_wizard_listens_from_a_seldom_used_port(setup, tmp_path):
+    made(tmp_path / "merged.spec.document.json")
+
+    assert wizard.main([], ask=never) == 0
+
+    assert wizard.PORT <= setup["served"][0][1] < wizard.PORT + 100

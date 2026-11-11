@@ -28,6 +28,9 @@ import senfd.published
 import senfd.query
 from senfd.identity import FORMAT, senfd_sha256
 
+# Seldom used by other servers, unlike 8000 and 8080
+PORT = 8899
+
 TERMS = """\
 The data model is made from the NVMe specifications, and the terms of the
 specifications allow only members of NVM Express to make and use it. The
@@ -150,7 +153,7 @@ def main(argv: Optional[List[str]] = None, ask: Callable[[str], str] = input) ->
     parser.add_argument(
         "--port",
         type=int,
-        default=8000,
+        default=PORT,
         help="the first port to try listening on (default: %(default)s)",
     )
     parser.add_argument(

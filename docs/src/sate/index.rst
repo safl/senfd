@@ -208,7 +208,7 @@ download from nvmexpress.org, and asks before it makes the data model,
 because only members of NVM Express may make and use it. ``--yes`` makes it
 without asking. The wizard checks each PDF against its SHA-256, makes the
 data model in ``~/.cache/senfd``, starts ``sate-web`` on the first free
-port from 8000, and opens the page in the browser. The next run finds the
+port from 8899, and opens the page in the browser. The next run finds the
 data model and opens the page straight away. It asks to make the data
 model again when its format is not the one this senfd reads, or when it is
 made from other documents than those NVM Express publishes now, which the
