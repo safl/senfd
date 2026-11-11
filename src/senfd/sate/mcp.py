@@ -112,6 +112,16 @@ def value(text: str, verbose: bool = False) -> str:
 
 
 @tool
+def status(text: str, verbose: bool = False) -> str:
+    """What a status of a completion means: the status as nvme-cli prints it,
+    "4281h", split into its fields by the figure of the Status Field, or a
+    status code type and a status code, "sct 2h sc 81h"; " of write" keeps
+    the meanings of that command"""
+
+    return "\n".join(linked(spec(), senfd.query.status(spec(), text, verbose)))
+
+
+@tool
 def search(text: str) -> str:
     """Fields by acronym or name, and commands, features, log pages and
     structures by name, each with where it is"""

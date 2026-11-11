@@ -157,6 +157,7 @@ MARKS = {
     "search": '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
     "identifier": NUMBER,
     "value": NUMBER,
+    "status": NUMBER,
     "section": '<path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2zM22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/>',
     "errata": '<path d="M12 3l10 18H2zM12 10v4M12 17h.01"/>',  # A warning
 }  # fmt: skip

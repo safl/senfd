@@ -81,6 +81,9 @@ The forms of a question
    * - a status code or a CNS value
      - ``status code 82h``, ``status code type 1h``, ``CNS 05h``, ``status
        code of zone boundary error``
+   * - what a status of a completion means
+     - ``what does status 0x4281 mean?``, ``what does SCT 1 SC 80h mean for
+       Write?``, ``dw3 0x80050007``
    * - a structure or a register
      - ``structure identify controller``, ``CC``, ``CSTS``
    * - a field, everywhere it is
@@ -102,6 +105,13 @@ of the data model it mentions, the longest first, so "the controller status
 register" is ``CSTS`` and "dword 13 of Zone Append" is that dword of that
 command. Each answer starts by saying what the question was understood as,
 ``command('Zone Append', dword=13)``, so a misreading shows instantly.
+
+A status is read by its value, as ``status 0x4281``, the Status Field as
+nvme-cli and Linux print it, without the Phase Tag. It is split into its
+fields by the bits the data model holds of the figure of the Status Field,
+not by bits written into sate, and its Status Code Type and Status Code are
+looked up in the tables of status codes of that type. ``status code 82h``
+asks of a status code of any type, and ``SC 81h`` the same.
 
 An answer is shown only when it mentions every term of the question that
 names something. Ask for the bit of Write that "enables the hyperdrive",
@@ -152,13 +162,17 @@ it, a question needs no reading:
    $ sate structure controller status
    $ sate search FUA
    $ sate value status code 82h
+   $ sate status 4281h
    $ sate section 5.2.6
 
 ``command`` takes a command's name and, after it, the number of one of its
 dwords. ``feature`` and ``log-page`` take a name or an identifier, and
 ``structure`` a name or an acronym. ``search`` finds a word or an acronym
 everywhere it is. ``value`` finds an entry of a table of values, as ``"CNS
-05h"`` or ``"status code of zone boundary error"``. ``section`` takes a
+05h"`` or ``"status code of zone boundary error"``. ``status`` says what a
+status of a completion means, as nvme-cli and Linux print it, ``4281h``,
+as Dword 3 of the completion, ``dw3 80050007h``, or by its type and code,
+``sct 1h sc 80h of write``. ``section`` takes a
 section's number. A question in quotes is read as a question, whatever
 its first word. What reading the documents found is senfd's to list, by
 ``senfd lint`` and ``senfd errata``; see :ref:`the linter <sec-linting>`.

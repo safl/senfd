@@ -24,6 +24,7 @@ FORMS = """\
 | a feature or a log page | `feature 07h`, `feature number of queues`, `log page 1Fh` |
 | what an identifier is | `1Fh` |
 | a status code or a CNS value | `status code 82h`, `status code type 1h`, `CNS 05h`, `status code of zone boundary error` |
+| what a status of a completion means | `what does status 0x4281 mean?`, `what does SCT 1 SC 80h mean for Write?`, `dw3 0x80050007` |
 | a structure or a register | `structure identify controller`, `CC`, `CSTS` |
 | a field, everywhere it is | `FUA`, `search storage tag` |
 | any of these with the descriptions | `describe cdw12 of write`, `explain CSTS` |
@@ -144,12 +145,8 @@ def terms(question: str) -> List[str]:
     # "0x07" is "07h", as the data model writes it; "CSTS.RDY" is CSTS and RDY; and
     # "NVMe 2.0" is a revision, not a section the answer must mention
     question = re.sub(REVISION, "", question)
-    question = re.sub(
-        r"\b0x([0-9A-Fa-f]{1,2})\b", lambda m: m[1].upper() + "h", question
-    )
-    words = re.findall(
-        r"[A-Za-z][A-Za-z0-9]*|\d+(?:\.\d+)+|[0-9A-Fa-f]{1,2}h\b", question
-    )
+    question = re.sub(r"\b0x([0-9A-Fa-f]+)\b", lambda m: m[1].upper() + "h", question)
+    words = re.findall(r"[A-Za-z][A-Za-z0-9]*|\d+(?:\.\d+)+|[0-9A-Fa-f]+h\b", question)
     found = []
     for word in words:
         key = word.lower()

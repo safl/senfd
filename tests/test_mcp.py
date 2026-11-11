@@ -43,6 +43,7 @@ def test_the_queries_are_tools_of_the_server_over_stdio():
         "log_page",
         "structure",
         "value",
+        "status",
         "search",
         "section",
         "errata",
