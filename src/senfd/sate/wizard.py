@@ -7,21 +7,26 @@ sate-preview-wizard: set up sate-web on this machine and open it
 
     pipx run --spec senfd sate-preview-wizard
 
-When there is no data model at the default path, the wizard says what it
-will download and asks before making the data model, because only members
-of NVM Express may make and use it. The wizard then starts sate-web and
-opens it in the browser. With --yes, the wizard does not ask.
+When there is no data model at the default path, or the one there is of
+another format or of other documents than senfd's table of published
+documents names, the wizard says what it will download and asks before
+making the data model, because only members of NVM Express may make and use
+it. The wizard then starts sate-web and opens it in the browser. With --yes,
+the wizard does not ask.
 """
 
 import argparse
+import json
 import socket
 import subprocess
 import sys
 from pathlib import Path
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional
 
+import senfd
 import senfd.published
 import senfd.query
+from senfd.identity import FORMAT, senfd_sha256
 
 TERMS = """\
 The data model is made from the NVMe specifications, and the terms of the
@@ -42,22 +47,73 @@ def free_port(host: str, start: int) -> int:
     raise OSError(f"no free port from {start} to {start + 99} on {host}")
 
 
-def plan(spec: Path, pdfs: Path) -> str:
-    """The text that says what the wizard will download and make"""
+def meta_of(spec: Path) -> Optional[Dict]:
+    """The meta of the data model at 'spec', read without validating the
+    rest, which a data model of another format would fail; None where there
+    is no data model"""
+
+    try:
+        return json.loads(spec.read_text(encoding="utf-8")).get("meta", {})
+    except FileNotFoundError:
+        return None
+    except (OSError, ValueError, AttributeError):
+        return {}
+
+
+def remade_because(spec: Path, meta: Optional[Dict]) -> Optional[str]:
+    """Why the data model at 'spec', of 'meta', must be made again; None
+    where it can be used as it is"""
+
+    if meta is None:
+        return f"There is no data model at {spec}."
+    if meta.get("format") != FORMAT:
+        return (
+            f"The data model at {spec} is of format {meta.get('format', 0)}, "
+            f"and this senfd reads format {FORMAT}."
+        )
+    if meta.get("input_sha256") != senfd.published.published_input_sha256():
+        return (
+            f"The data model at {spec} is made from other documents than "
+            "those NVM Express publishes now."
+        )
+    return None
+
+
+def read_by_another_senfd(meta: Dict) -> Optional[str]:
+    """What to say of a data model made by another senfd than this one,
+    whose reading of the documents may differ; None where this senfd made
+    it"""
+
+    if meta.get("senfd_sha256") == senfd_sha256():
+        return None
+    return (
+        f"The data model was made by senfd {meta.get('version')}, "
+        f"{str(meta.get('senfd_sha256'))[:12]}, and this is senfd "
+        f"{senfd.__version__}, {senfd_sha256()[:12]}. Where they read the "
+        "documents differently, sate-preview-wizard --remake makes the data "
+        "model again with this one."
+    )
+
+
+def plan(reason: str, spec: Path, pdfs: Path) -> str:
+    """The text that says why the wizard will make the data model, and what
+    it will download and make"""
 
     documents = senfd.published.documents()
     names = "\n".join(f"  {document['name']}" for document in documents)
     return f"""\
-There is no data model at {spec}.
+{reason}
 
-The wizard can make one. It downloads these {len(documents)} specifications
-from nvmexpress.org into {pdfs}, and checks each against its SHA-256:
+The wizard can make the data model. It downloads these {len(documents)} specifications
+from nvmexpress.org into {pdfs}, unless they are there already, and checks
+each against its SHA-256:
 
 {names}
 
 senfd then reads them, which takes a few minutes and up to 500 MB of
-memory, and writes the data model to {spec}. This happens once; later runs
-start sate-web straight away.
+memory, and writes the data model to {spec}. Later runs start sate-web
+straight away, until senfd changes the format of the data model or NVM
+Express publishes other documents.
 
 {TERMS}
 """
@@ -100,12 +156,25 @@ def main(argv: Optional[List[str]] = None, ask: Callable[[str], str] = input) ->
     parser.add_argument(
         "--no-browser", action="store_true", help="do not open the browser"
     )
+    parser.add_argument(
+        "--remake",
+        action="store_true",
+        help="make the data model again, with this senfd",
+    )
     args = parser.parse_args(argv)
 
     spec = senfd.query.default_spec_path()
-    if not spec.exists():
+    meta = meta_of(spec)
+    reason = remade_because(spec, meta)
+    if reason is None and args.remake:
+        reason = f"You asked to make the data model at {spec} again."
+    if reason is None and meta is not None:
+        another = read_by_another_senfd(meta)
+        if another:
+            print(another + "\n")
+    if reason is not None:
         pdfs = spec.parent / "published"
-        print(plan(spec, pdfs), flush=True)
+        print(plan(reason, spec, pdfs), flush=True)
         if not args.yes:
             if not interactive():
                 print(
