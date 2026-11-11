@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 import pytest
+import uvicorn
 from starlette.testclient import TestClient
 
 import senfd.published
@@ -360,3 +361,44 @@ def test_the_status_tags_leave_out_a_single_lookup(lookups, shown):
     tags = re.findall(r'<span class="tag">([^<]*)</span>', web.marked(status))
 
     assert tags == shown + ["cites 1 figure", "5.2 ms"]
+
+
+class Started:
+    def __init__(self, started):
+        self.started = started
+
+
+def test_open_when_started_opens_the_page(monkeypatch):
+    opened = []
+    monkeypatch.setattr("webbrowser.open", opened.append)
+
+    assert web.open_when_started(Started(True), "http://127.0.0.1:8000/")
+    assert opened == ["http://127.0.0.1:8000/"]
+
+
+def test_open_when_started_opens_nothing_when_the_server_does_not_start(
+    monkeypatch,
+):
+    opened = []
+    monkeypatch.setattr("webbrowser.open", opened.append)
+
+    assert not web.open_when_started(Started(False), "http://x/", timeout=0.2)
+    assert opened == []
+
+
+def test_serve_listens_where_told_and_opens_the_page(monkeypatch):
+    ran = []
+    opened = []
+    monkeypatch.setattr(
+        uvicorn.Server,
+        "run",
+        lambda server: ran.append((server.config.host, server.config.port)),
+    )
+    monkeypatch.setattr(
+        web, "open_when_started", lambda server, url: opened.append(url)
+    )
+
+    web.serve(senfd.query.load(SPEC), "127.0.0.1", 8123, browse=True)
+
+    assert ran == [("127.0.0.1", 8123)]
+    assert opened == ["http://127.0.0.1:8123/"]
