@@ -10,6 +10,28 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.16.0
+
+The new command `sate-preview-wizard` gives sate's web page on your own
+machine, with nothing hosted: `pipx run --spec senfd sate-preview-wizard`,
+or `uvx --from senfd sate-preview-wizard`. Where there is no data model,
+the wizard lists the specifications it will download from nvmexpress.org,
+and asks before it makes the data model, because only members of NVM
+Express may make and use it. It checks each PDF against its SHA-256, makes
+the data model in `~/.cache/senfd`, starts `sate-web` and opens the page in
+the browser. The next run opens the page straight away.
+
+The data model records its format, the shape its schemas give, which senfd
+bumps whenever the shape changes. The merged data model also records three
+SHA-256 hashes: of the documents it is made from, of the source of the
+senfd that read them, and of the two together. Two data models with the
+same combined hash are the same, and where answers differ, the other two
+say whether the documents or the reading differ. The wizard makes the data
+model again when its format or its documents are not the current ones.
+
+`python -m senfd.cli` now exits with the status senfd reports, rather than
+always 0.
+
 ## 0.15.0
 
 The new command `sate-web` serves sate's answers on a web page. The page
