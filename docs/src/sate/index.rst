@@ -195,6 +195,22 @@ as ``/?q=cdw12+of+write``, so an answer can be bookmarked. The page has five
 colour themes, each with a light and a dark mode, and the mode follows the
 system unless one is chosen.
 
+To try the page without installing senfd, run ``sate-preview-wizard``
+with pipx or uvx:
+
+.. code-block:: console
+
+   $ pipx run --spec senfd sate-preview-wizard
+   $ uvx --from senfd sate-preview-wizard
+
+Where there is no data model, the wizard lists the specifications it will
+download from nvmexpress.org, and asks before it makes the data model,
+because only members of NVM Express may make and use it. ``--yes`` makes it
+without asking. The wizard checks each PDF against its SHA-256, makes the
+data model in ``~/.cache/senfd``, starts ``sate-web`` on the first free
+port from 8000, and opens the page in the browser. The next run finds the
+data model and opens the page straight away.
+
 The tools of ``sate-mcp`` are served at ``/mcp`` too, to a coding agent
 sending a token; :ref:`with a language model <sec-llm>` says how.
 
