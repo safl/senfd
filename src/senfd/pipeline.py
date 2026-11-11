@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
-import hashlib
 from argparse import Namespace
 from pathlib import Path
 from typing import List, Type
@@ -12,6 +11,7 @@ from senfd.documents.normalized import FromFigureDocument as FromPlainDocument
 from senfd.documents.plain import FromDocx, FromPdf
 from senfd.documents.spec import FromNormalizedDocument
 from senfd.errors import Error
+from senfd.identity import sha256_of
 
 CONVERTERS: List[Type[Converter]] = [
     FromDocx,
@@ -19,14 +19,6 @@ CONVERTERS: List[Type[Converter]] = [
     FromPlainDocument,
     FromNormalizedDocument,
 ]
-
-
-def sha256_of(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as file:
-        for block in iter(lambda: file.read(1 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def process(input: Path, output: Path, args: Namespace) -> List[Error]:

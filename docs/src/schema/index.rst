@@ -22,9 +22,12 @@ The data model
 The ``SpecDocument`` is the data model; ``merged.spec.document.json``
 merges those of every document given. Its parts:
 
-* ``meta``: the version of senfd that made it, the name of the document it
-  is of, ``merged`` for the merged one, and the file it was made from with
-  that file's SHA-256, by which a published document is known.
+* ``meta``: the format of the data model, the version of senfd that made
+  it and the SHA-256 of that senfd's source, the name of the document it is
+  of, ``merged`` for the merged one, and the file it was made from with that
+  file's SHA-256, by which a published document is known. The merged one
+  has two more SHA-256 hashes, of the documents it is made from and of
+  those together with senfd's; see :ref:`sec-schema-identity`.
 * ``documents``: the documents the data model is of, by name, each with its
   file and SHA-256, so the merged one knows every document in it.
 * ``command_sets``: each command set by its name, with its commands. A
@@ -42,6 +45,25 @@ merges those of every document given. Its parts:
   read; ``unassigned``: those no command, feature or operation claims.
 * ``diagnostics`` and ``errata``: what senfd normalised or could not read,
   and the candidate errata, each with where it is.
+
+.. _sec-schema-identity:
+
+Format and instance
+-------------------
+
+The format of the data model is its shape, as the schemas give it. senfd
+owns the format, and bumps ``meta.format`` whenever the shape changes; a
+test fails when the schemas change and the format does not.
+
+A data model made from particular documents is an instance of the format.
+The merged data model tells its instance by three SHA-256 hashes.
+``input_sha256`` is of the documents it is made from, in whatever order
+they were given. ``senfd_sha256`` is of the source of the senfd that read
+them, leaving out sate, which only answers from the data model.
+``combined_sha256`` is of the two together. The same documents read by the
+same senfd give the same data model, so two data models with the same
+combined hash are the same. Where two answers differ, the input hash says
+whether the documents differ, and the senfd hash whether the reading does.
 
 Throughout, a ``Dwords`` is dwords ``lower`` to ``upper`` with their
 ``fields``, possibly under a ``condition``; a field, ``Bits``, is a

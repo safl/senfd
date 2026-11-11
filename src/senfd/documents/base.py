@@ -20,6 +20,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Tuple
 from jinja2 import Environment, PackageLoader, select_autoescape
 from pydantic import BaseModel, ConfigDict, Field
 
+import senfd.identity
 import senfd.schemas
 import senfd.tables
 import senfd.utils
@@ -89,14 +90,23 @@ class Model(BaseModel):
 class DocumentMeta(Model):
     """Who made the document and of what"""
 
+    format: int = senfd.identity.FORMAT
+    """The format of the data model, the shape its schema gives"""
     version: str = senfd.__version__
     """The version of senfd that made it"""
+    senfd_sha256: str = Field(default_factory=senfd.identity.senfd_sha256)
+    """The SHA-256 of the source of the senfd that made it"""
     stem: str = Field(default_factory=str)
     """The name of the document it is of, "merged" for the merged one"""
     file: Optional[str] = None
     """The name of the file the document was made from, as given"""
     sha256: Optional[str] = None
     """The SHA-256 of that file, by which a published document is known"""
+    input_sha256: Optional[str] = None
+    """Of a merged data model, the SHA-256 of the documents it is made from"""
+    combined_sha256: Optional[str] = None
+    """Of a merged data model, the SHA-256 of input_sha256 and senfd_sha256
+    together, which the same documents read by the same senfd give again"""
 
 
 class Document(Model):
