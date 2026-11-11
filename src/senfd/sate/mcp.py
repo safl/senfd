@@ -42,8 +42,25 @@ def tool(function: Callable[..., str]) -> Callable[..., str]:
     return server.tool(structured_output=False, description=description)(function)
 
 
+# The data model that sate-web gives the tools, or None, in which case the
+# tools load the data model from its default path
+given: Optional[SpecDocument] = None
+
+
+def answer_from(document: SpecDocument) -> None:
+    """Make the tools answer from 'document' instead of loading a data
+    model. sate-web calls this with the data model it already holds."""
+
+    global given
+    given = document
+
+
+def spec() -> SpecDocument:
+    return given if given is not None else loaded()
+
+
 @lru_cache(maxsize=1)
-def spec(path: Optional[Path] = None) -> SpecDocument:
+def loaded(path: Optional[Path] = None) -> SpecDocument:
     path = path or senfd.query.default_spec_path()
     try:
         return senfd.query.load(path)

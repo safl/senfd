@@ -13,12 +13,18 @@ server renders the answer, so each question has its own URL. With
 JavaScript, the page completes the question from /complete as it is typed,
 and the line under the field lists the keys for the field, the completion
 menu and the answer.
+
+When the environment variable SATE_MCP_TOKEN is set, sate-web also serves
+the tools of sate-mcp at /mcp, over MCP's streamable HTTP transport, to a
+client that sends "Authorization: Bearer <token>".
 """
 
 import argparse
 import ast
+import hmac
 import html
 import json
+import os
 import re
 import sys
 from urllib.parse import quote_plus
@@ -28,8 +34,9 @@ from typing import List, Optional
 from markdown_it import MarkdownIt
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse, PlainTextResponse
 from starlette.routing import Route
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 import senfd
 import senfd.published
@@ -343,8 +350,29 @@ def page(
     )
 
 
-def app(spec: SpecDocument) -> Starlette:
-    """The web application answering from 'spec'"""
+class Bearer:
+    """An ASGI wrapper that passes a request to 'app' only when the request
+    sends "Authorization: Bearer <token>", and answers 401 otherwise"""
+
+    def __init__(self, app: ASGIApp, token: str):
+        self.app = app
+        self.expected = f"Bearer {token}".encode()
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        given = dict(scope["headers"]).get(b"authorization", b"")
+        if hmac.compare_digest(given, self.expected):
+            await self.app(scope, receive, send)
+            return
+        refused = PlainTextResponse(
+            "A bearer token is needed", 401, headers={"WWW-Authenticate": "Bearer"}
+        )
+        await refused(scope, receive, send)
+
+
+def app(spec: SpecDocument, mcp_token: Optional[str] = None) -> Starlette:
+    """The Starlette application that answers from 'spec'. With
+    'mcp_token', it also serves the tools of sate-mcp at /mcp to requests
+    that send the token."""
 
     vocabulary = Vocabulary.of(spec)
     _ = vocabulary.names  # Compile the pattern of names before the first request
@@ -367,7 +395,30 @@ def app(spec: SpecDocument) -> Starlette:
             }
         )
 
-    return Starlette(routes=[Route("/", index), Route("/complete", complete)])
+    routes = [Route("/", index), Route("/complete", complete)]
+    if not mcp_token:
+        return Starlette(routes=routes)
+
+    from mcp.server.streamable_http_manager import StreamableHTTPASGIApp
+    from mcp.server.transport_security import TransportSecuritySettings
+
+    from senfd.sate import mcp
+
+    mcp.answer_from(spec)
+    # With stateless_http, the server keeps no session, so a client keeps
+    # working after the server restarts. MCP's check of the Host header
+    # accepts only local host names, and a reverse proxy forwards the public
+    # host name, so the check is off and the token protects /mcp.
+    mcp.server.streamable_http_app(
+        stateless_http=True,
+        json_response=True,
+        transport_security=TransportSecuritySettings(
+            enable_dns_rebinding_protection=False
+        ),
+    )
+    manager = mcp.server.session_manager
+    routes.append(Route("/mcp", Bearer(StreamableHTTPASGIApp(manager), mcp_token)))
+    return Starlette(routes=routes, lifespan=lambda _: manager.run())
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -400,7 +451,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     import uvicorn
 
-    uvicorn.run(app(spec), host=args.host, port=args.port)
+    uvicorn.run(
+        app(spec, os.environ.get("SATE_MCP_TOKEN")), host=args.host, port=args.port
+    )
     return 0
 
 

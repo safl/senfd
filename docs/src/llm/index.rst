@@ -72,6 +72,17 @@ of.
 
    $ claude mcp add sate -- sate-mcp
 
+``sate-mcp`` runs beside the agent, over stdio. Where the agent runs on
+another machine than the data model, :ref:`sate-web <sec-sate-web>` serves
+the same tools at ``/mcp``, over HTTP, once the environment variable
+``SATE_MCP_TOKEN`` holds a token. A client must send it in every request:
+
+.. code-block:: console
+
+   $ SATE_MCP_TOKEN=... sate-web --host 0.0.0.0
+   $ claude mcp add --transport http sate http://host:8000/mcp \
+       --header "Authorization: Bearer ..."
+
 .. toctree::
    :hidden:
 

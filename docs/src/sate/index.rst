@@ -195,7 +195,10 @@ as ``/?q=cdw12+of+write``, so an answer can be bookmarked. The page has five
 colour themes, each with a light and a dark mode, and the mode follows the
 system unless one is chosen.
 
-``sate-web`` has no login. Whoever reaches it is served the data model,
+The tools of ``sate-mcp`` are served at ``/mcp`` too, to a coding agent
+sending a token; :ref:`with a language model <sec-llm>` says how.
+
+The page has no login. Whoever reaches it is served the data model,
 which only members of NVM Express, Inc. may use. Where it is reached over a
 network, put it behind a proxy that lets only members in.
 
