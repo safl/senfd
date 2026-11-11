@@ -629,6 +629,7 @@ ul.menu li {{
   font-family: ui-monospace, monospace; font-size: 0.95rem;
 }}
 ul.menu li .kind {{ color: var(--dim); }}
+ul.menu li .swap {{ font-weight: 700; }}
 svg.mark {{
   width: 1em; height: 1em; margin-right: 0.5em; vertical-align: -0.15em;
   fill: none; stroke: var(--accent); stroke-width: 2;
@@ -751,7 +752,14 @@ function show() {{
     const shown = document.createElement("span");
     const kind = document.createElement("span");
     shown.innerHTML = MARKS[offer.kind] || "";  // SVG from MARKS, not user text
-    shown.append(offer.shown);
+    // A question's names are marked, as the ones to swap for one's own
+    for (const [text, kind] of offer.parts.length ? offer.parts : [[offer.shown, ""]]) {{
+      if (!kind) {{ shown.append(text); continue; }}
+      const name = document.createElement("b");
+      name.className = "swap";
+      name.textContent = text;
+      shown.append(name);
+    }}
     kind.textContent = offer.kind;
     kind.className = "kind";
     item.append(shown, kind);

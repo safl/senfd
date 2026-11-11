@@ -5,7 +5,8 @@
 """What a question typed so far completes to, and which of its words are
 recognised, for a session to offer and to colour as it is typed"""
 
-from typing import Dict, List, NamedTuple, Tuple
+import re
+from typing import Dict, List, NamedTuple, Optional, Tuple
 
 from senfd.sate.phrasing import (
     GENERIC,
@@ -21,12 +22,75 @@ from senfd.sate.vocabulary import Vocabulary
 
 class Offer(NamedTuple):
     """A completion: 'text' replaces what was typed from 'start', counting
-    back from its end; 'shown' is what the menu shows, of the kind 'kind'"""
+    back from its end; 'shown' is what the menu shows, of the kind 'kind';
+    of a question, 'parts' are its words, each with the kind of name it is,
+    "" for the words of the question, so a menu can mark what to swap"""
 
     text: str
     start: int
     kind: str
     shown: str
+    parts: Tuple[Tuple[str, str], ...] = ()
+
+
+# The names a question is shown with where the data model has them
+PREFERRED = {
+    "command": "Write",
+    "structure": "Identify Controller",
+    "feature": "Number of Queues",
+    "log_page": "SMART / Health Information",
+}
+
+
+def examples(vocabulary: Vocabulary) -> Dict[str, str]:
+    """The names the common questions are shown with, from the data model: a
+    command, one of its dwords and the acronyms of two of its fields, Write,
+    12, FUA and PRINFO where it has them, else the first command with fields
+    in a dword from 10; a structure, a feature and a log page, each by its
+    shortest name where the preferred one is missing; and a status
+    and a status code where it has the figure of the Status Field"""
+
+    found = {"code": "02h"}
+    for kind, names in (
+        ("structure", vocabulary.structures),
+        ("feature", vocabulary.features),
+        ("log_page", vocabulary.log_pages),
+    ):
+        if names:
+            shortest = min(names, key=lambda n: (len(n), n))
+            found[kind] = PREFERRED[kind] if PREFERRED[kind] in names else shortest
+    dwords = sorted(
+        ((name, n) != ("write", 12), name != "write", n, name)
+        for name, n in vocabulary.fields
+        if n is not None and n >= 10
+    )
+    for _, _, n, name in dwords:
+        acronyms = vocabulary.fields[(name, n)]
+        command = next(c for c in vocabulary.commands if c.lower() == name)
+        found.update(command=command, dword=str(n))
+        found["acronym"] = "FUA" if "FUA" in acronyms else acronyms[0]
+        found["acronyms"] = "PRINFO" if "PRINFO" in acronyms else acronyms[0]
+        break
+    if any("status field" in s.lower() for s in vocabulary.structures):
+        found.update(status="0x4281", sct="1", sc="80h")
+    return found
+
+
+def example(shown: str, names: Dict[str, str]) -> Optional[Tuple[Tuple[str, str], ...]]:
+    """The parts of the question 'shown' with its names in braces filled from
+    'names', each with its kind; None where 'names' lack one of them"""
+
+    parts = []
+    for at, piece in enumerate(re.split(r"\{(\w+)\}", shown)):
+        if at % 2 == 0:
+            if piece:
+                parts.append((piece, ""))
+        elif piece in names:
+            kind = "acronym" if piece.startswith("acronym") else "name"
+            parts.append((names[piece], kind))
+        else:
+            return None
+    return tuple(parts)
 
 
 class Span(NamedTuple):
@@ -103,17 +167,27 @@ def tails(typed: str, vocabulary: Vocabulary) -> List[Tail]:
     ]
 
 
-def questions(typed: str) -> List[Offer]:
+def questions(typed: str, vocabulary: Vocabulary) -> List[Offer]:
     """The common questions 'typed' begins, or with nothing typed, every one
-    of them and the forms of questions, for someone who does not know them"""
+    of them and the forms of questions, for someone who does not know them;
+    each shown as an example from the data model, and left out where the
+    data model has nothing to show it with"""
 
+    names = examples(vocabulary)
+    shown = [
+        (text, parts)
+        for text, form in QUESTIONS
+        for parts in [example(form, names)]
+        if parts is not None
+    ]
     if not typed.strip():
-        return [Offer(text, 0, "question", shown) for text, shown in QUESTIONS] + [
-            Offer(word, 0, "form", word) for word in WORDS
-        ]
+        return [
+            Offer(text, 0, "question", "".join(p for p, _ in parts), parts)
+            for text, parts in shown
+        ] + [Offer(word, 0, "form", word) for word in WORDS]
     return [
-        Offer(text, -len(typed), "question", shown)
-        for text, shown in QUESTIONS
+        Offer(text, -len(typed), "question", "".join(p for p, _ in parts), parts)
+        for text, parts in shown
         if text.startswith(typed.lower()) and text != typed
     ]
 
@@ -122,8 +196,8 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     """What completes 'typed', for a menu of at most 'most'.
 
     A question begun, as "which b", completes to the common questions it may
-    be, shown with what goes in them, as "which bit of cdw<N> of <command> is
-    <acronym>?". A name completes from where it starts in the question, so
+    be, each shown as an example with names from the data model, as "which
+    bit of cdw12 of Write is FUA?". A name completes from where it starts in the question, so
     "opcode of zone app" completes to Zone Append, and a register also by its
     name, as "controller sta" to Controller Status. After the words of a
     kind, as "log page ", "opcode of " or "is ", names of that kind come
@@ -139,7 +213,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     before names. While a common question is begun, only the questions it
     may be are offered."""
 
-    begun = questions(typed)
+    begun = questions(typed, vocabulary)
     if begun:  # While a common question is begun, only the questions it may be
         return begun
     kinds = [

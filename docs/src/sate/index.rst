@@ -36,9 +36,11 @@ Interactive
    $ sate
 
 The session is made for someone who does not yet know how to ask. It opens
-with a menu of the questions it answers, ``what is the opcode of
-<command>?``, ``which bit of cdw<N> of <command> is <acronym>?`` and the
-others. ``?`` on an empty line opens the menu again.
+with a menu of the questions it answers, each an example with names from
+the data model, as ``what is the opcode of Write?`` and ``which bit of
+cdw12 of Write is FUA?``, the names marked as what to swap for your own.
+Choosing one types its words, up to the first name, for you to go on
+with. ``?`` on an empty line opens the menu again.
 
 Tab completes each part of a question from what the data model holds, each
 completion shown with its kind. After "opcode of" it offers the commands,
