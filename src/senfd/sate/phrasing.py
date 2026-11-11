@@ -11,7 +11,9 @@ import re
 from typing import List, Tuple
 
 
-HELP = """\
+# FORMS is the table of question forms. HELP adds the keys of the terminal
+# session, which sate-web does not show, since sate-web has other keys
+FORMS = """\
 **Ask about a command, a feature, a log page, a structure, a register or a field.**
 
 | Ask | As |
@@ -27,10 +29,14 @@ HELP = """\
 | any of these with the descriptions | `describe cdw12 of write`, `explain CSTS` |
 | a section | `section 5.2.6` |
 | what the documents may have wrong | `errata`, `errata nvm` |
-
+"""
+HELP = (
+    FORMS
+    + """
 Tab completes a name or an acronym, `?` shows the questions to ask, `help` or
 F1 this, and Ctrl-D leaves.
 """
+)
 
 
 WORDS = [
