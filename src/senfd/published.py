@@ -25,6 +25,15 @@ def documents() -> List[Dict[str, str]]:
     return list(tomllib.loads(TABLE.read_text(encoding="utf-8"))["document"])
 
 
+def name_of(sha256: Optional[str]) -> Optional[str]:
+    """The short name, such as "Base 2.4", of the published PDF with the
+    SHA-256 'sha256', or None where no published PDF has it"""
+
+    if not sha256:
+        return None
+    return next((d["name"] for d in documents() if d["sha256"] == sha256), None)
+
+
 def url_of(sha256: Optional[str]) -> Optional[str]:
     """The URL of the published PDF whose SHA-256 is 'sha256'; None where
     none is"""
