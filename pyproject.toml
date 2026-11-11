@@ -38,6 +38,7 @@ all = ["senfd[dev]"]
 senfd = "senfd.cli:main"
 sate-mcp = "senfd.sate.mcp:main"
 sate-web = "senfd.sate.web:main"
+sate-preview-wizard = "senfd.sate.wizard:main"
 sate = "senfd.sate:main"
 
 

@@ -32,7 +32,8 @@ A question passes through the modules in this order:
 * ``grounding``: whether the answer is about what was asked
 * ``answering``: all of it, the answer said, with where its fields are
 * ``completion`` and ``session``: the interactive session; ``cli``: the
-  command line; ``web``: the web page
+  command line; ``web``: the web page; ``wizard``: making the data model
+  and opening the web page on this machine
 """
 
 from senfd.sate.answering import exchange, reply, respond

@@ -38,6 +38,20 @@ figure with a link to its page of the specification on nvmexpress.org, to
 check the answer against:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
+
+To try sate in the browser without installing senfd, run it with pipx, or
+with `uvx --from senfd sate-preview-wizard`:
+
+```
+pipx run --spec senfd sate-preview-wizard
+```
+
+The wizard lists the specifications it will download from nvmexpress.org,
+and asks before it makes the data model, because only members of NVM
+Express may make and use it. It then opens sate's web page in the browser.
+The data model stays in `~/.cache/senfd`, so the next run opens the page
+straight away.
+
 ## What the data model is for
 
 * **Precise answers, instantly.** `sate` answers a question
