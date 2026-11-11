@@ -236,4 +236,4 @@ def at_home(path: Path) -> str:
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 import os
+import sys
 from pathlib import Path
 from subprocess import run
 
@@ -142,3 +143,14 @@ def test_cli_tool_help_is_the_one_the_documentation_shows():
 
     assert not result.returncode
     assert result.stdout == Path("docs/src/usage/usage.out").read_text()
+
+
+def test_running_the_module_exits_with_the_status_of_main(tmp_path):
+    result = run(
+        [sys.executable, "-m", "senfd.cli", str(tmp_path / "missing.pdf")],
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert "senfd: no such document" in result.stderr
