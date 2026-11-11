@@ -207,6 +207,44 @@ def struck_pages(tmp_path, drawn):
         return pages.deletions()
 
 
+def test_an_evicted_page_is_read_again_with_the_same_result(tmp_path, monkeypatch):
+    monkeypatch.setattr("senfd.pdf.pages.HELD", 1)
+    pdf = pikepdf.new()
+    font = pdf.make_indirect(
+        pikepdf.Dictionary(
+            Type=pikepdf.Name.Font,
+            Subtype=pikepdf.Name.Type1,
+            BaseFont=pikepdf.Name.Helvetica,
+        )
+    )
+    # The first page also has a struck-through deletion
+    struck = " BT /F1 10 Tf 100 100 Td (Gone) Tj ET 100 103 30 0.5 re f"
+    for number in range(3):
+        page = pdf.add_blank_page(page_size=(300, 300))
+        page.Resources = pikepdf.Dictionary(Font=pikepdf.Dictionary(F1=font))
+        drawn = (
+            f"/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Figure {number}) Tj ET EMC"
+        )
+        page.Contents = pdf.make_stream(
+            (drawn + (struck if not number else "")).encode()
+        )
+    pdf.save(tmp_path / "pages.pdf")
+
+    with (
+        pikepdf.open(tmp_path / "pages.pdf") as pdf,
+        pdfplumber.open(tmp_path / "pages.pdf") as plumb,
+    ):
+        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        leaves = [[[Leaf(page.objgen, 0)]] for page in pdf.pages]
+        read = [pages.text(leaf)[0] for leaf in leaves + leaves[:1]]
+        held = len(pages._chars)
+        deleted = pages.deletions()
+
+    assert read == ["Figure 0", "Figure 1", "Figure 2", "Figure 0"]
+    assert held == 1
+    assert deleted is not None and "4 characters in 1 place on 1 page" in deleted
+
+
 def test_a_deletion_shown_is_counted_and_quoted(tmp_path):
     said = struck_pages(tmp_path, "100 203 52 0.5 re f")
     assert said is not None

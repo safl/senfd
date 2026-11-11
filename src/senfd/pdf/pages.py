@@ -11,7 +11,7 @@ not its text, and are kept apart, to be reported as an error of the document.
 """
 
 from bisect import bisect_left, bisect_right
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import pdfplumber
@@ -35,6 +35,19 @@ NEAR = 2.5
 # Where a line through a character strikes it out, as a share of its height
 # from the top: below it is an underline, above it a border over the text
 STRUCK = (0.35, 0.75)
+# The number of pages that Pages keeps in memory. Pages reads an evicted
+# page again when a figure needs it, which costs time, and each kept page
+# costs memory. The pages of one figure are consecutive, so they are among
+# the last pages read.
+HELD = 16
+# The keys that Pages keeps of each character and each rectangle: the keys
+# that senfd reads, and the keys of a character that pdfplumber's
+# extract_text() reads
+CHAR = (
+    "text", "x0", "x1", "top", "bottom", "doctop", "height", "width",
+    "upright", "matrix", "mcid", "size", "fontname",
+)  # fmt: skip
+RECT = ("x0", "x1", "top", "bottom", "height", "width")
 
 
 def turned(char: dict) -> int:
@@ -74,20 +87,28 @@ def union(a: Optional[Box], b: Box) -> Box:
     return (min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3]))
 
 
+def kept(obj: dict, keys: Sequence[str]) -> dict:
+    return {key: obj[key] for key in keys if key in obj}
+
+
 class Pages:
-    """The pages of a PDF, read once each: their characters by the marked
-    content they are of, and their ruled borders"""
+    """The pages of a PDF, of which the last HELD pages read are kept in
+    memory: the characters of each page, grouped by marked content, and the
+    page's ruled borders"""
 
     def __init__(self, plumb: pdfplumber.PDF, index: Dict[PageId, int]):
         self.plumb = plumb
         self.index = index
-        self._chars: Dict[int, Dict[Optional[int], List[dict]]] = {}
-        self._rects: Dict[int, List[dict]] = {}
+        self._chars: OrderedDict[int, Dict[Optional[int], List[dict]]] = OrderedDict()
+        self._rects: OrderedDict[int, List[dict]] = OrderedDict()
         # The text struck through on each page read, a string each place
         self.struck: Dict[int, List[str]] = {}
+        self._seen: set[int] = set()
 
     def read(self, number: int) -> None:
         if number in self._chars:
+            self._chars.move_to_end(number)
+            self._rects.move_to_end(number)
             return
         page = self.plumb.pages[number]
         # Word prints a strike as a thin filled rectangle; a stroked line
@@ -107,21 +128,26 @@ class Pages:
             if place.strip():
                 places.append(place.strip())
             place = ""
-            by_mcid[char.get("mcid")].append(char)
+            by_mcid[char.get("mcid")].append(kept(char, CHAR))
         if place.strip():
             places.append(place.strip())
         if places:
             self.struck[number] = places
+        self._seen.add(number)
         self._chars[number] = by_mcid
-        self._rects[number] = list(page.rects)
+        self._rects[number] = [kept(rect, RECT) for rect in page.rects]
         page.close()  # Its characters are kept above; the rest is not needed
+        if len(self._chars) > HELD:
+            self._chars.popitem(last=False)
+            self._rects.popitem(last=False)
 
     def deletions(self) -> Optional[str]:
         """What every page says struck through, as tracked changes shown
         print a deletion, or None where nothing is"""
 
         for number in range(len(self.plumb.pages)):
-            self.read(number)
+            if number not in self._seen:
+                self.read(number)
         if not self.struck:
             return None
         pages = sorted(self.struck)
