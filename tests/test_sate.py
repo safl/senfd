@@ -46,6 +46,9 @@ def vocabulary(spec):
         # The field asked of is the one written last, by its name and acronym;
         # where what the question names has no field of that acronym, the
         # acronym is looked up wherever it is
+        # An entry of a table of values, by its name
+        ("What is the value of the Foo Element?", "value('Foo Element')"),
+        ("What is the value of foo error Foo Element?", "value('Foo Element')"),
         (
             "At which bytes of the Foo Directive Send command is Foo Key (FKEY)?",
             "acronym('FKEY')",
