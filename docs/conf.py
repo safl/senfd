@@ -77,6 +77,9 @@ html_theme_options = {
     "dark_css_variables": {f"color-{k}": v for k, v in GRUVBOX["dark"].items()},
 }
 html_static_path = ["_static"]
+# Keep straight quotes and "--" as written; smartquotes would turn them into
+# curly quotes and dashes, which the writing style leaves out
+smartquotes = False
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.svg"
 
