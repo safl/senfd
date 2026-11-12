@@ -54,7 +54,7 @@ sha256 = "1adf0b11065d8ad2e8123ea110d1ec956dab4ab038eab665614adba04b6c3370"
 
 # Answered from memory by Claude Code, 'claude -p', which must be logged in
 [frontier]
-models = ["claude-opus-5-5", "claude-sonnet-5-5"]
+models = ["claude-opus-5-5", "claude-haiku-5-5"]
 modes = ["allowed", "required"]
 runs = 3
 
