@@ -754,3 +754,20 @@ def test_a_published_pdf_joins_a_word_broken_at_its_hyphen(public, tmp_path):
     figures, _ = read(path)
     (figure,) = [f for f in figures.figures if f.figure_nr == 156]
     assert figure.caption.endswith("when STS field is non-zero")
+
+
+def test_a_published_pdf_reads_a_table_wrapped_in_a_table_of_one_cell(public):
+    """Base 2.4 wraps the table of Figure 232 in a table of one cell, as the
+    .docx does; the figure is the table inside, and the wrapping a document
+    error"""
+
+    _, path = document_named(public, "Base 2.4")
+    figures, errors = read(path)
+    (figure,) = [f for f in figures.figures if f.figure_nr == 232]
+    assert [c.text for c in figure.table.rows[2].cells] == ["14:10", "Reserved"]
+    assert any(e.message.startswith("Figure 232: table wrapped") for e in errors)
+    # The table nested in byte 00 of Figure 348, which has one of its own,
+    # is in the cell; its borders are no columns of the figure
+    (uuid,) = [f for f in figures.figures if f.figure_nr == 348]
+    assert len(uuid.table.rows[2].cells) == 2
+    assert uuid.table.rows[2].cells[1].tables
