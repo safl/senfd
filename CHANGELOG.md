@@ -10,6 +10,58 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.18.0
+
+senfd takes the value of an entry of a table of values from the table's
+column of codes, whatever its header. Before, a table whose codes are under
+a header other than "Value", such as the PDU types of the TCP transport or
+the elements of the NBFT, had the name of each row as its value. Across the
+eleven documents ratified in 2026, the value of 296 entries changed, and
+the name of 221. Words in parentheses after the name of an entry, such as
+"(Admin)", stay in the name rather than become its acronym. A field written
+"Name (ACRONYM" with the parenthesis left open, as bit 02 of the PCI
+Command register is, is read as its name and acronym, and `senfd lint`
+reports it as a candidate erratum.
+
+sate answers the questions that give the values for building a command:
+"opcode of sanitize", "fid of arbitration", "lpi of error information",
+"cns of identify controller" and "dwords of write". After "fid of ",
+"lid of ", "lpi of ", "cns of ", "dwords of ", "register " and "offset of ",
+Tab offers every name of that kind. The table of question forms opens with
+these, gives one example question per row, and says in a line or two what
+sate answers with. An identifier asked alone, as "82h", also lists the
+status codes and CNS values of it. A value asked in hex without its leading
+zero, as "cns 0x5", is found.
+
+sate reads more of the questions written in words. The field asked of is
+the name and acronym written last, as "Namespace ID (NSID)". A question
+naming an entry of a table of values, by its name, its symbol or with the
+table, is read as that entry, as "the PDU type of the ... PDU (ICResp)"
+and "At which offset is ... (SQ0TDBL)?". A table of values is named by the
+header of its column of codes, as "opcode of NVMe/TCP PDU Types". An answer
+counts a term as mentioned where a caption of the document it cites holds
+it, as NBFT of the Boot document, or where the answer mentions the acronym
+that the term spells out.
+
+In the terminal, the status line is printed above the answer, and the table
+of question forms at most 80 columns wide. sate's web page has the senfd
+logo in its title button and as its favicon, and Gruvbox with mustard links
+is its default theme. The documentation uses the same palette and the new
+logo.
+
+The benchmark asks 86 questions, at least three of each of the eleven
+documents, each naming the PDF and figure of its answer. It asks Claude
+Opus and Haiku through Claude Code from memory, with sate-mcp and with the
+PDFs, three sessions each. The CI job of every change has sate answer all
+86 from a data model of the public PDFs, and fails unless every answer is
+right.
+
+`make refresh` makes the recordings and screenshots that the documentation
+shows, and `make benchmark` runs the benchmark of the release that the
+checkout is. The records of the benchmark runs are no longer in the
+repository: `make benchmark` writes them to `~/git/senfd-results`, and the
+documentation publishes the report of each run.
+
 ## 0.17.0
 
 sate says what a status of a completion means. Ask "what does status
