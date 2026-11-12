@@ -2330,12 +2330,14 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
                 if match:
                     labels[match["label"]] = labels.get(match["label"], 0) + 1
         label = max(labels, key=lambda k: labels[k]) if labels else None
-        by_code = {
-            int(match["code"][:-1], 16): title
-            for title in sections.values()
-            for match in [REGEX_TITLE_CODE.search(title)]
-            if match and match["label"] == label
-        }
+        # A code that titles of the label name more than once, as CNS 06h of
+        # each command set, names no section of its own
+        titled: Dict[int, List[str]] = {}
+        for heading in sections.values():
+            match = REGEX_TITLE_CODE.search(heading)
+            if match and match["label"] == label:
+                titled.setdefault(int(match["code"][:-1], 16), []).append(heading)
+        by_code = {code: found[0] for code, found in titled.items() if len(found) == 1}
         for i, entry in enumerate(values.entries):
             reference = entry.columns.get("reference", "").strip()
             if (
@@ -2349,7 +2351,11 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
             if i in cited:
                 number, title = cited[i]
                 match = REGEX_TITLE_CODE.search(title)
-                if match and int(match["code"][:-1], 16) != code_value(entry.value):
+                if (
+                    match
+                    and match["label"] == label
+                    and int(match["code"][:-1], 16) != code_value(entry.value)
+                ):
                     document.errata.append(
                         Erratum(
                             code="reference",
