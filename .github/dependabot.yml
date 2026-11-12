@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+#
+# SPDX-License-Identifier: LGPL-2.1-only
+
+---
+# The documentation's lock file went unchanged from the first commit until
+# its pins carried published advisories; Dependabot proposes the updates
+version: 2
+updates:
+- package-ecosystem: "pip"
+  directory: "/docs"
+  schedule:
+    interval: "weekly"
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "weekly"

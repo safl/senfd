@@ -11,6 +11,7 @@ SPDX-License-Identifier: LGPL-2.1-only
 [![PyPI](https://img.shields.io/pypi/v/senfd)](https://pypi.org/project/senfd/)
 [![Documentation](https://img.shields.io/badge/docs-safl.dk%2Fsenfd-blue)](https://safl.dk/senfd/)
 [![License](https://img.shields.io/badge/license-LGPL--2.1--only-blue)](https://github.com/safl/senfd/blob/main/LICENSE)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-025E8C?logo=dependabot)](https://github.com/safl/senfd/blob/main/.github/dependabot.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/safl/senfd)](https://api.reuse.software/info/github.com/safl/senfd)
 [![MCP server](https://img.shields.io/badge/MCP-server-8A2BE2)](https://safl.dk/senfd/llm/)
 
