@@ -5,18 +5,19 @@
 senfd and sate
 ==============
 
-**senfd** reads the NVMe specifications, the PDFs NVM Express publishes or
-the ``.docx`` its members hold, and makes a data model of them: every command
-with its dwords and fields, every data structure, register, feature, log page
-and table of values, each fact citing the document, section, figure and page
-it is from.
+**senfd** reads the NVMe specifications and makes a data model of them.
+senfd reads either the PDFs that NVM Express publishes or the ``.docx`` files
+that its members hold. The data model holds every command with its dwords
+and fields, and every data structure, register, feature, log page and table
+of values. Each fact in the data model cites the document, section, figure
+and page it comes from.
 
 .. image:: ../_static/senfd.svg
    :alt: The .pdf and .docx documents go through senfd's stages, read,
          normalise, define and merge, into one data model
 
-The data model is JSON validated by a :ref:`schema <sec-schema>`, and the
-same documents give the same data model every time.
+The data model is JSON, validated by a :ref:`schema <sec-schema>`. The same
+documents give the same data model every time.
 
 **sate** answers questions from a data model. Here the data model is the
 one that senfd makes of the NVMe specifications. You can ask sate about a

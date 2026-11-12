@@ -75,6 +75,10 @@ def test_the_documentation_uses_the_palette_of_the_web_page():
     assert options["dark_css_variables"]["color-brand-content"] == "#fabd2f"
 
 
+def test_the_pages_keep_straight_quotes_and_double_hyphens():
+    assert runpy.run_path("docs/conf.py")["smartquotes"] is False
+
+
 def console_blocks(text: str) -> List[List[str]]:
     """The commands of each console block of 'text', without their prompt"""
 
