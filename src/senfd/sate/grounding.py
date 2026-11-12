@@ -18,6 +18,7 @@ from senfd.sate.reading import (
     command_words,
     field_of_other,
     names_other,
+    outside_field,
     spot,
 )
 from senfd.sate.vocabulary import Vocabulary
@@ -69,13 +70,18 @@ def elsewhere(
         return None
     found = answered(lines)
     kind, name = found if found else (None, None)
+    # An acronym is answered by the fields that have it, each led by what it
+    # is a field of, as "- Identify Controller [...]: 77 ... (MDTS)"
+    led = re.match(r"^- (.+?) \[", heading(lines))
+    if found is None and led and led[1] in vocabulary.structures:
+        kind, name = "structure", led[1]
     named = spot(question, vocabulary)
     command = command_named(question, vocabulary)
     lower = question.lower()
     for taken in (named[1] if named else "", command or ""):
         if taken:
             lower = re.sub(rf"\b{re.escape(taken.lower())}\b", " ", lower)
-    capitals = re.findall(r"\b[A-Z][A-Z0-9]+\b", question)
+    capitals = re.findall(r"\b[A-Z][A-Z0-9]+\b", outside_field(question))
     registers = [c for c in capitals if c in vocabulary.registers]
     dword = re.search(DWORD, question.lower())
 
@@ -120,7 +126,13 @@ def elsewhere(
         head, _, rest = name.partition(" - ")
         names = {alias(name), alias(head), alias(rest)}
         return None if alias(named[1]) in names else named[1]
-    return None if words_of(named[1]) in text else named[1]
+    # A structure is named by its whole name or, as spot() finds it, by what
+    # its command qualifies: "Identify Namespace" of "Identify - Identify
+    # Namespace"
+    rest = named[1].partition(" - ")[2]
+    if words_of(named[1]) in text or (rest and words_of(rest) in text):
+        return None
+    return named[1]
 
 
 def unmentioned(question: str, lines: List[str]) -> List[str]:

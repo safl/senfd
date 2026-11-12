@@ -16,6 +16,7 @@ import senfd.query
 import senfd.sate.cli
 from senfd.sate import grounding, language_model, lookup, phrasing, reading
 from senfd.sate.completion import completions, recognised
+from senfd.sate.vocabulary import Vocabulary
 
 
 @pytest.fixture(scope="module")
@@ -42,6 +43,17 @@ def vocabulary(spec):
         ("lpi of foo statistics", "log_page('foo statistics')"),
         ("fid of foo config", "feature('Foo Config')"),
         ("lpi C0h", "log_page('c0h')"),
+        # The field asked of is the one written last, by its name and acronym;
+        # where what the question names has no field of that acronym, the
+        # acronym is looked up wherever it is
+        (
+            "At which bytes of the Foo Directive Send command is Foo Key (FKEY)?",
+            "acronym('FKEY')",
+        ),
+        (
+            "At which bytes of the Foo Descriptor is BARCTL Foo Key (FKEY)?",
+            "structure('Foo Descriptor')",
+        ),
         ("Which bits of FOOCAP are there?", "register('FOOCAP')"),
         ("What is the foo statistics log page?", "log_page('Foo Statistics')"),
         ("What does section 1.2 describe?", "section('1.2')"),
@@ -124,6 +136,48 @@ def test_an_identifier_alone_also_finds_the_status_codes_and_other_values(
     assert "**C0h** Foo Invalid, Generic Command status code" in text
     assert "log page identifier of Get Log Page" not in text
     assert "requirement of Foo Feature" not in text
+
+
+def test_a_field_found_by_its_acronym_is_of_the_structure_named_by_its_rest():
+    """The question names "Foo Namespace", which is the rest of "Identify -
+    Foo Namespace" and a part of the name of the structure holding MAXF"""
+
+    vocabulary = Vocabulary(
+        structures={
+            "Identify - Foo Namespace",
+            "Bar Command Set specific Foo Namespace",
+        },
+        acronyms={"MAXF"},
+    )
+    question = "At which bytes of the Bar Command Set Foo Namespace data structure is Max Foo (MAXF)?"
+    lines = ["- Bar Command Set specific Foo Namespace [x]: 03:02 Max Foo (MAXF)"]
+
+    assert (
+        grounding.elsewhere(
+            question, senfd.sate.Understood("acronym", "MAXF"), lines, vocabulary
+        )
+        is None
+    )
+
+
+def test_a_register_acronym_in_the_name_of_the_field_asked_of_is_no_register():
+    vocabulary = Vocabulary(
+        structures={"Foo Descriptor", "ID - Identifiers"},
+        acronyms={"ID", "FKEY"},
+        registers={"ID"},
+    )
+    question = "At which bytes of the Foo Descriptor is Foo ID Key (FKEY)?"
+    lines = ["**Foo Descriptor, bytes [x]**", "", "| 03:00 | Foo ID Key | FKEY |"]
+
+    assert (
+        grounding.elsewhere(
+            question,
+            senfd.sate.Understood("structure", "Foo Descriptor"),
+            lines,
+            vocabulary,
+        )
+        is None
+    )
 
 
 def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
