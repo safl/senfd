@@ -288,7 +288,11 @@ for the Claude lanes. Copy the configuration where your machine differs.
 
 .. code-block:: console
 
-   $ cd benchmark && cijoe workflows/benchmark.yaml -c configs/default.toml -o results/$(date +%F)
+   $ make benchmark BENCHMARK_CONFIG=configs/default.toml
+
+``make benchmark`` runs the workflow in ``benchmark/``, with the output in
+``results/<date>-v<version>``, and refuses to run unless the configuration
+pins the senfd release that the checkout is.
 
 The workflow records what it ran on and with, makes a virtual environment of
 the pinned senfd, makes the data model of the documents, runs every lane,

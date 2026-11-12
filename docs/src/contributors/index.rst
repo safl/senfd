@@ -71,11 +71,15 @@ test checks each of these files:
   ``toolbox/example_stages.py docs/src/stages``.
 
 ``cd docs && make deps html`` builds the documentation, and a warning fails
-the build. ``toolbox/record_cast.py`` and ``toolbox/record_session.py``
-make the recordings in ``docs/_static/casts`` from the scripts in
-``docs/casts``. The recordings need a data model of the public documents.
-The README shows the session as an animated SVG, which
-``toolbox/cast_svg.py`` renders. The diagram ``docs/_static/senfd.svg`` is
+the build. ``make refresh`` makes again what the README and the
+documentation show of senfd at work: the recordings in
+``docs/_static/casts``, from the scripts in ``docs/casts``, the animated SVG
+of the session that the README shows, and the screenshots of sate's web
+page. It runs the senfd of the checkout, on the PDFs in ``~/specs``, and
+the recording of ``sate --llm`` needs llama-server on port 8088. Run it
+before a release, so that the documentation shows the release.
+``make benchmark`` runs the :ref:`benchmark <sec-benchmark>` of the release
+that the checkout is. The diagram ``docs/_static/senfd.svg`` is
 drawn from ``senfd.mmd`` in the same directory, by running ``mmdc -i
 senfd.mmd -o senfd.svg -c senfd.mmd.json -b white`` in that directory.
 

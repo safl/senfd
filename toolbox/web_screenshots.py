@@ -6,7 +6,7 @@
 
 """
 Take the screenshots of sate-web that the front page of the documentation
-shows, one in the light mode and one in the dark, of the theme One
+shows, one in the light mode and one in the dark, of the theme Gruvbox
 
 sate-web answers a question from the data model, and a headless browser
 takes each screenshot. It needs playwright, of the extra 'dev', and its
@@ -30,7 +30,7 @@ from senfd.sate import web
 from senfd.sate.wizard import PORT, free_port
 
 QUESTION = "cdw12 of write"
-THEME = "one"
+THEME = "gruvbox"
 MODES = ("light", "dark")
 WIDTH, HEIGHT = 1100, 720
 

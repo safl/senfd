@@ -81,10 +81,14 @@ documents, by a glob; the senfd release; llama-server, its threads and
 context; the language models, by path and SHA-256, with where to download
 them; and the frontier language models. The workflow runs everything on
 this machine, or runs llama-server on another machine named by ssh. Copy
-the configuration, and change what differs on your machine. Then, in
-`benchmark/`:
+the configuration, and change what differs on your machine. Then, at the
+top of the repository:
 
-    cijoe workflows/benchmark.yaml -c configs/default.toml -o results/<date>
+    make benchmark BENCHMARK_CONFIG=configs/default.toml
+
+`make benchmark` runs `cijoe workflows/benchmark.yaml` in `benchmark/`, with
+the output in `results/<date>-v<version>`. It refuses to run unless the
+configuration pins the senfd release that the checkout is.
 
 The workflow records the machine, the documents' SHA-256 and the senfd
 commit. The workflow then makes a virtual environment of that senfd, makes
