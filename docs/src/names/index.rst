@@ -10,5 +10,5 @@ The names
 senfd reads the **S**\ pecification documents, **E**\ xtracts and
 **N**\ ormalises their **F**\ igures, and makes a **D**\ ata model.
 ``sate`` is **S**\ enfd **A**\ sk **T**\ he **E**\ xpert. *Senf* is
-Danish for mustard, as the logo's documents drenched in it show, and a sate
-is what comes of the marinade.
+Danish for mustard, and the logo shows documents covered in mustard. A sate
+is a dish of marinated meat, which continues the theme.

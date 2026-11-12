@@ -7,46 +7,51 @@
 With a language model
 =====================
 
-:ref:`The expert <sec-ask>` needs no language model. Two programs put one
-beside the data model, each for a different user. In neither does the
-language model state an NVMe fact: every field, bit and opcode in an answer
-comes from the data model, with the figure it is in. The :ref:`benchmark
-<sec-benchmark>` sets them beside frontier language models answering from
-memory, with what each costs and gets wrong.
+:ref:`The expert <sec-ask>` needs no language model. Two programs combine
+a language model with the data model, each for a different user. In
+neither program does the language model state an NVMe fact. Every field,
+bit and opcode in an answer comes from the data model, with the figure it
+is in. The :ref:`benchmark <sec-benchmark>` compares the two programs with
+frontier language models, and gives what each costs and how many of its
+answers are wrong.
 
 Questions in your own words: sate --llm
 ---------------------------------------
 
-``sate --llm`` is the expert with a language model you run yourself reading
-the question. ``sate`` alone reads a question by its words, the names,
-acronyms and dwords of the specifications, so a question must name what it
+``sate --llm`` is the expert with a language model, which you run
+yourself, reading the question. Without ``--llm``, ``sate`` reads a
+question by its words: the names, acronyms and dwords of the
+specifications. A question to ``sate`` alone must therefore name what it
 asks about. With ``--llm``, a small language model reads the question
 instead, and chooses which lookup to run and on what.
 
-Use it when questions do not use the specifications' names: "hey, what
-opcode does migration send use?", "which FID is the rate limiting feature",
-"the shutdown type bit in CSTS, where is it?". Use it, too, where a question
-must not leave the machine: the language model runs on your own CPU, with
-no GPU, no account and no fee. Where a question names what it asks about,
-``sate`` alone answers it as well, in milliseconds.
+Use ``sate --llm`` when your questions do not use the specifications'
+names, as in "hey, what opcode does migration send use?", "which FID is the
+rate limiting feature" or "the shutdown type bit in CSTS, where is it?".
+Use ``sate --llm`` also when a question must not leave the machine. The
+language model runs on your own CPU, with no GPU, no account and no fee.
+When a question names what it asks about, ``sate`` alone answers the
+question as well, in milliseconds.
 
 .. code-block:: console
 
    $ llama-server -m Qwen2.5-7B-Instruct-Q4_K_M.gguf --port 8088 --jinja
    $ sate --llm http://127.0.0.1:8088
 
-A server holding several language models needs to be told which:
-``--llm-model NAME`` asks it for that one.
+When the server holds several language models, ``--llm-model NAME`` tells
+the server which one to use.
 
-The language model chooses the lookup and nothing else. Its output is
-constrained, by a JSON schema the server turns into a grammar, to the name
-of a query and its argument; the answer shown is what the query found, so
-it can state no field, bit or opcode that is not in the figures. When a
-lookup finds nothing, or nothing mentioning the question's terms, it is
-told so and chooses again, three times at most, and then the answer is that
-it is not known. A language model of 7 billion parameters on a CPU is
-enough. One of 1.5 billion parameters chooses worse: it answers fewer of the
-questions, and none of them wrongly.
+The language model chooses the lookup and nothing else. ``sate`` sends the
+server a JSON schema, which the server turns into a grammar, and the
+grammar constrains the language model's output to the name of a query and
+its argument. The answer shown is what the query found, so the answer
+cannot state a field, bit or opcode that is not in the figures. When a
+lookup finds nothing, or finds nothing that mentions the question's terms,
+``sate`` tells the language model so, and the language model chooses
+again, at most three times. After the third try, the answer is that the
+fact is not known. A language model of 7 billion parameters on a CPU is
+enough. A language model of 1.5 billion parameters chooses worse: it
+answers fewer of the questions, and answers none of them wrongly.
 
 .. raw:: html
 
@@ -55,27 +60,28 @@ questions, and none of them wrongly.
 For a coding agent: sate-mcp
 ----------------------------
 
-``sate-mcp`` is an MCP server whose tools are the expert's lookups,
+``sate-mcp`` is an MCP server. Its tools are the expert's lookups,
 ``command``, ``feature``, ``log_page``, ``structure``, ``value``,
-``search`` and ``section``, and the documents' ``lint`` and ``errata``. A
-coding agent, such as Claude Code, calls them rather than answering from
-memory or reading the documents.
+``status``, ``search`` and ``section``, and the documents' ``lint`` and
+``errata``. A coding agent, such as Claude Code, calls these tools instead
+of answering from memory or reading the documents.
 
-Use it when an agent works on code that implements NVMe: writing a
-command, decoding a log page, or checking an opcode, a bit or an offset in
-a patch against its figure. An answer is a few lines, so it costs the agent
-little of its context. Each cites its figure with a link to the page of
-the published PDF, so the agent, or you, can open the figure it was told
-of.
+Use ``sate-mcp`` when an agent works on code that implements NVMe: writing
+a command, decoding a log page, or checking an opcode, a bit or an offset
+in a patch against its figure. An answer from ``sate-mcp`` is a few lines,
+so the answer takes up little of the agent's context. Each answer cites its
+figure with a link to the page of the published PDF, so the agent, or you,
+can open the figure that the answer came from.
 
 .. code-block:: console
 
    $ claude mcp add sate -- sate-mcp
 
-``sate-mcp`` runs beside the agent, over stdio. Where the agent runs on
-another machine than the data model, :ref:`sate-web <sec-sate-web>` serves
-the same tools at ``/mcp``, over HTTP, once the environment variable
-``SATE_MCP_TOKEN`` holds a token. A client must send it in every request:
+``sate-mcp`` runs on the same machine as the agent and talks to the agent
+over stdio. When the agent runs on a different machine from the data
+model, :ref:`sate-web <sec-sate-web>` serves the same tools over HTTP at
+``/mcp``, provided the environment variable ``SATE_MCP_TOKEN`` holds a
+token. A client must send that token in every request:
 
 .. code-block:: console
 

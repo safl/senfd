@@ -15,36 +15,39 @@ Zoned Namespace, Key Value, Subsystem Local Memory and Computational
 Programs command sets, Management Interface 2.2, Boot 1.4, and the PCIe,
 RDMA and TCP transports. senfd knows these files by their SHA-256, so a
 data model made from them links each citation to its page of the PDF. A
-member of NVM Express may use the ``.docx`` of the same documents instead,
-and gets the same data model. Read :ref:`the notices <sec-notices>` on
+member of NVM Express may give senfd the ``.docx`` of the same documents
+instead, and senfd makes the same data model from them. Read :ref:`the notices <sec-notices>` on
 what the data model may be used for.
 
 .. code-block:: console
 
    $ senfd ~/specs/*.pdf --output ~/.cache/senfd
 
-This takes a few minutes, two of them for the Base specification. The run
-ends by saying what it made, and how many of the figures to look at, which
-``senfd lint`` lists; see :ref:`linting the documents <sec-linting>`.
+The command takes a few minutes, two of them for the Base specification.
+At the end, senfd says what it made and how many figures to look at.
+``senfd lint`` lists those figures; see :ref:`linting the documents
+<sec-linting>`.
 
 The files
 ---------
 
-``senfd`` reads the documents given, ``.pdf`` or ``.docx``, and writes three
-files of each into the directory ``--output`` names:
+``senfd`` reads the documents it is given, ``.pdf`` or ``.docx``, and
+writes three files for each document into the directory that ``--output``
+names:
 
-* ``<name>.plain.figure.document.json``, the ``FigureDocument``: its figures
-  as written, a row of cells each.
+* ``<name>.plain.figure.document.json``, the ``FigureDocument``: the document's
+  figures as written, each figure as rows of cells.
 * ``<name>.normalized.figure.document.json``, the
   ``NormalizedFigureDocument``: each figure read as the kind it is, with
   diagnostics saying what was normalised.
 * ``<name>.spec.document.json``, the ``SpecDocument``: the data model of
   that one document.
 
-The data models of every document given are merged into
-``merged.spec.document.json``. The files of each document have an HTML
-rendering beside them. :ref:`The stages <sec-stages>` show what a figure
-becomes at each, and :ref:`the schema <sec-schema>` what the JSON holds.
+senfd merges the data models of all the documents into
+``merged.spec.document.json``. Each of the three files of a document has an
+HTML rendering beside it. :ref:`The stages <sec-stages>` show what a figure
+becomes at each stage, and :ref:`the schema <sec-schema>` describes what
+the JSON holds.
 
 .. literalinclude:: usage.cmd
    :language: bash
@@ -58,17 +61,18 @@ Example
 -------
 
 senfd's repository holds a synthetic document, ``example/example.docx``,
-written to exercise the reader. Run over it:
+written to exercise the reader. Run senfd over it:
 
 .. literalinclude:: usage_example.cmd
    :language: bash
 
-It ends by saying:
+The run ends with:
 
 .. literalinclude:: usage_example.out
    :language: text
 
-The output of this run is kept in the repository, in `example/output
+The repository keeps the output of this run in `example/output
 <https://github.com/safl/senfd/tree/main/example/output>`_. `jless
-<https://jless.io/>`_ and `jq <https://jqlang.github.io/jq/>`_ are handy
-for reading the JSON. ``sate`` reads the merged data model; see :ref:`the expert <sec-ask>`.
+<https://jless.io/>`_ and `jq <https://jqlang.github.io/jq/>`_ are useful
+for reading the JSON. ``sate`` answers questions from the merged data
+model; see :ref:`the expert <sec-ask>`.

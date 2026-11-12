@@ -7,26 +7,32 @@
 Code from the figures
 =====================
 
-Every NVMe driver, tool, emulator and test suite carries a header of the
-specification, transcribed by hand, with names its transcriber chose, and
-lagging each revision by as long as the transcription takes. The data model
-makes that header a thing to generate: from the figures, with the
-specification's own names, each member citing the figure it is from.
+NVMe drivers, tools, emulators and test suites carry a header of the
+specification that someone transcribed by hand. The names in such a header
+are the ones its transcriber chose, and the header lags each revision by as
+long as the transcription takes. With the data model, a project can
+generate the header from the figures instead. The generated header uses the
+specification's own names, and each member cites the figure it is from.
 
-senfd makes the data model and leaves writing code from it to the project
-that consumes it, which knows its conventions. For **xNVMe**, an early
-prototype does so, ``toolbox/xnvme_spec_headers.py``, run by `yace
-<https://github.com/safl/yace>`_, which parses what the generator writes as
-any C header and holds it to a C subset every binding target can take.
-From the 2026 documents it writes one header per document, eleven in all,
-holding a struct of each command's dwords with a mask of each field, an
-enum of the opcodes of each command set and a constructor of each command;
-a packed struct of each data structure and log page, with its reserved
-gaps, arrays of numbered entries and unions of alternative layouts; the
-registers of each document as a packed struct at their offsets, as a driver
-maps them, with the masks of their fields and an enum of the values of each
-field whose values the specification names; and enums of the feature and
-log page identifiers and of the status codes of each scope.
+senfd makes the data model and leaves the code generation to the project
+that consumes the data model, because that project knows its own
+conventions. For **xNVMe**, an early prototype of a generator is
+``toolbox/xnvme_spec_headers.py``. `yace <https://github.com/safl/yace>`_
+runs the generator, parses what the generator writes as it parses any C
+header, and holds the result to a C subset that every binding target can
+take. From the 2026 documents, the generator writes one header per
+document, eleven in all. The headers hold:
+
+* a struct of each command's dwords, with a mask of each field;
+* an enum of the opcodes of each command set, and a constructor of each
+  command;
+* a packed struct of each data structure and log page, with its reserved
+  gaps, arrays of numbered entries and unions of alternative layouts;
+* the registers of each document as a packed struct, each register at its
+  offset as a driver maps it, with the masks of the fields and an enum of
+  the values of each field whose values the specification names;
+* enums of the feature and log page identifiers, and of the status codes
+  of each scope.
 
 .. code-block:: c
 
@@ -42,12 +48,13 @@ log page identifiers and of the status codes of each scope.
    #define XNVME_SPEC_BASE_REGISTERS_CC_EN 0x1
 
 yace parses the 1871 entities of the eleven headers with no diagnostics,
-and the generated sources compile warning-free. A revision of a document is
-then a regenerated header and a diff to review, with the figure of every
-change cited in it. The prototype comes with a page of xNVMe's contributor
-documentation, "Producing the spec headers", giving the procedure.
+and the generated sources compile without warnings. When NVM Express
+revises a document, the project regenerates the header and reviews the
+diff, in which each change cites its figure. The prototype comes with a
+page of xNVMe's contributor documentation, "Producing the spec headers",
+which gives the procedure.
 
-The data model is JSON validated by a :ref:`schema <sec-schema>`, so a
-generator for another language, another project's conventions or another
-tool, an emulator's command decoder or a test suite's expectations, reads
-the same facts from the same file.
+The data model is JSON that a :ref:`schema <sec-schema>` validates. A
+generator for another language or for another project's conventions reads
+the same facts from the same file. So does another kind of tool, such as
+the command decoder of an emulator or the expectations of a test suite.

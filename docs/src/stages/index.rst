@@ -7,12 +7,13 @@
 From the figure to the data model
 =================================
 
-What senfd makes of a document is easiest to see on one. This page follows
-two figures of senfd's own example document, ``example/example.docx``, a
-synthetic specification written to exercise the reader, through the three
-forms it takes; nothing of NVM Express's is shown. Every file on this page
-is written from ``example/output`` by ``toolbox/example_stages.py``, and a
-test keeps it so.
+This page follows two figures of senfd's example document,
+``example/example.docx``, through the three forms that senfd makes of them.
+The example document is a synthetic specification written to exercise the
+reader, so the page shows no text of NVM Express's.
+``toolbox/example_stages.py`` writes every file on this page from
+``example/output``, and a test checks that the files match what the script
+writes.
 
 .. raw:: html
    :file: style.html
@@ -20,11 +21,11 @@ test keeps it so.
 As written
 ----------
 
-The figure document holds the tables as the document has them, a row of
-cells each, with what is merged marked. This is all a reader of a format
-has to produce: the ``.docx`` reader and the PDF reader both give it, and
-nothing after this stage knows which it came from. Figure 1 is an opcode
-table, and Figure 19 a command dword:
+The figure document holds each table as the document has it: rows of
+cells, with the merged cells marked. A reader of a document format has to
+produce only this form. The ``.docx`` reader and the PDF reader both
+produce it, and no stage after this one knows which reader produced it.
+Figure 1 is an opcode table, and Figure 19 is a command dword:
 
 .. raw:: html
    :file: figure-1.plain.html
@@ -35,12 +36,13 @@ table, and Figure 19 a command dword:
 Normalised
 ----------
 
-Each figure is recognised, by its caption and the shape of its table, as
-the kind it is, and read as that kind: Figure 1 as the opcodes of the
-Foobar command set, an entry a row; Figure 19 as dword 11 of the Ring
-command, a layout of fields, the range read as bits, the acronym taken from
-the parentheses. Whatever had to be normalised to get there is a diagnostic
-on the figure, as a dash in a caption or a range given in words:
+senfd recognises the kind of each figure by its caption and the shape of
+its table, and reads the figure as that kind. senfd reads Figure 1 as the
+opcodes of the Foobar command set, one entry per row. senfd reads Figure 19
+as dword 11 of the Ring command: a layout of fields, with each range read
+as bits and each acronym taken from the parentheses. Each thing that senfd
+had to normalise on the way is a diagnostic on the figure, such as a dash
+in a caption or a range given in words:
 
 .. raw:: html
    :file: figure-1.normalized.html
@@ -51,12 +53,12 @@ on the figure, as a dash in a caption or a range given in words:
 In the data model
 -----------------
 
-The figures become what they define. The opcode table gives the command
-Ring, opcode 04h, its footnote marker dropped from the name; three dword
-figures give its submission queue entry, Figures 18, 19 and 20, each dword
-citing the figure and page it is from. The command is one entry of the
-data model, which the expert, the MCP server and the code generator all
-read:
+In the data model, the figures become the things they define. The opcode
+table gives the command Ring, opcode 04h, with the footnote marker dropped
+from its name. Three dword figures, Figures 18, 19 and 20, give the
+submission queue entry of Ring, and each dword cites the figure and page it
+is from. The command is one entry of the data model. The expert, the MCP
+server and the code generator all read this entry:
 
 .. literalinclude:: ring.json
    :language: json
@@ -64,18 +66,18 @@ read:
 What the author sees
 --------------------
 
-Reading the figures as data is checking them, and what does not read as
-data is a candidate erratum, with the document, section, figure and page.
-No rule was written for any of these; each is a figure that did not fit
-its kind. The opcode of Zing is not a value. The acronym of Ring Mode has
+Reading the figures as data also checks them. A figure that does not read
+as data becomes a candidate erratum, reported with the document, section,
+figure and page. No rule was written for any of the candidate errata below;
+each one is a figure that did not fit its kind. The opcode of Zing is not a value. The acronym of Ring Mode has
 a space in it. Bits 0 to 15 of Ring's dword 11 belong to no field. Bit 64
 of Ring Tail lies beyond the 64 bits of its two dwords. A support
-requirement reads "Maybe", which is no level:
+requirement reads "Maybe", which is not a support level:
 
 .. literalinclude:: errata.txt
    :language: text
 
-``senfd lint`` lists these together with the document errors, the
-figures of a shape senfd does not read, and the dwords no command claims;
-see :ref:`the linter <sec-linting>`. On a draft, this is the check an
-editor gets for nothing from making the data model.
+``senfd lint`` lists the candidate errata together with the document
+errors, the figures of a shape senfd does not read, and the dwords that no
+command claims; see :ref:`the linter <sec-linting>`. An editor who makes
+the data model of a draft gets this check with no further work.
