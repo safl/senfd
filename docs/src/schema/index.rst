@@ -75,7 +75,9 @@ the senfd hash shows whether the reading differs.
 In every part of the data model, a ``Dwords`` is the dwords from ``lower``
 to ``upper`` with their ``fields``, possibly under a ``condition``. A field,
 ``Bits``, is a ``range`` of bits or bytes, as given by ``unit``. A field
-has a ``name``, an ``acronym`` and nested ``fields``. Where fields share
+has a ``name``, an ``acronym`` and nested ``fields``. A row that gives a
+range and a table laying the range out, but no name, is a field named by
+its range, as "Byte 00". Where fields share
 bits, a field also names the ``union`` and ``alternative`` it belongs to.
 A field lists the ``values`` it takes. Where the description of a field
 names the figure of a table of values instead of giving the values, as CNS
