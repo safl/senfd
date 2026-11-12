@@ -181,9 +181,11 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
 # without an acronym, digits at the end are the name's, as in "Entry 1:". A
 # name may hold a range in brackets, colon and all, as "KV Key[63:00]:"
 NAME = r"(?P<name>(?:[^:()\[\]]|\[[^\]]*\])+?)(?<!\s)"
+# The colon after a name is followed by a space, or ends the text, but for
+# one right after the acronym's parenthesis; "ZSE:Empty" is the name of a state
 REGEX_FIELD = re.compile(
     rf"^{NAME}\s*(?:\((?P<acronym>[^()]+)\)"
-    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::\s*(?P<rest>.*))?$"
+    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::(?:(?<=\):)|(?=\s|$))\s*(?P<rest>.*))?$"
 )
 
 
