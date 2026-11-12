@@ -1666,3 +1666,28 @@ def test_a_feature_has_the_dwords_of_the_section_its_identifier_names():
     assert {k: [d.source.figure_nr for d in v] for k, v in unassigned.items()} == {
         "bar": [6]
     }
+
+
+def test_a_reference_to_the_section_of_another_kind_of_code_names_the_value():
+    """Only a section titled by the table's own label, as "(CNS 21h)" for
+    the CNS values, names another value; a section titled by another label,
+    as "(Personality Identifier 3h)", is the section the value cites. A code
+    that two titles name, as CNS 07h of two command sets, takes neither."""
+
+    from senfd.documents.spec import name_by_sections
+
+    sections = SECTIONS | {
+        "5.7": "Foo of the NVM Command Set (CNS 07h, CSI 00h)",
+        "5.8": "Foo of the ZNS Command Set (CNS 07h, CSI 02h)",
+    }
+    document = SpecDocument()
+    document.values.append(
+        cns_values([("01h", "5.1", False), ("05h", "5.5", False), ("07h", "0", False)])
+    )
+    name_by_sections(document, sections)
+    assert [e.name for e in document.values[0].entries] == [
+        "Identify Controller Data Structure",
+        "Personality",
+        None,
+    ]
+    assert document.errata == []
