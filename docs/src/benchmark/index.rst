@@ -261,7 +261,7 @@ right when the value it writes is the right value and no other, so "1Fh
 (Namespace Admin Label)" is right and "82h or 83h" is wrong. The grader
 has its tests in ``benchmark/tests``.
 
-Earlier runs are kept beside this one. The run of 2026-11-11 at senfd
+The run of 2026-11-11 at senfd
 0.17.0, the run of 2026-11-10 at senfd 0.14.0 and the run of 2026-11-09 at
 senfd 0.13.0 asked the first 71 questions, and asked Claude Opus and Sonnet
 from memory only. The run of 2026-11-09 at the commit before senfd 0.9.1
@@ -277,9 +277,9 @@ Run it yourself
 ---------------
 
 The benchmark is a `cijoe <https://cijoe.readthedocs.io/>`_ workflow, kept
-with the records of every run in senfd's `benchmark/
-<https://github.com/safl/senfd/tree/main/benchmark>`_ directory: the
-questions and their answers, the steps, and ``configs/default.toml``, which
+in senfd's `benchmark/ <https://github.com/safl/senfd/tree/main/benchmark>`_
+directory: the questions and their answers, the steps, and
+``configs/default.toml``, which
 names the documents, the senfd release and the language models. Download
 the PDFs as :ref:`making the data model <sec-usage>` describes, and the two
 language models from Hugging Face, by the names that the configuration
@@ -291,8 +291,11 @@ for the Claude lanes. Copy the configuration where your machine differs.
    $ make benchmark BENCHMARK_CONFIG=configs/default.toml
 
 ``make benchmark`` runs the workflow in ``benchmark/``, with the output in
-``results/<date>-v<version>``, and refuses to run unless the configuration
-pins the senfd release that the checkout is.
+``~/git/senfd-results/<date>-v<version>``, and ``RESULTS=<dir>`` names
+another directory. ``make benchmark`` refuses to run unless the
+configuration pins the senfd release that the checkout is, and unless the
+directory exists. The records of a run are kept outside senfd's
+repository, and the documentation publishes the report of each run.
 
 The workflow records what it ran on and with, makes a virtual environment of
 the pinned senfd, makes the data model of the documents, runs every lane,

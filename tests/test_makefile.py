@@ -50,3 +50,29 @@ def test_make_benchmark_refuses_a_configuration_of_another_release(tmp_path):
 
     assert done.returncode != 0
     assert "does not pin senfd" in done.stdout + done.stderr
+
+
+@pytest.mark.skipif(shutil.which("make") is None, reason="make is not installed")
+def test_make_benchmark_refuses_a_directory_for_the_records_that_does_not_exist(
+    tmp_path,
+):
+    import senfd
+
+    config = tmp_path / "this.toml"
+    config.write_text(f'[senfd]\ncommit = "v{senfd.__version__}"\n')
+
+    done = subprocess.run(
+        [
+            "make",
+            "-s",
+            "benchmark",
+            f"BENCHMARK_CONFIG={config}",
+            f"RESULTS={tmp_path / 'missing'}",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+    assert done.returncode != 0
+    assert "for the records" in done.stdout + done.stderr
