@@ -45,6 +45,14 @@ from senfd.skiplist import SkipPatterns
 from senfd.tables import Cell, Row, Table
 
 
+class Placement(BaseModel):
+    """The range of a field under a condition heading the ranges, as "HDGSTF=1";
+    None where the column says the field is not present"""
+
+    condition: str
+    range: Optional[Range] = None
+
+
 class LayoutField(BaseModel):
     """
     A field of a layout table: its range, name, acronym and description, the
@@ -68,6 +76,9 @@ class LayoutField(BaseModel):
     # The cases of the field: the tables in its description whose first
     # column is headed by another field of the layout
     cases: List["LayoutCase"] = Field(default_factory=list)
+    # The range of the field under each condition heading the columns of
+    # ranges, where they differ, as "HDGSTF=1" and "HDGSTF=0"
+    placements: List[Placement] = Field(default_factory=list)
 
 
 class LayoutCase(BaseModel):
@@ -265,6 +276,50 @@ def note_left_open(text: str, what: str, diagnostics: List[Diagnostic]) -> None:
         diagnostics.append(note("acronym-open", f"{what} {name}: {said}"))
 
 
+REGEX_NOT_PRESENT = re.compile(r"^not present$", flags=re.IGNORECASE)
+
+
+def under_conditions(
+    row: Row, grid: List[str], unit: str, conditions: int
+) -> Optional[Values]:
+    """The values of a row whose first column, of the ranges, the PDF gives a
+    cell for each of 'conditions', the header one: the cells of the ranges
+    and then one for each other column; None of another row"""
+
+    others = [c for i, c in enumerate(grid) if not i or c != grid[i - 1]]
+    if (
+        not others
+        or others[0] != unit
+        or len(row.cells) != conditions + len(others) - 1
+    ):
+        return None
+    ranges, rest = row.cells[:conditions], row.cells[conditions:]
+    values = Values(spans=len(row.cells))
+    values.texts[unit] = ranges[0].text.strip()
+    values.cells[unit] = list(ranges)
+    for column, cell in zip(others[1:], rest):
+        values.texts[column] = cell.text.strip()
+        values.cells[column] = [cell]
+    return values
+
+
+def placed(unit: str, conditions: List[str], texts: List[str]) -> List[Placement]:
+    """The range of a field under each of the 'conditions' heading the columns
+    of ranges, from the texts of its cells there; none where there are no
+    conditions or the ranges are the same under each"""
+
+    texts = [normalize_text(t) for t in texts]
+    if not conditions or len(texts) != len(conditions) or len(set(texts)) == 1:
+        return []
+    return [
+        Placement(
+            condition=condition,
+            range=None if REGEX_NOT_PRESENT.match(text) else parse_range(unit, text),
+        )
+        for condition, text in zip(conditions, texts)
+    ]
+
+
 def parse_layout(
     rows: List[Row],
     grid: List[str],
@@ -282,9 +337,27 @@ def parse_layout(
     layout = Layout(unit=unit)
     section = None
     elided = False
+    active: List[str] = []
     held: List[Tuple[LayoutField, List[Table]]] = []
     for row in rows:
+        leading = [normalize_text(c.text) for c in row.cells]
+        leading = leading[
+            : next(
+                (i for i, t in enumerate(leading) if not REGEX_CONDITION.match(t)),
+                len(leading),
+            )
+        ]
+        if len(leading) > 1:
+            # Conditions heading the columns of ranges below them, which the
+            # PDF may give in more cells than the header has columns
+            diagnostics.append(
+                note("range-condition", f"Ranges by condition: {leading}")
+            )
+            active = leading
+            continue
         values = values_of(row, grid)
+        if values is None and len(active) > 1:
+            values = under_conditions(row, grid, unit, len(active))
         if values is None:
             row_texts = [normalize_text(cell.text) for cell in row.cells]
             diagnostics.append(
@@ -319,6 +392,7 @@ def parse_layout(
             diagnostics.append(
                 note("range-condition", f"Ranges by condition: {conditions}")
             )
+            active = conditions
             continue
 
         # A row of one cell spanning the table is its notes, or heads the rows
@@ -353,6 +427,11 @@ def parse_layout(
         range_cells = values.cells.get(unit, [])
         range_text = range_cells[0].text if range_cells else values.texts.get(unit, "")
         detail = " ".join(normalize_text(c.text) for c in range_cells[1:]).strip()
+        placements = placed(unit, active, [c.text for c in range_cells])
+        if placements:
+            detail = ""
+            present = [p.range for p in placements if p.range is not None]
+            range_text = present[0].text if present else range_text
 
         rng = parse_range(unit, range_text)
         if rng is None:
@@ -388,6 +467,7 @@ def parse_layout(
                 | ({f"{unit}_detail": detail} if detail else {}),
                 section=section,
                 elided=elided,
+                placements=placements,
             )
         )
         tables = [t for cells in values.cells.values() for c in cells for t in c.tables]

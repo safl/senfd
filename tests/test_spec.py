@@ -1568,3 +1568,34 @@ def test_a_reference_to_the_section_of_another_code_is_a_candidate_erratum():
     assert erratum.message.startswith(
         "14h: the reference 5.3 is the section of CNS 21h"
     )
+
+
+def test_a_field_records_its_range_under_each_condition_heading_the_ranges():
+    """As the PDU Header Digest of NVMe over TCP 1.3 Figure 30, which is bytes
+    75:72 when HDGSTF=1 and not present when HDGSTF=0"""
+
+    from senfd.tables import Cell
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo PDU",
+            ("Bytes", Cell(text="Bytes", merged="left"), "Description"),
+            ("03:00", "03:00", "Foo Header (FH): The header."),
+            ("HDGSTF=1", "HDGSTF=0", ""),
+            ("07:04", "Not present", "PDU Header Digest (HDGST): The digest."),
+        )
+    )
+    (structure,) = spec.structures
+    digest = structure.fields[-1]
+    assert (digest.acronym, digest.range, digest.upper, digest.lower) == (
+        "HDGST",
+        "07:04",
+        7,
+        4,
+    )
+    assert [p.model_dump() for p in digest.placements] == [
+        {"condition": "HDGSTF=1", "range": "07:04", "upper": 7, "lower": 4},
+        {"condition": "HDGSTF=0", "range": None, "upper": None, "lower": None},
+    ]
+    assert structure.fields[0].placements == []

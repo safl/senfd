@@ -520,6 +520,59 @@ def test_a_row_of_conditions_over_the_ranges_heads_them_and_is_no_field():
     assert [d.code for d in diagnostics] == ["range-condition"]
 
 
+def placements(layout):
+    return [
+        [(p.condition, p.range.text if p.range else None) for p in f.placements]
+        for f in layout.fields
+    ]
+
+
+def test_a_field_has_its_range_under_each_condition_heading_the_ranges():
+    """As NVMe over TCP 1.3 Figure 30 in the .docx: the header digest is bytes
+    75:72 when HDGSTF=1 and not present when HDGSTF=0, and the pad after it
+    begins at byte 76 or 72"""
+
+    from senfd.documents.normalized import parse_layout
+
+    layout = parse_layout(
+        rows(
+            ("71:08", "71:08", "Command (CMD): The command."),
+            ("HDGSTF=1", "HDGSTF=0", ""),
+            ("75:72", "Not present", "PDU Header Digest (HDGST): The digest."),
+            ("N - 1:76", "N - 1:72", "Pad (PAD): The pad."),
+        ),
+        ["bytes", "bytes", "description"],
+        [],
+    )
+    assert [f.range.text for f in layout.fields] == ["71:08", "75:72", "N - 1:76"]
+    assert placements(layout) == [
+        [],
+        [("HDGSTF=1", "75:72"), ("HDGSTF=0", None)],
+        [("HDGSTF=1", "N - 1:76"), ("HDGSTF=0", "N - 1:72")],
+    ]
+
+
+def test_a_pdf_row_of_a_range_under_each_condition_is_a_field():
+    """As NVMe over TCP 1.3 Figure 30 in the PDF, whose header has one column
+    of bytes and whose rows under the conditions have a cell of bytes for
+    each condition"""
+
+    from senfd.documents.normalized import parse_layout
+
+    layout = parse_layout(
+        rows(
+            ("HDGSTF=1", "HDGSTF=0", "", ""),
+            ("75:72", "Not present", "HDGST", "PDU Header Digest (HDGST): The digest."),
+        ),
+        ["bytes", "pdu_section", "description"],
+        [],
+    )
+    assert [(f.range.text, f.columns) for f in layout.fields] == [
+        ("75:72", {"pdu_section": "HDGST"})
+    ]
+    assert placements(layout) == [[("HDGSTF=1", "75:72"), ("HDGSTF=0", None)]]
+
+
 def test_a_name_wrapped_by_a_narrow_column_is_one_name():
     """As Base 2.4's nested bit tables, where the acronym falls on the next
     line of the first paragraph"""
