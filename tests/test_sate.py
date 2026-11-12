@@ -183,6 +183,20 @@ def test_a_register_acronym_in_the_name_of_the_field_asked_of_is_no_register():
     )
 
 
+def test_a_term_of_the_captions_of_the_document_cited_counts_as_mentioned():
+    """NBFT names the subject of the Boot document, in its captions and
+    section titles, though not in the figure that answers"""
+
+    vocabulary = Vocabulary(documents={"Boot 1.4": " nbft elements nbft overview "})
+    lines = [
+        "- SSNS Flags Field [Boot 1.4, 3.2.2.5.1, Figure 18, page 32]: 02 (USFLAG)"
+    ]
+
+    assert grounding.unmentioned("NBFT SSNS Flags USFLAG", lines, vocabulary) == []
+    assert grounding.unmentioned("NBFT SSNS Flags USFLAG", lines) == ["nbft"]
+    assert grounding.unmentioned("HFI SSNS Flags USFLAG", lines, vocabulary) == ["hfi"]
+
+
 def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
     """ "cns 0x5" is read as 5h, and the data model writes the value as 05h"""
 

@@ -109,7 +109,7 @@ def respond(
     if understood.query == "help":
         return "\n".join(lines), tried
 
-    missing = unmentioned(question, lines) if lines else []
+    missing = unmentioned(question, lines, vocabulary) if lines else []
     if understood.query in ("status", "value"):
         # "sc" and "sct" were read as what is asked, and a command named
         # with a status only narrows its codes

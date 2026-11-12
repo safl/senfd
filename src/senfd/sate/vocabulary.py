@@ -13,7 +13,7 @@ from functools import cached_property
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 from senfd.sate.phrasing import GENERIC
-from senfd.documents.spec import Bits, Dwords, SpecDocument
+from senfd.documents.spec import Bits, Dwords, SpecDocument, document_name
 
 
 def spaced(text: str) -> str:
@@ -42,6 +42,9 @@ class Vocabulary:
     # The names of the entries of the tables of values, as "RDMA Invalid
     # HSQSIZE"; of features and log pages, those are their names above
     values: Set[str] = field(default_factory=set)
+    # The words of the captions and section titles of each document, by its
+    # short name as a citation gives it, "Boot 1.4"
+    documents: Dict[str, str] = field(default_factory=dict)
     # The acronyms of the fields of a thing, in the order of its figures
     fields: Dict[Of, List[str]] = field(default_factory=dict)
 
@@ -72,6 +75,17 @@ class Vocabulary:
                 )
             else:
                 vocabulary.add_fields(structure.fields, (structure.name.lower(), None))
+        titled: Dict[str, List[str]] = {}
+        captioned = [(s.source, s.name) for s in spec.structures] + [
+            (v.source, v.name or "") for v in spec.values
+        ]
+        for source, caption in captioned:
+            titled.setdefault(document_name(source.document), []).extend(
+                [caption, source.section_title or ""]
+            )
+        vocabulary.documents = {
+            name: spaced(" ".join(texts)) for name, texts in titled.items()
+        }
         named_elsewhere = (
             "feature_identifiers",
             "log_page_identifiers",
