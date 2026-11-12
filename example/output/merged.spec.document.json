@@ -2,12 +2,12 @@
   "meta": {
     "format": 1,
     "version": "0.17.0",
-    "senfd_sha256": "ceed0895fb9e56bdf3710e6a09c02e3e1ceba1935dabfbdb5542eb9c6afc22d8",
+    "senfd_sha256": "d3c54133bd14e3eba2a432524705beb8f976391704e3be21272410ab4b692286",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "d0cd10540e5d2addfc97448be913563515d23c6d435407859cf6b3663d9ff9cb",
-    "combined_sha256": "0d1b3daea5718bb777d46e0ac9de4317f131a984da3af853c5bec2d8022e2040"
+    "combined_sha256": "0234379d9054f874d9b5b3e076958ea3998ff031a3fbd429c5a5346fe1d1c71a"
   },
   "command_sets": {
     "foobar": {
@@ -5090,12 +5090,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Get",
-          "value_column": "command",
-          "name": null,
+          "value": "C2h",
+          "value_column": "opcode",
+          "name": "Foo Get",
           "description": "",
           "columns": {
-            "opcode": "C2h",
             "i_o": "M",
             "admin": "O",
             "discovery": "P",
@@ -5911,12 +5910,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Capabilities",
-          "value_column": "name",
+          "value": "00h",
+          "value_column": "offset_ofst",
           "name": "Foo Capabilities",
           "description": "",
           "columns": {
-            "offset_ofst": "00h",
             "size_in_bytes": "8",
             "i_o_controller": "M",
             "administrative_controller": "M",
@@ -6015,14 +6013,13 @@
       ],
       "entries": [
         {
-          "value": "Ding Dong",
-          "value_column": "command",
-          "name": null,
+          "value": "05h",
+          "value_column": "opcode",
+          "name": "Ding Dong",
           "description": "",
           "columns": {
             "command_1": "Ding",
-            "command_2": "Dong",
-            "opcode": "05h"
+            "command_2": "Dong"
           },
           "typed": {}
         }
@@ -6187,12 +6184,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Get",
-          "value_column": "command",
-          "name": null,
+          "value": "C2h",
+          "value_column": "opcode",
+          "name": "Foo Get",
           "description": "",
           "columns": {
-            "opcode": "C2h",
             "i_o": "M",
             "admin": "O"
           },
@@ -6787,7 +6783,7 @@
     "example": {
       "format": 1,
       "version": "0.17.0",
-      "senfd_sha256": "ceed0895fb9e56bdf3710e6a09c02e3e1ceba1935dabfbdb5542eb9c6afc22d8",
+      "senfd_sha256": "d3c54133bd14e3eba2a432524705beb8f976391704e3be21272410ab4b692286",
       "stem": "example",
       "file": "example.docx",
       "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
@@ -6797,7 +6793,7 @@
     "invalid": {
       "format": 1,
       "version": "0.17.0",
-      "senfd_sha256": "ceed0895fb9e56bdf3710e6a09c02e3e1ceba1935dabfbdb5542eb9c6afc22d8",
+      "senfd_sha256": "d3c54133bd14e3eba2a432524705beb8f976391704e3be21272410ab4b692286",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

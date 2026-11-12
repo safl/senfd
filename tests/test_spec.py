@@ -743,3 +743,148 @@ def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it(tmp_path)
         ("layout-gap", "Bytes 6 to 15 are of no field, before 31:16 Reserved")
     ]
     assert errata_of("other") == []
+
+
+def values_of_table(header, *rows):
+    """The table of values senfd makes of a figure of 'header' and 'rows'"""
+
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.plain import Figure
+    from senfd.documents.spec import add_figure
+    from senfd.tables import Cell, Row, Table
+
+    texts = [("Figure 1: Foo Kinds",), header, *rows]
+    table = Table(rows=[Row(cells=[Cell(text=t) for t in row]) for row in texts])
+    figure = Figure(
+        figure_nr=1, caption="Figure 1: Foo Kinds", description="Foo Kinds", table=table
+    )
+    document = SpecDocument()
+    add_figure(document, normalize_figure(figure, []), "example")
+    (values,) = document.values
+    return values
+
+
+def test_the_value_of_an_entry_is_its_code_whatever_the_header_of_the_column():
+    """A table listing things in its first column and their codes in a column
+    of a header senfd has no name for: the code is the value, and what the
+    first column lists is the name"""
+
+    values = values_of_table(
+        ("Foo", "Kind Designator", "Definition"),
+        ("Header", "N/A", "What the foos begin with."),
+        ("Ding Foo", "1h", "A foo that dings."),
+        ("Ring Foo", "2h", "A foo that rings."),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("N/A", "kind_designator", "Header"),
+        ("1h", "kind_designator", "Ding Foo"),
+        ("2h", "kind_designator", "Ring Foo"),
+    ]
+    assert values.entries[1].columns == {}
+    assert values.entries[1].description == "A foo that dings."
+
+
+def test_the_code_of_an_entry_is_the_one_no_other_entry_has():
+    """Of the columns of codes, as the parts an opcode is combined from, the
+    value is in the one whose codes differ entry by entry; the column of
+    names is the name"""
+
+    values = values_of_table(
+        ("Foo Name", "Function", "Direction", "Combined Opcode 2", "Foo Description"),
+        ("DingReq", "0000000b", "0b", "00h", "Ding Request: asks for a ding"),
+        ("DingResp", "0000000b", "1b", "01h", "Ding Response: answers it"),
+        ("RingReq", "0000001b", "0b", "02h", "Ring Request: asks for a ring"),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("00h", "opcode", "DingReq"),
+        ("01h", "opcode", "DingResp"),
+        ("02h", "opcode", "RingReq"),
+    ]
+    assert values.entries[0].columns == {
+        "function": "0000000b",
+        "direction": "0b",
+        "foo_description": "Ding Request: asks for a ding",
+    }
+
+
+def test_an_offset_an_expression_goes_on_from_is_a_code():
+    """A table of registers by where they start, the later ones at an offset
+    counted from the first: the start is the value, the symbol a column"""
+
+    values = values_of_table(
+        ("Start", "End", "Symbol", "Name"),
+        ("1000h", "1003h", "F0DBL", "Foo 0 Doorbell"),
+        (
+            "1000h + (1 * (4 << F.STRD))",
+            "1003h + (1 * (4 << F.STRD))",
+            "F1DBL",
+            "Foo 1",
+        ),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("1000h", "start", "Foo 0 Doorbell"),
+        ("1000h + (1 * (4 << F.STRD))", "start", "Foo 1"),
+    ]
+    assert values.entries[0].columns == {"end": "1003h", "symbol": "F0DBL"}
+
+
+def test_a_command_is_the_name_of_the_opcode_a_table_gives_it():
+    values = values_of_table(
+        ("Command", "Opcode", "Foo Support Requirements"),
+        ("Ding", "01h", "M"),
+        ("Ring", "02h", "O"),
+    )
+    assert [(e.value, e.name) for e in values.entries] == [
+        ("01h", "Ding"),
+        ("02h", "Ring"),
+    ]
+
+
+def test_columns_of_codes_that_repeat_are_no_value():
+    """The parts of a version are codes of more than one entry, the major
+    part here, so that the minor part differing entry by entry is no code of
+    the entry either; the entry is by its first column, as in a table of no
+    codes"""
+
+    values = values_of_table(
+        ("Foo Versions", "MJR Field", "MNR Field"),
+        ("Foo 1.0", "1h", "0h"),
+        ("Foo 1.1", "1h", "1h"),
+        ("Foo 1.2", "1h", "2h"),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("Foo 1.0", "foo_versions", None),
+        ("Foo 1.1", "foo_versions", None),
+        ("Foo 1.2", "foo_versions", None),
+    ]
+
+
+def test_the_column_combining_the_codes_of_others_is_the_value():
+    values = values_of_table(
+        ("07:02", "01:00", "Combined Foo Type", "Command"),
+        ("0000 00b", "00b", "00h", "Ding"),
+        ("0000 00b", "01b", "01h", "Ring"),
+        ("0000 01b", "00b", "04h", "Sing"),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("00h", "combined_foo_type", "Ding"),
+        ("01h", "combined_foo_type", "Ring"),
+        ("04h", "combined_foo_type", "Sing"),
+    ]
+
+
+def test_an_entry_named_by_its_description_keeps_the_code_as_its_value():
+    """Where some descriptions begin with a name and others do not, the value
+    of every entry is the code, not the name of those that have one"""
+
+    values = values_of_table(
+        ("Foo Identifier List", "Description"),
+        ("00h", "Default Foo: The foo as made."),
+        ("01h", "A foo of no name."),
+        ("02h to FFh", "Reserved"),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("00h", "foo_identifier_list", "Default Foo"),
+        ("01h", "foo_identifier_list", None),
+        ("02h to FFh", "foo_identifier_list", "Reserved"),
+    ]
