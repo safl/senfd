@@ -20,7 +20,7 @@ from pdfplumber.utils import extract_text as text_of_chars
 
 from senfd.errors import Error
 from senfd.pdf.pages import LINE, Box, Pages, Vertical, grid, spans, union
-from senfd.pdf.tree import Leaf, TaggedCell, paragraphs, rows
+from senfd.pdf.tree import Leaf, TaggedCell, contents, paragraphs, rows
 from senfd.tables import Cell, Row, Table
 
 
@@ -209,9 +209,10 @@ def read_cell(
     text = unwrapped(text)
     tables = []
     for element, page in inner_tables:
-        for paragraph in paragraphs(element, page):
-            for leaf in paragraph:
-                used[pages.number(leaf.page)].add(leaf.mcid)
+        # The text of the table, and of the tables in its cells, is of no
+        # cell of this table
+        for leaf in contents(element, page):
+            used[pages.number(leaf.page)].add(leaf.mcid)
         inner, inner_extent = table_of(pages, rows(element, page), errors)
         tables.append(Table(rows=inner))
         for number, (x0, top, x1, bottom) in inner_extent.items():
@@ -237,9 +238,11 @@ def columns_of(
     """The columns of the table on page 'number': the vertical borders that
     the rules separating its rows end at or cross, which a line in the margin
     beside the table, as a change bar, and the borders of a table nested in
-    a cell are not. A table may be wider than its text, where a column's text
-    is centred far from its border. Where no rule separates its rows, its
-    borders are those beside its text."""
+    a cell are not. A rule separating its rows runs under or over its text;
+    one beside its text separates the rows of the table whose cell holds it.
+    A table may be wider than its text, where a column's text is centred far
+    from its border. Where no rule separates its rows, its borders are those
+    beside its text."""
 
     extent: Optional[Box] = None
     for box in boxes:
@@ -248,7 +251,10 @@ def columns_of(
     separators = [
         (x0, x1)
         for y, x0, x1 in pages.horizontals(number, extent)
-        if any(b[3] <= y + 1 for b in boxes) and any(b[1] >= y - 1 for b in boxes)
+        if any(b[3] <= y + 1 for b in boxes)
+        and any(b[1] >= y - 1 for b in boxes)
+        and x0 < extent[2]
+        and x1 > extent[0]
     ]
 
     def column_edge(x: float) -> bool:
