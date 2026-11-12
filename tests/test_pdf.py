@@ -25,7 +25,7 @@ from senfd.pdf.reader import (
     stem_of,
 )
 from senfd.pdf.tables import Columns, astray, bordered, columns_of, unwrapped
-from senfd.pdf.tree import Leaf
+from senfd.pdf.tree import Leaf, contents, paragraphs
 from senfd.tables import Cell, Row, Table
 
 TOOL = Path(__file__).parents[1] / "toolbox" / "public_documents.py"
@@ -135,6 +135,53 @@ def test_the_borders_of_a_cell_holding_a_table_are_not_the_table_s():
         200.4,
         465.9,
     ]
+
+
+def test_a_rule_beside_the_text_of_a_table_is_no_separator_of_its_rows():
+    # As Figure 35 of the Zoned Namespace Command Set 1.5: a table of values in
+    # the second column of a table that is itself in a cell. The rule between
+    # two rows of that table's first column lies beside the table of values,
+    # and ends at borders that are not the table of values' own.
+    holding = [(120.1, 450, 710), (193.4, 450, 710), (517.5, 450, 710)]
+    table = [(200.7, 467, 688), (256.5, 467, 688), (513.1, 467, 688)]
+    rules = [
+        (467.2, 200.9, 512.9),
+        (478.2, 200.9, 512.9),
+        (543.2, 200.9, 512.9),
+        (547.5, 120.5, 193.0),
+        (687.8, 200.9, 512.9),
+    ]
+    text = [
+        (212.0, 469.0, 240.0, 477.0),
+        (262.0, 469.0, 510.0, 477.0),
+        (212.0, 480.0, 240.0, 542.0),
+        (262.0, 480.0, 510.0, 542.0),
+        (212.0, 552.0, 240.0, 686.0),
+        (262.0, 552.0, 510.0, 686.0),
+    ]
+    assert columns_of(Ruled(holding + table, rules), 0, text, []).edges == [
+        200.7,
+        256.5,
+        513.1,
+    ]
+
+
+def test_the_marked_content_under_a_table_is_that_of_the_tables_in_its_cells_too():
+    """A table in a cell of a table in a cell: its text is no text of the
+    outermost cell, which the reader knows by what is under the table"""
+
+    def element(kind, *kids):
+        return pikepdf.Dictionary(S=pikepdf.Name(f"/{kind}"), K=pikepdf.Array(kids))
+
+    def table(*cells):
+        return element("Table", element("TR", *[element("TD", *c) for c in cells]))
+
+    innermost = table([element("P", 3)])
+    inner = table([element("P", 1)], [element("P", 2), innermost])
+    page = (1, 0)
+
+    assert contents(inner, page) == [Leaf(page, 1), Leaf(page, 2), Leaf(page, 3)]
+    assert paragraphs(inner, page) == [[Leaf(page, 1)], [Leaf(page, 2)]]
 
 
 def test_a_table_whose_rows_no_rule_separates_has_the_borders_beside_its_text():
@@ -315,6 +362,28 @@ def test_a_published_pdf_reads_as_its_figures(public, tmp_path):
     cdw12 = next(d for d in write["sqe"] if d["lower"] == 12)
     fua = next(f for f in cdw12["fields"] if f.get("acronym") == "FUA")
     assert (fua["upper"], fua["lower"], write["opcode"]) == (30, 30, 1)
+
+
+def test_a_table_in_a_cell_of_a_table_in_a_cell_is_read_as_a_table(public):
+    """Figure 35 of the Zoned Namespace Command Set 1.5 has, in the cell of
+    bits 15:08, a table of two columns, and in a cell of that table a table
+    of values; the text of the table of values is no text of the cell of
+    bits 15:08, and both tables have two columns"""
+
+    _, path = document_named(public, "Zoned Namespace Command Set 1.5")
+    figures, _ = read(path)
+    (figure,) = [f for f in figures.figures if f.figure_nr == 35]
+    row = next(r for r in figure.table.rows if r.cells[0].text == "15:08")
+    cell = row.cells[1]
+    (inner,) = cell.tables
+    (innermost,) = inner.rows[1].cells[1].tables
+
+    assert "\n".join(cell.text.split()) == "Zone\nReceive\nAction\nSpecific\n(ZRAS):"
+    assert {len(r.cells) for r in inner.rows} == {2}
+    assert {len(r.cells) for r in innermost.rows} == {2}
+    assert [c.text for c in innermost.rows[0].cells] == ["Value", "Definition"]
+    # The cell holding the table of values is the cell of two rows
+    assert [r.cells[1].merged for r in inner.rows] == [None, None, "up", None]
 
 
 def test_the_compressed_data_model_is_the_same_bytes_every_time(public, tmp_path):

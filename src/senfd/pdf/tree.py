@@ -111,6 +111,20 @@ def paragraphs(
     return found
 
 
+def contents(element: pikepdf.Dictionary, page: Optional[PageId]) -> List[Leaf]:
+    """All the marked content under 'element', that of the tables under it
+    too, and of the tables in their cells, however deep"""
+
+    found: List[Leaf] = []
+    within = [(element, page)]
+    while within:
+        deeper: List[Tuple[pikepdf.Dictionary, Optional[PageId]]] = []
+        for paragraph in paragraphs(*within.pop(0), deeper):
+            found += paragraph
+        within += deeper
+    return found
+
+
 def walk(
     element: pikepdf.Object, page: Optional[PageId] = None, depth: int = 0
 ) -> Iterator[Node]:
