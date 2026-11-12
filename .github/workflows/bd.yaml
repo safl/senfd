@@ -73,7 +73,7 @@ jobs:
 
     - name: Upload the build, which a release publishes
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.15'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: dist
         path: dist/
@@ -86,7 +86,7 @@ jobs:
       run: |
         senfd example/example.docx --output output
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: documents-enriched-${{ matrix.os }}-${{ matrix.python-version }}
         path: output
@@ -104,7 +104,7 @@ jobs:
       run: |
         make test
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: coverage-html-${{ matrix.os }}-${{ matrix.python-version }}
         path: htmlcov
