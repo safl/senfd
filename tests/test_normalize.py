@@ -696,6 +696,17 @@ def test_a_byte_diagram_with_a_byte_outside_every_field_is_not_read(rows):
     assert normalize_figure(diagram_of_bytes(*rows), []).layout is None
 
 
+def test_a_name_in_title_case_is_split_at_a_colon_without_a_space():
+    """KV 1.4 gives status 87h as "KV Key Does Not Exist:The KV key does not
+    exist.", the space after the colon left out"""
+
+    assert parse_field_description(
+        "KV Key Does Not Exist:The KV key does not exist."
+    ) == ("KV Key Does Not Exist", None, "The KV key does not exist.")
+    text = "List the zones in the ZSE:Empty state."
+    assert parse_field_description(text) == (None, None, text)
+
+
 def test_a_colon_inside_a_word_separates_no_name_from_its_description():
     """ZNS 1.5 Figure 35 gives Reporting Options of 1h as "List the zones in
     the ZSE:Empty state.", where ZSE:Empty is the name of a zone state"""

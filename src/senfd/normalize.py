@@ -204,6 +204,24 @@ REGEX_ENTRY_ACRONYM = re.compile(
 # Rows that are whole in their first line, whatever the lines after them say
 UNNAMED_ROWS = ("reserved", "obsolete", "vendor specific", "ignored")
 
+# "Name:Description", the space after the colon left out; the name is one
+# only where it is in title case, as "KV Key Does Not Exist:The KV key does
+# not exist.", unlike "List the zones in the ZSE:Empty state."
+# The acronym group never matches; it is there for the callers of REGEX_FIELD
+REGEX_FIELD_TIGHT = re.compile(rf"^{NAME}(?P<acronym>(?!))?:(?P<rest>[A-Z].*)$")
+SMALL_WORDS = {"a", "an", "and", "by", "for", "in", "is", "of", "or", "the", "to"}
+
+
+def is_title(text: str) -> bool:
+    """Whether every word of 'text' begins with a capital or a digit, or is a
+    small word, as "of"; the words of a name in title case"""
+
+    words = text.split()
+    return bool(words) and all(
+        w[0].isupper() or w[0].isdigit() or w in SMALL_WORDS for w in words
+    )
+
+
 REGEX_FIELD_NO_COLON = re.compile(
     rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)\)\s+(?P<rest>[A-Z(].*)$"
 )
@@ -248,6 +266,9 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
     if not match:
         # "Name (ACR) The description...", the colon left out
         match = REGEX_FIELD_NO_COLON.match(first)
+    if not match:
+        tight = REGEX_FIELD_TIGHT.match(first)
+        match = tight if tight and is_title(tight["name"]) else None
     if not match or len(match["name"]) > 80:
         return None, None, "\n".join(p for p in [first, more] if p)
 
@@ -286,7 +307,7 @@ def is_name(text: str) -> bool:
     Command Set Specification" """
 
     words = text.split()
-    small = {"a", "an", "and", "by", "for", "in", "is", "of", "or", "the", "to"}
+    small = SMALL_WORDS
     return (
         len(words) <= 4
         and not text.endswith(".")
