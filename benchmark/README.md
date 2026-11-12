@@ -6,15 +6,17 @@ SPDX-License-Identifier: LGPL-2.1-only
 
 # NVMe questions: frontier language models and senfd
 
-71 questions with one exact answer each, an opcode, an identifier, a
+86 questions with one exact answer each, an opcode, an identifier, a
 status code, a bit or a byte offset, about the eleven NVMe documents
-ratified in 2026: the commands, features, log pages and fields that recent
-revisions added or moved, the bits of the registers, the opcodes of every
-command set and the fields of the Identify data structures, with a few
-long-standing facts among them. Each right answer was checked against the
-figure that gives it. `questions.json` holds them. The latest run,
-`results/2026-11-11-v0.17.0`, made its data model from the PDFs NVM
-Express publishes, at senfd 0.17.0. Kept beside it are the runs of
+ratified in 2026, at least three from each: the commands, features, log
+pages and fields that recent revisions added or moved, the bits of the
+registers, the opcodes of every command set, the fields of the Identify
+data structures, the PDUs and descriptors of the transports and the boot
+table, with a few long-standing facts among them. `questions.json` holds
+them, each with its `source`: the PDF and the figure that holds the
+answer, against which the answer was checked. The latest run,
+`results/2026-11-11-v0.17.0`, asked the first 71 of them. It made its data
+model from the PDFs NVM Express publishes, at senfd 0.17.0. Kept beside it are the runs of
 2026-11-10 at senfd 0.14.0 and of 2026-11-09 at senfd 0.13.0, with the
 same language models, the run of
 2026-11-09 at senfd 75c370d, on the way to 0.9.1, with Llama 3.1 8B and
