@@ -191,6 +191,14 @@ REGEX_FIELD = re.compile(
 # "(refer to Figure 3)" is none
 REGEX_ACRONYM_WORD = re.compile(r"^[A-Z][A-Za-z0-9_-]*$")
 
+# What the acronym after the name of an entry of a table of values looks
+# like: one word, as "FSTS", "F" or "PDU-Type", that is no ordinary word, a
+# letter and lower-case letters after it, so that "(Optional)", "(Admin)" and
+# "(refer to section 1)", which say something of the name, are none
+REGEX_ENTRY_ACRONYM = re.compile(
+    r"^(?![A-Za-z][a-z]+$)[A-Za-z0-9]+(?:[-_/.][A-Za-z0-9]+)*$"
+)
+
 # Rows that are whole in their first line, whatever the lines after them say
 UNNAMED_ROWS = ("reserved", "obsolete", "vendor specific", "ignored")
 
