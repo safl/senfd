@@ -15,6 +15,13 @@ from typing import Dict, Iterable, List, Optional, Set, Tuple
 from senfd.sate.phrasing import GENERIC
 from senfd.documents.spec import Bits, Dwords, SpecDocument
 
+
+def spaced(text: str) -> str:
+    """'text' as its words in lowercase, with a space before and after each"""
+
+    return " " + " ".join(re.findall(r"[a-z0-9/]+", text.lower())) + " "
+
+
 # What fields are of: a thing by its name in lowercase and, of a command or
 # a feature, one dword of it, or None for all of it
 Of = Tuple[str, Optional[int]]
@@ -30,6 +37,8 @@ class Vocabulary:
     structures: Set[str] = field(default_factory=set)
     acronyms: Set[str] = field(default_factory=set)
     registers: Set[str] = field(default_factory=set)
+    # The structures that a CNS value returns, by a CNS entry naming them
+    cns: Set[str] = field(default_factory=set)
     # The acronyms of the fields of a thing, in the order of its figures
     fields: Dict[Of, List[str]] = field(default_factory=dict)
 
@@ -60,6 +69,19 @@ class Vocabulary:
                 )
             else:
                 vocabulary.add_fields(structure.fields, (structure.name.lower(), None))
+        returned = [
+            spaced(entry.description or "")
+            for table in spec.values
+            if table.kind == "cns_values"
+            for entry in table.entries
+        ]
+        for name in vocabulary.structures:
+            head, dash, rest = name.partition(" - ")
+            # "Identify - Identify Namespace" is named in its entry by its rest;
+            # one word, as "Format", is a word of other entries' descriptions
+            named = spaced(rest if dash and head == "Identify" else name)
+            if named.count(" ") > 2 and any(named in text for text in returned):
+                vocabulary.cns.add(name)
         return vocabulary
 
     def add_dwords(self, name: str, sqe: List[Dwords], cqe: List[Dwords]) -> None:

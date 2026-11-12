@@ -1139,6 +1139,61 @@ def test_each_row_of_the_table_of_forms_takes_at_most_two_lines():
     assert max(heights) <= 2
 
 
+@pytest.mark.parametrize(
+    "typed, kind",
+    [
+        ("fid of ", "feature"),
+        ("feature identifier of ", "feature"),
+        ("lid of ", "log page"),
+        ("lpi of ", "log page"),
+        ("dwords of ", "command"),
+        ("register ", "register"),
+        ("offset of ", "register"),
+        ("cns of ", "structure"),
+    ],
+)
+def test_after_the_words_of_a_basic_question_every_name_of_its_kind_is_offered(
+    typed, kind
+):
+    from senfd.sate.completion import completions
+    from senfd.sate.vocabulary import Vocabulary
+
+    vocabulary = Vocabulary(
+        commands={"Write", "Read"},
+        features={"Arbitration", "Timestamp"},
+        log_pages={"Error Information", "Firmware Slot Information"},
+        structures={
+            "CSTS - Controller Status",
+            "CC - Controller Configuration",
+            "Identify - Identify Namespace",
+            "Identify Controller",
+            "Timestamp Change Event Format (Event Type 03h)",
+        },
+        registers={"CSTS", "CC"},
+        cns={"Identify - Identify Namespace", "Identify Controller"},
+    )
+    names = {
+        "feature": vocabulary.features,
+        "log page": vocabulary.log_pages,
+        "command": vocabulary.commands,
+        "register": {"CSTS - Controller Status", "CC - Controller Configuration"},
+        "structure": {"Identify - Identify Namespace", "Identify Controller"},
+    }[kind]
+
+    offered = completions(vocabulary, typed)
+
+    assert {o.text for o in offered} == names
+    assert {o.kind for o in offered} == {kind}
+
+
+def test_a_structure_named_by_a_cns_entry_is_one_that_a_cns_value_returns(
+    vocabulary,
+):
+    """CNS 1Ch of the example returns "Foo namespace data" """
+
+    assert vocabulary.cns == {"Identify - Foo Namespace"}
+
+
 def test_after_the_words_of_a_kind_only_names_of_that_kind_are_offered():
     from senfd.sate.completion import completions
     from senfd.sate.vocabulary import Vocabulary
