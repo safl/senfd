@@ -487,6 +487,24 @@ class Typed(Model):
     """The numbers of the footnotes marked on the value"""
 
 
+class ValueLink(Model):
+    """
+    A value of a field of another figure that an entry's description names.
+    For example, Reporting Options 1h of Zone Management Receive, "List the
+    zones in the ZSE:Empty state.", names the zone state ZSE:Empty, which is
+    value 1h of the field ZS of the Zone Descriptor, ZNS 1.5 Figure 38.
+    """
+
+    source: Source
+    """The figure of the field"""
+    field: str
+    """The field by its acronym, or by its name where it has none, as 'ZS'"""
+    value: str
+    """The value as the figure writes it, as '1h'"""
+    acronym: Optional[str] = None
+    """The acronym the description gives the value, as 'ZSE'"""
+
+
 class Entry(Model):
     """A row of a table of values, as a status value or a log page identifier;
     'typed' has the values of its columns of a known kind as what they are"""
@@ -505,6 +523,9 @@ class Entry(Model):
     """The values of the row's columns of a known kind, by their keys"""
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked at the end of the description"""
+    refers_to: Optional[ValueLink] = None
+    """The value of another field that the description names, where the entry
+    has no name of its own"""
 
 
 class Values(Model):
@@ -2399,6 +2420,82 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
                 entry.name = REGEX_TITLE_CODE.sub("", title)
 
 
+# A value of another field named in a description by its acronym and its
+# name, as "ZSE:Empty" and "ZSIO:Implicitly Opened" in "List the zones in the
+# ZSIO:Implicitly Opened state."
+REGEX_NAMED_VALUE = re.compile(
+    r"\b(?P<acronym>[A-Z][A-Z0-9]+):(?P<name>[A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*)*)"
+)
+
+
+def fields_with_sources(
+    document: SpecDocument,
+) -> Iterator[Tuple[Bits, Source]]:
+    """Every field of the structures and dwords of 'document', nested ones and
+    those of cases too, with the figure it is of"""
+
+    def nested(fields: List[Bits]) -> Iterator[Bits]:
+        for field in fields:
+            yield field
+            yield from nested(field.fields)
+            for case in field.cases:
+                yield from nested(case.fields)
+
+    for structure in document.structures:
+        for field in nested(structure.fields):
+            yield field, structure.source
+    for described in document.dwords.values():
+        for dwords in described:
+            for field in nested(dwords.fields):
+                yield field, dwords.source
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            for dwords in [*command.sqe, *command.cqe]:
+                for field in nested(dwords.fields):
+                    yield field, dwords.source
+
+
+def link_named_values(document: SpecDocument) -> None:
+    """
+    Link each entry without a name whose description names a value of another
+    field, as "ZSE:Empty", to that value. The field is the one field of the
+    document whose values have the name of every value the entries beside it
+    name, so that a name as common as "Empty" is not taken from another
+    table; where no field or more than one has them, nothing is linked.
+    """
+
+    fields = list(fields_with_sources(document))
+    lists: List[List[Entry]] = [values.entries for values in document.values]
+    for field, _ in fields:
+        lists.append(field.values)
+        lists += [case.values for case in field.cases]
+    for entries in lists:
+        named = {}
+        for entry in entries:
+            match = REGEX_NAMED_VALUE.search(entry.description)
+            if entry.name is None and match:
+                named[id(entry)] = (entry, match)
+        if not named:
+            continue
+        wanted = {match["name"] for _, match in named.values()}
+        found = {}
+        for field, source in fields:
+            have = {v.name: v for v in field.values if v.name}
+            if field.values is not entries and wanted <= set(have):
+                key = (source.document, source.figure_nr, field.acronym or field.name)
+                found[key] = (field, source, have)
+        if len(found) != 1:
+            continue
+        ((field, source, have),) = found.values()
+        for entry, match in named.values():
+            entry.refers_to = ValueLink(
+                source=source,
+                field=field.acronym or field.name or "",
+                value=have[match["name"]].value,
+                acronym=match["acronym"],
+            )
+
+
 class FromNormalizedDocument(Converter):
     @staticmethod
     def is_applicable(path: Path) -> bool:
@@ -2418,7 +2515,9 @@ class FromNormalizedDocument(Converter):
             add_figure(document, figure, document.meta.stem)
         name_by_sections(document, normalized.sections)
         document.errata += noted_errata(normalized, document.meta.stem)
-        return resolve(document), []
+        document = resolve(document)
+        link_named_values(document)
+        return document, []
 
 
 def merge(documents: List[SpecDocument]) -> SpecDocument:

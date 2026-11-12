@@ -842,6 +842,18 @@
                     },
                     "title": "Footnotes",
                     "type": "array"
+                },
+                "refers_to": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/ValueLink"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The value of another field that the description names, where the entry\nhas no name of its own"
                 }
             },
             "required": [
@@ -1512,6 +1524,45 @@
                 "kind"
             ],
             "title": "Typed",
+            "type": "object"
+        },
+        "ValueLink": {
+            "description": "A value of a field of another figure that an entry's description names.\nFor example, Reporting Options 1h of Zone Management Receive, \"List the\nzones in the ZSE:Empty state.\", names the zone state ZSE:Empty, which is\nvalue 1h of the field ZS of the Zone Descriptor, ZNS 1.5 Figure 38.",
+            "properties": {
+                "source": {
+                    "$ref": "#/$defs/Source",
+                    "description": "The figure of the field"
+                },
+                "field": {
+                    "description": "The field by its acronym, or by its name where it has none, as 'ZS'",
+                    "title": "Field",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "The value as the figure writes it, as '1h'",
+                    "title": "Value",
+                    "type": "string"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym the description gives the value, as 'ZSE'",
+                    "title": "Acronym"
+                }
+            },
+            "required": [
+                "source",
+                "field",
+                "value"
+            ],
+            "title": "ValueLink",
             "type": "object"
         },
         "Values": {
