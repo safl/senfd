@@ -164,6 +164,8 @@ class BitsCommon(Model):
     protection information formats of the NVM Command Set do: "big-endian"
     where the MSB is in the lowest byte. None where the figure does not mark
     them, or the field is one byte"""
+    footnotes: List[int] = Field(default_factory=list)
+    """The numbers of the footnotes marked at the end of the description"""
     values: List["Entry"] = Field(default_factory=list)
     """The values the field takes, as the table in its description gives
     them"""
@@ -501,6 +503,8 @@ class Entry(Model):
     """The row's other columns, by their keys"""
     typed: Dict[str, Typed] = Field(default_factory=dict)
     """The values of the row's columns of a known kind, by their keys"""
+    footnotes: List[int] = Field(default_factory=list)
+    """The numbers of the footnotes marked at the end of the description"""
 
 
 class Values(Model):
@@ -733,7 +737,24 @@ def byte_order_of(
     return "big-endian" if int(msb) < int(lsb) else "little-endian"
 
 
+# A footnote marker printed in superscript after the last sentence, which the
+# text of the description gives as digits right after its full stop
+REGEX_TRAILING_FOOTNOTES = re.compile(r"(?<=[A-Za-z][.)])(\d{1,2}(?:,\s*\d{1,2})*)$")
+
+
+def footnoted(description: str) -> Tuple[str, List[int]]:
+    """'description' without the footnote markers at its end, as "definition.1",
+    and the numbers of those footnotes"""
+
+    match = REGEX_TRAILING_FOOTNOTES.search(description)
+    if not match:
+        return description, []
+    numbers = [int(n) for n in re.findall(r"\d+", match[1])]
+    return description[: match.start()], numbers
+
+
 def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
+    description, footnotes = footnoted(field.description)
     return ReadBits(
         name=field.name,
         acronym=field.acronym,
@@ -741,7 +762,8 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         upper=field.range.upper,
         lower=field.range.lower,
         range=field.range.text,
-        description=field.description,
+        description=description,
+        footnotes=footnotes,
         section=field.section,
         elided=field.elided,
         columns=field.columns,
@@ -993,6 +1015,7 @@ def checked(
                 alternative=field.alternative,
                 placements=field.placements,
                 byte_order=field.byte_order,
+                footnotes=field.footnotes,
                 values=field.values,
                 cases=cases,
             )
@@ -1580,11 +1603,13 @@ def entry_of(
         and entry.get(named or "")
     ):
         name_key = named
+    description, footnotes = footnoted(entry.get("description", ""))
     return Entry(
         value=entry.get(key, ""),
         value_column=key,
         name=entry.get(name_key) if name_key else None,
-        description=entry.get("description", ""),
+        description=description,
+        footnotes=footnotes,
         columns={
             k: v for k, v in entry.items() if k not in (key, name_key, "description")
         },

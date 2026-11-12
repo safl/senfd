@@ -2,12 +2,12 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "45aa9031aef338940792e487dfb0a758357cf9ffaba88dbddda03a51d50676a1",
+    "senfd_sha256": "1a8cad79454ff370fe3ad445c45eee81cb60c8291f0cbfb39e2c80f75aba1795",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "dc8c5b5f8814aa5d0699c4571bf5ec2c9c6d7e9bf4c93dab9b2f5ba74081e80d"
+    "combined_sha256": "7d054f7aac7d8b2284acc87a3296828296f7ae45049912865ebf302c7d74d361"
   },
   "command_sets": {
     "foobar": {
@@ -37,6 +37,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -63,6 +64,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -105,6 +107,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -131,6 +134,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -173,6 +177,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -215,6 +220,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -257,6 +263,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -299,6 +306,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -343,6 +351,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -405,6 +414,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -431,6 +441,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -473,6 +484,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -551,6 +563,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -593,6 +606,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -656,6 +670,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -682,6 +697,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [
                     {
                       "value": "0h",
@@ -705,7 +721,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "1h",
@@ -729,7 +746,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "2h",
@@ -753,7 +771,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     }
                   ],
                   "unit": "bits",
@@ -797,6 +816,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -823,6 +843,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [
                     {
                       "value": "000b",
@@ -841,7 +862,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "001b",
@@ -860,7 +882,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "010b to 111b",
@@ -879,7 +902,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     }
                   ],
                   "unit": "bits",
@@ -923,6 +947,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "reserved",
@@ -949,6 +974,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -992,7 +1018,8 @@
                               "reference": null,
                               "footnotes": []
                             }
-                          }
+                          },
+                          "footnotes": []
                         },
                         {
                           "value": "1h",
@@ -1011,7 +1038,8 @@
                               "reference": null,
                               "footnotes": []
                             }
-                          }
+                          },
+                          "footnotes": []
                         },
                         {
                           "value": "2h to FFh",
@@ -1030,7 +1058,8 @@
                               "reference": null,
                               "footnotes": []
                             }
-                          }
+                          },
+                          "footnotes": []
                         }
                       ],
                       "role": "field",
@@ -1065,6 +1094,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [
                     {
                       "value": "00h",
@@ -1083,7 +1113,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "01h",
@@ -1102,7 +1133,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     },
                     {
                       "value": "02h to FFh",
@@ -1121,7 +1153,8 @@
                           "reference": null,
                           "footnotes": []
                         }
-                      }
+                      },
+                      "footnotes": []
                     }
                   ],
                   "unit": "bits",
@@ -1174,6 +1207,7 @@
                       "alternative": null,
                       "placements": [],
                       "byte_order": null,
+                      "footnotes": [],
                       "values": [],
                       "unit": "bits",
                       "role": "field",
@@ -1234,6 +1268,7 @@
                       "alternative": null,
                       "placements": [],
                       "byte_order": null,
+                      "footnotes": [],
                       "values": [],
                       "unit": "bits",
                       "role": "field",
@@ -1333,6 +1368,7 @@
                   "alternative": null,
                   "placements": [],
                   "byte_order": null,
+                  "footnotes": [],
                   "values": [],
                   "unit": "bits",
                   "role": "field",
@@ -1406,6 +1442,7 @@
                       "alternative": null,
                       "placements": [],
                       "byte_order": null,
+                      "footnotes": [],
                       "values": [],
                       "unit": "bits",
                       "role": "reserved",
@@ -1432,6 +1469,7 @@
                       "alternative": null,
                       "placements": [],
                       "byte_order": null,
+                      "footnotes": [],
                       "values": [],
                       "unit": "bits",
                       "role": "field",
@@ -1549,6 +1587,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -1575,6 +1614,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1617,6 +1657,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -1643,6 +1684,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1685,6 +1727,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1727,6 +1770,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1769,6 +1813,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1811,6 +1856,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1855,6 +1901,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1899,6 +1946,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -1925,6 +1973,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -1967,6 +2016,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2011,6 +2061,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -2037,6 +2088,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [
               {
                 "value": "0h",
@@ -2060,7 +2112,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "1h",
@@ -2084,7 +2137,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "2h",
@@ -2108,7 +2162,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               }
             ],
             "unit": "bits",
@@ -2152,6 +2207,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -2178,6 +2234,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [
               {
                 "value": "000b",
@@ -2196,7 +2253,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "001b",
@@ -2215,7 +2273,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "010b to 111b",
@@ -2234,7 +2293,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               }
             ],
             "unit": "bits",
@@ -2278,6 +2338,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -2304,6 +2365,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2347,7 +2409,8 @@
                         "reference": null,
                         "footnotes": []
                       }
-                    }
+                    },
+                    "footnotes": []
                   },
                   {
                     "value": "1h",
@@ -2366,7 +2429,8 @@
                         "reference": null,
                         "footnotes": []
                       }
-                    }
+                    },
+                    "footnotes": []
                   },
                   {
                     "value": "2h to FFh",
@@ -2385,7 +2449,8 @@
                         "reference": null,
                         "footnotes": []
                       }
-                    }
+                    },
+                    "footnotes": []
                   }
                 ],
                 "role": "field",
@@ -2420,6 +2485,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [
               {
                 "value": "00h",
@@ -2438,7 +2504,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "01h",
@@ -2457,7 +2524,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               },
               {
                 "value": "02h to FFh",
@@ -2476,7 +2544,8 @@
                     "reference": null,
                     "footnotes": []
                   }
-                }
+                },
+                "footnotes": []
               }
             ],
             "unit": "bits",
@@ -2522,6 +2591,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2566,6 +2636,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2625,6 +2696,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2667,6 +2739,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2711,6 +2784,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2755,6 +2829,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -2781,6 +2856,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2825,6 +2901,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2869,6 +2946,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2913,6 +2991,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -2957,6 +3036,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "reserved",
@@ -2983,6 +3063,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -3027,6 +3108,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -3073,6 +3155,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3117,6 +3200,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3161,6 +3245,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -3187,6 +3272,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3231,6 +3317,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3275,6 +3362,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3319,6 +3407,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3345,6 +3434,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3366,6 +3456,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "reserved",
@@ -3392,6 +3483,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -3424,6 +3516,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -3468,6 +3561,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3512,6 +3606,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3556,6 +3651,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3600,6 +3696,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3644,6 +3741,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3670,6 +3768,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -3714,6 +3813,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3740,6 +3840,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -3784,6 +3885,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3828,6 +3930,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3872,6 +3975,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -3919,6 +4023,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -3948,6 +4053,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -3992,6 +4098,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -4036,6 +4143,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4080,6 +4188,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4124,6 +4233,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4168,6 +4278,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4212,6 +4323,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4256,6 +4368,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4300,6 +4413,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4344,6 +4458,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4390,6 +4505,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4436,6 +4552,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4482,6 +4599,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4510,6 +4628,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -4538,6 +4657,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4566,6 +4686,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4594,6 +4715,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4622,6 +4744,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4650,6 +4773,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4678,6 +4802,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "ignored",
@@ -4724,6 +4849,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -4771,6 +4897,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -4800,6 +4927,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -4844,6 +4972,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4888,6 +5017,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4932,6 +5062,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -4976,6 +5107,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5020,6 +5152,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5064,6 +5197,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5108,6 +5242,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5134,6 +5269,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -5160,6 +5296,7 @@
           "alternative": 0,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5186,6 +5323,7 @@
           "alternative": 1,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5212,6 +5350,7 @@
           "alternative": 1,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -5258,6 +5397,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5286,6 +5426,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5330,6 +5471,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5364,6 +5506,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5398,6 +5541,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5432,6 +5576,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5476,6 +5621,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5502,6 +5648,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5523,6 +5670,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bytes",
               "role": "field",
@@ -5549,6 +5697,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bytes",
               "role": "field",
@@ -5581,6 +5730,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -5625,6 +5775,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5651,6 +5802,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -5677,6 +5829,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5703,6 +5856,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5729,6 +5883,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5773,6 +5928,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5799,6 +5955,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5825,6 +5982,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5859,6 +6017,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5893,6 +6052,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -5945,6 +6105,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -5971,6 +6132,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -6015,6 +6177,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6036,6 +6199,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "reserved",
@@ -6062,6 +6226,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -6088,6 +6253,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -6120,6 +6286,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6141,6 +6308,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "reserved",
@@ -6167,6 +6335,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -6193,6 +6362,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -6225,6 +6395,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -6269,6 +6440,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -6302,6 +6474,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -6353,6 +6526,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6379,6 +6553,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6420,6 +6595,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6461,6 +6637,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6502,6 +6679,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6543,6 +6721,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6584,6 +6763,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6643,6 +6823,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -6669,6 +6850,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -6713,6 +6895,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "reserved",
@@ -6739,6 +6922,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bits",
           "role": "field",
@@ -6786,6 +6970,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": "big-endian",
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6815,6 +7000,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": "big-endian",
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6859,6 +7045,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -6885,6 +7072,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6911,6 +7099,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "reserved",
@@ -6937,6 +7126,7 @@
           "alternative": null,
           "placements": [],
           "byte_order": null,
+          "footnotes": [],
           "values": [],
           "unit": "bytes",
           "role": "field",
@@ -6958,6 +7148,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -6984,6 +7175,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -7031,7 +7223,8 @@
           "name": "Foo Busy",
           "description": "Foo is busy.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "81h",
@@ -7039,7 +7232,8 @@
           "name": "Foo Gone",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7067,7 +7261,8 @@
           "name": "Foo Invalid",
           "description": "Foo is not valid.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7135,7 +7330,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7176,7 +7372,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "Dong",
@@ -7197,7 +7394,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7287,7 +7485,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7326,7 +7525,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "C1h",
@@ -7345,7 +7545,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "C2h",
@@ -7364,7 +7565,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7430,7 +7632,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7506,7 +7709,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "C1h to C3h",
@@ -7561,7 +7765,8 @@
               "reference": "Bar Specification",
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "C4h-C7h",
@@ -7614,7 +7819,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         },
         {
           "value": "C8h",
@@ -7657,7 +7863,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -7691,7 +7898,8 @@
             "mnr_field": "0h",
             "ter_field": "0h"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "1.1",
@@ -7703,7 +7911,8 @@
             "mnr_field": "1h",
             "ter_field": "0h"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7731,7 +7940,8 @@
           "name": "Foo Element",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "1h",
@@ -7739,7 +7949,8 @@
           "name": "Bar Element",
           "description": "Not foo.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7767,7 +7978,8 @@
           "name": "FOO",
           "description": "Foo Over Ober",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7795,7 +8007,8 @@
           "name": "Foo Ready",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7823,7 +8036,8 @@
           "name": "Generic Command Status",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "7h",
@@ -7831,7 +8045,8 @@
           "name": "Vendor Specific",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7859,7 +8074,8 @@
           "name": "Foo Clash",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7887,7 +8103,8 @@
           "name": "Foo Error",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7925,7 +8142,8 @@
             "discovery_controller": "M",
             "acronym": "FCAP"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7960,7 +8178,8 @@
             "bytes_in_command": "511:00",
             "objective": "Write foo"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -7992,7 +8211,8 @@
             "ending": "Busy",
             "transition_condition": "A foo arrives"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8025,7 +8245,8 @@
             "command_1": "Ding",
             "command_2": "Dong"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8055,7 +8276,8 @@
           "columns": {
             "section": "Foo Errors"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "83h",
@@ -8065,7 +8287,8 @@
           "columns": {
             "section": "Foo Errors"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8096,7 +8319,8 @@
           "columns": {
             "reference": "6.1"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "01h",
@@ -8106,7 +8330,8 @@
           "columns": {
             "reference": "6.2"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8139,7 +8364,8 @@
             "directive_command": "Foo Directive Receive",
             "reference": "6.2.1"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "All other values",
@@ -8150,7 +8376,8 @@
             "directive_command": "Foo Directive Receive",
             "reference": ""
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "01h",
@@ -8161,7 +8388,8 @@
             "directive_command": "Foo Directive Send",
             "reference": "6.2.2"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8215,7 +8443,8 @@
               "reference": null,
               "footnotes": []
             }
-          }
+          },
+          "footnotes": []
         }
       ],
       "source": {
@@ -8245,7 +8474,8 @@
           "columns": {
             "purpose": "Bar"
           },
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8273,7 +8503,8 @@
           "name": "Ding Qux",
           "description": "A qux that dings.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "01h",
@@ -8281,7 +8512,8 @@
           "name": "Ring Qux",
           "description": "A qux that rings.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "02h to FFh",
@@ -8289,7 +8521,8 @@
           "name": "Reserved",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8317,7 +8550,8 @@
           "name": "Plain",
           "description": "A qux of no kind.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "01h",
@@ -8325,7 +8559,8 @@
           "name": "Fancy",
           "description": "A qux of a kind.",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         },
         {
           "value": "02h to FFh",
@@ -8333,7 +8568,8 @@
           "name": "Reserved",
           "description": "",
           "columns": {},
-          "typed": {}
+          "typed": {},
+          "footnotes": []
         }
       ],
       "source": {
@@ -8376,6 +8612,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "reserved",
@@ -8402,6 +8639,7 @@
               "alternative": null,
               "placements": [],
               "byte_order": null,
+              "footnotes": [],
               "values": [],
               "unit": "bits",
               "role": "field",
@@ -8481,6 +8719,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bytes",
             "role": "field",
@@ -8552,6 +8791,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bytes",
             "role": "field",
@@ -8607,6 +8847,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -8651,6 +8892,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -8695,6 +8937,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -8739,6 +8982,7 @@
             "alternative": null,
             "placements": [],
             "byte_order": null,
+            "footnotes": [],
             "values": [],
             "unit": "bits",
             "role": "field",
@@ -8921,7 +9165,7 @@
     "example": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "45aa9031aef338940792e487dfb0a758357cf9ffaba88dbddda03a51d50676a1",
+      "senfd_sha256": "1a8cad79454ff370fe3ad445c45eee81cb60c8291f0cbfb39e2c80f75aba1795",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -8931,7 +9175,7 @@
     "invalid": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "45aa9031aef338940792e487dfb0a758357cf9ffaba88dbddda03a51d50676a1",
+      "senfd_sha256": "1a8cad79454ff370fe3ad445c45eee81cb60c8291f0cbfb39e2c80f75aba1795",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
