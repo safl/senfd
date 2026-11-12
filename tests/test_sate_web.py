@@ -87,8 +87,8 @@ def test_the_document_table_links_the_published_pdfs():
 def test_each_theme_has_light_and_dark_rules_and_an_option(client):
     response = client.get("/")
 
-    assert next(iter(web.THEMES)) == "one"
-    assert '<html lang="en" data-theme="one">' in response.text
+    assert next(iter(web.THEMES)) == "gruvbox"
+    assert '<html lang="en" data-theme="gruvbox">' in response.text
     assert '<button id="mode" type="button" hidden>' in response.text
     for name, (title, *_) in web.THEMES.items():
         root = f':root[data-theme="{name}"]'
@@ -175,7 +175,12 @@ def test_the_title_is_a_button_with_the_logo_and_the_logo_is_the_favicon(client)
     assert "header h1 a.home {" in page
     assert "header h1 .name {" in page
     assert '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' in page
-    assert "#E1AD01" in web.LOGO
+    assert 'fill="#D79921" stroke="#282828"' in web.LOGO
+    button = re.search(r"header h1 a\.home \{(.*?)\}", page, re.S).group(1)
+    assert "background: #282828;" in button
+    assert "var(--" not in button
+    assert "light-dark" not in page
+    assert "header h1 .logo g { stroke: none; }" in page
 
 
 def test_an_unknown_question_is_reported_as_not_known(client):
@@ -319,6 +324,20 @@ NEEDS = [
     ("warn", "note", 4.5),
     ("line", "bg", 3.0),
 ]
+
+
+def test_the_default_theme_is_the_gruvbox_palette_of_senfd():
+    """Background, text, mustard links and the secondary surface; the light
+    mustard is #B57614 darkened in lightness to reach 4.5:1"""
+
+    _, light, dark = web.THEMES["gruvbox"]
+    tokens = ("bg", "fg", "accent", "chosen", "note")
+
+    def pick(values):
+        return [dict(zip(web.TOKENS, values.split()))[t] for t in tokens]
+
+    assert pick(dark) == ["#282828", "#ebdbb2", "#fabd2f", "#3c3836", "#3c3836"]
+    assert pick(light) == ["#fbf1c7", "#3c3836", "#8c5b0f", "#f2e5bc", "#f2e5bc"]
 
 
 @pytest.mark.parametrize("theme", list(web.THEMES))

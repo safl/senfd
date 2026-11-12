@@ -57,11 +57,17 @@ if TYPE_CHECKING:
 # order of TOKENS: the page background, text, secondary text, lines, links,
 # the background of the selected completion, the background of a note, and
 # the label of a note. The page uses the first theme until the reader
-# chooses another. The colours start from each theme's published palette.
-# Where a colour failed the WCAG contrast ratio for its use, its lightness
+# chooses another; the first is Gruvbox with mustard links, the palette of
+# senfd. The colours start from each theme's published palette. Where a
+# colour failed the WCAG contrast ratio for its use, its lightness
 # was changed and its hue kept: 7:1 for text, 4.5:1 for secondary text,
 # links and the note's label, and 3:1 for lines.
 THEMES = {
+    "gruvbox": (
+        "Gruvbox",
+        "#fbf1c7 #3c3836 #786b61 #a5874a #8c5b0f #f2e5bc #f2e5bc #af3a03",
+        "#282828 #ebdbb2 #9a8c7e #7a706a #fabd2f #3c3836 #3c3836 #fe8019",
+    ),
     "one": (
         "One",
         "#fafafa #383a42 #696c77 #909095 #2162f0 #f0f0f1 #f0f0f1 #916301",
@@ -71,11 +77,6 @@ THEMES = {
         "Solarized",
         "#fdf6e3 #3e4d52 #647476 #9d8d5c #1e6da5 #eee8d5 #eee8d5 #826200",
         "#002b36 #b8c1c1 #7b9199 #5d757c #2ca9a0 #073642 #073642 #c29300",
-    ),
-    "gruvbox": (
-        "Gruvbox",
-        "#fbf1c7 #3c3836 #786b61 #a5874a #076678 #ebdbb2 #ebdbb2 #85570f",
-        "#282828 #ebdbb2 #9a8c7e #7a706a #89a99d #3c3836 #3c3836 #fabd2f",
     ),
     "catppuccin": (
         "Catppuccin",
@@ -500,15 +501,16 @@ def serve(spec: SpecDocument, host: str, port: int, browse: bool = False) -> Non
 
 
 # The small logo of senfd, a flower of four mustard petals, drawn in the
-# title button and given as the favicon
+# title button and given as the favicon. Its details are dark for a light
+# background; the title button, which is always dark, lightens them.
 LOGO = (
     '<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"'
-    ' aria-hidden="true"><g fill="#E1AD01" stroke="#2B2F36" stroke-width="1.65">'
+    ' aria-hidden="true"><g fill="#D79921" stroke="#282828" stroke-width="1.65">'
     '<rect x="3.6" y="3.6" width="11.5" height="11.5" rx="3.3"/>'
     '<rect x="16.9" y="3.6" width="11.5" height="11.5" rx="3.3"/>'
     '<rect x="3.6" y="16.9" width="11.5" height="11.5" rx="3.3"/>'
     '<rect x="16.9" y="16.9" width="11.5" height="11.5" rx="3.3"/></g>'
-    '<circle cx="16" cy="16" r="3.25" fill="#2B2F36"/></svg>'
+    '<circle cx="16" cy="16" r="3.25" fill="#282828"/></svg>'
 )
 
 PAGE = """<!doctype html>
@@ -561,17 +563,22 @@ header h1 {{
   display: flex; gap: 0.6rem; align-items: center;
 }}
 header h1 a {{ color: inherit; text-decoration: none; }}
+/* The title button looks the same in every theme and mode: the logo's
+   dark variant, mustard on Gruvbox's dark background */
 header h1 a.home {{
   display: inline-flex; gap: 0.5rem; align-items: center;
-  padding: 0.2rem 0.65rem 0.2rem 0.4rem; border: 1px solid var(--line);
-  border-radius: 6px; background: var(--bg);
+  padding: 0.2rem 0.65rem 0.2rem 0.4rem; border: 1px solid #7a706a;
+  border-radius: 6px; background: #282828;
 }}
-header h1 a.home:hover, header h1 a.home:focus-visible {{ border-color: var(--accent); }}
+header h1 a.home:hover, header h1 a.home:focus-visible {{ border-color: #fabd2f; }}
 header h1 .logo {{ width: 1.6rem; height: 1.6rem; }}
-/* The name in the colours of the logo: mustard, outlined in slate */
+header h1 .logo g {{ stroke: none; }}
+header h1 .logo circle {{ fill: #ebdbb2; }}
+/* As tall as the logo. The letters have no descenders, so they sit low in
+   their line; lifting them centres them on the logo */
 header h1 .name {{
-  color: #E1AD01; -webkit-text-stroke: 0.04em #2B2F36; paint-order: stroke fill;
-  font-size: 1.25rem; letter-spacing: 0.02em;
+  color: #D79921; font-size: 1.75rem; line-height: 1; letter-spacing: 0.01em;
+  position: relative; top: -0.09em;
 }}
 header h1 .version {{ color: var(--dim); font-size: 0.75rem; font-weight: normal; }}
 header nav {{ display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; }}
