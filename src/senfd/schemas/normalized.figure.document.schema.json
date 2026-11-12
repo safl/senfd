@@ -156,6 +156,78 @@
             "title": "Layout",
             "type": "object"
         },
+        "LayoutCase": {
+            "description": "What a field is while another field of its layout has one of the values\nnamed, as bits 15:08 of Zone Management Receive are the Reporting Options\nwhile the Zone Receive Action is Report Zones or Extended Report Zones:\nthe name, acronym and description of what it is then, and the layouts and\nthe values of the tables saying so",
+            "properties": {
+                "selector": {
+                    "title": "Selector",
+                    "type": "string"
+                },
+                "when": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "When",
+                    "type": "array"
+                },
+                "otherwise": {
+                    "default": false,
+                    "title": "Otherwise",
+                    "type": "boolean"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Name"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "title": "Acronym"
+                },
+                "description": {
+                    "default": "",
+                    "title": "Description",
+                    "type": "string"
+                },
+                "layouts": {
+                    "items": {
+                        "$ref": "#/$defs/Layout"
+                    },
+                    "title": "Layouts",
+                    "type": "array"
+                },
+                "values": {
+                    "items": {
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "type": "object"
+                    },
+                    "title": "Values",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "selector"
+            ],
+            "title": "LayoutCase",
+            "type": "object"
+        },
         "LayoutField": {
             "description": "A field of a layout table: its range, name, acronym and description, the\nother columns of its row by their name, the heading it is under, and the\nlayouts of the tables in its description",
             "properties": {
@@ -230,6 +302,13 @@
                         "type": "object"
                     },
                     "title": "Values",
+                    "type": "array"
+                },
+                "cases": {
+                    "items": {
+                        "$ref": "#/$defs/LayoutCase"
+                    },
+                    "title": "Cases",
                     "type": "array"
                 }
             },

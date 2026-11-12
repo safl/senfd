@@ -554,3 +554,25 @@ def test_an_entry_of_an_array_says_its_array_and_the_structure_laying_it_out(spe
         in line
         for line in markdown
     )
+
+
+def test_verbose_gives_the_cases_of_a_field_with_their_values(spec):
+    """Qux Action Specific is the Qux Options while Qux Action is Sweep or
+    Deep Sweep, and reserved for all other values"""
+
+    lines = senfd.query.command(spec, "foo migrate", 13, verbose=True)
+    at = lines.index("  15:08 Qux Action Specific (QAS)")
+
+    assert lines[at + 1 : at + 6] == [
+        "      while QA is Sweep (0h) or Deep Sweep (1h): Qux Options",
+        "        = 0h List all quxes.",
+        "        = 1h List the idle quxes.",
+        "        = 2h to FFh Reserved",
+        "      for all other values of QA: Reserved",
+    ]
+    markdown = senfd.query.command(spec, "foo migrate", 13, verbose=True, markdown=True)
+    assert any(
+        "While QA is Sweep (0h) or Deep Sweep (1h): Qux Options. Values: 0h List all quxes."
+        in line
+        for line in markdown
+    )

@@ -142,6 +142,48 @@ class BitsCommon(Model):
     them"""
 
 
+class Selected(Model):
+    """A value of the field that decides a case"""
+
+    name: str
+    """The name of the value, as the figure of the case writes it, as 'Report
+    Zones'"""
+    value: Optional[int] = None
+    """The value, where the values of the deciding field have one of that
+    name, as 0 of 00h"""
+
+
+class CaseCommon(Model):
+    """What a case has however far it is made"""
+
+    selector: str
+    """The field whose value decides the case: its acronym where the figure
+    has a field of the name heading the cases, as "ZRA" of 'Zone Receive
+    Action', else that name"""
+    when: List[Selected] = Field(default_factory=list)
+    """The values of the deciding field that the case is for; none of the
+    case for all other values"""
+    otherwise: bool = False
+    """Whether the case is for every value of the deciding field that no
+    other case is for, as the row 'All other values'"""
+    name: Optional[str] = None
+    """The name of what the field is in the case, as "Reporting Options" or
+    "Reserved"; None where the figure gives none"""
+    acronym: Optional[str] = None
+    """Its acronym, as 'ZRWAA'"""
+    description: str = ""
+    """The text describing the field in the case"""
+    values: List["Entry"] = Field(default_factory=list)
+    """The values the field takes in the case"""
+
+
+class ReadCase(CaseCommon):
+    """A case as read, from which checked() makes a case"""
+
+    fields: List["ReadBits"] = Field(default_factory=list)
+    """The rows the case lays the field out by"""
+
+
 class ReadBits(BitsCommon):
     """A row of a layout as read, from which checked() makes a field or not"""
 
@@ -149,6 +191,8 @@ class ReadBits(BitsCommon):
     """What the range counts: "bits" or 'bytes'"""
     fields: List["ReadBits"] = Field(default_factory=list)
     """The rows within this one, as its description lays them out"""
+    cases: List[ReadCase] = Field(default_factory=list)
+    """What the row is by the value of another row's field"""
 
 
 class Array(Model):
@@ -175,6 +219,21 @@ class Array(Model):
     """How many bits or bytes each entry is, in the unit of the field"""
     lower: int
     """The lower bound of the first entry, where the array starts"""
+
+
+class Case(CaseCommon):
+    """
+    What a field is while another field of its figure has one of some values,
+    as bits 15:08 of Zone Management Receive, ZRAS, are the Reporting Options
+    while ZRA is Report Zones or Extended Report Zones, and reserved for all
+    other values of ZRA
+    """
+
+    role: Role = "field"
+    """What the field is in the case: a "field", or what holds a place, as
+    'reserved'"""
+    fields: List["Bits"] = Field(default_factory=list)
+    """The fields within the field in the case"""
 
 
 class Bits(BitsCommon):
@@ -212,6 +271,10 @@ class Bits(BitsCommon):
     description of the field names that figure instead of giving the values,
     as "Refer to Figure 336"; the table is the one of the data model's
     'values' with this source"""
+    cases: List[Case] = Field(default_factory=list)
+    """What the field is by the value of another field of its figure, where
+    its description has a table saying so; the values and the fields of a
+    case are those the field has while the case holds"""
     array: Optional[Array] = None
     """The array the field is an entry of, where the figure writes entries
     numbered by their index and leaves rows out between them"""
@@ -647,6 +710,25 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
             ]
         ),
         values=[value_of(entry) for entry in field.values],
+        cases=[
+            ReadCase(
+                selector=case.selector,
+                when=[Selected(name=name) for name in case.when],
+                otherwise=case.otherwise,
+                name=case.name,
+                acronym=case.acronym,
+                description=case.description,
+                values=[value_of(entry) for entry in case.values],
+                fields=unions_of(
+                    [
+                        bits_of(nested_field, nested.unit)
+                        for nested in case.layouts
+                        for nested_field in nested.fields
+                    ]
+                ),
+            )
+            for case in field.cases
+        ],
     )
 
 
@@ -826,6 +908,16 @@ def checked(
         )
         errata += nested_errata
         unnamed += nested_unnamed
+        cases = []
+        for case in field.cases:
+            laid_out, case_errata, case_unnamed = checked(
+                case.fields, within, source, holding
+            )
+            errata += case_errata
+            unnamed += case_unnamed
+            is_a = senfd.fields.identity(case.name, None).role if case.name else "field"
+            made_case = case.model_dump(exclude={"fields"})
+            cases.append(Case(role=is_a, fields=laid_out, **made_case))
         named_by_its_text = field.name is None and made.role == "field"
         kept.append(
             Bits(
@@ -847,11 +939,49 @@ def checked(
                 union=field.union,
                 alternative=field.alternative,
                 values=field.values,
+                cases=cases,
             )
         )
 
+    for field_made in kept:
+        for case_made in field_made.cases:
+            decide(case_made, kept)
     arrays_of(kept)
     return kept, errata, unnamed
+
+
+def decide(case: Case, fields: List[Bits]) -> None:
+    """Name the field deciding 'case' by its acronym, and give each value
+    the case is for its number: the one the values of that field, among
+    'fields' of the layout the case is in, give its name, or the code the
+    case writes instead of a name"""
+
+    names = (alias(case.selector),)
+    by = next(
+        (
+            f
+            for f in fields
+            if alias(f.name) in names or alias(f.acronym or "") in names
+        ),
+        None,
+    )
+    if by is None:
+        return
+    case.selector = by.acronym or by.name
+    numbers: Dict[str, int] = {}
+    for value in by.values:
+        typed = value.typed.get(value.value_column)
+        if typed is None or typed.lower is None or typed.lower != typed.upper:
+            continue
+        for name in value_names(value):
+            numbers.setdefault(alias(name), typed.lower)
+    for selected in case.when:
+        # A row may give the value itself, as "01h", rather than its name
+        code = typed_of(selected.name)
+        if code and code.kind in ("identifier", "number") and code.lower == code.upper:
+            selected.value = code.lower
+        else:
+            selected.value = numbers.get(alias(selected.name))
 
 
 def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
@@ -1815,6 +1945,8 @@ def fields_within(fields: List[Bits]) -> Iterator[Bits]:
     for field in fields:
         yield field
         yield from fields_within(field.fields)
+        for case in field.cases:
+            yield from fields_within(case.fields)
 
 
 REGEX_FIGURE = re.compile(r"\bFigure\s+(\d+)")
@@ -1955,6 +2087,8 @@ def link_structures(document: SpecDocument) -> None:
                     field
                 )
             link(field.fields, source)
+            for case in field.cases:
+                link(case.fields, source)
         for entries in arrays.values():
             linked = [e.structure for e in entries if e.structure]
             if not linked or any(other != linked[0] for other in linked):

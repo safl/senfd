@@ -870,6 +870,57 @@ FIGURES = [
             ],
         },
     ),
+    # A field that is one thing or another by the value of another field of
+    # its figure: the table in its cell is headed by that field, a row whose
+    # second cell is merged with the one above names one more value, and a
+    # cell of the table holds the values the field then takes
+    (
+        f"Foo Migrate {DASH} Command Dword 13",
+        dword(
+            ("31:16", "Reserved"),
+            (
+                "15:08",
+                (
+                    "Qux Action Specific (QAS):",
+                    {
+                        "header": ("Qux Action", "Description"),
+                        "rows": [
+                            (
+                                "Sweep",
+                                (
+                                    "Qux Options:",
+                                    {
+                                        "header": ("Value", "Definition"),
+                                        "rows": [
+                                            ("0h", "List all quxes."),
+                                            ("1h", "List the idle quxes."),
+                                            ("2h to FFh", "Reserved"),
+                                        ],
+                                    },
+                                ),
+                            ),
+                            ("Deep Sweep", UP),
+                            ("All other values", "Reserved"),
+                        ],
+                    },
+                ),
+            ),
+            (
+                "07:00",
+                (
+                    "Qux Action (QA):",
+                    {
+                        "header": ("Value", "Definition"),
+                        "rows": [
+                            ("00h", "Sweep: Sweeps."),
+                            ("01h", "Deep Sweep: Sweeps deeply."),
+                            ("02h to FFh", "Reserved"),
+                        ],
+                    },
+                ),
+            ),
+        ),
+    ),
 ]
 
 
@@ -900,7 +951,9 @@ def add_table(container, table, caption=None, indented=False):
     for ridx, cidx, how in merges:
         other = (ridx, cidx - 1) if how == LEFT else (ridx - 1, cidx)
         text = docx_table.cell(*other).text
-        docx_table.cell(*other).merge(docx_table.cell(ridx, cidx)).text = text
+        merged = docx_table.cell(*other).merge(docx_table.cell(ridx, cidx))
+        if not merged.tables:  # Setting the text would take the tables out
+            merged.text = text
 
 
 def number_headings(figures):

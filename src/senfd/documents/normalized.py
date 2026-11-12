@@ -65,6 +65,32 @@ class LayoutField(BaseModel):
     # The tables of values in its description, as the values a field selecting
     # an operation takes, by the names of their columns
     values: List[Dict[str, str]] = Field(default_factory=list)
+    # What it is by the value of another field of its layout, from the tables
+    # in its description whose first column that field heads
+    cases: List["LayoutCase"] = Field(default_factory=list)
+
+
+class LayoutCase(BaseModel):
+    """
+    What a field is while another field of its layout has one of the values
+    named, as bits 15:08 of Zone Management Receive are the Reporting Options
+    while the Zone Receive Action is Report Zones or Extended Report Zones:
+    the name, acronym and description of what it is then, and the layouts and
+    the values of the tables saying so
+    """
+
+    # The header naming the other field, as "Zone Receive Action"
+    selector: str
+    # The values of that field the case is for, by the names the rows give
+    when: List[str] = Field(default_factory=list)
+    # Whether the case is for every value no other case is for, as the row
+    # "All other values"
+    otherwise: bool = False
+    name: Optional[str] = None
+    acronym: Optional[str] = None
+    description: str = ""
+    layouts: List["Layout"] = Field(default_factory=list)
+    values: List[Dict[str, str]] = Field(default_factory=list)
 
 
 class Layout(BaseModel):
@@ -254,6 +280,7 @@ def parse_layout(
     layout = Layout(unit=unit)
     section = None
     elided = False
+    held: List[Tuple[LayoutField, List[Table]]] = []
     for row in rows:
         values = values_of(row, grid)
         if values is None:
@@ -349,17 +376,6 @@ def parse_layout(
                 note("field-name", f"Field without a name: '{description[:60]}'")
             )
 
-        nested: List[Layout] = []
-        enumerated: List[Dict[str, str]] = []
-        for cells in values.cells.values():
-            for cell in cells:
-                for table in cell.tables:
-                    nested_layout = parse_nested(table, diagnostics)
-                    if nested_layout:
-                        nested.append(nested_layout)
-                    else:
-                        enumerated += parse_nested_values(table, diagnostics)
-
         layout.fields.append(
             LayoutField(
                 range=rng,
@@ -370,11 +386,22 @@ def parse_layout(
                 | ({f"{unit}_detail": detail} if detail else {}),
                 section=section,
                 elided=elided,
-                layouts=nested,
-                values=enumerated,
             )
         )
+        tables = [t for cells in values.cells.values() for c in cells for t in c.tables]
+        held.append((layout.fields[-1], tables))
         elided = False
+
+    # The tables in the cells are read once every field of the layout is
+    # known: a table by the values of another field is the cases of its field
+    for field, tables in held:
+        siblings = [other for other in layout.fields if other is not field]
+        for table in tables:
+            cases = parse_cases(table, siblings, diagnostics)
+            if cases:
+                field.cases += cases
+            else:
+                read_nested(table, field, diagnostics)
     return layout
 
 
@@ -456,6 +483,75 @@ def nest_bits(
         )
     )
     return section is not None
+
+
+def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
+    """The table in a cell of the field or the case 'into', as a layout of it
+    where it has the header of one, else as its values"""
+
+    layout = parse_nested(table, diagnostics)
+    if layout:
+        into.layouts.append(layout)
+    else:
+        into.values += parse_nested_values(table, diagnostics)
+
+
+REGEX_OTHERWISE = re.compile(r"^all other(?:s| values)?$", flags=re.IGNORECASE)
+
+
+def parse_cases(
+    table: Table, others: List[LayoutField], diagnostics: List[Diagnostic]
+) -> List[LayoutCase]:
+    """
+    The cases of a table in the cell of a field: a table of two columns, the
+    first headed by the name of one of 'others', the other fields of the
+    layout, as "Zone Receive Action". Each row says what the field is while
+    that field has the value the row names. A row whose second cell is merged
+    with the cell above names one more value of the case above. The row "All
+    other values" is the case of every value that no row names. Empty where
+    the table is no such table.
+    """
+
+    idx, headers, grid, _ = find_header(table.rows)
+    columns = unique(grid)
+    names = {slug(n) for other in others for n in (other.name, other.acronym) if n}
+    if (
+        idx is None
+        or len(columns) != 2
+        or slug(normalize_text(headers[0])) not in names
+    ):
+        return []
+
+    cases: List[LayoutCase] = []
+    for row in table.rows[idx + 1 :]:
+        values = values_of(row, grid)
+        if values is None or values.spans != 2:
+            diagnostics.append(
+                warning("row-length", f"Row of {len(row.cells)} cells, header of 2")
+            )
+            continue
+        named = normalize_text(values.texts.get(columns[0], ""))
+        cells = values.cells.get(columns[1], [])
+        if cases and cells and all(cell.merged == "up" for cell in cells):
+            cases[-1].when += [named] if named else []
+            continue
+        name, acronym, description = parse_field_description(
+            values.texts.get(columns[1], "")
+        )
+        otherwise = bool(REGEX_OTHERWISE.match(named))
+        case = LayoutCase(
+            selector=normalize_text(headers[0]),
+            when=[] if otherwise or not named else [named],
+            otherwise=otherwise,
+            name=name,
+            acronym=acronym,
+            description=description,
+        )
+        for cell in cells:
+            for nested in cell.tables:
+                read_nested(nested, case, diagnostics)
+        cases.append(case)
+    return cases
 
 
 def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout]:

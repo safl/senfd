@@ -354,6 +354,14 @@
                     "default": null,
                     "description": "The figure holding the table of the values the field takes, where the\ndescription of the field names that figure instead of giving the values,\nas \"Refer to Figure 336\"; the table is the one of the data model's\n'values' with this source"
                 },
+                "cases": {
+                    "description": "What the field is by the value of another field of its figure, where\nits description has a table saying so; the values and the fields of a\ncase are those the field has while the case holds",
+                    "items": {
+                        "$ref": "#/$defs/Case"
+                    },
+                    "title": "Cases",
+                    "type": "array"
+                },
                 "array": {
                     "anyOf": [
                         {
@@ -387,6 +395,96 @@
                 "kind"
             ],
             "title": "Bits",
+            "type": "object"
+        },
+        "Case": {
+            "description": "What a field is while another field of its figure has one of some values,\nas bits 15:08 of Zone Management Receive, ZRAS, are the Reporting Options\nwhile ZRA is Report Zones or Extended Report Zones, and reserved for all\nother values of ZRA",
+            "properties": {
+                "selector": {
+                    "description": "The field whose value decides the case: its acronym where the figure\nhas a field of the name heading the cases, as \"ZRA\" of 'Zone Receive\nAction', else that name",
+                    "title": "Selector",
+                    "type": "string"
+                },
+                "when": {
+                    "description": "The values of the deciding field that the case is for; none of the\ncase for all other values",
+                    "items": {
+                        "$ref": "#/$defs/Selected"
+                    },
+                    "title": "When",
+                    "type": "array"
+                },
+                "otherwise": {
+                    "default": false,
+                    "description": "Whether the case is for every value of the deciding field that no\nother case is for, as the row 'All other values'",
+                    "title": "Otherwise",
+                    "type": "boolean"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The name of what the field is in the case, as \"Reporting Options\" or\n\"Reserved\"; None where the figure gives none",
+                    "title": "Name"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Its acronym, as 'ZRWAA'",
+                    "title": "Acronym"
+                },
+                "description": {
+                    "default": "",
+                    "description": "The text describing the field in the case",
+                    "title": "Description",
+                    "type": "string"
+                },
+                "values": {
+                    "description": "The values the field takes in the case",
+                    "items": {
+                        "$ref": "#/$defs/Entry"
+                    },
+                    "title": "Values",
+                    "type": "array"
+                },
+                "role": {
+                    "default": "field",
+                    "description": "What the field is in the case: a \"field\", or what holds a place, as\n'reserved'",
+                    "enum": [
+                        "field",
+                        "reserved",
+                        "obsolete",
+                        "vendor_specific",
+                        "ignored"
+                    ],
+                    "title": "Role",
+                    "type": "string"
+                },
+                "fields": {
+                    "description": "The fields within the field in the case",
+                    "items": {
+                        "$ref": "#/$defs/Bits"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "selector"
+            ],
+            "title": "Case",
             "type": "object"
         },
         "Command": {
@@ -899,6 +997,34 @@
                 "source"
             ],
             "title": "Operation",
+            "type": "object"
+        },
+        "Selected": {
+            "description": "A value of the field that decides a case",
+            "properties": {
+                "name": {
+                    "description": "The name of the value, as the figure of the case writes it, as 'Report\nZones'",
+                    "title": "Name",
+                    "type": "string"
+                },
+                "value": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The value, where the values of the deciding field have one of that\nname, as 0 of 00h",
+                    "title": "Value"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Selected",
             "type": "object"
         },
         "Source": {
