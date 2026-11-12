@@ -305,6 +305,54 @@ def test_entries_name_their_acronym_and_warn_of_irregular_rows():
     assert [d.code for d in diagnostics] == ["row-length"]
 
 
+def test_words_in_parentheses_after_the_name_of_an_entry_are_no_acronym():
+    """A table of values says something of a name in parentheses after it, as
+    "(Optional)" or "(Admin)"; the name keeps them, and an acronym is only
+    what is written as one"""
+
+    from senfd.documents.normalized import parse_entries
+
+    entries = parse_entries(
+        rows(
+            ("00h", "Foo 0 Doorbell (Admin)"),
+            ("04h", "Foo Self Test (Optional)"),
+            ("08h", "Foo tag (Foo Tag)"),
+            ("0Ch", "Foo Status (FSTS)"),
+            ("10h", "Foo Type (Foo-Type)"),
+        ),
+        ["start", "name"],
+        [],
+        ["Start", "Name"],
+        [],
+    )
+    assert [(e["name"], e.get("acronym")) for e in entries] == [
+        ("Foo 0 Doorbell (Admin)", None),
+        ("Foo Self Test (Optional)", None),
+        ("Foo tag (Foo Tag)", None),
+        ("Foo Status", "FSTS"),
+        ("Foo Type", "Foo-Type"),
+    ]
+
+    described = parse_entries(
+        rows(
+            ("0h", "Foo Mode (refer to section 1): The mode."),
+            ("1h", "Foo Buffer (Admin): The buffer."),
+        ),
+        ["value", "description"],
+        [],
+        ["Value", "Description"],
+        [],
+    )
+    assert described == [
+        {
+            "value": "0h",
+            "name": "Foo Mode (refer to section 1)",
+            "description": "The mode.",
+        },
+        {"value": "1h", "name": "Foo Buffer (Admin)", "description": "The buffer."},
+    ]
+
+
 def test_a_header_below_a_title_row_is_found_and_noted():
     from senfd.documents.normalized import normalize_figure
     from senfd.documents.plain import Figure

@@ -24,6 +24,7 @@ from senfd.documents.base import Converter, Document, strip_all_suffixes
 from senfd.documents.plain import FigureDocument
 from senfd.errors import Error
 from senfd.normalize import (
+    REGEX_ENTRY_ACRONYM,
     slug,
     Diagnostic,
     Range,
@@ -510,12 +511,15 @@ def parse_entries(
             name, acronym, rest = parse_field_description(values.texts["description"])
             if name:
                 entry["name"] = name
-                if acronym:
+                if acronym and REGEX_ENTRY_ACRONYM.match(acronym):
                     entry["acronym"] = acronym
+                elif acronym:
+                    # Words saying something of the name, which keeps them
+                    entry["name"] = f"{name} ({acronym})"
                 entry["description"] = normalize_text(rest)
         elif entry.get("name") and "acronym" not in entry:
             name, acronym, _ = parse_field_description(values.texts["name"])
-            if name and acronym:
+            if name and acronym and REGEX_ENTRY_ACRONYM.match(acronym):
                 entry["name"], entry["acronym"] = name, acronym
         if section:
             entry["section"] = section
