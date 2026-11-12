@@ -95,7 +95,7 @@ jobs:
     # in this repository's Actions cache, which only its workflows restore,
     # and never uploaded
     - name: Cache the public specifications
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.cache/senfd/public
         key: public-documents-${{ hashFiles('tests/public/documents.toml') }}
@@ -143,7 +143,7 @@ jobs:
         python -m pip install ".[dev]"
 
     - name: Cache the public specifications
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.cache/senfd/public
         key: public-documents-${{ hashFiles('tests/public/documents.toml') }}
@@ -198,7 +198,7 @@ jobs:
     # checks is the plumbing, the request, its schema and the reply read,
     # and not how well it chooses.
     - name: Cache the tiny language model
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/llm-models
         key: smollm2-135m-instruct-q4_k_m-2e8040ce
