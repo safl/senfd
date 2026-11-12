@@ -2,12 +2,12 @@
   "meta": {
     "format": 1,
     "version": "0.18.0",
-    "senfd_sha256": "c41d65873463f5252a8ff4f179c0f44dfcb2c86a4e5b43ce413133b31ac945b6",
+    "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "d0cd10540e5d2addfc97448be913563515d23c6d435407859cf6b3663d9ff9cb",
-    "combined_sha256": "1460ebd8fe3e92b305390fdfbe1fda05cd94b58021039a5e85d08eadaf3d0978"
+    "combined_sha256": "9ad856db58247b4c065bf5740cce94a117d212a425dbc777f2b456e6a3d39356"
   },
   "command_sets": {
     "foobar": {
@@ -6087,10 +6087,9 @@
         {
           "value": "00h",
           "value_column": "directive_type_value",
-          "name": null,
+          "name": "Foo",
           "description": "",
           "columns": {
-            "directive": "Foo",
             "reference": "6.1"
           },
           "typed": {}
@@ -6098,10 +6097,9 @@
         {
           "value": "01h",
           "value_column": "directive_type_value",
-          "name": null,
+          "name": "Bar",
           "description": "",
           "columns": {
-            "directive": "Bar",
             "reference": "6.2"
           },
           "typed": {}
@@ -6783,7 +6781,7 @@
     "example": {
       "format": 1,
       "version": "0.18.0",
-      "senfd_sha256": "c41d65873463f5252a8ff4f179c0f44dfcb2c86a4e5b43ce413133b31ac945b6",
+      "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
       "stem": "example",
       "file": "example.docx",
       "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
@@ -6793,7 +6791,7 @@
     "invalid": {
       "format": 1,
       "version": "0.18.0",
-      "senfd_sha256": "c41d65873463f5252a8ff4f179c0f44dfcb2c86a4e5b43ce413133b31ac945b6",
+      "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

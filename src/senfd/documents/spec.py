@@ -1246,7 +1246,9 @@ def entry_of(
     """An entry by its value, whichever column holds it: one that is a value
     by its header, else 'code', the column of the table's codes, else the
     command or the name, else the first; an entry of no name of its own has
-    that of the column 'named'"""
+    that of the column 'named', where another column holds its value, as
+    "Directive" names the entries of a table of "Directive" and "Directive
+    Type Value" """
 
     keys = ("value", "cns_value", "identifier")
     by_header = next(
@@ -1257,7 +1259,11 @@ def entry_of(
     key = by_header or next(iter(others), next(iter(entry), ""))
     names = [k for k in entry if k == "name" or (k.endswith("_name") and k != key)]
     name_key = next((k for k in names if entry.get(k)), None)
-    if name_key is None and not by_header and key == code and entry.get(named or ""):
+    if (
+        name_key is None
+        and named not in (key, "description")
+        and entry.get(named or "")
+    ):
         name_key = named
     return Entry(
         value=entry.get(key, ""),
@@ -1440,7 +1446,7 @@ def link_directives(document: SpecDocument, used: set) -> None:
             continue
         for entry in values.entries:
             match = REGEX_HEX.match(entry.value)
-            name = entry.columns.get("directive", "")
+            name = entry.name or ""
             if match and name:
                 types[alias(name)] = int(match["hex"], 16)
 

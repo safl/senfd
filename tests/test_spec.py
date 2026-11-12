@@ -919,3 +919,22 @@ def test_an_entry_named_by_its_description_keeps_the_code_as_its_value():
         ("01h", "foo_identifier_list", None),
         ("02h to FFh", "foo_identifier_list", "Reserved"),
     ]
+
+
+def test_an_entry_of_a_column_headed_as_values_is_named_by_the_first_column():
+    """A table listing things in its first column and their codes in a column
+    whose header says it holds values, as "Directive" and "Directive Type
+    Value": what the first column lists is the name of each entry"""
+
+    values = values_of_table(
+        ("Foo", "Foo Type Value", "Reference"),
+        ("Ding", "00h", "1.2"),
+        ("Ring", "01h", "1.3"),
+        ("Sing", "0Fh", ""),
+    )
+    assert [(e.value, e.value_column, e.name) for e in values.entries] == [
+        ("00h", "foo_type_value", "Ding"),
+        ("01h", "foo_type_value", "Ring"),
+        ("0Fh", "foo_type_value", "Sing"),
+    ]
+    assert values.entries[0].columns == {"reference": "1.2"}
