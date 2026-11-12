@@ -398,3 +398,61 @@ def test_sections_sort_by_number_with_an_annex_last():
     sections = ["A.1", "5.2.10", "5.2.9", None, "B", "5.10"]
     ordered = sorted(sections, key=senfd.query.section_order)
     assert ordered == [None, "5.2.9", "5.2.10", "5.10", "A.1", "B"]
+
+
+def tables_of_codes() -> "senfd.query.SpecDocument":
+    """Tables of values whose codes are under a header other than "Value", as
+    senfd reads them: the code the value of each entry, and the header of its
+    column the entry's value_column"""
+
+    from senfd.documents.spec import Entry, SpecDocument, Values
+
+    def table(name, column, entries, figure):
+        return Values(
+            kind="other",
+            name=name,
+            source=Source(document="Foo", figure_nr=figure),
+            entries=[
+                Entry(value=v, value_column=column, name=n, columns=c)
+                for v, n, c in entries
+            ],
+        )
+
+    return SpecDocument(
+        values=[
+            table("Foo PDU Types", "opcode", [("01h", "FooResp", {})], 1),
+            table(
+                "Foo Property Definitions",
+                "start",
+                [("1000h", "Foo Doorbell (Admin)", {"symbol": "FOODBL"})],
+                2,
+            ),
+            table(
+                "Foo Elements",
+                "descriptor_type_designator",
+                [("3h", "Bar Descriptor", {})],
+                3,
+            ),
+        ]
+    )
+
+
+@pytest.mark.parametrize(
+    "asked, line",
+    [
+        # The table is named by the header of the column of its codes, and a
+        # word asked in the singular finds the title's plural
+        ("foo pdu type fooresp", "01h FooResp, opcode of Foo PDU Types"),
+        (
+            "descriptor type designator bar descriptor",
+            "3h Bar Descriptor, descriptor type designator of Foo Elements",
+        ),
+        # An entry by its symbol, which the line shows
+        ("FOODBL", "1000h Foo Doorbell (Admin) (FOODBL), start of Foo Property"),
+    ],
+)
+def test_a_code_is_named_by_its_column_and_found_by_the_symbol_of_its_entry(
+    asked, line
+):
+    found = senfd.query.value(tables_of_codes(), asked)
+    assert found and found[0].startswith(line), found

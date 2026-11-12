@@ -420,9 +420,11 @@ VALUE_KINDS = [
 ASKING = {"what", "which", "is", "are", "the", "a", "an", "of", "for", "in", "to"}
 
 
-def table_title(table: Values) -> str:
+def table_title(table: Values, column: str = "") -> str:
     """A table of values as a question names it, as "Command Specific status
-    code of Write", "Generic Command status code" or "CNS value of Identify" """
+    code of Write", "Generic Command status code" or "CNS value of Identify";
+    a table of other values by the header of 'column', the column of its
+    codes, as "opcode of NVMe/TCP PDU Types", where that is not "value" """
 
     if table.kind == "status_values" and table.qualifier == "Status Code Type":
         return "Status Code Type (SCT)"
@@ -433,6 +435,8 @@ def table_title(table: Values) -> str:
         "feature_identifiers": "feature identifier",
         "requirements": "requirement",
     }.get(table.kind, "value")
+    if kind == "value" and column and column != "value":
+        kind = column.replace("_", " ")
     parts = [table.qualifier, kind] if table.qualifier else [kind]
     if table.name and alias(table.name) != alias(kind):
         parts.append(f"of {table.name}")
@@ -508,7 +512,17 @@ def value(
         return ["Give the kind of table, a value or a name, as 'status code 82h'"]
 
     def named(entry: Entry) -> str:
-        return entry.name or entry.description.split("\n")[0][:160]
+        """The entry by its name, and its acronym or symbol where a column of
+        its own holds it, as "Foo Doorbell (Admin) (FOODBL)" """
+
+        name = entry.name or entry.description.split("\n")[0][:160]
+        mark = entry.columns.get("acronym") or entry.columns.get("symbol")
+        return f"{name} ({mark})" if mark and mark not in name else name
+
+    def has(word: str, text: str) -> bool:
+        """Whether 'text' has 'word', or its plural, as "types" of "type" """
+
+        return f" {word} " in text or f" {word}s " in text
 
     def spaced(text: str) -> str:
         return " " + " ".join(re.findall(r"[a-z0-9]+", text.lower())) + " "
@@ -517,14 +531,15 @@ def value(
     for table in spec.values:
         if not of_kind(table, kind) or table.kind in skip:
             continue
-        about = spaced(f"{table_title(table)} {document_name(table.source.document)}")
+        document = document_name(table.source.document)
         for entry in table.entries:
             if wanted is not None and not within(entry.value, wanted):
                 continue
-            of_name = about + spaced(named(entry))
-            if all(f" {w} " in of_name for w in words):
+            titles = f"{table_title(table)} {table_title(table, entry.value_column)}"
+            of_name = spaced(f"{titles} {document} {named(entry)}")
+            if all(has(w, of_name) for w in words):
                 rank = 0
-            elif all(f" {w} " in of_name + spaced(entry.description) for w in words):
+            elif all(has(w, of_name + spaced(entry.description)) for w in words):
                 rank = 1
             else:
                 continue
@@ -546,7 +561,8 @@ def value(
     lines = []
     for _, table, entry in sorted(found, key=lambda f: f[0]):
         head = f"**{entry.value}**" if markdown else entry.value
-        line = f"{head} {named(entry)}, {table_title(table)} [{cite(table.source)}]"
+        title = table_title(table, entry.value_column)
+        line = f"{head} {named(entry)}, {title} [{cite(table.source)}]"
         if verbose:
             told = [
                 f"{k.replace('_', ' ')}: {v}" for k, v in entry.columns.items() if v
