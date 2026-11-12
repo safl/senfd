@@ -18,12 +18,12 @@ it is from.
 The data model is JSON validated by a :ref:`schema <sec-schema>`, and the
 same documents give the same data model every time.
 
-**sate** is an expert on the subject a data model describes. Here that is
-the data model senfd makes of the NVMe specifications, as above. Ask it
-about a command, a field, a register, a feature or a log page, in a session
-with completion or on the command line, and it answers instantly, citing the
-figure with a link to its page of the specification on nvmexpress.org, to
-check the answer against:
+**sate** answers questions from a data model. Here the data model is the
+one that senfd makes of the NVMe specifications. You can ask sate about a
+command, a field, a register, a feature or a log page, in an interactive
+session with completion or on the command line. sate answers in
+milliseconds, and cites the figure with a link to the figure's page of the
+specification on nvmexpress.org, so that you can check the answer:
 
 .. raw:: html
 
@@ -54,40 +54,43 @@ Or with pipx:
 
    $ pipx run --no-cache --spec senfd sate-preview-wizard
 
-The wizard lists the specifications it will download from nvmexpress.org,
-and asks before it makes the data model; see :ref:`on the web
-<sec-sate-web>`.
+The wizard lists the specifications that it will download from
+nvmexpress.org, and asks before it makes the data model. The section
+:ref:`on the web <sec-sate-web>` describes the wizard.
 
 .. caution::
 
-   senfd is experimental and is not endorsed by NVM Express. Its data model
-   is derived from the NVMe specifications, and you must be a member of NVM
-   Express, Inc. to make it or use it. Read the :ref:`notices <sec-notices>`
-   at the end of this page first.
+   senfd is experimental and is not endorsed by NVM Express. senfd's data
+   model is derived from the NVMe specifications, and you must be a member
+   of NVM Express, Inc. to make the data model or use it. Read the
+   :ref:`notices <sec-notices>` at the end of this page first.
 
-To use senfd and sate: :ref:`install <sec-install>`, :ref:`make the data
-model <sec-usage>`, :ref:`lint the documents <sec-linting>`, :ref:`ask the
-expert <sec-ask>`, and, if you like, use it :ref:`with a language model
-<sec-llm>`.
+The pages under Use take the steps in order: :ref:`install <sec-install>`,
+:ref:`make the data model <sec-usage>`, :ref:`lint the documents
+<sec-linting>`, :ref:`ask the expert <sec-ask>`, and, optionally, use sate
+:ref:`with a language model <sec-llm>`.
 
 What the data model is for
 --------------------------
 
-* **Precise answers, instantly.** ``sate`` answers a
-  question about a command, a field, a register, a feature or a log page in
-  milliseconds; see :ref:`the expert <sec-ask>`.
-* **Language models that cannot make NVMe facts up.** ``sate --llm``
-  answers questions put in your own words, a small language model on your
-  own CPU choosing the lookup and writing nothing of the answer.
-  ``sate-mcp`` gives a coding agent the lookups as tools, to check an
-  opcode, a bit or an offset against its figure rather than recall it;
-  see :ref:`with a language model <sec-llm>`.
-* **Code generated from the figures.** An early prototype writes xNVMe's
-  specification headers from the data model, every member citing its
-  figure; see :ref:`code from the figures <sec-codegen>`.
-* **A linter of the documents.** What does not read as data is listed with
-  its figure and page, for the authors to fix; see :ref:`the linter
-  <sec-linting>`.
+``sate`` answers a question about a command, a field, a register, a
+feature or a log page in milliseconds, from the data model. The page
+:ref:`ask the expert <sec-ask>` describes the questions that sate answers.
+
+``sate --llm`` answers questions put in your own words. A small language
+model on your own CPU chooses the lookup, and the answer is the result of
+the lookup; the language model writes no part of the answer. ``sate-mcp``
+gives a coding agent the lookups as tools, so that the agent checks an
+opcode, a bit or an offset against its figure instead of recalling it. The
+page :ref:`with a language model <sec-llm>` describes both.
+
+An early prototype generates xNVMe's specification headers from the data
+model, and every generated member cites its figure. The page :ref:`code
+from the figures <sec-codegen>` describes the prototype.
+
+senfd lists each part of a figure that does not read as data, with the
+figure and the page, for the authors to fix. The page :ref:`the linter
+<sec-linting>` describes the list.
 
 .. _sec-notices:
 
@@ -100,18 +103,18 @@ NVM Express and NVMe are its trademarks.
 **Experimental.** What senfd says can be wrong. Every answer cites the
 figure it is from; check it there before you rely on it.
 
-**The data model is under the specifications' terms.** It is derived from
-the NVMe specifications, so the notice printed in each governs it. Members
-of NVM Express, Inc. may use it under their Participation Agreement and the
-Company's Intellectual Property Policy and Bylaws; to anyone else, the
-notice grants only the right to review, refer to or cite the
-specification. **You must be a member of NVM Express, Inc. to make the data
-model or use it.**
+**The data model is under the specifications' terms.** The data model is
+derived from the NVMe specifications, so the notice printed in each
+specification governs the data model. Members of NVM Express, Inc. may use
+the data model under their Participation Agreement and the Company's
+Intellectual Property Policy and Bylaws. To anyone else, the notice grants
+only the right to review, refer to or cite the specification. **You must be
+a member of NVM Express, Inc. to make the data model or use it.**
 
 **Nothing made from the specifications is distributed.** senfd ships no
 specification and no data model, and its CI job, which reads the public
-PDFs, uploads nothing made from them. Make your own from the public PDFs,
-as :ref:`making the data model <sec-usage>` shows.
+PDFs, uploads nothing made from them. You can make your own data model from
+the public PDFs, as :ref:`making the data model <sec-usage>` shows.
 
 .. toctree::
    :caption: Use

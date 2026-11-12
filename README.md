@@ -19,23 +19,24 @@ SPDX-License-Identifier: LGPL-2.1-only
 > is derived from the NVMe specifications, and you must be a member of NVM
 > Express, Inc. to make it or use it. Read the [notices](#notices) first.
 
-**senfd** reads the NVMe specifications, the PDFs NVM Express publishes or
-the `.docx` its members hold, and makes a data model of them: every command
-with its dwords and fields, every data structure, register, feature, log page
-and table of values, each fact citing the document, section, figure and page
-it is from.
+**senfd** reads the NVMe specifications and makes a data model of them.
+senfd reads either the PDFs that NVM Express publishes or the `.docx` files
+that its members hold. The data model holds every command with its dwords
+and fields, and every data structure, register, feature, log page and
+table of values. Each fact in the data model cites the document, section,
+figure and page it comes from.
 
 ![The .pdf and .docx documents go through senfd's stages, read, normalise, define and merge, into one data model](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/senfd.svg)
 
-The data model is JSON validated by a schema, and the same documents give
-the same data model every time.
+The data model is JSON, validated by a schema. The same documents give the
+same data model every time.
 
-**sate** is an expert on the subject a data model describes. Here that is
-the data model senfd makes of the NVMe specifications, as above. Ask it
-about a command, a field, a register, a feature or a log page, in a session
-with completion or on the command line, and it answers instantly, citing the
-figure with a link to its page of the specification on nvmexpress.org, to
-check the answer against:
+**sate** answers questions from a data model. Here the data model is the
+one senfd makes of the NVMe specifications. You can ask sate about a
+command, a field, a register, a feature or a log page, in a session with
+completion or on the command line. sate answers in milliseconds and cites
+the figure, with a link to its page of the specification on
+nvmexpress.org, so you can check the answer:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
 
@@ -52,41 +53,42 @@ Or with pipx:
 pipx run --no-cache --spec senfd sate-preview-wizard
 ```
 
-The wizard lists the specifications it will download from nvmexpress.org,
-and asks before it makes the data model, because only members of NVM
-Express may make and use it. It then opens sate's web page in the browser.
-The data model stays in `~/.cache/senfd`, so the next run opens the page
-straight away.
+The wizard lists the specifications it will download from nvmexpress.org.
+The wizard asks before it makes the data model, because only members of
+NVM Express may make and use the data model. The wizard then opens sate's
+web page in the browser. The data model stays in `~/.cache/senfd`, so the
+next run opens the page without making the data model again.
 
 ## What the data model is for
 
-* **Precise answers, instantly.** `sate` answers a question
-  about a command, a field, a register, a feature or a log page in
-  milliseconds; see [the expert](https://safl.dk/senfd/sate/).
-* **Language models that cannot make NVMe facts up.** `sate --llm`
-  answers questions put in your own words, a small language model on your
-  own CPU choosing the lookup and writing nothing of the answer.
-  `sate-mcp` gives a coding agent the lookups as tools, to check an
-  opcode, a bit or an offset against its figure rather than recall it; see
-  [with a language model](https://safl.dk/senfd/llm/).
-* **Code generated from the figures.** An early prototype writes xNVMe's
-  specification headers from the data model, every member citing its
+* Answers from the figures. `sate` answers a question about a command, a
+  field, a register, a feature or a log page in milliseconds; see
+  [the expert](https://safl.dk/senfd/sate/).
+* Language models that take NVMe facts from the data model. `sate --llm`
+  answers questions written in your own words. A small language model on
+  your own CPU chooses the lookup, and writes no part of the answer.
+  `sate-mcp` gives a coding agent the lookups as tools, so that the agent
+  checks an opcode, a bit or an offset against its figure rather than
+  recalling it; see [with a language model](https://safl.dk/senfd/llm/).
+* Code generated from the figures. An early prototype writes xNVMe's
+  specification headers from the data model, and every member cites its
   figure; see [code from the figures](https://safl.dk/senfd/codegen/).
-* **A linter of the documents.** What does not read as data is listed with
+* A lint of the documents. senfd lists what does not read as data, with
   its figure and page, for the authors to fix; see
   [the linter](https://safl.dk/senfd/linting/).
 
-The [documentation](https://safl.dk/senfd/) has the rest: how to
-[install](https://safl.dk/senfd/install/) senfd, or run it from its
-[container image](https://safl.dk/senfd/install/#in-a-container),
+The [documentation](https://safl.dk/senfd/) covers the rest. It describes
+how to [install](https://safl.dk/senfd/install/) senfd or run it from its
+[container image](https://safl.dk/senfd/install/#in-a-container), how to
 [make the data model](https://safl.dk/senfd/usage/) from the specifications
-NVM Express publishes, [lint the documents](https://safl.dk/senfd/linting/),
-[ask the expert](https://safl.dk/senfd/sate/), and use it
+that NVM Express publishes, how to
+[lint the documents](https://safl.dk/senfd/linting/), how to
+[ask the expert](https://safl.dk/senfd/sate/), and how to use sate
 [with a language model](https://safl.dk/senfd/llm/). The
-[benchmark](https://safl.dk/senfd/benchmark/) sets sate's answers beside
-those of language models answering from memory; [prior art](https://safl.dk/senfd/prior-art/)
-tells where senfd comes from, and [the names](https://safl.dk/senfd/names/)
-what they mean.
+[benchmark](https://safl.dk/senfd/benchmark/) compares sate's answers with
+those of language models. [Prior art](https://safl.dk/senfd/prior-art/)
+describes the tools senfd follows, and [the names](https://safl.dk/senfd/names/)
+page explains what the names mean.
 
 ## Notices
 
