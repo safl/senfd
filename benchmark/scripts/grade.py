@@ -73,9 +73,12 @@ def grade_value(item: Dict, answer: str) -> str:
 def subject_of(line: str, description: int = -1) -> str:
     """The part of a line of an answer that says what the line is about: a
     table row's cells but its description, the cell 'description' counts
-    from its first, else the line before its citation and link"""
+    from its first; a list item's words, as a found field follows its
+    figure's title and citation; else the line before its citation and link"""
 
     bare = re.sub(r"\[[^\]]*\](?:\([^)]*\))?", "", line)
+    if bare.lstrip().startswith("- "):
+        return bare
     if bare.lstrip().startswith("|"):
         cells = bare.split("|")[1:-1]
         if 0 <= description < len(cells):
