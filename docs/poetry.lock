@@ -334,13 +334,14 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "kmdo"
-version = "1.0.6"
+version = "1.0.9"
 description = "Command-line tool for auto generating command output"
 optional = false
-python-versions = "*"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "kmdo-1.0.6.tar.gz", hash = "sha256:2af9375c33fcd4a615c020ff8b192de428565840e5388cba02ce92ac89a97487"},
+    {file = "kmdo-1.0.9-py3-none-any.whl", hash = "sha256:41c42345622b67434ae0b4de42c03128217f3eec0fdc27426453aa2f761e91cf"},
+    {file = "kmdo-1.0.9.tar.gz", hash = "sha256:25df13447aea2e4b2c314abdf50cbf1b9e92f1e90eac18676db2ebd8877c18fd"},
 ]
 
 [[package]]
@@ -881,4 +882,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "e923f0a9d7b4ac40df2cfd15f1c322609c97a38595fea8907e04991a753bd644"
+content-hash = "48cb0bffe54f5066758fdfc2c0949eeece8df395c21ef26b133d3049289a34e8"
