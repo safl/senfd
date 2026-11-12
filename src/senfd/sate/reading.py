@@ -264,6 +264,15 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     ):
         if re.search(word, lower) and rest:
             return Understood(query, rest)
+    # An entry of a table of values, by its name, where the question names
+    # nothing else: "the transport error RDMA Invalid HSQSIZE"
+    entry = max(
+        (v for v in vocabulary.values if words_of(v) in words_of(text)),
+        key=len,
+        default=None,
+    )
+    if entry:
+        return Understood("value", entry)
     if capitals:
         return Understood("acronym", capitals[0])
     if not rest:  # Nothing that names anything, as "[" or "what is the"

@@ -39,6 +39,9 @@ class Vocabulary:
     registers: Set[str] = field(default_factory=set)
     # The structures that a CNS value returns, by a CNS entry naming them
     cns: Set[str] = field(default_factory=set)
+    # The names of the entries of the tables of values, as "RDMA Invalid
+    # HSQSIZE"; of features and log pages, those are their names above
+    values: Set[str] = field(default_factory=set)
     # The acronyms of the fields of a thing, in the order of its figures
     fields: Dict[Of, List[str]] = field(default_factory=dict)
 
@@ -69,6 +72,19 @@ class Vocabulary:
                 )
             else:
                 vocabulary.add_fields(structure.fields, (structure.name.lower(), None))
+        named_elsewhere = (
+            "feature_identifiers",
+            "log_page_identifiers",
+            "requirements",
+        )
+        vocabulary.values = {
+            entry.name
+            for table in spec.values
+            if table.kind not in named_elsewhere
+            for entry in table.entries
+            # One word, as "FOO" of a table of acronyms, is a word of names
+            if entry.name and len(entry.name.split()) > 1
+        }
         returned = [
             spaced(entry.description or "")
             for table in spec.values
