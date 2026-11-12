@@ -10,6 +10,7 @@ import pytest
 import uvicorn
 from starlette.testclient import TestClient
 
+import senfd
 import senfd.published
 import senfd.query
 from senfd.documents.spec import SpecDocument
@@ -162,6 +163,19 @@ def test_the_header_links_the_documentation_and_the_source(client):
 
     assert 'href="https://safl.dk/senfd/"' in response.text
     assert 'href="https://github.com/safl/senfd"' in response.text
+
+
+def test_the_title_is_a_button_with_the_logo_and_the_logo_is_the_favicon(client):
+    page = client.get("/").text
+    title = re.search(r'<h1><a class="home" href="\.">(.*?)</a>(.*?)</h1>', page, re.S)
+
+    assert title is not None
+    assert title.group(1) == web.LOGO + '<span class="name">sate</span>'
+    assert title.group(2) == f'<span class="version">v{senfd.__version__}</span>'
+    assert "header h1 a.home {" in page
+    assert "header h1 .name {" in page
+    assert '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' in page
+    assert "#E1AD01" in web.LOGO
 
 
 def test_an_unknown_question_is_reported_as_not_known(client):
