@@ -27,16 +27,24 @@ schema checks, and made the lint a part of that extraction, for the authors
 to run before a specification is published. It was deliberately not a code
 generator, leaving that to the readers of its JSON.
 
-senfd was a change of direction. Both tools before it wrote rules, a check
-or an extractor for each kind of figure, against the tables as their reader
-found them. senfd instead generalises: every figure, whatever its kind, is
-reduced to the same plain markup, rows of cells with what is merged and
-what is nested marked, and from that one form the figures are normalised
-and the data behind them structured, each figure recognised as the kind it
-is, its fields, values, dwords and bits read as data, and the lot resolved
-across the documents and merged into one data model. The three forms are
-the stages, each a JSON with a :ref:`schema <sec-schema>` of its own: the
-figure document, the normalised figure document, and the data model.
+senfd does what Spex does: it extracts every figure to JSON that a schema
+checks. But it reads either the ``.docx`` the authors hold or the PDFs NVM
+Express publishes, which anyone can download. Spex served the authors before
+a specification is published; senfd serves them, and everyone who reads the
+specifications after: those who implement, test, and write tools for NVMe.
+senfd is therefore a tool for a larger audience than Spex.
+
+senfd's approach was also a change of direction. Both tools before it wrote
+rules, a check or an extractor for each kind of figure, against the tables
+as their reader found them. senfd instead generalises: every figure,
+whatever its kind, is reduced to the same plain markup, rows of cells with
+what is merged and what is nested marked, and from that one form the figures
+are normalised and the data behind them structured, each figure recognised
+as the kind it is, its fields, values, dwords and bits read as data, and the
+lot resolved across the documents and merged into one data model. The three
+forms are the stages, each a JSON with a :ref:`schema <sec-schema>` of its
+own: the figure document, the normalised figure document, and the data
+model.
 
 Two things follow. Linting is a side effect rather than a goal: to read a
 figure as data is to check it, and what does not read as data is reported
