@@ -47,6 +47,14 @@ def test_the_subject_of_a_line_is_its_cells_but_the_description_or_its_words_bef
         == "command Write, opcode 01h "
     )
     assert (
+        grade.subject_of(
+            "- RDMA_CM_REQUEST Private Data Format [RDMA 1.3, Figure 5, page 12]"
+            "(https://x/y.pdf#page=12): 05:04 RDMA QP Host Receive Queue Size (HRQSIZE)"
+        )
+        == "- RDMA_CM_REQUEST Private Data Format : 05:04 RDMA QP Host Receive Queue"
+        " Size (HRQSIZE)"
+    )
+    assert (
         grade.description_cell(
             "| Bits | Name | Acronym | Description |\n|---|---|---|---|\n| 30 | x | y | z |"
         )
