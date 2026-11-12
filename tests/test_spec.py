@@ -1691,3 +1691,41 @@ def test_a_reference_to_the_section_of_another_kind_of_code_names_the_value():
         None,
     ]
     assert document.errata == []
+
+
+def test_a_byte_diagram_marking_the_msb_in_the_highest_byte_is_little_endian():
+    from senfd.documents.spec import byte_order_of
+
+    assert byte_order_of({"msb_byte": "3", "lsb_byte": "0"}) == "little-endian"
+    assert byte_order_of({"msb_byte": "0", "lsb_byte": "3"}) == "big-endian"
+    assert byte_order_of({"msb_byte": "2", "lsb_byte": "2"}) is None
+    assert byte_order_of({}) is None
+
+
+def test_completion_dwords_go_to_the_feature_their_section_names():
+    from senfd.documents.spec import Dwords, Feature, Source, link_features
+
+    def source(figure_nr, section_title):
+        return Source(
+            document="example",
+            figure_nr=figure_nr,
+            section="1.1",
+            section_title=section_title,
+        )
+
+    document = SpecDocument()
+    document.features["Foo"] = Feature(
+        identifier=0x82, name="Foo", source=source(1, "Feature Identifiers")
+    )
+    document.dwords = {
+        "cqe:bar_configuration": [
+            Dwords(
+                lower=0, upper=0, source=source(2, "Foo (Feature Identifier 82h)")
+            )
+        ]
+    }
+    used: set = set()
+    link_features(document, used)
+    assert [d.source.figure_nr for d in document.features["Foo"].cqe] == [2]
+    assert document.features["Foo"].sqe == []
+    assert "cqe:bar_configuration" in used
