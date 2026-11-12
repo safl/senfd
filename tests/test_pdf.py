@@ -771,3 +771,17 @@ def test_a_published_pdf_reads_a_table_wrapped_in_a_table_of_one_cell(public):
     (uuid,) = [f for f in figures.figures if f.figure_nr == 348]
     assert len(uuid.table.rows[2].cells) == 2
     assert uuid.table.rows[2].cells[1].tables
+
+
+def test_a_hyphen_hanging_before_and_or_or_joins_no_word():
+    """ "host- or controller-initiated" keeps its space, where "non-" and
+    "zero" over two lines are one word, as "end-to-" and "end" are"""
+
+    from senfd.pdf.pages import JOINED
+
+    assert JOINED.sub("", "non-\nzero") == "non-zero"
+    assert JOINED.sub("", "end-to-\nend") == "end-to-end"
+    assert JOINED.sub("", "host-\nor controller-initiated") == (
+        "host-\nor controller-initiated"
+    )
+    assert JOINED.sub("", "read-\nand write-protected") == "read-\nand write-protected"

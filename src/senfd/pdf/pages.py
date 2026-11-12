@@ -92,6 +92,9 @@ def kept(obj: dict, keys: Sequence[str]) -> dict:
     return {key: obj[key] for key in keys if key in obj}
 
 
+JOINED = re.compile(r"(?<=[A-Za-z]-)\n(?=[a-z])(?!(?:and|or|nor)\b)")
+
+
 class Pages:
     """The pages of a PDF, of which the last HELD pages read are kept in
     memory: the characters of each page, grouped by marked content, and the
@@ -210,9 +213,11 @@ class Pages:
                     lines.append("".join(c["text"] for c in along).strip())
             else:
                 # A word broken at its hyphen over two lines of a paragraph is
-                # one word, as "non-" and "zero"
+                # one word, as "non-" and "zero", "end-to-" and "end"; a hyphen
+                # left hanging before "and" or "or", as "host- or controller-
+                # initiated", is no break of a word
                 text = text_of_chars(chars, y_tolerance=LINE)
-                lines.append(re.sub(r"(?<=[A-Za-z]-)\n(?=[a-z])", "", text))
+                lines.append(re.sub(JOINED, "", text))
         return "\n".join(lines), boxes
 
     def verticals(self, number: int, box: Box, pad: float = 2.0) -> List[Vertical]:
