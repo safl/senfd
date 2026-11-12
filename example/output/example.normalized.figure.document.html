@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>92 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
+<p>95 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -2108,6 +2108,57 @@ th { background-color: #f2f2f2; }
 
 </table>
 
+
+
+
+<h3>Figure 94: Qux Data Structure</h3>
+<p>Subject: data_structure, name: Qux. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>15:08</td>
+  <td>Qux Type</td>
+  <td>QT</td>
+  <td>The type of the qux. Refer to Figure 95.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:00</td>
+  <td>Qux Kind</td>
+  <td>QK</td>
+  <td>This field is qux type specific (refer to Figure 95). The kinds are those of Figure 96.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 95: Qux Types</h3>
+<p>Subject: other, name: Qux Types. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>00h</td><td>A qux that dings.</td><td>Ding Qux</td></tr><tr><td>01h</td><td>A qux that rings.</td><td>Ring Qux</td></tr><tr><td>02h to FFh</td><td></td><td>Reserved</td></tr>
+</table>
+
+
+
+<h3>Figure 96: Qux Kinds</h3>
+<p>Subject: other, name: Qux Kinds. Shape: value.</p>
+
+
+<table>
+<tr><th>value</th><th>description</th><th>name</th></tr>
+<tr><td>00h</td><td>A qux of no kind.</td><td>Plain</td></tr><tr><td>01h</td><td>A qux of a kind.</td><td>Fancy</td></tr><tr><td>02h to FFh</td><td></td><td>Reserved</td></tr>
+</table>
 
 
 

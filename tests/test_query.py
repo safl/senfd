@@ -8,7 +8,14 @@ import pytest
 
 import senfd.query
 import senfd.sate.cli
-from senfd.documents.spec import Source, Structure
+from senfd.documents.spec import (
+    Bits,
+    Entry,
+    Source,
+    SpecDocument,
+    Structure,
+    Values,
+)
 
 
 @pytest.fixture(scope="module")
@@ -456,3 +463,70 @@ def test_a_code_is_named_by_its_column_and_found_by_the_symbol_of_its_entry(
 ):
     found = senfd.query.value(tables_of_codes(), asked)
     assert found and found[0].startswith(line), found
+
+
+def test_the_values_of_a_field_are_those_of_the_table_it_is_linked_to(spec):
+    """Qux Type says "Refer to Figure 95", and Qux Kind names Figure 95 and
+    Figure 96, the table of the Qux Kinds"""
+
+    (qux,) = [s for s in spec.structures if s.name == "Qux"]
+    fields = {f.acronym: f for f in qux.fields}
+
+    (types,) = senfd.query.tables_of_values(spec, fields["QT"])
+    assert (types.name, types.source.figure_nr) == ("Qux Types", 95)
+    kinds = senfd.query.values_of_field(spec, fields["QK"])
+    assert [(e.value, e.name) for e in kinds] == [
+        ("00h", "Plain"),
+        ("01h", "Fancy"),
+        ("02h to FFh", "Reserved"),
+    ]
+    lines = senfd.query.structure(spec, "Qux", verbose=True)
+    assert "      values in [example, 4.2, Figure 96, page 96]" in lines
+    markdown = senfd.query.structure(spec, "Qux", verbose=True, markdown=True)
+    assert any("Values in [example, 4.2, Figure 95, page 95]" in m for m in markdown)
+
+
+def test_every_table_of_the_kind_of_the_linked_table_is_offered():
+    """As the CNS values of Identify are those of the Base specification and
+    those each command set specification adds; a table of the kind "other",
+    as the Command Set Identifiers, is alone of its kind"""
+
+    def table(kind, document, figure_nr, value):
+        return Values(
+            kind=kind,
+            entries=[Entry(value=value, value_column="value")],
+            source=Source(document=document, figure_nr=figure_nr),
+        )
+
+    def field(values_in=None, values=()):
+        return Bits(
+            name="Foo",
+            unit="bits",
+            role="field",
+            kind="span",
+            range="07:00",
+            upper=7,
+            lower=0,
+            width=8,
+            values_in=values_in,
+            values=list(values),
+        )
+
+    base = table("cns_values", "base", 336, "00h")
+    added = table("cns_values", "nvm", 20, "05h")
+    identifiers = table("other", "base", 337, "02h")
+    spec = SpecDocument(
+        values=[added, table("other", "nvm", 9, "1h"), base, identifiers]
+    )
+    cns, csi = field(base.source), field(identifiers.source)
+
+    assert senfd.query.tables_of_values(spec, cns) == [base]
+    assert senfd.query.tables_of_values(spec, cns, every=True) == [base, added]
+    assert [e.value for e in senfd.query.values_of_field(spec, cns, every=True)] == [
+        "00h",
+        "05h",
+    ]
+    assert senfd.query.tables_of_values(spec, csi, every=True) == [identifiers]
+    assert senfd.query.tables_of_values(spec, field()) == []
+    own = field(base.source, [Entry(value="1h", value_column="value")])
+    assert [e.value for e in senfd.query.values_of_field(spec, own)] == ["1h"]

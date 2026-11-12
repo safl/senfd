@@ -769,6 +769,45 @@ FIGURES = [
             ],
         },
     ),
+    # Fields whose values another figure gives: the description names the
+    # figure of the table, and where it names two, the table is the one named
+    # for the field
+    (
+        "Qux Data Structure",
+        {
+            "header": BITS,
+            "rows": [
+                ("15:08", "Qux Type (QT): The type of the qux. Refer to Figure 95."),
+                (
+                    "07:00",
+                    "Qux Kind (QK): This field is qux type specific (refer to "
+                    "Figure 95). The kinds are those of Figure 96.",
+                ),
+            ],
+        },
+    ),
+    (
+        "Qux Types",
+        {
+            "header": ("Value", "Definition"),
+            "rows": [
+                ("00h", "Ding Qux: A qux that dings."),
+                ("01h", "Ring Qux: A qux that rings."),
+                ("02h to FFh", "Reserved"),
+            ],
+        },
+    ),
+    (
+        "Qux Kinds",
+        {
+            "header": ("Value", "Definition"),
+            "rows": [
+                ("00h", "Plain: A qux of no kind."),
+                ("01h", "Fancy: A qux of a kind."),
+                ("02h to FFh", "Reserved"),
+            ],
+        },
+    ),
 ]
 
 

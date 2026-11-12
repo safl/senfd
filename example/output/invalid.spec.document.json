@@ -1,8 +1,8 @@
 {
   "meta": {
-    "format": 1,
+    "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
@@ -36,7 +36,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -76,7 +77,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Name",
@@ -96,7 +98,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -116,7 +119,8 @@
           "kind": "span",
           "formula": null,
           "width": 3,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Name with spaces",
@@ -155,7 +159,8 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Name with spaces",
@@ -175,9 +180,11 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -220,7 +227,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -251,9 +259,9 @@
   "errata": [],
   "documents": {
     "invalid": {
-      "format": 1,
+      "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+      "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

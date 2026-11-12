@@ -56,7 +56,7 @@ def test_the_page_shows_the_document_count_as_a_link(client):
     response = client.get("/")
 
     assert (
-        '3 log pages, 44 structures, across <a class="documents" '
+        '3 log pages, 45 structures, across <a class="documents" '
         'href="#documents">2 documents</a>'
     ) in response.text
     assert '<dialog id="documents">' in response.text

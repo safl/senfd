@@ -938,3 +938,119 @@ def test_an_entry_of_a_column_headed_as_values_is_named_by_the_first_column():
         ("0Fh", "foo_type_value", "Sing"),
     ]
     assert values.entries[0].columns == {"reference": "1.2"}
+
+
+def figure_of(number, caption, header, *rows):
+    """A figure of a table of 'header' and 'rows', as the documents have it"""
+
+    from senfd.documents.plain import Figure
+    from senfd.tables import Cell, Row, Table
+
+    texts = [(f"Figure {number}: {caption}",), header, *rows]
+    cells = [[t if isinstance(t, Cell) else Cell(text=t) for t in row] for row in texts]
+    return Figure(
+        figure_nr=number,
+        caption=f"Figure {number}: {caption}",
+        description=caption,
+        table=Table(rows=[Row(cells=row) for row in cells]),
+    )
+
+
+def document_of(*figures, stem="example"):
+    """The specification document senfd makes of 'figures'"""
+
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.spec import add_figure, resolve
+
+    document = SpecDocument()
+    document.meta.stem = stem
+    for figure in figures:
+        add_figure(document, normalize_figure(figure, []), stem)
+    return resolve(document)
+
+
+FOO_TYPES = (
+    ("Foo Types", ("Value", "Definition"))
+    + (("0h", "Ding: A foo that dings."),)
+    + (("1h", "Ring: A foo that rings."), ("2h to Fh", "Reserved"))
+)
+BAR_KINDS = ("Bar Kinds", ("Value", "Definition")) + (
+    ("0h", "Sing: A bar that sings."),
+    ("1h to Fh", "Reserved"),
+)
+
+
+def test_a_field_is_linked_to_the_table_of_its_values_that_its_description_names():
+    """As CNS of Identify gives no values and says "Refer to Figure 336", and
+    CSI names that figure and the figure of the Command Set Identifiers: the
+    table linked is the one named for the field"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Data Structure",
+            ("Bits", "Description"),
+            ("15:12", "Foo Type (FTYPE): The type of the foo. Refer to Figure 2 ."),
+            (
+                "11:08",
+                "Bar Kind (BK): This field is foo type specific (refer to "
+                "Figure 2). The kinds are listed in Figure 3.",
+            ),
+            ("07:05", "Foo Level (FL): The level, for the types of Figure 2."),
+            ("04", "Bar Kind Enable (BKE): Enables the kinds of Figure 3."),
+            ("03:00", "Foo Count (FC): The number of foos, of no Figure 9."),
+        ),
+        figure_of(2, *FOO_TYPES),
+        figure_of(3, *BAR_KINDS),
+    )
+    (structure,) = spec.structures
+    links = {
+        f.acronym: f.values_in.figure_nr if f.values_in else None
+        for f in structure.fields
+    }
+
+    # Foo Level is of another name, and Bar Kind Enable of one bit only
+    assert links == {"FTYPE": 2, "BK": 3, "FL": None, "BKE": None, "FC": None}
+    assert structure.fields[0].values_in == spec.values[0].source
+
+
+def test_a_field_giving_its_values_is_linked_to_no_table():
+    from senfd.tables import Cell, Row, Table
+
+    values = Table(
+        rows=[
+            Row(cells=[Cell(text=t) for t in row])
+            for row in (("Value", "Definition"), ("0h", "Ding"), ("1h", "Ring"))
+        ]
+    )
+    described = Cell(text="Foo Type (FTYPE): Refer to Figure 2.", tables=[values])
+    spec = document_of(
+        figure_of(
+            1, "Foo Data Structure", ("Bits", "Description"), ("03:00", described)
+        ),
+        figure_of(2, *FOO_TYPES),
+    )
+    (field,) = spec.structures[0].fields
+
+    assert [v.value for v in field.values] == ["0h", "1h"]
+    assert field.values_in is None
+
+
+def test_the_link_to_a_table_of_values_is_of_the_same_document_when_merged():
+    """Two documents each have a Figure 2; a field is linked to the one of
+    its own document, and the link is made again when the documents merge"""
+
+    layout = figure_of(
+        1,
+        "Foo Data Structure",
+        ("Bits", "Description"),
+        ("03:00", "Foo Type (FTYPE): Refer to Figure 2."),
+    )
+    first = document_of(layout, figure_of(2, *FOO_TYPES), stem="first")
+    second = document_of(figure_of(2, *FOO_TYPES), stem="second")
+    merged = merge([second, first])
+    again = SpecDocument.model_validate_json(merged.to_json())
+
+    for spec in (merged, again):
+        (field,) = spec.structures[0].fields
+        assert (field.values_in.document, field.values_in.figure_nr) == ("first", 2)

@@ -87,6 +87,8 @@ def lines_of_fields(
                 # The name, else the start of the description, for reading
                 name = (senfd_value_names(value) or [value.description[:60]])[0]
                 yield f"{indent}    = {value.value} {name}".rstrip()
+            if field.values_in:
+                yield f"{indent}    values in [{cite(field.values_in)}]"
         if field.fields:
             yield from lines_of_fields(field.fields, verbose, indent + "    ")
 
@@ -150,6 +152,8 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
                 ]
                 if values:
                     text += " Values: " + ", ".join(values)
+                if field.values_in:
+                    text += f" Values in [{cite(field.values_in)}]"
                 row.append(cell(text))
             yield "| " + " | ".join(row) + " |"
             yield from rows(field.fields, path or parent)
@@ -456,6 +460,39 @@ def of_kind(table: Values, kind: str) -> bool:
     if kind == "status_values":
         return table.kind == "status_values" and not types
     return not kind or table.kind == kind
+
+
+def tables_of_values(
+    spec: SpecDocument, field: Bits, every: bool = False
+) -> List[Values]:
+    """The tables of the values of 'field' that the data model links the
+    field to: the table of the figure that the description of the field
+    names, as the CNS values of the Base specification for CNS of Identify.
+    With 'every', the tables of the same kind of every document follow it,
+    as the CNS values that each command set specification adds; a table of
+    the kind "other" is alone of its kind."""
+
+    if field.values_in is None:
+        return []
+    linked = [table for table in spec.values if table.source == field.values_in]
+    if every and linked and linked[0].kind != "other":
+        linked += [
+            table
+            for table in spec.values
+            if table.kind == linked[0].kind and table not in linked
+        ]
+    return linked
+
+
+def values_of_field(
+    spec: SpecDocument, field: Bits, every: bool = False
+) -> List[Entry]:
+    """The values 'field' takes: those its own figure gives, else the entries
+    of the tables that tables_of_values() finds for it"""
+
+    if field.values:
+        return list(field.values)
+    return [e for table in tables_of_values(spec, field, every) for e in table.entries]
 
 
 def within(written: str, value: int) -> bool:

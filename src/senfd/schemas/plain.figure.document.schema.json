@@ -37,7 +37,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 1,
+                    "default": 2,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
