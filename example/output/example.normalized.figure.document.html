@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>95 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
+<p>98 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -2159,6 +2159,138 @@ th { background-color: #f2f2f2; }
 <tr><th>value</th><th>description</th><th>name</th></tr>
 <tr><td>00h</td><td>A qux of no kind.</td><td>Plain</td></tr><tr><td>01h</td><td>A qux of a kind.</td><td>Fancy</td></tr><tr><td>02h to FFh</td><td></td><td>Reserved</td></tr>
 </table>
+
+
+
+<h3>Figure 97: Qux List Data Structure</h3>
+<p>Subject: data_structure, name: Qux List. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Number of Qux Formats</td>
+  <td>NQF</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:04</td>
+  <td>Qux Format 0 Support</td>
+  <td>QF0</td>
+  <td>The first format. The Qux Format is defined in Figure 98, and listed by Figure 97.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>11:08</td>
+  <td>Qux Format 1 Support</td>
+  <td>QF1</td>
+  <td>The second format. The Qux Format is defined in Figure 98.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>35:32</td>
+  <td>Qux Format 7 Support</td>
+  <td>QF7</td>
+  <td>The last format. The Qux Format is defined in Figure 98.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>43:36</td>
+  <td>Qux Vector 0</td>
+  <td>QV0</td>
+  <td>This field contains a Qux Vector.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>51:44</td>
+  <td>Qux Vector 1</td>
+  <td>QV1</td>
+  <td>This field contains a Qux Vector.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>67:60</td>
+  <td>Qux Vector 3</td>
+  <td>QV3</td>
+  <td>This field contains a Qux Vector.
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 98: Qux Format Data Structure</h3>
+<p>Subject: data_structure, name: Qux Format. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>31:16</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>15:00</td>
+  <td>Qux Size</td>
+  <td>QSZ</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 99: Qux Vector</h3>
+<p>Subject: other, name: Qux Vector. Shape: layout.</p>
+
+<table>
+<tr><th>bits</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>63:01</td>
+  <td>Reserved</td>
+  <td></td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>00</td>
+  <td>Qux Enabled</td>
+  <td>QE</td>
+  <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
 
 
 

@@ -808,6 +808,52 @@ FIGURES = [
             ],
         },
     ),
+    # Arrays of entries that another figure lays out: the entries are fields
+    # numbered by their index, the rows between two of them left out. The
+    # description names the figure of the entry, or only the structure.
+    (
+        "Qux List Data Structure",
+        {
+            "header": FIELD,
+            "rows": [
+                ("03:00", "Number of Qux Formats (NQF)"),
+                (
+                    "07:04",
+                    "Qux Format 0 Support (QF0): The first format. The Qux "
+                    "Format is defined in Figure 98, and listed by Figure 97.",
+                ),
+                (
+                    "11:08",
+                    "Qux Format 1 Support (QF1): The second format. The Qux "
+                    "Format is defined in Figure 98.",
+                ),
+                ("...", ""),
+                (
+                    "35:32",
+                    "Qux Format 7 Support (QF7): The last format. The Qux "
+                    "Format is defined in Figure 98.",
+                ),
+                ("43:36", "Qux Vector 0 (QV0): This field contains a Qux Vector."),
+                ("51:44", "Qux Vector 1 (QV1): This field contains a Qux Vector."),
+                ("...", ""),
+                ("67:60", "Qux Vector 3 (QV3): This field contains a Qux Vector."),
+            ],
+        },
+    ),
+    (
+        "Qux Format Data Structure",
+        {
+            "header": BITS,
+            "rows": [("31:16", "Reserved"), ("15:00", "Qux Size (QSZ)")],
+        },
+    ),
+    (
+        "Qux Vector",
+        {
+            "header": BITS,
+            "rows": [("63:01", "Reserved"), ("00", "Qux Enabled (QE)")],
+        },
+    ),
 ]
 
 

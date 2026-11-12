@@ -530,3 +530,27 @@ def test_every_table_of_the_kind_of_the_linked_table_is_offered():
     assert senfd.query.tables_of_values(spec, field()) == []
     own = field(base.source, [Entry(value="1h", value_column="value")])
     assert [e.value for e in senfd.query.values_of_field(spec, own)] == ["1h"]
+
+
+def test_an_entry_of_an_array_says_its_array_and_the_structure_laying_it_out(spec):
+    """Qux Format 0 Support to 7, each "defined in Figure 98", and Qux Vector
+    0 to 3, each "a Qux Vector", the structure of Figure 99"""
+
+    (listed,) = [s for s in spec.structures if s.name == "Qux List"]
+    fields = {f.acronym: f for f in listed.fields}
+
+    assert senfd.query.structure_of(spec, fields["QF7"]).name == "Qux Format"
+    assert senfd.query.structure_of(spec, fields["QV0"]).name == "Qux Vector"
+    assert senfd.query.structure_of(spec, fields["NQF"]) is None
+    lines = senfd.query.structure(spec, "Qux List", verbose=True)
+    at = lines.index("  35:32 Qux Format 7 Support (QF7)")
+    assert lines[at + 2 : at + 4] == [
+        "      entry 7 of 8, each of 4 bytes",
+        "      laid out in [example, 4.2, Figure 98, page 98]",
+    ]
+    markdown = senfd.query.structure(spec, "Qux List", verbose=True, markdown=True)
+    assert any(
+        "Entry 3 of 4, each of 8 bytes. Laid out in [example, 4.2, Figure 99, page 99]."
+        in line
+        for line in markdown
+    )

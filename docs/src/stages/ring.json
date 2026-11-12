@@ -42,7 +42,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "source": {
@@ -79,7 +81,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "source": {

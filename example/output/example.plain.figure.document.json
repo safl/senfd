@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
+    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -7928,6 +7928,314 @@
               },
               {
                 "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 97,
+      "caption": "Figure 97: Qux List Data Structure",
+      "description": "Qux List Data Structure",
+      "page_nr": 97,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 95,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 97: Qux List Data Structure",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 97: Qux List Data Structure",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bytes",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "03:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Number of Qux Formats (NQF)",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "07:04",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Format 0 Support (QF0): The first format. The Qux Format is defined in Figure 98, and listed by Figure 97.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "11:08",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Format 1 Support (QF1): The second format. The Qux Format is defined in Figure 98.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "...",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "35:32",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Format 7 Support (QF7): The last format. The Qux Format is defined in Figure 98.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "43:36",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Vector 0 (QV0): This field contains a Qux Vector.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "51:44",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Vector 1 (QV1): This field contains a Qux Vector.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "...",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "67:60",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Vector 3 (QV3): This field contains a Qux Vector.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 98,
+      "caption": "Figure 98: Qux Format Data Structure",
+      "description": "Qux Format Data Structure",
+      "page_nr": 98,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 96,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 98: Qux Format Data Structure",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 98: Qux Format Data Structure",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bits",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "31:16",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "15:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Size (QSZ)",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 99,
+      "caption": "Figure 99: Qux Vector",
+      "description": "Qux Vector",
+      "page_nr": 99,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 97,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 99: Qux Vector",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 99: Qux Vector",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bits",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "63:01",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Enabled (QE)",
                 "tables": [],
                 "merged": null
               }

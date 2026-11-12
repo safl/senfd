@@ -2,7 +2,7 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
@@ -37,7 +37,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -78,7 +80,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Name",
@@ -99,7 +103,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -120,7 +126,9 @@
           "formula": null,
           "width": 3,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Name with spaces",
@@ -160,7 +168,9 @@
               "formula": null,
               "width": 4,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Name with spaces",
@@ -181,10 +191,14 @@
               "formula": null,
               "width": 4,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -228,7 +242,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -261,7 +277,7 @@
     "invalid": {
       "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+      "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

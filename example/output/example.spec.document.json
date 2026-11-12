@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
+    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -42,7 +42,9 @@
                   "formula": null,
                   "width": 16,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 },
                 {
                   "name": "Foo Count",
@@ -63,7 +65,9 @@
                   "formula": null,
                   "width": 16,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -100,7 +104,9 @@
                   "formula": null,
                   "width": 31,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 },
                 {
                   "name": "Foo Mode",
@@ -121,7 +127,9 @@
                   "formula": null,
                   "width": 1,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -158,7 +166,9 @@
                   "formula": null,
                   "width": 64,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -195,7 +205,9 @@
                   "formula": null,
                   "width": 64,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -232,7 +244,9 @@
                   "formula": null,
                   "width": 128,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -269,7 +283,9 @@
                   "formula": null,
                   "width": 64,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -308,7 +324,9 @@
                   "formula": null,
                   "width": 32,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -365,7 +383,9 @@
                   "formula": null,
                   "width": 24,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 },
                 {
                   "name": "Bar Kind",
@@ -386,7 +406,9 @@
                   "formula": null,
                   "width": 8,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -423,7 +445,9 @@
                   "formula": null,
                   "width": 128,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -496,7 +520,9 @@
                   "formula": null,
                   "width": 16,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -533,7 +559,9 @@
                   "formula": null,
                   "width": 32,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -591,7 +619,9 @@
                   "formula": null,
                   "width": 24,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 },
                 {
                   "name": "Select",
@@ -685,7 +715,9 @@
                   "formula": null,
                   "width": 8,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -722,7 +754,9 @@
                   "formula": null,
                   "width": 29,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 },
                 {
                   "name": "Mode",
@@ -801,7 +835,9 @@
                   "formula": null,
                   "width": 3,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -847,7 +883,9 @@
                       "formula": null,
                       "width": 32,
                       "fields": [],
-                      "values_in": null
+                      "values_in": null,
+                      "array": null,
+                      "structure": null
                     }
                   ],
                   "source": {
@@ -902,7 +940,9 @@
                       "formula": null,
                       "width": 32,
                       "fields": [],
-                      "values_in": null
+                      "values_in": null,
+                      "array": null,
+                      "structure": null
                     }
                   ],
                   "source": {
@@ -996,7 +1036,9 @@
                   "formula": null,
                   "width": 32,
                   "fields": [],
-                  "values_in": null
+                  "values_in": null,
+                  "array": null,
+                  "structure": null
                 }
               ],
               "source": {
@@ -1064,7 +1106,9 @@
                       "formula": null,
                       "width": 16,
                       "fields": [],
-                      "values_in": null
+                      "values_in": null,
+                      "array": null,
+                      "structure": null
                     },
                     {
                       "name": "Bar Reset Count",
@@ -1085,7 +1129,9 @@
                       "formula": null,
                       "width": 16,
                       "fields": [],
-                      "values_in": null
+                      "values_in": null,
+                      "array": null,
+                      "structure": null
                     }
                   ],
                   "source": {
@@ -1197,7 +1243,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Foo Count",
@@ -1218,7 +1266,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1255,7 +1305,9 @@
             "formula": null,
             "width": 31,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Foo Mode",
@@ -1276,7 +1328,9 @@
             "formula": null,
             "width": 1,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1313,7 +1367,9 @@
             "formula": null,
             "width": 64,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1350,7 +1406,9 @@
             "formula": null,
             "width": 64,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1387,7 +1445,9 @@
             "formula": null,
             "width": 128,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1424,7 +1484,9 @@
             "formula": null,
             "width": 64,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1463,7 +1525,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1502,7 +1566,9 @@
             "formula": null,
             "width": 24,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Bar Kind",
@@ -1523,7 +1589,9 @@
             "formula": null,
             "width": 8,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1560,7 +1628,9 @@
             "formula": null,
             "width": 128,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1599,7 +1669,9 @@
             "formula": null,
             "width": 24,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Select",
@@ -1693,7 +1765,9 @@
             "formula": null,
             "width": 8,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1730,7 +1804,9 @@
             "formula": null,
             "width": 29,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Mode",
@@ -1809,7 +1885,9 @@
             "formula": null,
             "width": 3,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1848,7 +1926,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1887,7 +1967,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1941,7 +2023,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -1978,7 +2062,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2017,7 +2103,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2056,7 +2144,9 @@
             "formula": null,
             "width": 24,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Foo Level",
@@ -2077,7 +2167,9 @@
             "formula": null,
             "width": 8,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2116,7 +2208,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2155,7 +2249,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2194,7 +2290,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2233,7 +2331,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           },
           {
             "name": "Bar Reset Count",
@@ -2254,7 +2354,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -2295,7 +2397,9 @@
           "formula": null,
           "width": 512,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2334,7 +2438,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2373,7 +2479,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Identifier",
@@ -2394,7 +2502,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2433,7 +2543,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2472,7 +2584,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2511,7 +2625,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Attributes",
@@ -2551,7 +2667,9 @@
               "formula": null,
               "width": 7,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Foo On",
@@ -2572,10 +2690,14 @@
               "formula": null,
               "width": 1,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -2596,7 +2718,9 @@
           "formula": null,
           "width": 503,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2635,7 +2759,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2674,7 +2800,9 @@
           "formula": null,
           "width": 2,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2713,7 +2841,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2752,7 +2882,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2791,7 +2923,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -2812,7 +2946,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2851,7 +2987,9 @@
           "formula": null,
           "width": 62,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -2872,7 +3010,9 @@
           "formula": null,
           "width": 2,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2911,7 +3051,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2950,7 +3092,9 @@
           "formula": null,
           "width": 64,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -2989,7 +3133,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3031,7 +3177,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Limit",
@@ -3055,7 +3203,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3094,7 +3244,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3133,7 +3285,9 @@
           "formula": null,
           "width": 64,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3172,7 +3326,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3211,7 +3367,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3250,7 +3408,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3289,7 +3449,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3328,7 +3490,9 @@
           "formula": null,
           "width": 2,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3367,7 +3531,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3406,7 +3572,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3447,7 +3615,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3488,7 +3658,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3529,7 +3701,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -3552,7 +3726,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Mode",
@@ -3575,7 +3751,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Entry",
@@ -3598,7 +3776,9 @@
           "formula": "N + 3:N",
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Tail",
@@ -3621,7 +3801,9 @@
           "formula": null,
           "width": null,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Descriptor 0",
@@ -3644,7 +3826,9 @@
           "formula": null,
           "width": null,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Descriptor NBD-1",
@@ -3667,7 +3851,9 @@
           "formula": null,
           "width": null,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Ignored",
@@ -3690,7 +3876,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [
@@ -3731,7 +3919,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3773,7 +3963,9 @@
           "formula": null,
           "width": 31,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Enable",
@@ -3797,7 +3989,9 @@
           "formula": null,
           "width": 1,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3836,7 +4030,9 @@
           "formula": null,
           "width": 2,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3875,7 +4071,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3914,7 +4112,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3953,7 +4153,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -3992,7 +4194,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4031,7 +4235,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4070,7 +4276,9 @@
           "formula": null,
           "width": 1,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -4091,7 +4299,9 @@
           "formula": null,
           "width": 1,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo IPv6 Address",
@@ -4112,7 +4322,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo IPv4 Address",
@@ -4133,7 +4345,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -4154,7 +4368,9 @@
           "formula": null,
           "width": 12,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4195,7 +4411,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Bar Size",
@@ -4218,7 +4436,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4257,7 +4477,17 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Slot Descriptor",
+            "acronym": null,
+            "index": 0,
+            "first": 0,
+            "count": 8,
+            "stride": 32,
+            "lower": 0
+          },
+          "structure": null
         },
         {
           "name": "Foo Slot 1 Descriptor",
@@ -4278,7 +4508,17 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Slot Descriptor",
+            "acronym": null,
+            "index": 1,
+            "first": 0,
+            "count": 8,
+            "stride": 32,
+            "lower": 0
+          },
+          "structure": null
         },
         {
           "name": "Foo Slot 7 Descriptor",
@@ -4299,7 +4539,17 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Slot Descriptor",
+            "acronym": null,
+            "index": 7,
+            "first": 0,
+            "count": 8,
+            "stride": 32,
+            "lower": 0
+          },
+          "structure": null
         },
         {
           "name": "Foo Version",
@@ -4320,7 +4570,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4359,7 +4611,9 @@
           "formula": null,
           "width": 8,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Entry Pair",
@@ -4399,7 +4653,9 @@
               "formula": null,
               "width": 4,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Foo High",
@@ -4420,10 +4676,14 @@
               "formula": null,
               "width": 4,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -4444,7 +4704,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4483,7 +4745,9 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -4504,7 +4768,9 @@
           "formula": null,
           "width": 12,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Entry 0",
@@ -4525,7 +4791,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Entry 1",
@@ -4546,7 +4814,9 @@
           "formula": null,
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Entry NFE-1",
@@ -4567,7 +4837,9 @@
           "formula": "32*NFE + 15:32*NFE - 16",
           "width": 32,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4606,7 +4878,9 @@
           "formula": null,
           "width": 1,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Flags",
@@ -4627,7 +4901,9 @@
           "formula": null,
           "width": 2,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Result 1",
@@ -4648,7 +4924,17 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Result",
+            "acronym": "FR",
+            "index": 1,
+            "first": 1,
+            "count": 5,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": null
         },
         {
           "name": "Foo Result 2",
@@ -4669,7 +4955,17 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Result",
+            "acronym": "FR",
+            "index": 2,
+            "first": 1,
+            "count": 5,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": null
         },
         {
           "name": "Foo Result 5",
@@ -4690,7 +4986,17 @@
           "formula": null,
           "width": 4,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": {
+            "name": "Foo Result",
+            "acronym": "FR",
+            "index": 5,
+            "first": 1,
+            "count": 5,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": null
         }
       ],
       "notes": [],
@@ -4729,7 +5035,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Foo Minor Version",
@@ -4750,7 +5058,9 @@
           "formula": null,
           "width": 16,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -4808,7 +5118,9 @@
               "formula": null,
               "width": 254,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Zing Supported",
@@ -4829,7 +5141,9 @@
               "formula": null,
               "width": 1,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Ring Supported",
@@ -4850,10 +5164,14 @@
               "formula": null,
               "width": 1,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Baz Enabled",
@@ -4893,7 +5211,9 @@
               "formula": null,
               "width": 254,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Zing Enabled",
@@ -4914,7 +5234,9 @@
               "formula": null,
               "width": 1,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Ring Enabled",
@@ -4935,10 +5257,14 @@
               "formula": null,
               "width": 1,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         },
         {
           "name": "Reserved",
@@ -4959,7 +5285,9 @@
           "formula": null,
           "width": 4032,
           "fields": [],
-          "values_in": null
+          "values_in": null,
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -5005,7 +5333,9 @@
             "pdf_page": null,
             "section": "4.2",
             "section_title": "Baz Capabilities"
-          }
+          },
+          "array": null,
+          "structure": null
         },
         {
           "name": "Qux Kind",
@@ -5033,7 +5363,9 @@
             "pdf_page": null,
             "section": "4.2",
             "section_title": "Baz Capabilities"
-          }
+          },
+          "array": null,
+          "structure": null
         }
       ],
       "notes": [],
@@ -5041,6 +5373,403 @@
         "document": "example",
         "figure_nr": 94,
         "page_nr": 94,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "name": "Qux List",
+      "kind": "data_structure",
+      "unit": "bytes",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Number of Qux Formats",
+          "acronym": "NQF",
+          "upper": 3,
+          "lower": 0,
+          "range": "03:00",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        },
+        {
+          "name": "Qux Format 0 Support",
+          "acronym": "QF0",
+          "upper": 7,
+          "lower": 4,
+          "range": "07:04",
+          "description": "The first format. The Qux Format is defined in Figure 98, and listed by Figure 97.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Format Support",
+            "acronym": "QF",
+            "index": 0,
+            "first": 0,
+            "count": 8,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 98,
+            "page_nr": 98,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Format 1 Support",
+          "acronym": "QF1",
+          "upper": 11,
+          "lower": 8,
+          "range": "11:08",
+          "description": "The second format. The Qux Format is defined in Figure 98.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Format Support",
+            "acronym": "QF",
+            "index": 1,
+            "first": 0,
+            "count": 8,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 98,
+            "page_nr": 98,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Format 7 Support",
+          "acronym": "QF7",
+          "upper": 35,
+          "lower": 32,
+          "range": "35:32",
+          "description": "The last format. The Qux Format is defined in Figure 98.",
+          "section": null,
+          "elided": true,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Format Support",
+            "acronym": "QF",
+            "index": 7,
+            "first": 0,
+            "count": 8,
+            "stride": 4,
+            "lower": 4
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 98,
+            "page_nr": 98,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Vector 0",
+          "acronym": "QV0",
+          "upper": 43,
+          "lower": 36,
+          "range": "43:36",
+          "description": "This field contains a Qux Vector.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 8,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Vector",
+            "acronym": "QV",
+            "index": 0,
+            "first": 0,
+            "count": 4,
+            "stride": 8,
+            "lower": 36
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 99,
+            "page_nr": 99,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Vector 1",
+          "acronym": "QV1",
+          "upper": 51,
+          "lower": 44,
+          "range": "51:44",
+          "description": "This field contains a Qux Vector.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 8,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Vector",
+            "acronym": "QV",
+            "index": 1,
+            "first": 0,
+            "count": 4,
+            "stride": 8,
+            "lower": 36
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 99,
+            "page_nr": 99,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Vector 3",
+          "acronym": "QV3",
+          "upper": 67,
+          "lower": 60,
+          "range": "67:60",
+          "description": "This field contains a Qux Vector.",
+          "section": null,
+          "elided": true,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 8,
+          "fields": [],
+          "values_in": null,
+          "array": {
+            "name": "Qux Vector",
+            "acronym": "QV",
+            "index": 3,
+            "first": 0,
+            "count": 4,
+            "stride": 8,
+            "lower": 36
+          },
+          "structure": {
+            "document": "example",
+            "figure_nr": 99,
+            "page_nr": 99,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 97,
+        "page_nr": 97,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "name": "Qux Format",
+      "kind": "data_structure",
+      "unit": "bits",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Reserved",
+          "acronym": null,
+          "upper": 31,
+          "lower": 16,
+          "range": "31:16",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "reserved",
+          "kind": "span",
+          "formula": null,
+          "width": 16,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        },
+        {
+          "name": "Qux Size",
+          "acronym": "QSZ",
+          "upper": 15,
+          "lower": 0,
+          "range": "15:00",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 16,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 98,
+        "page_nr": 98,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "name": "Qux Vector",
+      "kind": "data_structure",
+      "unit": "bits",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Reserved",
+          "acronym": null,
+          "upper": 63,
+          "lower": 1,
+          "range": "63:01",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "reserved",
+          "kind": "span",
+          "formula": null,
+          "width": 63,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        },
+        {
+          "name": "Qux Enabled",
+          "acronym": "QE",
+          "upper": 0,
+          "lower": 0,
+          "range": "00",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 1,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 99,
+        "page_nr": 99,
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
@@ -6414,7 +7143,9 @@
               "formula": null,
               "width": 24,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             },
             {
               "name": "Foo Level",
@@ -6435,7 +7166,9 @@
               "formula": null,
               "width": 8,
               "fields": [],
-              "values_in": null
+              "values_in": null,
+              "array": null,
+              "structure": null
             }
           ],
           "source": {
@@ -6509,7 +7242,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "notes": [],
@@ -6575,7 +7310,9 @@
             "formula": null,
             "width": 16,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "notes": [],
@@ -6625,7 +7362,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -6664,7 +7403,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -6703,7 +7444,9 @@
             "formula": null,
             "width": 32,
             "fields": [],
-            "values_in": null
+            "values_in": null,
+            "array": null,
+            "structure": null
           }
         ],
         "source": {
@@ -6821,10 +7564,10 @@
     "example": {
       "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+      "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
+      "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
       "input_sha256": null,
       "combined_sha256": null
     }

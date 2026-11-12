@@ -81,7 +81,30 @@ A field lists the ``values`` it takes. Where the description of a field
 names the figure of a table of values instead of giving the values, as CNS
 of the Identify command says "Refer to Figure 336", the field has
 ``values_in``: the ``source`` of that table, which is the table of
-``values`` with the same ``source``. A value in a table of a known kind
+``values`` with the same ``source``.
+
+A figure writes the entries of an array as fields numbered by their index,
+and leaves out the rows between two of them, as LBAF0, LBAF1, "..." and
+LBAF63 of the Identify Namespace data structure. Each entry that the figure
+writes has ``array``: the ``name`` and the ``acronym`` of the entries
+without their index, the ``index`` of the entry, the index of the ``first``
+entry, the ``count`` of the entries, the ``stride``, which is the bits or
+bytes of one entry, and ``lower``, where the first entry starts. A
+generator writes the array at the entry whose ``index`` is ``first``, and
+skips the other entries. Where the figure gives the range of the last entry
+by a formula, ``count`` is null, and so is the ``index`` of that entry.
+
+A field has ``structure`` where another figure lays the field out: the
+``source`` of that structure, which is the structure of ``structures`` with
+the same ``source``. senfd links a field that has no fields of its own to
+the structure whose figure the description of the field names, as "defined
+in Figure 125", and which is as wide as the field. An entry of an array
+that names no figure is linked to the structure whose name its description
+has, as "an I/O Command Set Vector". The ``kind`` of a structure that lays
+out the entries of an array is ``data_structure``, whatever its caption
+says.
+
+A value in a table of a known kind
 is ``typed`` as what it is: a requirement level, a flag, an identifier, a
 range, a note, a reference, reserved or vendor specific. Every part has a
 ``source``: the document, the section and its title, the figure and the
