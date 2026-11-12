@@ -112,8 +112,8 @@ def paragraphs(
 
 
 def contents(element: pikepdf.Dictionary, page: Optional[PageId]) -> List[Leaf]:
-    """All the marked content under 'element', that of the tables under it
-    too, and of the tables in their cells, however deep"""
+    """All marked content under 'element', including that of the tables
+    nested in it at any depth"""
 
     found: List[Leaf] = []
     within = [(element, page)]

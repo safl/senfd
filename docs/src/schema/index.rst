@@ -75,60 +75,63 @@ the senfd hash shows whether the reading differs.
 In every part of the data model, a ``Dwords`` is the dwords from ``lower``
 to ``upper`` with their ``fields``, possibly under a ``condition``. A field,
 ``Bits``, is a ``range`` of bits or bytes, as given by ``unit``. A field
-has a ``name``, an ``acronym`` and nested ``fields``. A row that gives a
-range and a table laying the range out, but no name, is a field named by
-its range, as "Byte 00". Where fields share
+has a ``name``, an ``acronym`` and nested ``fields``. A row that has a
+range and a nested table but no name is a field named after its range,
+for example "Byte 00". Where fields share
 bits, a field also names the ``union`` and ``alternative`` it belongs to.
 A field lists the ``values`` it takes. Where the description of a field
-names the figure of a table of values instead of giving the values, as CNS
-of the Identify command says "Refer to Figure 336", the field has
-``values_in``: the ``source`` of that table, which is the table of
-``values`` with the same ``source``.
+refers to a table of values in another figure instead of listing the
+values, for example "Refer to Figure 336" for CNS of the Identify command,
+the field has ``values_in``. ``values_in`` is the ``source`` of that table,
+and the table is the entry of ``values`` with the same ``source``.
 
-A figure writes the entries of an array as fields numbered by their index,
-and leaves out the rows between two of them, as LBAF0, LBAF1, "..." and
-LBAF63 of the Identify Namespace data structure. Each entry that the figure
-writes has ``array``: the ``name`` and the ``acronym`` of the entries
-without their index, the ``index`` of the entry, the index of the ``first``
-entry, the ``count`` of the entries, the ``stride``, which is the bits or
-bytes of one entry, and ``lower``, where the first entry starts. A
-generator writes the array at the entry whose ``index`` is ``first``, and
-skips the other entries. Where the figure gives the range of the last entry
-by a formula, ``count`` is null, and so is the ``index`` of that entry.
+A figure lists the entries of an array as fields numbered by their index,
+with a "..." row in place of the entries between them, for example LBAF0,
+LBAF1, "..." and LBAF63 of the Identify Namespace data structure. Each
+listed entry has ``array``, which holds the ``name`` and the ``acronym`` of
+the entries without the index, the ``index`` of the entry, the index of the
+``first`` entry, the ``count`` of entries, the ``stride``, which is the size
+of one entry in bits or bytes, and ``lower``, the offset where the first
+entry starts. A generator writes the array at the entry whose ``index`` is
+``first``, and skips the other entries. Where the figure gives the range of
+the last entry as a formula, ``count`` is null, and so is the ``index`` of
+that entry.
 
-A field has ``structure`` where another figure lays the field out: the
-``source`` of that structure, which is the structure of ``structures`` with
-the same ``source``. senfd links a field that has no fields of its own to
-the structure whose figure the description of the field names, as "defined
-in Figure 125", and which is as wide as the field. An entry of an array
-that names no figure is linked to the structure whose name its description
-has, as "an I/O Command Set Vector". The ``kind`` of a structure that lays
-out the entries of an array is ``data_structure``, whatever its caption
-says.
+A field has ``structure`` where another figure lays out the field.
+``structure`` is the ``source`` of that figure, and the structure is the
+entry of ``structures`` with the same ``source``. senfd links a field that
+has no subfields to a structure when the description of the field refers
+to the figure of the structure, for example "defined in Figure 125", and
+the structure is as wide as the field. senfd links an entry of an array
+that refers to no figure to the structure whose name appears in its
+description, for example "an I/O Command Set Vector". The ``kind`` of a
+structure that lays out the entries of an array is ``data_structure``,
+whatever its caption says.
 
-A field can be one thing or another by the value of another field of its
+The meaning of a field can depend on the value of another field of its
 figure. Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, are
-the Reporting Options while ZRA is Report Zones or Extended Report Zones,
-and are reserved for all other values of ZRA. The figure says so with a
+the Reporting Options when ZRA is Report Zones or Extended Report Zones,
+and are reserved for all other values of ZRA. The figure gives this in a
 table in the cell of ZRAS, whose first column is headed "Zone Receive
-Action". Such a field has ``cases``. A case has the ``selector``, which is
-the acronym of the deciding field, and ``when``, the values of the deciding
-field that the case is for, each with its ``name`` as the figure writes it
-and its ``value`` as a number. ``otherwise`` is true of the case for all
-other values. A case has the ``name``, ``acronym``, ``role`` and
-``description`` of what the field is in the case, and the ``values`` and
-the ``fields`` that the field has in the case. The ``values`` of the field
-itself are those it takes whatever the deciding field holds.
+Action". Such a field has ``cases``. The ``selector`` of a case is the
+acronym of the controlling field, and ``when`` lists the values of the
+controlling field that the case applies to, each with its ``name`` as the
+figure writes it and its ``value`` as a number. ``otherwise`` is true for
+the case of all other values. A case also has the ``name``, ``acronym``,
+``role`` and ``description`` of the field in that case, and the ``values``
+and ``fields`` of the field in that case. The ``values`` of the field
+itself apply whatever the value of the controlling field.
 
-A figure can draw a structure as a diagram instead of a table of ranges:
-the bits 7 to 0 across, a row for each byte, and each field from the row
-marked "MSB" to the row marked "LSB". The 16b, 32b and 64b Guard
-protection information formats of the NVM Command Set specification are
-drawn so. senfd reads such a diagram as a structure of bytes. Each field
-has, in ``columns``, ``msb_byte`` and ``lsb_byte``: the byte that holds
-the most significant bits of the field, and the byte that holds the least
-significant. The Guard of the 16b format is bytes 1:0 with ``msb_byte`` 0,
-so the field is stored with its most significant byte first.
+A figure can draw a structure as a diagram instead of a table of ranges,
+with the bits 7 to 0 as columns, one row for each byte, and each field
+spanning the rows from the one marked "MSB" to the one marked "LSB". The
+NVM Command Set specification draws the 16b, 32b and 64b Guard protection
+information formats this way. senfd reads such a diagram as a structure of
+bytes. The ``columns`` of each field hold ``msb_byte``, the byte with the
+most significant bits of the field, and ``lsb_byte``, the byte with the
+least significant bits. The Guard of the 16b format is bytes 1:0 with
+``msb_byte`` 0, so the field is stored with its most significant byte
+first.
 
 A value in a table of a known kind
 is ``typed`` as what it is: a requirement level, a flag, an identifier, a

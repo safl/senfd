@@ -104,16 +104,17 @@ def lines_of_fields(
 
 
 def value_label(value: Entry) -> str:
-    """A value by its name, else by the start of its description"""
+    """The name of 'value', or the start of its description where it has no
+    name"""
 
     return (senfd_value_names(value) or [value.description[:60]])[0]
 
 
 def case_label(case: Case) -> str:
-    """A case as a line: the values of the deciding field it is for, and what
-    the field is then, as "while ZRA is Report Zones (0h) or Extended Report
-    Zones (1h): Reporting Options" and "for all other values of ZRA:
-    Reserved" """
+    """'case' as one line: the values of the controlling field, and the
+    meaning of the field for them, for example "while ZRA is Report Zones
+    (0h) or Extended Report Zones (1h): Reporting Options" or "for all other
+    values of ZRA: Reserved" """
 
     if case.otherwise:
         when = f"for all other values of {case.selector}"
@@ -130,9 +131,9 @@ def case_label(case: Case) -> str:
 
 
 def array_and_structure(field: Bits) -> List[str]:
-    """What the data model says of 'field' as an entry of an array and of
-    the structure laying it out, a line of each, as "entry 0 of 64, each of
-    4 bytes" and "laid out in [NVM 1.3, Figure 125]" """
+    """A line for the array that 'field' belongs to, and a line for the
+    structure that lays it out, for example "entry 0 of 64, each of 4 bytes"
+    and "laid out in [NVM 1.3, Figure 125]" """
 
     told = []
     if field.array:
@@ -147,8 +148,8 @@ def array_and_structure(field: Bits) -> List[str]:
 
 
 def structure_of(spec: SpecDocument, field: Bits) -> Optional[Structure]:
-    """The structure laying out 'field' that the data model links the field
-    to, as the LBA Format of LBAF0 of Identify Namespace, or None"""
+    """The structure that 'field' is linked to, for example the LBA Format
+    for LBAF0 of Identify Namespace, or None"""
 
     if field.structure is None:
         return None
@@ -536,12 +537,11 @@ def of_kind(table: Values, kind: str) -> bool:
 def tables_of_values(
     spec: SpecDocument, field: Bits, every: bool = False
 ) -> List[Values]:
-    """The tables of the values of 'field' that the data model links the
-    field to: the table of the figure that the description of the field
-    names, as the CNS values of the Base specification for CNS of Identify.
-    With 'every', the tables of the same kind of every document follow it,
-    as the CNS values that each command set specification adds; a table of
-    the kind "other" is alone of its kind."""
+    """The table of values that 'field' is linked to, for example the CNS
+    values of the Base specification for CNS of Identify. With 'every', the
+    tables of the same kind in the other documents follow it, for example
+    the CNS values that each command set specification adds. A table of the
+    kind "other" has no tables of the same kind."""
 
     if field.values_in is None:
         return []
@@ -558,8 +558,8 @@ def tables_of_values(
 def values_of_field(
     spec: SpecDocument, field: Bits, every: bool = False
 ) -> List[Entry]:
-    """The values 'field' takes: those its own figure gives, else the entries
-    of the tables that tables_of_values() finds for it"""
+    """The values of 'field': those in its own figure, or else the entries of
+    the tables that tables_of_values() returns for it"""
 
     if field.values:
         return list(field.values)
