@@ -50,7 +50,7 @@ cannot state a field, bit or opcode that is not in the figures. When a
 lookup finds nothing, or finds nothing that mentions the question's terms,
 ``sate`` tells the language model so, and the language model chooses
 again, at most three times. After the third try, the answer is that the
-fact is not known. In the benchmark of 2026-11-12 with senfd 0.18.0, with
+fact is not known. In the benchmark of 2026-11-12 with senfd 0.19.0, with
 86 questions, Qwen 2.5 7B on a CPU chose lookups that answered 72 questions
 right, and Qwen 2.5 1.5B chose lookups that answered 57 right. With either language model,
 ``sate --llm`` answered no question wrongly.
