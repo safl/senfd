@@ -100,7 +100,13 @@ def table_of(
         x0, top, x1, bottom = column.extent
         if column.edges:
             x0, x1 = min(x0, column.edges[0]), max(x1, column.edges[-1])
-        extent[number] = (x0, top, x1, bottom)
+        # The tables nested in its cells are inside it, as the table of the
+        # values of a field of a byte of Base 2.4 Figure 348, which reaches
+        # below the text of the table of the byte's bits
+        whole: Box = (x0, top, x1, bottom)
+        for box in nested.get(number, []):
+            whole = union(whole, box)
+        extent[number] = whole
     return out, extent
 
 

@@ -64,6 +64,29 @@ def kids(element: pikepdf.Object) -> List[pikepdf.Object]:
     return list(k) if isinstance(k, pikepdf.Array) else [k]
 
 
+def wrapped(table: pikepdf.Dictionary) -> Optional[pikepdf.Dictionary]:
+    """The table that 'table' wraps, where 'table' is one row of one cell
+    holding a table and paragraphs, as Base 2.4 does Figure 232; else None.
+    Whether the paragraphs hold text is for the caller to see."""
+
+    def tagged(element: pikepdf.Object) -> List[pikepdf.Dictionary]:
+        return [e for e in kids(element) if isinstance(e, pikepdf.Dictionary)]
+
+    trs = tagged(table)
+    while len(trs) == 1 and trs[0].get("/S") in ("/THead", "/TBody", "/TFoot"):
+        trs = tagged(trs[0])
+    if len(trs) != 1 or trs[0].get("/S") != "/TR":
+        return None
+    cells = tagged(trs[0])
+    if len(cells) != 1:
+        return None
+    inner = [e for e in tagged(cells[0]) if e.get("/S") == "/Table"]
+    others = [e for e in tagged(cells[0]) if e.get("/S") != "/Table"]
+    if len(inner) == 1 and all(e.get("/S") == "/P" for e in others):
+        return inner[0]
+    return None
+
+
 def paragraphs(
     element: pikepdf.Dictionary,
     page: Optional[PageId],

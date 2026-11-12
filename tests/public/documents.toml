@@ -16,9 +16,9 @@ sha256 = "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd"
 commands = 57
 features = 51
 log_pages = 55
-structures = 346
+structures = 347
 errata = 11
-document_errors = 7
+document_errors = 8
 not_modelled = 22
 
 [[document]]

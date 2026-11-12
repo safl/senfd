@@ -24,7 +24,7 @@ from senfd.documents.plain import Figure, FigureDocument
 from senfd.errors import Error, FigureDuplicateNumberError
 from senfd.pdf.pages import Pages
 from senfd.pdf.tables import table_of
-from senfd.pdf.tree import HEADINGS, paragraphs, rows, walk
+from senfd.pdf.tree import HEADINGS, paragraphs, rows, walk, wrapped
 from senfd.tables import Cell, Row, Table
 
 CAPTION = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)$", re.S)
@@ -254,6 +254,13 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     entries[int(entry[1])] = int(entry[3])
             elif node.name == "/Table":
                 found, extent = table_of(pages, rows(node.element, node.page), errors)
+                inner = wrapped(node.element)
+                if inner is not None and not any(
+                    c.text.strip() for row in found for c in row.cells
+                ):
+                    found, extent = table_of(pages, rows(inner, node.page), errors)
+                else:
+                    inner = None
                 if not found:
                     continue
                 # The section is the outline's, by where the table is; the
@@ -272,6 +279,13 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                         pieces[last.figure_nr].append((begun, table))
                     continue
                 number = int(match[1])
+                if inner is not None:
+                    errors.append(
+                        Error(
+                            message=f"Figure {number}: table wrapped in a table "
+                            "of one cell; unwrapped"
+                        )
+                    )
                 if last is not None and number == last.figure_nr:
                     pieces[number].append((begun, table))
                     continue
