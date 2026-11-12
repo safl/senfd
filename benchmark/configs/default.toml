@@ -19,7 +19,7 @@
 [senfd]
 repo = "https://github.com/safl/senfd"
 # A commit, a tag or a branch; the run records it
-commit = "v0.18.0"
+commit = "v0.19.0"
 python = "3.13"
 
 [spec]
