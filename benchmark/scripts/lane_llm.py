@@ -9,8 +9,8 @@ sate, with a local language model choosing the lookups
 ===========================================================
 
 For each of 'llm.models', on the target: checks the language model's file by its
-SHA-256, starts llama.cpp's llama-server on it, on the CPU with 'llm.threads'
-threads, and has sate, run here, answer every question with the language
+SHA-256, starts llama.cpp's llama-server on it, on the CPU alone with
+'llm.threads' threads, offloading nothing to a GPU, and has sate, run here, answer every question with the language
 model choosing the lookups. The target is this machine, unless the config
 names another by ssh, in which case sate reaches the server through an ssh
 tunnel. Writes '<output>/bench/lanes/llm-<name>.json', and beside it the
@@ -69,17 +69,25 @@ def start_command(server, model_path, port, threads, context, log_path):
     output keeps the command from ever returning. 'exec' makes the PID written
     the server's own, so that stopping it stops the server. A server given
     by its name alone is the one on PATH.
+
+    The server runs on the CPU alone. A llama.cpp built with CUDA offloads to
+    a GPU it finds unless told otherwise: '--device none' stops the
+    offload, and the empty CUDA_VISIBLE_DEVICES hides the GPU, so that the
+    server holds no context on it either.
     """
 
+    hide = "export CUDA_VISIBLE_DEVICES=; "
     if "/" in server:
         run = (
-            f"cd {quoted(str(Path(server).parent))} && exec nohup ./{Path(server).name}"
+            f"cd {quoted(str(Path(server).parent))} && {hide}"
+            f"exec nohup ./{Path(server).name}"
         )
     else:
-        run = f"exec nohup {shlex.quote(server)}"
+        run = f"{hide}exec nohup {shlex.quote(server)}"
     return (
         f"({run} -m {model_path} --host 127.0.0.1 --port {port} "
-        f"-t {threads} -c {context} --jinja) > {log_path} 2>&1 < /dev/null & "
+        f"-t {threads} -c {context} --jinja --device none) "
+        f"> {log_path} 2>&1 < /dev/null & "
         f"echo $! > {PIDFILE}"
     )
 
@@ -131,7 +139,7 @@ def run_model(cijoe, model, port, records):
             "context": context,
             "server": version.output().strip(),
             "cpu": cpu.output().strip(),
-            "gpu": "none; llama-server run with no GPU offload",
+            "gpu": "none; llama-server run with --device none and no GPU visible",
         },
     )
     cijoe.get(log_path, str(records / "lanes" / f"llm-{model['name']}.server.log"))

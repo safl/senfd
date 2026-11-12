@@ -118,3 +118,23 @@ def test_a_server_by_its_name_alone_is_run_from_path(tmp_path, monkeypatch):
     env = {**os.environ, "PATH": f"{bin}:{os.environ['PATH']}"}
     subprocess.run(["bash", "-c", command + "; wait"], env=env, check=True, timeout=5)
     assert log_path.read_text().startswith("-m m.gguf")
+
+
+def test_the_server_runs_on_the_cpu_with_no_gpu_visible(tmp_path, monkeypatch):
+    server = tmp_path / "llama-server"
+    server.write_text(
+        '#!/bin/sh\necho "CUDA_VISIBLE_DEVICES=[$CUDA_VISIBLE_DEVICES] $*"\n'
+    )
+    server.chmod(0o755)
+    log = tmp_path / "server.log"
+    monkeypatch.setattr(lane_llm, "PIDFILE", str(tmp_path / "server.pid"))
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "0")
+
+    command = lane_llm.start_command(
+        str(server), "model.gguf", 8088, 16, 8192, str(log)
+    )
+    subprocess.run(["bash", "-c", command + "; wait"], check=True, timeout=5)
+
+    printed = log.read_text()
+    assert "CUDA_VISIBLE_DEVICES=[]" in printed
+    assert "--device none" in printed
