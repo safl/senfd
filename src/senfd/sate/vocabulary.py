@@ -42,6 +42,12 @@ class Vocabulary:
     # The names of the entries of the tables of values, as "RDMA Invalid
     # HSQSIZE"; of features and log pages, those are their names above
     values: Set[str] = field(default_factory=set)
+    # The tables of other values: the title, the headers of the columns of
+    # their codes, and the names, acronyms and symbols of the entries
+    tables: List[Tuple[str, Set[str], Set[str]]] = field(default_factory=list)
+    # The acronyms and symbols of the entries of the tables of other values,
+    # as "SQ0TDBL" of a table of properties
+    symbols: Set[str] = field(default_factory=set)
     # The words of the captions and section titles of each document, by its
     # short name as a citation gives it, "Boot 1.4"
     documents: Dict[str, str] = field(default_factory=dict)
@@ -86,6 +92,23 @@ class Vocabulary:
         vocabulary.documents = {
             name: spaced(" ".join(texts)) for name, texts in titled.items()
         }
+        for table in spec.values:
+            if table.kind != "other":
+                continue
+            marks = {
+                mark
+                for entry in table.entries
+                for mark in (entry.columns.get("acronym"), entry.columns.get("symbol"))
+                if mark
+            }
+            vocabulary.symbols |= marks
+            vocabulary.tables.append(
+                (
+                    table.name or "",
+                    {e.value_column.replace("_", " ") for e in table.entries},
+                    {e.name for e in table.entries if e.name} | marks,
+                )
+            )
         named_elsewhere = (
             "feature_identifiers",
             "log_page_identifiers",

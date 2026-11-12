@@ -119,6 +119,34 @@ ASKED_FIELD = re.compile(
 )
 
 
+def entry_of_table(
+    text: str, named: Optional[Tuple[str, str]], vocabulary: Vocabulary
+) -> str:
+    """The words of the table and the entry that 'text' names, where it names
+    a table of other values, by its title or by the header of the column of
+    its codes, and one of its entries, as "Foo PDU Types FooResp" of "the PDU
+    type of the Foo Response PDU (FooResp)"; "" where it names none, or names
+    a command, feature or log page, whose own lookups answer it"""
+
+    if named and named[0] != "structure":
+        return ""
+    asked = " " + " ".join(singular(w) for w in words_of(text).split()) + " "
+    found: List[Tuple[int, str]] = []
+    for title, columns, names in vocabulary.tables:
+        said = [
+            phrase
+            for phrase in [title, *columns]
+            if len(words_of(phrase).split()) > 1
+            and all(f" {singular(w)} " in asked for w in words_of(phrase).split())
+        ]
+        if not said:
+            continue
+        for name in names:
+            if words_of(name).strip() and words_of(name) in words_of(text):
+                found.append((len(words_of(name)), f"{said[0]} {name}"))
+    return max(found)[1] if found else ""
+
+
 def outside_field(text: str) -> str:
     """'text' without the name of the field asked of, whose capitals, as ID of
     "Namespace ID (NSID)", are a part of that name, not a register's acronym"""
@@ -175,6 +203,9 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     code = hex_after(r"sc", lower)
     if code:  # A status code of any type, as "sc 81h"
         return Understood("value", f"status code {code}h")
+    coded = entry_of_table(text, named, vocabulary)
+    if coded:
+        return Understood("value", coded)
     asks_command = re.search(ASKS_COMMAND, lower)
     # "status code 82h" and "which CNS value gives ..." ask of a table of values
     asked_value = value_asked(text, named) if not asks_command else ""
@@ -264,6 +295,12 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
     ):
         if re.search(word, lower) and rest:
             return Understood(query, rest)
+    # An entry by its symbol, as "SQ0TDBL" of a table of properties
+    symbols = [
+        w for w in re.findall(r"\b[A-Z][A-Z0-9]+\b", text) if w in vocabulary.symbols
+    ]
+    if symbols and not capitals:
+        return Understood("value", symbols[0])
     # An entry of a table of values, by its name, where the question names
     # nothing else: "the transport error RDMA Invalid HSQSIZE"
     entry = max(
