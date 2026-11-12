@@ -7,36 +7,36 @@
     </clipPath>
   </defs>
   <g clip-path="url(#center-clearance)">
-    <g fill="#E1AD01" stroke="#2B2F36" stroke-width="23" stroke-linejoin="round">
+    <g fill="#D79921" stroke="#282828" stroke-width="23" stroke-linejoin="round">
       <rect x="72" y="72" width="433" height="433" rx="86" />
       <rect x="519" y="72" width="433" height="433" rx="86" />
       <rect x="72" y="519" width="433" height="433" rx="86" />
       <rect x="519" y="519" width="433" height="433" rx="86" />
     </g>
     <!-- Documents, two overlapping pages and three readable lines -->
-    <g stroke="#2B2F36" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#282828" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
       <path d="M182 183 H317 V400 H182 Q160 400 160 378 V205 Q160 183 182 183" />
-      <path d="M231 145 H350 L389 186 V373 Q389 395 367 395 H231 Q209 395 209 373 V167 Q209 145 231 145 Z" fill="#E1AD01" />
+      <path d="M231 145 H350 L389 186 V373 Q389 395 367 395 H231 Q209 395 209 373 V167 Q209 145 231 145 Z" fill="#D79921" />
       <path d="M350 146 V186 H390" />
       <path d="M249 259 H336 M249 299 H343 M249 339 H322" />
     </g>
     <!-- Table, regular divisions -->
-    <g stroke="#2B2F36" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#282828" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
       <rect x="616" y="177" width="247" height="235" rx="20" />
       <path d="M698 177 V412 M780 177 V412 M616 255 H863 M616 334 H863" />
     </g>
     <!-- Merge, two inputs flowing to a single output -->
-    <g stroke="#2B2F36" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="155" y="624" width="82" height="72" rx="10" fill="#2B2F36" />
-      <rect x="339" y="624" width="82" height="72" rx="10" fill="#2B2F36" />
+    <g stroke="#282828" fill="none" stroke-width="19" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="155" y="624" width="82" height="72" rx="10" fill="#282828" />
+      <rect x="339" y="624" width="82" height="72" rx="10" fill="#282828" />
       <path d="M196 701 V731 Q196 753 225 753 H259 Q286 753 286 785 M380 701 V731 Q380 753 351 753 H316 Q286 753 286 785" />
       <path d="M264 767 L286 790 L308 767" />
-      <rect x="230" y="813" width="112" height="77" rx="11" fill="#2B2F36" />
+      <rect x="230" y="813" width="112" height="77" rx="11" fill="#282828" />
     </g>
     <!-- Processing, a mechanical gear surrounded by circular direction arrows -->
-    <g fill="#2B2F36" stroke="#2B2F36" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <g fill="#282828" stroke="#282828" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
       <polygon points="738.23,703.53 740.52,689.82 761.48,689.82 763.77,703.53 771.51,706.05 781.42,696.30 798.38,708.62 792.17,721.06 796.95,727.64 810.70,725.58 817.18,745.52 804.85,751.93 804.85,760.07 817.18,766.48 810.70,786.42 796.95,784.36 792.17,790.94 798.38,803.38 781.42,815.70 771.51,805.95 763.77,808.47 761.48,822.18 740.52,822.18 738.23,808.47 730.49,805.95 720.58,815.70 703.62,803.38 709.83,790.94 705.05,784.36 691.30,786.42 684.82,766.48 697.15,760.07 697.15,751.93 684.82,745.52 691.30,725.58 705.05,727.64 709.83,721.06 703.62,708.62 720.58,696.30 730.49,706.05" stroke-width="5" />
-      <circle cx="751" cy="756" r="24" fill="#E1AD01" stroke="none" />
+      <circle cx="751" cy="756" r="24" fill="#D79921" stroke="none" />
       <path d="M635 747 C637 678 693 626 758 626 C789 626 816 636 839 654" fill="none" />
       <path d="M812 654 L846 661 L843 627" fill="none" />
       <path d="M866 771 C859 837 814 888 748 888 C716 888 684 876 661 857" fill="none" />
@@ -44,12 +44,12 @@
     </g>
   </g>
   <!-- The unified structured JSON-like data model -->
-  <circle cx="512" cy="512" r="141" fill="#2B2F36" />
-  <g stroke="#E1AD01" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none">
+  <circle cx="512" cy="512" r="141" fill="#282828" />
+  <g stroke="#D79921" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" fill="none">
     <rect x="475" y="424" width="74" height="47" rx="9" />
     <path d="M512 471 V539 M437 539 H587 M437 539 V557 M512 539 V557 M587 539 V557" />
   </g>
-  <g fill="#E1AD01">
+  <g fill="#D79921">
     <rect x="407" y="557" width="60" height="50" rx="11" />
     <rect x="482" y="557" width="60" height="50" rx="11" />
     <rect x="557" y="557" width="60" height="50" rx="11" />
