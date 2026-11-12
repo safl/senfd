@@ -703,8 +703,27 @@ def test_a_name_in_title_case_is_split_at_a_colon_without_a_space():
     assert parse_field_description(
         "KV Key Does Not Exist:The KV key does not exist."
     ) == ("KV Key Does Not Exist", None, "The KV key does not exist.")
-    text = "List the zones in the ZSE:Empty state."
-    assert parse_field_description(text) == (None, None, text)
+    assert parse_field_description("Invalid Field:the field is invalid") == (
+        "Invalid Field",
+        None,
+        "the field is invalid",
+    )
+    # Colons that join a state to its acronym, as ZSE:Empty, name nothing
+    for text in (
+        "List the zones in the ZSE:Empty state.",
+        "ZSE:Empty",
+        "Transition ZSE:Empty to ZSIO:Implicitly Opened",
+    ):
+        assert parse_field_description(text) == (None, None, text)
+
+
+def test_a_colon_without_a_space_after_an_acronym_and_its_footnote_splits():
+    assert parse_field_description("Name (ACR) 1:Desc") == ("Name", "ACR", "Desc")
+    assert parse_field_description("Foo Bar (FB)1:The foo.") == (
+        "Foo Bar",
+        "FB",
+        "The foo.",
+    )
 
 
 def test_a_colon_inside_a_word_separates_no_name_from_its_description():

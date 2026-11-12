@@ -182,10 +182,11 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
 # name may hold a range in brackets, colon and all, as "KV Key[63:00]:"
 NAME = r"(?P<name>(?:[^:()\[\]]|\[[^\]]*\])+?)(?<!\s)"
 # The colon after a name is followed by a space, or ends the text, but for
-# one right after the acronym's parenthesis; "ZSE:Empty" is the name of a state
+# one after an acronym and its footnote markers; "ZSE:Empty" is the name of a
+# state
 REGEX_FIELD = re.compile(
     rf"^{NAME}\s*(?:\((?P<acronym>[^()]+)\)"
-    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::(?:(?<=\):)|(?=\s|$))\s*(?P<rest>.*))?$"
+    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::(?(acronym)|(?=\s|$))\s*(?P<rest>.*))?$"
 )
 
 
@@ -205,10 +206,11 @@ REGEX_ENTRY_ACRONYM = re.compile(
 UNNAMED_ROWS = ("reserved", "obsolete", "vendor specific", "ignored")
 
 # "Name:Description", the space after the colon left out; the name is one
-# only where it is in title case, as "KV Key Does Not Exist:The KV key does
-# not exist.", unlike "List the zones in the ZSE:Empty state."
+# only where it is of two words or more in title case, as "KV Key Does Not
+# Exist:The KV key does not exist.", unlike "List the zones in the ZSE:Empty
+# state." or "ZSE:Empty to ZSIO:Implicitly Opened", whose colons join states.
 # The acronym group never matches; it is there for the callers of REGEX_FIELD
-REGEX_FIELD_TIGHT = re.compile(rf"^{NAME}(?P<acronym>(?!))?:(?P<rest>[A-Z].*)$")
+REGEX_FIELD_TIGHT = re.compile(rf"^{NAME}(?P<acronym>(?!))?:(?P<rest>\S.*)$")
 SMALL_WORDS = {"a", "an", "and", "by", "for", "in", "is", "of", "or", "the", "to"}
 
 
@@ -268,7 +270,14 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
         match = REGEX_FIELD_NO_COLON.match(first)
     if not match:
         tight = REGEX_FIELD_TIGHT.match(first)
-        match = tight if tight and is_title(tight["name"]) else None
+        match = (
+            tight
+            if tight
+            and len(tight["name"].split()) > 1
+            and is_title(tight["name"])
+            and not re.search(r"\w:\w", tight["rest"])
+            else None
+        )
     if not match or len(match["name"]) > 80:
         return None, None, "\n".join(p for p in [first, more] if p)
 
