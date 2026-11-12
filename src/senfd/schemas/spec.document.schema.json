@@ -269,6 +269,14 @@
                     "description": "Of fields sharing bits, which fields go together, as an IPv4 address\nand the reserved bits after it, against an IPv6 address of the same\nbytes",
                     "title": "Alternative"
                 },
+                "placements": {
+                    "description": "The range of the field under each condition heading the figure's\ncolumns of ranges, where those differ; 'range' is the first that is\npresent",
+                    "items": {
+                        "$ref": "#/$defs/Placement"
+                    },
+                    "title": "Placements",
+                    "type": "array"
+                },
                 "values": {
                     "description": "The values the field takes, as the table in its description gives\nthem",
                     "items": {
@@ -998,6 +1006,60 @@
                 "source"
             ],
             "title": "Operation",
+            "type": "object"
+        },
+        "Placement": {
+            "description": "Where a field is while a condition heading the figure's columns of\nranges holds. For example, the PDU Header Digest of the TCP transport's\nCommand Capsule PDU is bytes 75:72 when HDGSTF=1 and not present when\nHDGSTF=0.",
+            "properties": {
+                "condition": {
+                    "description": "The condition as the figure writes it, for example 'HDGSTF=1'",
+                    "title": "Condition",
+                    "type": "string"
+                },
+                "range": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The range under the condition as the figure writes it; None where the\nfigure says the field is not present",
+                    "title": "Range"
+                },
+                "upper": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The upper bound of the range, inclusive; None where it is symbolic",
+                    "title": "Upper"
+                },
+                "lower": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The lower bound of the range",
+                    "title": "Lower"
+                }
+            },
+            "required": [
+                "condition"
+            ],
+            "title": "Placement",
             "type": "object"
         },
         "Selected": {

@@ -310,6 +310,13 @@
                     },
                     "title": "Cases",
                     "type": "array"
+                },
+                "placements": {
+                    "items": {
+                        "$ref": "#/$defs/Placement"
+                    },
+                    "title": "Placements",
+                    "type": "array"
                 }
             },
             "required": [
@@ -450,6 +457,31 @@
                 "subject"
             ],
             "title": "NormalizedFigure",
+            "type": "object"
+        },
+        "Placement": {
+            "description": "The range of a field under a condition heading the ranges, as \"HDGSTF=1\";\nNone where the column says the field is not present",
+            "properties": {
+                "condition": {
+                    "title": "Condition",
+                    "type": "string"
+                },
+                "range": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Range"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null
+                }
+            },
+            "required": [
+                "condition"
+            ],
+            "title": "Placement",
             "type": "object"
         },
         "Range": {

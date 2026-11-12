@@ -106,6 +106,23 @@ BITS_BY_KIND: JsonDict = {
 }
 
 
+class Placement(Model):
+    """Where a field is while a condition heading the figure's columns of
+    ranges holds. For example, the PDU Header Digest of the TCP transport's
+    Command Capsule PDU is bytes 75:72 when HDGSTF=1 and not present when
+    HDGSTF=0."""
+
+    condition: str
+    """The condition as the figure writes it, for example 'HDGSTF=1'"""
+    range: Optional[str] = None
+    """The range under the condition as the figure writes it; None where the
+    figure says the field is not present"""
+    upper: Optional[int] = None
+    """The upper bound of the range, inclusive; None where it is symbolic"""
+    lower: Optional[int] = None
+    """The lower bound of the range"""
+
+
 class BitsCommon(Model):
     """What a field has however far it is made"""
 
@@ -137,6 +154,10 @@ class BitsCommon(Model):
     """Of fields sharing bits, which fields go together, as an IPv4 address
     and the reserved bits after it, against an IPv6 address of the same
     bytes"""
+    placements: List[Placement] = Field(default_factory=list)
+    """The range of the field under each condition heading the figure's
+    columns of ranges, where those differ; 'range' is the first that is
+    present"""
     values: List["Entry"] = Field(default_factory=list)
     """The values the field takes, as the table in its description gives
     them"""
@@ -706,6 +727,15 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         section=field.section,
         elided=field.elided,
         columns=field.columns,
+        placements=[
+            Placement(
+                condition=p.condition,
+                range=p.range.text if p.range else None,
+                upper=p.range.upper if p.range else None,
+                lower=p.range.lower if p.range else None,
+            )
+            for p in field.placements
+        ],
         fields=unions_of(
             [
                 bits_of(nested_field, nested.unit)
@@ -942,6 +972,7 @@ def checked(
                 fields=nested,
                 union=field.union,
                 alternative=field.alternative,
+                placements=field.placements,
                 values=field.values,
                 cases=cases,
             )
