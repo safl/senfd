@@ -71,6 +71,7 @@ def test_the_documentation_uses_the_palette_of_the_web_page():
         page = dict(zip(web.TOKENS, values.split()))
         assert gruvbox[mode]["background-primary"] == page["bg"]
         assert gruvbox[mode]["foreground-primary"] == page["fg"]
+        assert gruvbox[mode]["brand-content"] == page["accent"]
     options = runpy.run_path("docs/conf.py")["html_theme_options"]
     assert options["dark_css_variables"]["color-brand-content"] == "#fabd2f"
 
