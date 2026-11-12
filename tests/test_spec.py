@@ -1759,3 +1759,71 @@ def test_a_field_has_the_footnotes_marked_at_the_end_of_its_description():
         "The header, of a specific definition.",
         [1],
     )
+
+
+def test_an_entry_naming_a_value_of_another_field_links_to_it():
+    """Reporting Options 1h of Zone Management Receive, "List the zones in the
+    ZSE:Empty state.", names value 1h of the field ZS of the Zone Descriptor,
+    ZNS 1.5 Figure 38; a field that has only some of the names named, and an
+    entry with a name of its own, are not linked"""
+
+    from senfd.documents.spec import (
+        Bits,
+        Entry,
+        Source,
+        Structure,
+        Values,
+        link_named_values,
+    )
+
+    def field(acronym, names):
+        return Bits(
+            name=acronym,
+            acronym=acronym,
+            unit="bits",
+            role="field",
+            kind="span",
+            range="7:4",
+            upper=7,
+            lower=4,
+            width=4,
+            values=[Entry(value=v, name=n) for v, n in names],
+        )
+
+    document = SpecDocument()
+    document.structures = [
+        Structure(
+            name="Zone Descriptor",
+            kind="data_structure",
+            unit="bytes",
+            fields=[field("ZS", [("1h", "Empty"), ("Eh", "Full")])],
+            source=Source(document="ZNS", figure_nr=38),
+        ),
+        Structure(
+            name="Other",
+            kind="data_structure",
+            unit="bytes",
+            fields=[field("OS", [("0h", "Empty")])],
+            source=Source(document="ZNS", figure_nr=40),
+        ),
+    ]
+    document.values = [
+        Values(
+            kind="other",
+            columns=["value", "description"],
+            entries=[
+                Entry(value="1h", description="List the zones in the ZSE:Empty state."),
+                Entry(value="5h", description="List the zones in the ZSF:Full state."),
+                Entry(value="8h", name="Named", description="Of the ZSE:Empty state."),
+            ],
+            source=Source(document="ZNS", figure_nr=35),
+        )
+    ]
+    link_named_values(document)
+
+    links = [e.refers_to for e in document.values[0].entries]
+    assert [(r.source.figure_nr, r.field, r.value, r.acronym) for r in links[:2]] == [
+        (38, "ZS", "1h", "ZSE"),
+        (38, "ZS", "Eh", "ZSF"),
+    ]
+    assert links[2] is None

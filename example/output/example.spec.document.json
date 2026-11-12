@@ -2,7 +2,7 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "1a8cad79454ff370fe3ad445c45eee81cb60c8291f0cbfb39e2c80f75aba1795",
+    "senfd_sha256": "8aa384aef1294ef5d2abe03af258e0d7f903e5ba526202a248f27749ec21ba2f",
     "stem": "example",
     "file": "example.docx",
     "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -722,7 +722,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "1h",
@@ -747,7 +748,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "2h",
@@ -772,7 +774,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     }
                   ],
                   "unit": "bits",
@@ -863,7 +866,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "001b",
@@ -883,7 +887,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "010b to 111b",
@@ -903,7 +908,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     }
                   ],
                   "unit": "bits",
@@ -1019,7 +1025,8 @@
                               "footnotes": []
                             }
                           },
-                          "footnotes": []
+                          "footnotes": [],
+                          "refers_to": null
                         },
                         {
                           "value": "1h",
@@ -1039,7 +1046,8 @@
                               "footnotes": []
                             }
                           },
-                          "footnotes": []
+                          "footnotes": [],
+                          "refers_to": null
                         },
                         {
                           "value": "2h to FFh",
@@ -1059,7 +1067,8 @@
                               "footnotes": []
                             }
                           },
-                          "footnotes": []
+                          "footnotes": [],
+                          "refers_to": null
                         }
                       ],
                       "role": "field",
@@ -1114,7 +1123,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "01h",
@@ -1134,7 +1144,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     },
                     {
                       "value": "02h to FFh",
@@ -1154,7 +1165,8 @@
                           "footnotes": []
                         }
                       },
-                      "footnotes": []
+                      "footnotes": [],
+                      "refers_to": null
                     }
                   ],
                   "unit": "bits",
@@ -2113,7 +2125,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "1h",
@@ -2138,7 +2151,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "2h",
@@ -2163,7 +2177,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               }
             ],
             "unit": "bits",
@@ -2254,7 +2269,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "001b",
@@ -2274,7 +2290,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "010b to 111b",
@@ -2294,7 +2311,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               }
             ],
             "unit": "bits",
@@ -2410,7 +2428,8 @@
                         "footnotes": []
                       }
                     },
-                    "footnotes": []
+                    "footnotes": [],
+                    "refers_to": null
                   },
                   {
                     "value": "1h",
@@ -2430,7 +2449,8 @@
                         "footnotes": []
                       }
                     },
-                    "footnotes": []
+                    "footnotes": [],
+                    "refers_to": null
                   },
                   {
                     "value": "2h to FFh",
@@ -2450,7 +2470,8 @@
                         "footnotes": []
                       }
                     },
-                    "footnotes": []
+                    "footnotes": [],
+                    "refers_to": null
                   }
                 ],
                 "role": "field",
@@ -2505,7 +2526,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "01h",
@@ -2525,7 +2547,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               },
               {
                 "value": "02h to FFh",
@@ -2545,7 +2568,8 @@
                     "footnotes": []
                   }
                 },
-                "footnotes": []
+                "footnotes": [],
+                "refers_to": null
               }
             ],
             "unit": "bits",
@@ -6998,7 +7022,8 @@
           "description": "Foo is busy.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "81h",
@@ -7007,7 +7032,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7036,7 +7062,8 @@
           "description": "Foo is not valid.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7105,7 +7132,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7147,7 +7175,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "Dong",
@@ -7169,7 +7198,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7260,7 +7290,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7300,7 +7331,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "C1h",
@@ -7320,7 +7352,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "C2h",
@@ -7340,7 +7373,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7407,7 +7441,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7484,7 +7519,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "C1h to C3h",
@@ -7540,7 +7576,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "C4h-C7h",
@@ -7594,7 +7631,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "C8h",
@@ -7638,7 +7676,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7673,7 +7712,8 @@
             "ter_field": "0h"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "1.1",
@@ -7686,7 +7726,8 @@
             "ter_field": "0h"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7715,7 +7756,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "1h",
@@ -7724,7 +7766,8 @@
           "description": "Not foo.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7753,7 +7796,8 @@
           "description": "Foo Over Ober",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7782,7 +7826,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7811,7 +7856,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "7h",
@@ -7820,7 +7866,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7849,7 +7896,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7878,7 +7926,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7917,7 +7966,8 @@
             "acronym": "FCAP"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7953,7 +8003,8 @@
             "objective": "Write foo"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -7986,7 +8037,8 @@
             "transition_condition": "A foo arrives"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8020,7 +8072,8 @@
             "command_2": "Dong"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8051,7 +8104,8 @@
             "section": "Foo Errors"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "83h",
@@ -8062,7 +8116,8 @@
             "section": "Foo Errors"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8094,7 +8149,8 @@
             "reference": "6.1"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "01h",
@@ -8105,7 +8161,8 @@
             "reference": "6.2"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8139,7 +8196,8 @@
             "reference": "6.2.1"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "All other values",
@@ -8151,7 +8209,8 @@
             "reference": ""
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "01h",
@@ -8163,7 +8222,8 @@
             "reference": "6.2.2"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8218,7 +8278,8 @@
               "footnotes": []
             }
           },
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8249,7 +8310,8 @@
             "purpose": "Bar"
           },
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8278,7 +8340,8 @@
           "description": "A qux that dings.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "01h",
@@ -8287,7 +8350,8 @@
           "description": "A qux that rings.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "02h to FFh",
@@ -8296,7 +8360,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8325,7 +8390,8 @@
           "description": "A qux of no kind.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "01h",
@@ -8334,7 +8400,8 @@
           "description": "A qux of a kind.",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         },
         {
           "value": "02h to FFh",
@@ -8343,7 +8410,8 @@
           "description": "",
           "columns": {},
           "typed": {},
-          "footnotes": []
+          "footnotes": [],
+          "refers_to": null
         }
       ],
       "source": {
@@ -8840,7 +8908,7 @@
     "example": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "1a8cad79454ff370fe3ad445c45eee81cb60c8291f0cbfb39e2c80f75aba1795",
+      "senfd_sha256": "8aa384aef1294ef5d2abe03af258e0d7f903e5ba526202a248f27749ec21ba2f",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
