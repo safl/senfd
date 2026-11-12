@@ -277,6 +277,23 @@
                     "title": "Placements",
                     "type": "array"
                 },
+                "byte_order": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                "big-endian",
+                                "little-endian"
+                            ],
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The order of the field's bytes where the figure marks the byte of its\nmost significant bit (MSB) and that of its least (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\"\nwhere the MSB is in the lowest byte. None where the figure does not mark\nthem, or the field is one byte",
+                    "title": "Byte Order"
+                },
                 "values": {
                     "description": "The values the field takes, as the table in its description gives\nthem",
                     "items": {
