@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+import re
 from dataclasses import replace
 from pathlib import Path
 
@@ -672,7 +673,11 @@ def test_a_field_acronym_that_is_a_register_s_too_is_of_the_structure_named(
 @pytest.mark.parametrize(
     "question, understood, shows",
     [
-        ("help", "help('')", "| a command, with its dwords |"),
+        (
+            "help",
+            "help('')",
+            "| `write` | the opcode, command-dwords and fields |",
+        ),
         ("section 1.2", "section('1.2')", "- example 1.2 Ding command"),
         ("errata", "errata('')", "Command Zing: opcode is not a value"),
         ("search FCNT", "search('fcnt')", "15:00 Foo Count (FCNT)"),
@@ -747,7 +752,7 @@ def test_the_session_answers_each_question_until_the_input_ends(
     with stack:
         assert senfd.sate.session.interact(spec) == 0
     out = capsys.readouterr().out
-    assert "Ask about a command" in out
+    assert "sate answers these forms of question" in out
     assert "Ding: Foobar command, opcode 01h" in out
     assert "Feature C0h Foo Config" in out
 
@@ -758,7 +763,7 @@ def test_the_session_completes_the_names_of_the_model(spec, monkeypatch, capsys)
     made, stack = session_answering(monkeypatch)
     with stack:
         senfd.sate.session.interact(spec)
-    assert "Ask about a command" in capsys.readouterr().out
+    assert "sate answers these forms of question" in capsys.readouterr().out
     completer = made[0].completer
     shown = list(completer.get_completions(Document("opcode of Foo Sta"), None))
     assert (shown[0].text, shown[0].start_position) == ("Foo Statistics", -7)
@@ -1031,6 +1036,41 @@ def test_describe_is_a_form_offered_and_told_of():
     assert "`describe cdw12 of write`" in phrasing.HELP
     assert phrasing.QUESTION_WORDS.search("explain CSTS") is not None
     assert "explain" in phrasing.GENERIC
+
+
+def test_the_table_of_forms_gives_one_example_a_row():
+    rows = [
+        line
+        for line in phrasing.FORMS.splitlines()
+        if line.startswith("| ") and not line.startswith("| Question")
+    ]
+    assert "| Question | sate answers with |" in phrasing.FORMS
+    assert rows
+    assert [row for row in rows if not re.match(r"\| `[^`]+` \| [^`|]+ \|$", row)] == []
+
+
+def test_each_row_of_the_table_of_forms_takes_at_most_two_lines():
+    from rich.console import Console
+    from rich.markdown import Markdown
+
+    console = Console(width=80)
+    lines = [
+        "".join(segment.text for segment in line).rstrip()
+        for line in console.render_lines(
+            Markdown(phrasing.FORMS), console.options, pad=False
+        )
+    ]
+    table = lines[[n for n, line in enumerate(lines) if "─" in line][0] + 1 :]
+    heights = []
+    for line in table:
+        if not line:
+            continue
+        if line.startswith("  "):
+            heights[-1] += 1
+        else:
+            heights.append(1)
+    assert len(heights) == 16
+    assert max(heights) <= 2
 
 
 def test_after_the_words_of_a_kind_only_names_of_that_kind_are_offered():

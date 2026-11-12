@@ -14,28 +14,33 @@ from typing import List, Tuple
 # FORMS is the table of question forms. HELP adds the keys of the terminal
 # session, which sate-web does not show, since sate-web has other keys
 FORMS = """\
-**Ask about a command, a feature, a log page, a structure, a register or a field.**
+sate answers these forms of question. Each answer cites the figure that it
+comes from.
 
-| Ask | As |
+| Question | sate answers with |
 |---|---|
-| a command, with its dwords | `write`, `zone append` |
-| a command's opcode alone | `opcode of sanitize` |
-| one dword of a command | `cdw12 of write`, `dword 10 of get log page` |
-| a feature or a log page | `feature 07h`, `feature number of queues`, `log page 1Fh` |
-| what an identifier is | `1Fh` |
-| a status code or a CNS value | `status code 82h`, `status code type 1h`, `CNS 05h`, `status code of zone boundary error` |
-| what a status of a completion means | `what does status 0x4281 mean?`, `what does SCT 1 SC 80h mean for Write?`, `dw3 0x80050007` |
-| a structure or a register | `structure identify controller`, `CC`, `CSTS` |
-| a field, everywhere it is | `FUA`, `search storage tag` |
-| any of these with the descriptions | `describe cdw12 of write`, `explain CSTS` |
-| a section | `section 5.2.6` |
-| what the documents may have wrong | `errata`, `errata nvm` |
+| `write` | the opcode, command-dwords and fields |
+| `opcode of sanitize` | the opcode of Sanitize |
+| `cdw12 of write` | the fields of Command Dword 12 of Write |
+| `feature 07h` | the name of feature 07h and its fields |
+| `log page 1Fh` | the name of log page 1Fh and its fields |
+| `1Fh` | feature 1Fh and log page 1Fh |
+| `status code 82h` | each status code 82h, and each range that includes 82h |
+| `what does status 0x4281 mean?` | what the SCT and SC in status 4281h mean |
+| `CNS 05h` | each entry for the CNS value 05h |
+| `structure identify controller` | the fields of Identify Controller |
+| `CSTS` | the offset and the fields of the CSTS register |
+| `FUA` | each field with the acronym FUA |
+| `search storage tag` | each name that contains "storage tag" |
+| `describe cdw12 of write` | cdw12 of Write, with field descriptions |
+| `section 5.2.6` | the subsections and figures of section 5.2.6 |
+| `errata` | the candidate errata that senfd found |
 """
 HELP = (
     FORMS
     + """
-Tab completes a name or an acronym, `?` shows the questions to ask, `help` or
-F1 this, and Ctrl-D leaves.
+Tab completes a name or an acronym. `?` shows the common questions. `help`
+or F1 shows this table. Ctrl-D ends the session.
 """
 )
 

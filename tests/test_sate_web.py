@@ -48,7 +48,7 @@ def test_the_start_page_lists_the_keys_and_has_the_forms_dialog(client):
     ) in response.text
     assert "completes a name or an acronym" in response.text
     assert '<form class="ask" method="get"' in response.text
-    assert response.text.index("Ask about a command, a feature, a log page") > forms
+    assert response.text.index("sate answers these forms of question") > forms
     assert "Ctrl-D" not in response.text
 
 
