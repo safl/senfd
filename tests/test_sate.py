@@ -12,6 +12,7 @@ import senfd.sate
 import senfd.sate.answering
 import senfd.sate.completion
 import senfd.sate.session
+import senfd.sate.reading
 import senfd.query
 import senfd.sate.cli
 from senfd.sate import grounding, language_model, lookup, phrasing, reading
@@ -195,6 +196,39 @@ def test_a_term_of_the_captions_of_the_document_cited_counts_as_mentioned():
     assert grounding.unmentioned("NBFT SSNS Flags USFLAG", lines, vocabulary) == []
     assert grounding.unmentioned("NBFT SSNS Flags USFLAG", lines) == ["nbft"]
     assert grounding.unmentioned("HFI SSNS Flags USFLAG", lines, vocabulary) == ["hfi"]
+
+
+@pytest.mark.parametrize(
+    "question, understood",
+    [
+        # The table by its title, in the singular, and an entry of it
+        (
+            "What is the PDU type of the Foo Response PDU (FooResp)?",
+            "value('Foo PDU Types FooResp')",
+        ),
+        # The table by the header of its column of codes, and an entry of it
+        (
+            "What is the descriptor type designator of the Bar Descriptor?",
+            "value('descriptor type designator Bar Descriptor')",
+        ),
+        # An entry by its symbol
+        ("At which offset is the Foo Doorbell (FOODBL)?", "value('FOODBL')"),
+    ],
+)
+def test_a_question_naming_a_table_of_codes_and_an_entry_is_read_as_the_entry(
+    question, understood
+):
+    vocabulary = Vocabulary(
+        structures={"Foo Response PDU (FooResp)"},
+        tables=[
+            ("Foo PDU Types", {"opcode"}, {"FooResp"}),
+            ("Foo Elements", {"descriptor type designator"}, {"Bar Descriptor"}),
+            ("Foo Property Definitions", {"start"}, {"Foo Doorbell (Admin)"}),
+        ],
+        symbols={"FOODBL"},
+    )
+
+    assert str(senfd.sate.reading.understand(question, vocabulary)) == understood
 
 
 def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
