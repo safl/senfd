@@ -18,6 +18,15 @@ def test_each_static_file_the_documentation_shows_exists():
     assert [name for name in sorted(shown) if not (Path("docs") / name).is_file()] == []
 
 
+def test_the_logo_and_the_favicon_the_configuration_names_exist():
+    conf = runpy.run_path("docs/conf.py")
+
+    assert conf["html_logo"] == "_static/logo.svg"
+    assert conf["html_favicon"] == "_static/favicon.ico"
+    for name in (conf["html_logo"], conf["html_favicon"]):
+        assert (Path("docs") / name).is_file(), name
+
+
 def console_blocks(text: str) -> List[List[str]]:
     """The commands of each console block of 'text', without their prompt"""
 

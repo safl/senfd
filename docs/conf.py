@@ -42,6 +42,7 @@ html_theme_options = {
     "sidebar_hide_name": True,
 }
 html_static_path = ["_static"]
-html_logo = "_static/logo.png"
+html_logo = "_static/logo.svg"
+html_favicon = "_static/favicon.ico"
 
 linkcheck_report_timeouts_as_broken = False
