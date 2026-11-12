@@ -563,14 +563,17 @@ def test_a_pdf_row_of_a_range_under_each_condition_is_a_field():
         rows(
             ("HDGSTF=1", "HDGSTF=0", "", ""),
             ("75:72", "Not present", "HDGST", "PDU Header Digest (HDGST): The digest."),
+            # The same range under each condition is no detail of it
+            ("79:76", "79:76", "CMD", "Command (CMD): The command."),
         ),
         ["bytes", "pdu_section", "description"],
         [],
     )
     assert [(f.range.text, f.columns) for f in layout.fields] == [
-        ("75:72", {"pdu_section": "HDGST"})
+        ("75:72", {"pdu_section": "HDGST"}),
+        ("79:76", {"pdu_section": "CMD"}),
     ]
-    assert placements(layout) == [[("HDGSTF=1", "75:72"), ("HDGSTF=0", None)]]
+    assert placements(layout) == [[("HDGSTF=1", "75:72"), ("HDGSTF=0", None)], []]
 
 
 def test_a_name_wrapped_by_a_narrow_column_is_one_name():

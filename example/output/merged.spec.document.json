@@ -2,12 +2,12 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "1d17bfbaada46a38a4d28b5e1b7087e388769b729a65e40f1443498b76c7b588",
+    "senfd_sha256": "fa9474060aeff255b75c982e50fe9a20d0adf93ccbb71743c1867a64a0b6a44a",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "29c4766302e66fd6f68b0f595efa6a40191ccfd8f07bc12883d4aca10b97ceff"
+    "combined_sha256": "f17de4ef1b9e08acfe92e2df3d137e29c681f3b9bc4012e72163f306b706f707"
   },
   "command_sets": {
     "foobar": {
@@ -8921,7 +8921,7 @@
     "example": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "1d17bfbaada46a38a4d28b5e1b7087e388769b729a65e40f1443498b76c7b588",
+      "senfd_sha256": "fa9474060aeff255b75c982e50fe9a20d0adf93ccbb71743c1867a64a0b6a44a",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -8931,7 +8931,7 @@
     "invalid": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "1d17bfbaada46a38a4d28b5e1b7087e388769b729a65e40f1443498b76c7b588",
+      "senfd_sha256": "fa9474060aeff255b75c982e50fe9a20d0adf93ccbb71743c1867a64a0b6a44a",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

@@ -428,8 +428,9 @@ def parse_layout(
         range_text = range_cells[0].text if range_cells else values.texts.get(unit, "")
         detail = " ".join(normalize_text(c.text) for c in range_cells[1:]).strip()
         placements = placed(unit, active, [c.text for c in range_cells])
+        if len(active) > 1 and len(range_cells) == len(active):
+            detail = ""  # The cells are the ranges under the conditions
         if placements:
-            detail = ""
             present = [p.range for p in placements if p.range is not None]
             range_text = present[0].text if present else range_text
 
