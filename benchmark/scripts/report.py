@@ -11,8 +11,9 @@ Report
 Grades every lane of the run, '<output>/bench/lanes/*.json', and writes
 '<output>/bench/summary.json' and '<output>/bench/report.html': a scoreboard,
 then each question with the answer of every lane beside the right one, a
-right answer green, a wrong one red, and "unknown" grey. A frontier model's
-runs are shown one by one, so that the spread between them shows. Also
+right answer green, a wrong one red, and "unknown" grey, and the figure
+that holds the right one. A frontier model's runs are shown one by one, so
+that the spread between them shows. Also
 runnable on its own, over a run's output:
 
     report.py <output>
@@ -23,6 +24,7 @@ Retargetable: False
 
 import html
 import json
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -55,24 +57,43 @@ def lanes_of(output: Path):
     return lanes
 
 
+CONDITIONS = {"memory": "from memory", "mcp": "with sate-mcp", "pdf": "with the PDFs"}
+
+
 def column_of(lane) -> str:
-    if lane["kind"] == "value":
-        return (
-            f"{lane['model']}, unknown {lane['mode']}"
-            if lane["mode"] == "allowed"
-            else (f"{lane['model']}, answer required")
-        )
+    if lane["kind"] in ("value", "agent"):
+        given = f", {CONDITIONS[lane['condition']]}" if lane["kind"] == "agent" else ""
+        mode = "unknown allowed" if lane["mode"] == "allowed" else "answer required"
+        return f"{lane['model']}{given}, {mode}"
     return lane["lane"]
 
 
 def graded(questions, lane):
-    """Each question's (verdict, shown, how) in 'lane'. A frontier model
-    answers every question in one call, so the time under its answer is the
-    call's, and what it shares of it by question."""
+    """Each question's (verdict, shown, how) in 'lane'. An agent's answer is
+    a turn of its session, and says what that turn spent. A frontier model
+    of the earlier runs answered every question in one call, so the time
+    under its answer is the call's, and what it shares of it by question."""
 
     out = {}
     for q in questions:
-        if lane["kind"] == "value":
+        if lane["kind"] == "agent":
+            given = lane["answers"].get(str(q["id"])) or {}
+            call = lane["calls"].get(str(q["id"])) or {}
+            how = ", ".join(
+                part
+                for part in (
+                    given.get("confidence", ""),
+                    f"{call.get('seconds')}s",
+                    f"{call.get('turns')} turns",
+                    f"{call.get('tokens_in')} tokens in, {call.get('tokens_out')} out",
+                    f"USD {call.get('cost_usd') or 0:.4f}",
+                    tools_shown(call.get("tools") or []),
+                )
+                if part
+            )
+            answer = given.get("answer", "unknown")
+            out[q["id"]] = (grade.grade_value(q, answer), answer, how)
+        elif lane["kind"] == "value":
             given = (lane["answers"].get(str(q["id"])) or {}).get("answer", "unknown")
             confidence = (lane["answers"].get(str(q["id"])) or {}).get("confidence", "")
             seconds = lane.get("seconds")
@@ -99,14 +120,70 @@ def graded(questions, lane):
 def shown_line(q, text: str) -> str:
     """The line of an answer that gives the question's value, else its first"""
 
-    import re
-
     pattern = re.compile(grade.value_pattern(q), re.IGNORECASE)
     lines = [line for line in text.splitlines()[1:] if line.strip()]
     for line in lines:
         if q["about"].lower() in line.lower() and pattern.search(line):
             return line.strip("-*# ")
     return (lines[0] if lines else text).strip("-*# ")[:160]
+
+
+def tools_shown(tools: list) -> str:
+    """A turn's tool calls as "structure(name='X'), search(text='Y')", an
+    error marked, or "no tool call" """
+
+    if not tools:
+        return "no tool call"
+    shown = []
+    for t in tools:
+        name = t["tool"].removeprefix("mcp__sate__")
+        args = ", ".join(f"{k}={v!r}" for k, v in t["input"].items())
+        shown.append(f"{name}({args})" + (" error" if t.get("error") else ""))
+    return "; ".join(shown)
+
+
+def tokens_of(lane_summary) -> str:
+    """The mean turns and tokens of a question, for a lane that records them"""
+
+    if "tokens_in" not in lane_summary:
+        return ""
+    return (
+        f"{lane_summary['turns']} turns, {lane_summary['tokens_in']:,.0f} in, "
+        f"{lane_summary['tokens_out']:,.0f} out"
+    )
+
+
+def source_of(question) -> str:
+    """Where the right answer is, as "TCP Transport 1.3, Figure 10" """
+
+    source = question.get("source")
+    if not source:
+        return ""
+    name = re.sub(r"^NVM-Express-|-Ratified-.*$", "", source["pdf"])
+    name = re.sub(r"(-Specification)?-Revision-", " ", name)
+    name = name.replace("NVMe-over-", "").replace("-Command-Set", "")
+    return f"{name.replace('-', ' ')}, Figure {source['figure']}"
+
+
+def without_tool_of(lane_summary) -> str:
+    """How many questions a lane answered with no tool call, and how many
+    of those answers were right"""
+
+    counts = lane_summary.get("without_tool")
+    return f"{counts['answers']} ({counts['right']})" if counts else ""
+
+
+def opening_of(lane_summary) -> str:
+    """What the opening turn of a lane's sessions spent. In the pdf
+    condition, the opening turn is where the model processes the PDFs."""
+
+    opening = lane_summary.get("opening")
+    if not opening:
+        return ""
+    return (
+        f"{opening['seconds']:.1f}s, USD {opening['cost_usd']:.4f}, "
+        f"{opening['tokens_in']:,.0f} in, {opening['tokens_out']:,.0f} out"
+    )
 
 
 def main(args, cijoe):
@@ -124,17 +201,47 @@ def write(output: Path) -> int:
     for column, runs in columns.items():
         tallies = [grade.tally([g[q["id"]][0] for q in questions]) for _, g in runs]
         lane = runs[0][0]
-        seconds = (
-            [a["seconds"] for a in lane["answers"]]
-            if lane["kind"] == "text"
-            else [r["seconds"] / len(questions) for r, _ in runs]
-        )
+        calls = [c for r, _ in runs for c in r.get("calls", {}).values()]
+        if lane["kind"] == "text":
+            seconds = [a["seconds"] for a in lane["answers"]]
+        elif lane["kind"] == "agent":
+            seconds = [c["seconds"] for c in calls]
+        else:
+            seconds = [r["seconds"] / len(questions) for r, _ in runs]
         summary[column] = {
             "runs": tallies,
             "mean": {k: round(mean(t[k] for t in tallies), 1) for k in tallies[0]},
             "seconds_per_question": round(mean(seconds), 3),
             "cost_usd": sum((r.get("cost_usd") or 0) for r, _ in runs),
         }
+        if calls:
+            summary[column] |= {
+                key: round(mean(c.get(key) or 0 for c in calls), 1)
+                for key in ("turns", "tokens_in", "tokens_out")
+            }
+            untooled = [
+                [
+                    q["id"]
+                    for q in questions
+                    if not r["calls"][str(q["id"])].get("tools")
+                ]
+                for r, _ in runs
+            ]
+            summary[column]["without_tool"] = {
+                "answers": round(mean(len(u) for u in untooled), 1),
+                "right": round(
+                    mean(
+                        sum(g[i][0] == grade.RIGHT for i in u)
+                        for u, (_, g) in zip(untooled, runs)
+                    ),
+                    1,
+                ),
+            }
+            openings = [r["opening"] for r, _ in runs]
+            summary[column]["opening"] = {
+                key: round(mean(o.get(key) or 0 for o in openings), 4)
+                for key in ("seconds", "cost_usd", "tokens_in", "tokens_out")
+            }
     bench.save(output / "bench" / "summary.json", summary)
 
     rows = []
@@ -145,13 +252,15 @@ def write(output: Path) -> int:
             f"<td style='color:{COLOURS['right']}'>{m['right']}</td>"
             f"<td style='color:{COLOURS['wrong']}'>{m['wrong']}</td>"
             f"<td style='color:{COLOURS['unknown']}'>{m['unknown']}</td>"
-            f"<td>{s['seconds_per_question']}</td><td>{s['cost_usd']:.2f}</td></tr>"
+            f"<td>{s['seconds_per_question']}</td><td>{s['cost_usd']:.2f}</td>"
+            f"<td>{tokens_of(s)}</td><td>{opening_of(s)}</td>"
+            f"<td>{without_tool_of(s)}</td></tr>"
         )
     board = (
         "<table><tr><th>Lane</th><th>Runs</th><th>Right</th><th>Wrong</th>"
-        "<th>Unknown</th><th>Seconds a question</th><th>USD</th></tr>"
-        + "".join(rows)
-        + "</table>"
+        "<th>Unknown</th><th>Seconds a question</th><th>USD</th>"
+        "<th>A question's turns and tokens</th><th>Opening turn</th>"
+        "<th>Answered with no tool call (right)</th></tr>" + "".join(rows) + "</table>"
     )
 
     head = "".join(f"<th>{html.escape(c)}</th>" for c in columns)
@@ -169,9 +278,11 @@ def write(output: Path) -> int:
                 )
             cells.append("<td>" + "".join(parts) + "</td>")
         expected = q["a"] + ("h" if q["kind"] == "hex" else "")
+        where = source_of(q)
         body.append(
             f"<tr><td>{q['id']}</td><td class='q'>{html.escape(q['q'])}</td>"
-            f"<td><span class='v'>{html.escape(expected)}</span></td>{''.join(cells)}</tr>"
+            f"<td><span class='v'>{html.escape(expected)}</span>"
+            f"<span class='how'>{html.escape(where)}</span></td>{''.join(cells)}</tr>"
         )
     facts = [
         f"<details><summary>{html.escape(p.name)}</summary><pre>"

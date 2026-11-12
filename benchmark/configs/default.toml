@@ -30,6 +30,9 @@ documents = "~/specs/*.pdf"
 [bench]
 # The venv and the data model go here, never into the run's output
 workdir = "/tmp/senfd-bench"
+# The full transcripts of the frontier sessions, which hold text of the
+# documents, go here, outside the repository
+transcripts = "~/git/senfd-reports"
 
 [llm]
 # llama.cpp's llama-server, by its name on PATH or by its path
@@ -52,11 +55,18 @@ name = "qwen2.5-1.5b-instruct-q4_k_m"
 path = "~/models/Qwen2.5-1.5B-Instruct-Q4_K_M.gguf"
 sha256 = "1adf0b11065d8ad2e8123ea110d1ec956dab4ab038eab665614adba04b6c3370"
 
-# Answered from memory by Claude Code, 'claude -p', which must be logged in
+# Asked of Claude Code, 'claude -p', which must be logged in: one session a
+# run, the questions one turn each, from memory, with sate-mcp, and with the
+# PDFs of spec.documents
 [frontier]
 models = ["claude-opus-5-5", "claude-haiku-5-5"]
+conditions = ["memory", "mcp", "pdf"]
 modes = ["allowed", "required"]
 runs = 3
+# Sessions at once; the most a session may cost, and a turn take
+jobs = 4
+budget_usd = 25
+timeout = 900
 
 [cijoe.task]
 fail_fast = true

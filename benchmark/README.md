@@ -72,15 +72,34 @@ runs the lanes:
   and reached through an ssh tunnel; `sate --llm` has it choose the
   lookups. The server is stopped and the tunnel closed after each language
   model.
-* Each frontier model answers from memory, by `claude -p --safe-mode --tools
-  ''`, in a fresh context of about 1,300 tokens, three times in each of two
-  modes: "unknown" allowed, with a wrong answer counting against it, and
-  answer required, every question answered. A run is one call answering them all,
-  so its time a question is the call's time shared out.
+* Each frontier model is asked the way a person asks Claude Code. The
+  benchmark runs `claude -p` with no settings, so the session has no
+  CLAUDE.md, memory or MCP server of yours, and runs it in an empty
+  directory. One run is one session. The session starts with an opening
+  turn, and then each question is a turn of its own, in order. Each
+  session has one of three conditions. From memory, the session has no
+  tools. With sate-mcp, the session's only tools are those of the MCP
+  server, which serves the run's data model. With the PDFs, the session's
+  working directory holds the PDFs, and its tools are Read, Grep and
+  Glob, and Bash for `pdftotext`, `pdfinfo`, `grep`, `ls` and `mkdir`.
+  The opening turn tells the model that the PDFs are there and lets it
+  prepare them as it sees fit. Each condition runs in two modes: in one,
+  the model may answer "unknown", and a wrong answer counts against it;
+  in the other, the model must answer every question. The benchmark
+  records the time, model turns, tokens and cost of every turn, and
+  records the opening turn separately, because with the PDFs the opening
+  turn is where the model processes them. The benchmark also records each
+  tool call: the tool, its input, and whether its result was an error. An
+  answer given with no tool call shows as such in the report. Each
+  condition and mode runs three times, so the report shows the spread
+  between runs. The answers, the figures and the tool calls are committed
+  with the run. The full transcript of each session, with the replies and
+  the tools' output, holds text of the documents, so the benchmark writes it
+  to `~/git/senfd-reports`, outside the repository.
 
 Then `scripts/report.py` grades them, by `scripts/grade.py`, and writes
-`summary.json` and `report.html`. A run takes about a quarter of an hour,
-most of it the frontier lanes.
+`summary.json` and `report.html`. The frontier sessions take most of a
+run's time, and their cost is that of the models asked.
 `tests/` holds the tests of the scripts, which senfd's `make test` runs.
 
 The documents are not here and nothing made from them is, beyond the
