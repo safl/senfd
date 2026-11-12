@@ -1,10 +1,10 @@
 {
     "$defs": {
         "Array": {
-            "description": "The array that a field is an entry of, where a figure writes the entries\nof an array as fields numbered by their index and leaves out the rows\nbetween two of them, as LBAF0, LBAF1, \"...\" and LBAF63 of Identify\nNamespace; each entry written has the array, with its own index",
+            "description": "The array that a field belongs to. A figure lists the entries of an array\nas fields numbered by their index and replaces the rows between them with\n\"...\", for example LBAF0, LBAF1, \"...\" and LBAF63 of Identify Namespace.\nEach listed entry has the array, with its own index.",
             "properties": {
                 "name": {
-                    "description": "The name of the entries without their index, as 'LBA Format Support'",
+                    "description": "The name of the entries without the index, for example 'LBA Format\nSupport'",
                     "title": "Name",
                     "type": "string"
                 },
@@ -18,7 +18,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The acronym of the entries without their index, as 'LBAF'",
+                    "description": "The acronym of the entries without the index, for example 'LBAF'",
                     "title": "Acronym"
                 },
                 "index": {
@@ -31,11 +31,11 @@
                         }
                     ],
                     "default": null,
-                    "description": "The index of this entry, as 63 of LBAF63; None of a last entry whose\nrange the figure gives by a formula",
+                    "description": "The index of this entry, for example 63 for LBAF63; None for a last\nentry whose range the figure gives as a formula",
                     "title": "Index"
                 },
                 "first": {
-                    "description": "The index of the first entry, 0 or 1 as the figure counts",
+                    "description": "The index of the first entry, 0 or 1 depending on the figure",
                     "title": "First",
                     "type": "integer"
                 },
@@ -49,16 +49,16 @@
                         }
                     ],
                     "default": null,
-                    "description": "How many entries the array has, as 64; None where the figure gives the\nrange of the last entry by a formula, the count a value of the data",
+                    "description": "The number of entries, for example 64; None where the figure gives the\nrange of the last entry as a formula, because the number is then a value\nin the data",
                     "title": "Count"
                 },
                 "stride": {
-                    "description": "How many bits or bytes each entry is, in the unit of the field",
+                    "description": "The size of one entry, in the unit of the field",
                     "title": "Stride",
                     "type": "integer"
                 },
                 "lower": {
-                    "description": "The lower bound of the first entry, where the array starts",
+                    "description": "The offset of the first entry, which is where the array starts",
                     "title": "Lower",
                     "type": "integer"
                 }
@@ -352,10 +352,10 @@
                         }
                     ],
                     "default": null,
-                    "description": "The figure holding the table of the values the field takes, where the\ndescription of the field names that figure instead of giving the values,\nas \"Refer to Figure 336\"; the table is the one of the data model's\n'values' with this source"
+                    "description": "The source of the table of values of the field, where the description\nof the field refers to that figure instead of listing the values, for\nexample \"Refer to Figure 336\". The table is the entry of the data model's\n'values' with this source."
                 },
                 "cases": {
-                    "description": "What the field is by the value of another field of its figure, where\nits description has a table saying so; the values and the fields of a\ncase are those the field has while the case holds",
+                    "description": "The cases of the field, where a table in its description gives the\nmeaning of the field for each value of another field of its figure",
                     "items": {
                         "$ref": "#/$defs/Case"
                     },
@@ -372,7 +372,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The array the field is an entry of, where the figure writes entries\nnumbered by their index and leaves rows out between them"
+                    "description": "The array that the field belongs to, where the figure lists numbered\nentries and leaves out the rows between them"
                 },
                 "structure": {
                     "anyOf": [
@@ -384,7 +384,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The figure of the structure laying the field out, where the\ndescription of the field names that figure, as \"defined in Figure 125\",\nor the field is an entry of an array and names the structure, as \"an I/O\nCommand Set Vector\"; the structure is the one of the data model's\n'structures' with this source"
+                    "description": "The source of the structure that lays out the field. The description of\nthe field refers to the figure, for example \"defined in Figure 125\", or,\nfor an entry of an array, names the structure, for example \"an I/O\nCommand Set Vector\". The structure is the entry of the data model's\n'structures' with this source."
                 }
             },
             "required": [
@@ -398,15 +398,15 @@
             "type": "object"
         },
         "Case": {
-            "description": "What a field is while another field of its figure has one of some values,\nas bits 15:08 of Zone Management Receive, ZRAS, are the Reporting Options\nwhile ZRA is Report Zones or Extended Report Zones, and reserved for all\nother values of ZRA",
+            "description": "The meaning of a field while another field of its figure has certain\nvalues. For example, bits 15:08 of Zone Management Receive, ZRAS, are the\nReporting Options when ZRA is Report Zones or Extended Report Zones, and\nare reserved for all other values of ZRA.",
             "properties": {
                 "selector": {
-                    "description": "The field whose value decides the case: its acronym where the figure\nhas a field of the name heading the cases, as \"ZRA\" of 'Zone Receive\nAction', else that name",
+                    "description": "The controlling field: its acronym where the figure has a field of\nthe name that heads the table of cases, for example \"ZRA\" for 'Zone\nReceive Action', and otherwise that name",
                     "title": "Selector",
                     "type": "string"
                 },
                 "when": {
-                    "description": "The values of the deciding field that the case is for; none of the\ncase for all other values",
+                    "description": "The values of the controlling field that the case applies to; empty\nfor the case of all other values",
                     "items": {
                         "$ref": "#/$defs/Selected"
                     },
@@ -415,7 +415,7 @@
                 },
                 "otherwise": {
                     "default": false,
-                    "description": "Whether the case is for every value of the deciding field that no\nother case is for, as the row 'All other values'",
+                    "description": "Whether the case applies to every value of the controlling field that\nno other case lists, as the row 'All other values' says",
                     "title": "Otherwise",
                     "type": "boolean"
                 },
@@ -429,7 +429,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The name of what the field is in the case, as \"Reporting Options\" or\n\"Reserved\"; None where the figure gives none",
+                    "description": "The name of the field in this case, for example \"Reporting Options\" or\n\"Reserved\"; None where the figure gives no name",
                     "title": "Name"
                 },
                 "acronym": {
@@ -442,17 +442,17 @@
                         }
                     ],
                     "default": null,
-                    "description": "Its acronym, as 'ZRWAA'",
+                    "description": "The acronym of the field in this case, for example 'ZRWAA'",
                     "title": "Acronym"
                 },
                 "description": {
                     "default": "",
-                    "description": "The text describing the field in the case",
+                    "description": "The description of the field in this case",
                     "title": "Description",
                     "type": "string"
                 },
                 "values": {
-                    "description": "The values the field takes in the case",
+                    "description": "The values of the field in this case",
                     "items": {
                         "$ref": "#/$defs/Entry"
                     },
@@ -461,7 +461,7 @@
                 },
                 "role": {
                     "default": "field",
-                    "description": "What the field is in the case: a \"field\", or what holds a place, as\n'reserved'",
+                    "description": "The role of the field in this case: a \"field\", or a placeholder such\nas 'reserved'",
                     "enum": [
                         "field",
                         "reserved",
@@ -473,7 +473,7 @@
                     "type": "string"
                 },
                 "fields": {
-                    "description": "The fields within the field in the case",
+                    "description": "The subfields of the field in this case",
                     "items": {
                         "$ref": "#/$defs/Bits"
                     },
@@ -1000,10 +1000,10 @@
             "type": "object"
         },
         "Selected": {
-            "description": "A value of the field that decides a case",
+            "description": "A value of the controlling field that a case applies to",
             "properties": {
                 "name": {
-                    "description": "The name of the value, as the figure of the case writes it, as 'Report\nZones'",
+                    "description": "The name of the value as the figure writes it, for example 'Report\nZones'",
                     "title": "Name",
                     "type": "string"
                 },
@@ -1017,7 +1017,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The value, where the values of the deciding field have one of that\nname, as 0 of 00h",
+                    "description": "The value as a number, for example 0 for 00h; None where the\ncontrolling field has no value of that name",
                     "title": "Value"
                 }
             },

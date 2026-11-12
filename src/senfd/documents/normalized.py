@@ -65,26 +65,26 @@ class LayoutField(BaseModel):
     # The tables of values in its description, as the values a field selecting
     # an operation takes, by the names of their columns
     values: List[Dict[str, str]] = Field(default_factory=list)
-    # What it is by the value of another field of its layout, from the tables
-    # in its description whose first column that field heads
+    # The cases of the field: the tables in its description whose first
+    # column is headed by another field of the layout
     cases: List["LayoutCase"] = Field(default_factory=list)
 
 
 class LayoutCase(BaseModel):
     """
-    What a field is while another field of its layout has one of the values
-    named, as bits 15:08 of Zone Management Receive are the Reporting Options
-    while the Zone Receive Action is Report Zones or Extended Report Zones:
-    the name, acronym and description of what it is then, and the layouts and
-    the values of the tables saying so
+    The meaning of a field while another field of its layout has one of the
+    listed values. For example, bits 15:08 of Zone Management Receive are the
+    Reporting Options when the Zone Receive Action is Report Zones or
+    Extended Report Zones. A case holds the name, acronym and description of
+    the field in that case, and the layouts and values of its tables.
     """
 
-    # The header naming the other field, as "Zone Receive Action"
+    # The header that names the controlling field, for example "Zone Receive Action"
     selector: str
-    # The values of that field the case is for, by the names the rows give
+    # The values of the controlling field that the case applies to, by name
     when: List[str] = Field(default_factory=list)
-    # Whether the case is for every value no other case is for, as the row
-    # "All other values"
+    # Whether the case applies to every value that no other case lists, as
+    # the row "All other values" says
     otherwise: bool = False
     name: Optional[str] = None
     acronym: Optional[str] = None
@@ -320,8 +320,8 @@ def parse_layout(
             continue
 
         # A row of one cell spanning the table is its notes, or heads the rows
-        # below it; so does a row of one text, unless a cell of it holds a
-        # table, as a byte of no name whose bits a table lays out
+        # below it. So does a row with a single text, unless one of its cells
+        # holds a table, for example an unnamed byte with a table of its bits
         tabled = any(c.tables for cells in values.cells.values() for c in cells)
         if values.spans == 1 or (len(set(filled)) == 1 and not tabled):
             text = filled[0] if filled else None
@@ -392,8 +392,9 @@ def parse_layout(
         held.append((layout.fields[-1], tables))
         elided = False
 
-    # The tables in the cells are read once every field of the layout is
-    # known: a table by the values of another field is the cases of its field
+    # Read the tables in the cells only after every field of the layout is
+    # known, because a table of cases is recognised by the other field that
+    # heads its first column
     for field, tables in held:
         siblings = [other for other in layout.fields if other is not field]
         for table in tables:
@@ -486,8 +487,9 @@ def nest_bits(
 
 
 def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
-    """The table in a cell of the field or the case 'into', as a layout of it
-    where it has the header of one, else as its values"""
+    """Add 'table', from a cell of the field or case 'into', to 'into': as a
+    layout where the table has the header of a layout, and otherwise as
+    values"""
 
     layout = parse_nested(table, diagnostics)
     if layout:
@@ -503,13 +505,14 @@ def parse_cases(
     table: Table, others: List[LayoutField], diagnostics: List[Diagnostic]
 ) -> List[LayoutCase]:
     """
-    The cases of a table in the cell of a field: a table of two columns, the
-    first headed by the name of one of 'others', the other fields of the
-    layout, as "Zone Receive Action". Each row says what the field is while
-    that field has the value the row names. A row whose second cell is merged
-    with the cell above names one more value of the case above. The row "All
-    other values" is the case of every value that no row names. Empty where
-    the table is no such table.
+    The cases in 'table', a table in the cell of a field. A table of cases has
+    two columns, and its first column is headed by the name of one of
+    'others', the other fields of the layout, for example "Zone Receive
+    Action". Each row gives the meaning of the field while that other field
+    has the value that the row names. A row whose second cell is merged with
+    the cell above adds a value to the case above it. The row "All other
+    values" is the case for every value that no row names. The result is
+    empty when 'table' is not a table of cases.
     """
 
     idx, headers, grid, _ = find_header(table.rows)
@@ -653,13 +656,14 @@ BITS_OF_A_BYTE = [str(bit) for bit in range(7, -1, -1)]
 
 def parse_byte_diagram(rows: List[Row]) -> Optional[Layout]:
     """
-    The layout of a diagram of bytes by their bits, as the protection
-    information formats are drawn: a row of the bits 7 to 0 under "Bit", then
-    a row for each byte, numbered from 0. A field is the bytes from the row
-    marked "MSB" to the row marked "LSB", named by the one other text of its
-    rows; the bytes holding its most and its least significant bits are its
-    columns "msb_byte" and "lsb_byte". None where the rows are no such
-    diagram, or a byte of it is of no field so delimited.
+    The layout of a diagram with one row for each byte and the bits as
+    columns, as the protection information formats are drawn: a row with the
+    bits 7 to 0 under "Bit", then one row for each byte, numbered from 0. A
+    field spans the bytes from the row marked "MSB" to the row marked "LSB",
+    and its name is the one other text in those rows. The columns "msb_byte"
+    and "lsb_byte" of a field are the bytes that hold its most and its least
+    significant bits. None when the rows are not such a diagram, or when a
+    byte belongs to no field.
     """
 
     texts = [

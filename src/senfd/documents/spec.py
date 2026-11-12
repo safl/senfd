@@ -143,45 +143,45 @@ class BitsCommon(Model):
 
 
 class Selected(Model):
-    """A value of the field that decides a case"""
+    """A value of the controlling field that a case applies to"""
 
     name: str
-    """The name of the value, as the figure of the case writes it, as 'Report
+    """The name of the value as the figure writes it, for example 'Report
     Zones'"""
     value: Optional[int] = None
-    """The value, where the values of the deciding field have one of that
-    name, as 0 of 00h"""
+    """The value as a number, for example 0 for 00h; None where the
+    controlling field has no value of that name"""
 
 
 class CaseCommon(Model):
-    """What a case has however far it is made"""
+    """The parts that a parsed case and a checked case share"""
 
     selector: str
-    """The field whose value decides the case: its acronym where the figure
-    has a field of the name heading the cases, as "ZRA" of 'Zone Receive
-    Action', else that name"""
+    """The controlling field: its acronym where the figure has a field of
+    the name that heads the table of cases, for example "ZRA" for 'Zone
+    Receive Action', and otherwise that name"""
     when: List[Selected] = Field(default_factory=list)
-    """The values of the deciding field that the case is for; none of the
-    case for all other values"""
+    """The values of the controlling field that the case applies to; empty
+    for the case of all other values"""
     otherwise: bool = False
-    """Whether the case is for every value of the deciding field that no
-    other case is for, as the row 'All other values'"""
+    """Whether the case applies to every value of the controlling field that
+    no other case lists, as the row 'All other values' says"""
     name: Optional[str] = None
-    """The name of what the field is in the case, as "Reporting Options" or
-    "Reserved"; None where the figure gives none"""
+    """The name of the field in this case, for example "Reporting Options" or
+    "Reserved"; None where the figure gives no name"""
     acronym: Optional[str] = None
-    """Its acronym, as 'ZRWAA'"""
+    """The acronym of the field in this case, for example 'ZRWAA'"""
     description: str = ""
-    """The text describing the field in the case"""
+    """The description of the field in this case"""
     values: List["Entry"] = Field(default_factory=list)
-    """The values the field takes in the case"""
+    """The values of the field in this case"""
 
 
 class ReadCase(CaseCommon):
-    """A case as read, from which checked() makes a case"""
+    """A case as parsed from the figure, which checked() turns into a Case"""
 
     fields: List["ReadBits"] = Field(default_factory=list)
-    """The rows the case lays the field out by"""
+    """The rows that lay out the field in this case"""
 
 
 class ReadBits(BitsCommon):
@@ -192,48 +192,51 @@ class ReadBits(BitsCommon):
     fields: List["ReadBits"] = Field(default_factory=list)
     """The rows within this one, as its description lays them out"""
     cases: List[ReadCase] = Field(default_factory=list)
-    """What the row is by the value of another row's field"""
+    """The cases of the row, where its meaning depends on the value of
+    another field"""
 
 
 class Array(Model):
     """
-    The array that a field is an entry of, where a figure writes the entries
-    of an array as fields numbered by their index and leaves out the rows
-    between two of them, as LBAF0, LBAF1, "..." and LBAF63 of Identify
-    Namespace; each entry written has the array, with its own index
+    The array that a field belongs to. A figure lists the entries of an array
+    as fields numbered by their index and replaces the rows between them with
+    "...", for example LBAF0, LBAF1, "..." and LBAF63 of Identify Namespace.
+    Each listed entry has the array, with its own index.
     """
 
     name: str
-    """The name of the entries without their index, as 'LBA Format Support'"""
+    """The name of the entries without the index, for example 'LBA Format
+    Support'"""
     acronym: Optional[str] = None
-    """The acronym of the entries without their index, as 'LBAF'"""
+    """The acronym of the entries without the index, for example 'LBAF'"""
     index: Optional[int] = None
-    """The index of this entry, as 63 of LBAF63; None of a last entry whose
-    range the figure gives by a formula"""
+    """The index of this entry, for example 63 for LBAF63; None for a last
+    entry whose range the figure gives as a formula"""
     first: int
-    """The index of the first entry, 0 or 1 as the figure counts"""
+    """The index of the first entry, 0 or 1 depending on the figure"""
     count: Optional[int] = None
-    """How many entries the array has, as 64; None where the figure gives the
-    range of the last entry by a formula, the count a value of the data"""
+    """The number of entries, for example 64; None where the figure gives the
+    range of the last entry as a formula, because the number is then a value
+    in the data"""
     stride: int
-    """How many bits or bytes each entry is, in the unit of the field"""
+    """The size of one entry, in the unit of the field"""
     lower: int
-    """The lower bound of the first entry, where the array starts"""
+    """The offset of the first entry, which is where the array starts"""
 
 
 class Case(CaseCommon):
     """
-    What a field is while another field of its figure has one of some values,
-    as bits 15:08 of Zone Management Receive, ZRAS, are the Reporting Options
-    while ZRA is Report Zones or Extended Report Zones, and reserved for all
-    other values of ZRA
+    The meaning of a field while another field of its figure has certain
+    values. For example, bits 15:08 of Zone Management Receive, ZRAS, are the
+    Reporting Options when ZRA is Report Zones or Extended Report Zones, and
+    are reserved for all other values of ZRA.
     """
 
     role: Role = "field"
-    """What the field is in the case: a "field", or what holds a place, as
-    'reserved'"""
+    """The role of the field in this case: a "field", or a placeholder such
+    as 'reserved'"""
     fields: List["Bits"] = Field(default_factory=list)
-    """The fields within the field in the case"""
+    """The subfields of the field in this case"""
 
 
 class Bits(BitsCommon):
@@ -267,23 +270,22 @@ class Bits(BitsCommon):
     fields: List["Bits"] = Field(default_factory=list)
     """The fields within this one, as its description lays them out"""
     values_in: Optional[Source] = None
-    """The figure holding the table of the values the field takes, where the
-    description of the field names that figure instead of giving the values,
-    as "Refer to Figure 336"; the table is the one of the data model's
-    'values' with this source"""
+    """The source of the table of values of the field, where the description
+    of the field refers to that figure instead of listing the values, for
+    example "Refer to Figure 336". The table is the entry of the data model's
+    'values' with this source."""
     cases: List[Case] = Field(default_factory=list)
-    """What the field is by the value of another field of its figure, where
-    its description has a table saying so; the values and the fields of a
-    case are those the field has while the case holds"""
+    """The cases of the field, where a table in its description gives the
+    meaning of the field for each value of another field of its figure"""
     array: Optional[Array] = None
-    """The array the field is an entry of, where the figure writes entries
-    numbered by their index and leaves rows out between them"""
+    """The array that the field belongs to, where the figure lists numbered
+    entries and leaves out the rows between them"""
     structure: Optional[Source] = None
-    """The figure of the structure laying the field out, where the
-    description of the field names that figure, as "defined in Figure 125",
-    or the field is an entry of an array and names the structure, as "an I/O
-    Command Set Vector"; the structure is the one of the data model's
-    'structures' with this source"""
+    """The source of the structure that lays out the field. The description of
+    the field refers to the figure, for example "defined in Figure 125", or,
+    for an entry of an array, names the structure, for example "an I/O
+    Command Set Vector". The structure is the entry of the data model's
+    'structures' with this source."""
 
     @model_validator(mode="after")
     def of_its_kind(self) -> "Bits":
@@ -893,8 +895,8 @@ def checked(
             if not field.fields:
                 unnamed.append(f"Field {what}: {exc}")
                 continue
-            # A row of a range and the table laying it out, as a byte whose
-            # bits are fields: the field is named by its range
+            # A row with a range and a nested table but no name, for example
+            # a byte whose bits are fields, is named after its range
             one = rng.width == 1
             unit = field.unit[:-1] if one else field.unit
             made = senfd.fields.Identity("field", f"{unit.capitalize()} {field.range}")
@@ -951,10 +953,10 @@ def checked(
 
 
 def decide(case: Case, fields: List[Bits]) -> None:
-    """Name the field deciding 'case' by its acronym, and give each value
-    the case is for its number: the one the values of that field, among
-    'fields' of the layout the case is in, give its name, or the code the
-    case writes instead of a name"""
+    """Set the selector of 'case' to the acronym of the controlling field,
+    found among 'fields', and set the number of each value in 'case.when'.
+    The number comes from the controlling field's value of that name, or from
+    the code that the case writes in place of a name."""
 
     names = (alias(case.selector),)
     by = next(
@@ -976,7 +978,7 @@ def decide(case: Case, fields: List[Bits]) -> None:
         for name in value_names(value):
             numbers.setdefault(alias(name), typed.lower)
     for selected in case.when:
-        # A row may give the value itself, as "01h", rather than its name
+        # A row may give the code, for example "01h", instead of the name
         code = typed_of(selected.name)
         if code and code.kind in ("identifier", "number") and code.lower == code.upper:
             selected.value = code.lower
@@ -985,8 +987,9 @@ def decide(case: Case, fields: List[Bits]) -> None:
 
 
 def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
-    """The ways 'text' is a name around a number: what is before the number,
-    the number, and what is after it, as ("LBAF", 0, "") of "LBAF0" """
+    """Each split of 'text' around a number in it: the text before the
+    number, the number, and the text after it, for example ("LBAF", 0, "")
+    for "LBAF0" """
 
     name = text or ""
     return [
@@ -997,17 +1000,17 @@ def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
 
 def arrays_of(fields: List[Bits]) -> None:
     """
-    The array of each of 'fields' that is an entry of one: fields next to one
-    another whose acronyms, or names where they have no acronyms, differ by
-    a number only, with rows left out between two of them, each as wide as
-    the others and where its number puts it, counted from the first. The
-    last entry may be given by a formula, as "Entry NUMENT-1"; the array
-    then has no count.
+    Set 'array' on each of 'fields' that is an entry of an array. The entries
+    are adjacent fields whose acronyms, or names where they have no acronym,
+    differ only by a number, with rows left out between two of them. Each
+    entry must have the same width and lie at the offset that its index
+    gives. The last entry may be given by a formula, for example "Entry
+    NUMENT-1"; the array then has no count.
     """
 
     def entry(field: Bits, of: str, before: str, after: str) -> Optional[int]:
-        """The index of 'field' as an entry named 'before', a number and
-        'after', or None"""
+        """The index of 'field' where its name is 'before', a number and
+        'after', and otherwise None"""
 
         for prefix, number, suffix in numbered(getattr(field, of)):
             if (prefix, suffix) == (before, after) and field.kind == "span":
@@ -1504,10 +1507,10 @@ def entry_of(
 ) -> Entry:
     """An entry by its value, whichever column holds it: one that is a value
     by its header, else 'code', the column of the table's codes, else the
-    command or the name, else the first; an entry of no name of its own has
-    that of the column 'named', where another column holds its value, as
-    "Directive" names the entries of a table of "Directive" and "Directive
-    Type Value" """
+    command or the name, else the first. An entry with no name column takes
+    its name from the column 'named' when another column holds its value,
+    for example "Directive" in the table of "Directive" and "Directive Type
+    Value"."""
 
     keys = ("value", "cns_value", "identifier")
     by_header = next(
@@ -1929,8 +1932,8 @@ def link_operations(document: SpecDocument, used: set) -> None:
 
 
 def laid_out(document: SpecDocument) -> Iterator[Tuple[Source, List[Bits]]]:
-    """The fields of every figure of 'document' that lays fields out, the
-    dwords of a command or a structure, with the figure"""
+    """The source and the fields of every figure of 'document' that lays out
+    fields: the dwords of the commands, and the structures"""
 
     for described in document.dwords.values():
         for dwords in described:
@@ -1940,7 +1943,8 @@ def laid_out(document: SpecDocument) -> Iterator[Tuple[Source, List[Bits]]]:
 
 
 def fields_within(fields: List[Bits]) -> Iterator[Bits]:
-    """'fields' and the fields within them, each before those within it"""
+    """'fields' and all their subfields, including those of their cases,
+    each field before its subfields"""
 
     for field in fields:
         yield field
@@ -1950,13 +1954,13 @@ def fields_within(fields: List[Bits]) -> Iterator[Bits]:
 
 
 REGEX_FIGURE = re.compile(r"\bFigure\s+(\d+)")
-# The words of a caption that say it holds values, and not what they are of
+# Words of a caption that mark a table of values without naming its field
 VALUES_WORDS = {"value", "code", "definition", "encoding", "list"}
 
 
 def name_words(name: Optional[str]) -> set:
-    """The words of 'name' that say what it names, each without the "s" of a
-    plural, as "Directive Types" and "Directive Type" have the same"""
+    """The words of 'name' other than VALUES_WORDS, each in the singular, so
+    that "Directive Types" and "Directive Type" give the same words"""
 
     words = [re.sub(r"(?<=..[^s])s$", "", w) for w in alias(name or "").split("_")]
     return {w for w in words if w and w not in VALUES_WORDS}
@@ -1964,12 +1968,13 @@ def name_words(name: Optional[str]) -> set:
 
 def names_field(values: Values, field: Bits) -> bool:
     """
-    Whether the table 'values' is named for 'field': the header of its column
-    of values is the name or the acronym of the field, as "CNS Value" of CNS;
-    its kind is that of the field, as the log page identifiers of Log Page
-    Identifier; or its caption has the words of the name of the field, or the
-    name those of the caption, as "Directive Types" of Directive Type and
-    "Power Scale" of Power Threshold Scale
+    Whether the table 'values' is named for 'field'. It is when the header of
+    its value column is the name or the acronym of the field, for example
+    "CNS Value" for CNS; when its kind matches the field, for example the log
+    page identifiers for Log Page Identifier; or when the words of its
+    caption are a subset or a superset of the words of the field's name, for
+    example "Directive Types" for Directive Type and "Power Scale" for Power
+    Threshold Scale.
     """
 
     names = {alias(name) for name in (field.name, field.acronym) if name}
@@ -1982,7 +1987,7 @@ def names_field(values: Values, field: Bits) -> bool:
 
 def holds_values_of(values: Values, field: Bits) -> bool:
     """Whether the entries of 'values' can be values of 'field': more than
-    half of them have a code, and each code fits the bits of the field"""
+    half of the entries have a code, and every code fits in the field"""
 
     bits = (field.width or 0) * (8 if field.unit == "bytes" else 1)
     codes = [
@@ -1997,12 +2002,14 @@ def holds_values_of(values: Values, field: Bits) -> bool:
 
 def link_values(document: SpecDocument) -> None:
     """
-    The table of the values of each field that gives none itself and whose
-    description names the figure of a table of values of its document, as
-    CNS of Identify says "Refer to Figure 336": the one table among those
-    named whose entries can be values of the field and that is named for the
-    field, as the description of CSI of Identify names the figure of the CNS
-    values and that of the Command Set Identifiers
+    Set 'values_in' on each field that lists no values itself and whose
+    description refers to the figure of a table of values in the same
+    document, for example CNS of Identify, "Refer to Figure 336". Of the
+    tables referred to, the field is linked to the one table whose entries
+    can be values of the field and that is named for the field. The
+    description of CSI of Identify, for example, refers to both the CNS
+    values and the Command Set Identifiers, and only the second is named for
+    CSI.
     """
 
     tables = {(v.source.document, v.source.figure_nr): v for v in document.values}
@@ -2026,7 +2033,8 @@ def link_values(document: SpecDocument) -> None:
 
 
 def bits_wide(structure: Structure) -> Optional[int]:
-    """How many bits 'structure' is, where every field of it is a span"""
+    """The width of 'structure' in bits, or None where a field of it has no
+    upper bound"""
 
     if not structure.fields or any(f.upper is None for f in structure.fields):
         return None
@@ -2036,17 +2044,17 @@ def bits_wide(structure: Structure) -> Optional[int]:
 
 def link_structures(document: SpecDocument) -> None:
     """
-    The structure laying out each field that lays out nothing itself and
-    whose description names the figure of a structure of its document, as
-    LBAF0 of Identify Namespace says "defined in Figure 125": the one
-    structure among those named that is as wide as the field, which tells
-    the LBA Format of 4 bytes from the data structure the description
-    names for more. An entry of an array naming no such figure has the one
-    structure of its document, as wide as the entry, whose name its
-    description has, as "an I/O Command Set Vector", and the entries of an
-    array have the structure that any of them has. A structure of the
-    entries of an array is a data structure, whatever its caption says; its
-    fields are then checked to lie one after another.
+    Set 'structure' on each field that has no subfields and whose description
+    refers to the figure of a structure in the same document, for example
+    LBAF0 of Identify Namespace, "defined in Figure 125". Of the structures
+    referred to, the field is linked to the one as wide as the field: the
+    description of LBAF0 also refers to Figure 127, which is wider. An entry
+    of an array that refers to no such figure is linked to the one structure,
+    as wide as the entry, whose name appears in its description, for example
+    "an I/O Command Set Vector". All entries of an array get the structure
+    that any of them has. A structure that lays out the entries of an array
+    becomes a data structure whatever its caption says, and uncovered() then
+    checks its fields for gaps.
     """
 
     structures = {

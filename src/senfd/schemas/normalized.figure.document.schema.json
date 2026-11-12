@@ -157,7 +157,7 @@
             "type": "object"
         },
         "LayoutCase": {
-            "description": "What a field is while another field of its layout has one of the values\nnamed, as bits 15:08 of Zone Management Receive are the Reporting Options\nwhile the Zone Receive Action is Report Zones or Extended Report Zones:\nthe name, acronym and description of what it is then, and the layouts and\nthe values of the tables saying so",
+            "description": "The meaning of a field while another field of its layout has one of the\nlisted values. For example, bits 15:08 of Zone Management Receive are the\nReporting Options when the Zone Receive Action is Report Zones or\nExtended Report Zones. A case holds the name, acronym and description of\nthe field in that case, and the layouts and values of its tables.",
             "properties": {
                 "selector": {
                     "title": "Selector",

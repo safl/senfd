@@ -137,7 +137,7 @@ def test_the_borders_of_a_cell_holding_a_table_are_not_the_table_s():
     ]
 
 
-def test_a_rule_beside_the_text_of_a_table_is_no_separator_of_its_rows():
+def test_a_rule_beside_a_nested_table_does_not_separate_its_rows():
     # As Figure 35 of the Zoned Namespace Command Set 1.5: a table of values in
     # the second column of a table that is itself in a cell. The rule between
     # two rows of that table's first column lies beside the table of values,
@@ -166,9 +166,10 @@ def test_a_rule_beside_the_text_of_a_table_is_no_separator_of_its_rows():
     ]
 
 
-def test_the_marked_content_under_a_table_is_that_of_the_tables_in_its_cells_too():
-    """A table in a cell of a table in a cell: its text is no text of the
-    outermost cell, which the reader knows by what is under the table"""
+def test_the_content_of_a_table_includes_its_nested_tables():
+    """The text of a table nested two levels deep does not belong to the
+    outermost cell. read_cell() finds that text from the marked content
+    under the table."""
 
     def element(kind, *kids):
         return pikepdf.Dictionary(S=pikepdf.Name(f"/{kind}"), K=pikepdf.Array(kids))
@@ -364,11 +365,11 @@ def test_a_published_pdf_reads_as_its_figures(public, tmp_path):
     assert (fua["upper"], fua["lower"], write["opcode"]) == (30, 30, 1)
 
 
-def test_a_table_in_a_cell_of_a_table_in_a_cell_is_read_as_a_table(public):
-    """Figure 35 of the Zoned Namespace Command Set 1.5 has, in the cell of
-    bits 15:08, a table of two columns, and in a cell of that table a table
-    of values; the text of the table of values is no text of the cell of
-    bits 15:08, and both tables have two columns"""
+def test_a_table_nested_two_levels_deep_is_read_as_a_table(public):
+    """Figure 35 of the Zoned Namespace Command Set 1.5 has a table of two
+    columns in the cell of bits 15:08, and a table of values in a cell of
+    that table. The text of the table of values does not belong to the cell
+    of bits 15:08, and both tables have two columns."""
 
     _, path = document_named(public, "Zoned Namespace Command Set 1.5")
     figures, _ = read(path)
@@ -386,10 +387,10 @@ def test_a_table_in_a_cell_of_a_table_in_a_cell_is_read_as_a_table(public):
     assert [r.cells[1].merged for r in inner.rows] == [None, None, "up", None]
 
 
-def test_a_published_pdf_gives_the_cases_of_a_field(public, tmp_path):
-    """Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, by
-    the value of ZRA: the table of values in a cell of the table in the cell
-    of ZRAS is the values of the first case"""
+def test_the_zns_pdf_gives_the_cases_of_zras(public, tmp_path):
+    """ZRAS, bits 15:08 of Command Dword 13 of Zone Management Receive,
+    depends on the value of ZRA. The table of values nested in the table of
+    cases holds the values of the first case."""
 
     _, path = document_named(public, "Zoned Namespace Command Set 1.5")
     described = public.made(path, tmp_path)["dwords"]["zone_management_receive"]

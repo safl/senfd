@@ -921,10 +921,10 @@ def test_an_entry_named_by_its_description_keeps_the_code_as_its_value():
     ]
 
 
-def test_an_entry_of_a_column_headed_as_values_is_named_by_the_first_column():
-    """A table listing things in its first column and their codes in a column
-    whose header says it holds values, as "Directive" and "Directive Type
-    Value": what the first column lists is the name of each entry"""
+def test_an_entry_takes_its_name_from_the_first_column():
+    """A table with names in its first column and codes in a column whose
+    header marks it as values, for example "Directive" and "Directive Type
+    Value". Each entry is named by its first column."""
 
     values = values_of_table(
         ("Foo", "Foo Type Value", "Reference"),
@@ -980,10 +980,10 @@ BAR_KINDS = ("Bar Kinds", ("Value", "Definition")) + (
 )
 
 
-def test_a_field_is_linked_to_the_table_of_its_values_that_its_description_names():
-    """As CNS of Identify gives no values and says "Refer to Figure 336", and
-    CSI names that figure and the figure of the Command Set Identifiers: the
-    table linked is the one named for the field"""
+def test_a_field_is_linked_to_the_table_of_values_named_for_it():
+    """CNS of Identify lists no values and says "Refer to Figure 336". CSI
+    refers to that figure and to the figure of the Command Set Identifiers.
+    Each field is linked to the table named for it."""
 
     spec = document_of(
         figure_of(
@@ -1014,7 +1014,7 @@ def test_a_field_is_linked_to_the_table_of_its_values_that_its_description_names
     assert structure.fields[0].values_in == spec.values[0].source
 
 
-def test_a_field_giving_its_values_is_linked_to_no_table():
+def test_a_field_that_lists_its_values_is_not_linked_to_a_table():
     from senfd.tables import Cell, Row, Table
 
     values = Table(
@@ -1036,9 +1036,10 @@ def test_a_field_giving_its_values_is_linked_to_no_table():
     assert field.values_in is None
 
 
-def test_the_link_to_a_table_of_values_is_of_the_same_document_when_merged():
-    """Two documents each have a Figure 2; a field is linked to the one of
-    its own document, and the link is made again when the documents merge"""
+def test_a_field_is_linked_to_the_table_of_its_own_document():
+    """Two documents each have a Figure 2. A field is linked to the Figure 2
+    of its own document, and the link is made again when the documents are
+    merged."""
 
     layout = figure_of(
         1,
@@ -1064,11 +1065,11 @@ FOO_FORMAT = (
 )
 
 
-def test_fields_numbered_by_their_index_with_rows_left_out_are_an_array():
-    """As Identify Namespace writes LBAF0, LBAF1, "..." and LBAF63, each
-    "defined in Figure 125", and Identify I/O Command Set writes IOCSC0 to
-    IOCSC511, each "an I/O Command Set Vector", which no caption calls a
-    data structure"""
+def test_numbered_fields_with_rows_left_out_are_an_array():
+    """Identify Namespace lists LBAF0, LBAF1, "..." and LBAF63, each
+    "defined in Figure 125". Identify I/O Command Set lists IOCSC0 to
+    IOCSC511, each "an I/O Command Set Vector", a structure whose caption
+    does not call it a data structure."""
 
     from senfd.documents.spec import Array
 
@@ -1164,9 +1165,10 @@ def test_an_array_whose_last_entry_is_given_by_a_formula_has_no_count():
     ]
 
 
-def test_fields_that_are_not_where_their_numbers_put_them_are_no_array():
-    """Entries of 4 bytes from byte 0 put the entry 7 at byte 28, not 36;
-    fields of other names with rows left out between them are none either"""
+def test_numbered_fields_at_the_wrong_offsets_are_not_an_array():
+    """With entries of 4 bytes from byte 0, entry 7 is at byte 28, not 36.
+    Fields with different names and rows left out between them are not an
+    array either."""
 
     spec = document_of(
         figure_of(
@@ -1186,9 +1188,9 @@ def test_fields_that_are_not_where_their_numbers_put_them_are_no_array():
     assert [f.array for f in spec.structures[0].fields] == [None] * 5
 
 
-def test_a_field_that_lays_itself_out_is_linked_to_no_structure():
-    """As LBAF0 of the Exported Controller Configuration State has the
-    fields of an LBA Format in its own description"""
+def test_a_field_with_its_own_subfields_is_not_linked_to_a_structure():
+    """LBAF0 of the Exported Controller Configuration State lays out the
+    fields of an LBA Format in its own description."""
 
     from senfd.tables import Cell, Row, Table
 
@@ -1217,10 +1219,11 @@ def test_a_field_that_lays_itself_out_is_linked_to_no_structure():
     assert spec.structures[0].kind == "other"
 
 
-def test_a_row_of_a_range_and_a_table_is_a_field_named_by_its_range():
-    """A byte that the figure gives no name, its bits laid out by the table
-    in its cell: the row is no heading of the rows below it, and its field
-    is named by its range, so that the fields of its bits are kept"""
+def test_an_unnamed_row_with_a_nested_table_is_named_after_its_range():
+    """A byte that the figure gives no name, with a table of its bits in its
+    cell. The row is not a heading of the rows below it, and the field is
+    named after its range, so the fields of its bits are in the data
+    model."""
 
     from senfd.tables import Cell, Row, Table
 
@@ -1354,10 +1357,10 @@ def foo_receive():
     )
 
 
-def test_a_table_by_the_value_of_another_field_is_the_cases_of_its_field():
-    """As ZRAS of Zone Management Receive is the Reporting Options, with
-    their values, while ZRA is Report Zones or Extended Report Zones, and
-    reserved for all other values: the rows are no values of ZRAS"""
+def test_a_table_headed_by_another_field_gives_the_cases():
+    """ZRAS of Zone Management Receive is the Reporting Options, with their
+    values, when ZRA is Report Zones or Extended Report Zones, and reserved
+    for all other values. The rows are not values of ZRAS."""
 
     spec = document_of(foo_receive())
     fields = {f.acronym: f for f in spec.dwords["foo_receive"][0].fields}
@@ -1394,9 +1397,9 @@ def test_a_table_by_the_value_of_another_field_is_the_cases_of_its_field():
     assert fields["FA"].cases == []
 
 
-def test_a_case_names_what_the_field_is_and_lays_it_out():
-    """As ZSASO of Zone Management Send is ZRWA Allocation (ZRWAA) while ZSA
-    is Open Zone, and ZM has the Data Lifetime in its bits 05:00"""
+def test_a_case_has_the_name_and_the_layout_of_the_field():
+    """ZSASO of Zone Management Send is ZRWA Allocation (ZRWAA) when ZSA is
+    Open Zone, and ZM has the Data Lifetime in its bits 05:00."""
 
     spec = document_of(foo_receive())
     fields = {f.acronym: f for f in spec.dwords["foo_receive"][0].fields}
@@ -1419,9 +1422,9 @@ def test_a_case_names_what_the_field_is_and_lays_it_out():
     assert [v.value for v in managed.fields[1].values] == ["0h", "1h"]
 
 
-def test_a_table_headed_by_no_other_field_is_the_values_of_its_field():
+def test_a_table_not_headed_by_another_field_gives_values():
     """A table of two columns whose first header names no field of the
-    layout stays the values of its field, whatever its rows hold"""
+    layout remains the values of its field, whatever its rows hold."""
 
     spec = document_of(
         figure_of(
@@ -1444,10 +1447,10 @@ def test_a_table_headed_by_no_other_field_is_the_values_of_its_field():
     assert [(v.value, v.description) for v in kind.values] == [("Ding", "Dings.")]
 
 
-def test_a_case_for_a_value_written_as_a_code_has_that_value():
-    """As the Further Error Information of the Terminate Connection Request
-    PDUs is one thing or another by the Fatal Error Status, the rows giving
-    the status as "01h"; a range of codes is no one value"""
+def test_a_case_for_a_code_has_that_code_as_its_value():
+    """The Further Error Information of the Terminate Connection Request
+    PDUs depends on the Fatal Error Status, and the rows give the status as
+    "01h". A range of codes is not a single value."""
 
     spec = document_of(
         figure_of(

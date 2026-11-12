@@ -569,10 +569,10 @@ def diagram_of_bytes(*rows):
     )
 
 
-def test_a_diagram_of_bytes_by_their_bits_is_a_layout_of_the_fields_it_delimits():
-    """As the protection information formats are drawn: the bits 7 to 0
-    across, a row for each byte, and each field from the row marked MSB to
-    the row marked LSB"""
+def test_a_byte_diagram_is_read_as_a_layout_of_its_fields():
+    """A diagram as the protection information formats are drawn: the bits 7
+    to 0 as columns, one row for each byte, and each field from the row
+    marked MSB to the row marked LSB"""
 
     from senfd.documents.normalized import normalize_figure
 
@@ -612,7 +612,7 @@ def test_a_diagram_of_bytes_by_their_bits_is_a_layout_of_the_fields_it_delimits(
         [("Byte", "0", "MSB", "Foo Guard", ""), ("2", "", "LSB")],
     ],
 )
-def test_a_diagram_with_a_byte_that_no_field_is_delimited_for_is_no_layout(rows):
+def test_a_byte_diagram_with_a_byte_outside_every_field_is_not_read(rows):
     from senfd.documents.normalized import normalize_figure
 
     assert normalize_figure(diagram_of_bytes(*rows), []).layout is None

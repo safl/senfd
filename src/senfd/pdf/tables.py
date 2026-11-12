@@ -209,8 +209,8 @@ def read_cell(
     text = unwrapped(text)
     tables = []
     for element, page in inner_tables:
-        # The text of the table, and of the tables in its cells, is of no
-        # cell of this table
+        # The text of the nested table, including the tables in its own
+        # cells, belongs to no cell of this table
         for leaf in contents(element, page):
             used[pages.number(leaf.page)].add(leaf.mcid)
         inner, inner_extent = table_of(pages, rows(element, page), errors)
@@ -238,8 +238,8 @@ def columns_of(
     """The columns of the table on page 'number': the vertical borders that
     the rules separating its rows end at or cross, which a line in the margin
     beside the table, as a change bar, and the borders of a table nested in
-    a cell are not. A rule separating its rows runs under or over its text;
-    one beside its text separates the rows of the table whose cell holds it.
+    a cell are not. A rule that separates its rows runs above or below
+    its text; a rule beside its text belongs to the enclosing table.
     A table may be wider than its text, where a column's text is centred far
     from its border. Where no rule separates its rows, its borders are those
     beside its text."""

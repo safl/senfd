@@ -769,9 +769,9 @@ FIGURES = [
             ],
         },
     ),
-    # Fields whose values another figure gives: the description names the
-    # figure of the table, and where it names two, the table is the one named
-    # for the field
+    # Fields whose values are in a table of another figure. The description
+    # refers to the figure, and where it refers to two, the field is linked
+    # to the table named for it
     (
         "Qux Data Structure",
         {
@@ -808,9 +808,10 @@ FIGURES = [
             ],
         },
     ),
-    # Arrays of entries that another figure lays out: the entries are fields
-    # numbered by their index, the rows between two of them left out. The
-    # description names the figure of the entry, or only the structure.
+    # Arrays of entries laid out by another figure. The entries are fields
+    # numbered by their index, with the rows between them left out. The
+    # description refers to the figure of the entry, or names only the
+    # structure.
     (
         "Qux List Data Structure",
         {
@@ -854,8 +855,8 @@ FIGURES = [
             "rows": [("63:01", "Reserved"), ("00", "Qux Enabled (QE)")],
         },
     ),
-    # A diagram of bytes by their bits: a field is the bytes from the row
-    # marked MSB to the row marked LSB, its name across the bits between
+    # A diagram with one row for each byte and the bits as columns. A field
+    # spans the rows from MSB to LSB, and its name spans the bit columns.
     (
         "Qux Guard Format",
         {
@@ -870,10 +871,10 @@ FIGURES = [
             ],
         },
     ),
-    # A field that is one thing or another by the value of another field of
-    # its figure: the table in its cell is headed by that field, a row whose
-    # second cell is merged with the one above names one more value, and a
-    # cell of the table holds the values the field then takes
+    # A field whose meaning depends on the value of another field of its
+    # figure. The table in its cell is headed by that other field, a row whose
+    # second cell is merged with the one above adds a value to the case above,
+    # and a cell of the table holds the values of the field in that case.
     (
         f"Foo Migrate {DASH} Command Dword 13",
         dword(
@@ -952,7 +953,7 @@ def add_table(container, table, caption=None, indented=False):
         other = (ridx, cidx - 1) if how == LEFT else (ridx - 1, cidx)
         text = docx_table.cell(*other).text
         merged = docx_table.cell(*other).merge(docx_table.cell(ridx, cidx))
-        if not merged.tables:  # Setting the text would take the tables out
+        if not merged.tables:  # Setting the text would remove the tables
             merged.text = text
 
 

@@ -465,9 +465,9 @@ def test_a_code_is_named_by_its_column_and_found_by_the_symbol_of_its_entry(
     assert found and found[0].startswith(line), found
 
 
-def test_the_values_of_a_field_are_those_of_the_table_it_is_linked_to(spec):
-    """Qux Type says "Refer to Figure 95", and Qux Kind names Figure 95 and
-    Figure 96, the table of the Qux Kinds"""
+def test_values_of_field_returns_the_entries_of_the_linked_table(spec):
+    """Qux Type says "Refer to Figure 95". Qux Kind refers to Figure 95 and
+    to Figure 96, the table of the Qux Kinds."""
 
     (qux,) = [s for s in spec.structures if s.name == "Qux"]
     fields = {f.acronym: f for f in qux.fields}
@@ -486,10 +486,11 @@ def test_the_values_of_a_field_are_those_of_the_table_it_is_linked_to(spec):
     assert any("Values in [example, 4.2, Figure 95, page 95]" in m for m in markdown)
 
 
-def test_every_table_of_the_kind_of_the_linked_table_is_offered():
-    """As the CNS values of Identify are those of the Base specification and
-    those each command set specification adds; a table of the kind "other",
-    as the Command Set Identifiers, is alone of its kind"""
+def test_every_adds_the_tables_of_the_same_kind():
+    """The CNS values of Identify are those of the Base specification and
+    those that each command set specification adds. A table of the kind
+    "other", such as the Command Set Identifiers, has no tables of the same
+    kind."""
 
     def table(kind, document, figure_nr, value):
         return Values(
@@ -532,9 +533,9 @@ def test_every_table_of_the_kind_of_the_linked_table_is_offered():
     assert [e.value for e in senfd.query.values_of_field(spec, own)] == ["1h"]
 
 
-def test_an_entry_of_an_array_says_its_array_and_the_structure_laying_it_out(spec):
-    """Qux Format 0 Support to 7, each "defined in Figure 98", and Qux Vector
-    0 to 3, each "a Qux Vector", the structure of Figure 99"""
+def test_an_array_entry_shows_its_array_and_its_structure(spec):
+    """Qux Format 0 Support to 7 are each "defined in Figure 98", and Qux
+    Vector 0 to 3 are each "a Qux Vector", the structure of Figure 99."""
 
     (listed,) = [s for s in spec.structures if s.name == "Qux List"]
     fields = {f.acronym: f for f in listed.fields}
@@ -556,9 +557,9 @@ def test_an_entry_of_an_array_says_its_array_and_the_structure_laying_it_out(spe
     )
 
 
-def test_verbose_gives_the_cases_of_a_field_with_their_values(spec):
-    """Qux Action Specific is the Qux Options while Qux Action is Sweep or
-    Deep Sweep, and reserved for all other values"""
+def test_verbose_shows_the_cases_of_a_field_with_their_values(spec):
+    """Qux Action Specific is the Qux Options when Qux Action is Sweep or
+    Deep Sweep, and reserved for all other values."""
 
     lines = senfd.query.command(spec, "foo migrate", 13, verbose=True)
     at = lines.index("  15:08 Qux Action Specific (QAS)")
