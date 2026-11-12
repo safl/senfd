@@ -12,59 +12,50 @@ answer: an opcode, an identifier, a status code, a bit or a byte offset.
 Each question names its `source`, the PDF and the figure that holds the
 answer, and each answer was checked against that figure.
 
-The latest run, of 2026-11-12, asked all 86 questions. The run made its
-data model from the PDFs that NVM Express publishes, with senfd 0.17.0.
-The runs of 2026-11-11, 2026-11-10, 2026-11-09 and 2026-11-08 asked 71 or
-fewer of the questions, and asked Claude Opus and Sonnet from memory only.
+The latest run, of 2026-11-12, asked all 86 questions with senfd 0.18.0.
+The run made its data model from the PDFs that NVM Express publishes. The
+run of 2026-11-12 with senfd 0.17.0 asked the 86 questions too, and asked
+Claude both with "unknown" allowed and with an answer required. The runs
+of 2026-11-11, 2026-11-10, 2026-11-09 and 2026-11-08 asked 71 or fewer of
+the questions, and asked Claude Opus and Sonnet from memory only.
 
-| Lane, 2026-11-12, senfd 0.17.0 | Right | Wrong | Unknown | Seconds a question | USD a session |
+| Lane, 2026-11-12, senfd 0.18.0 | Right | Wrong | Unknown | Seconds a question | USD a session |
 |---|---|---|---|---|---|
-| `sate`, no language model | 76 | 2 | 8 | 0.006 | none |
-| `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 71 | 0 | 15 | 2.6 | none |
-| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 54 | 0 | 32 | 1.3 | none |
-| Opus 5.5, from memory, "unknown" allowed | 58.7 | 1 | 26.3 | 1.8 | 0.46 |
-| Opus 5.5, from memory, answer required | 70.3 | 15.3 | 0.3 | 2.5 | 0.59 |
-| Opus 5.5, with sate-mcp, "unknown" allowed | 86 | 0 | 0 | 3.0 | 2.07 |
-| Opus 5.5, with sate-mcp, answer required | 86 | 0 | 0 | 3.0 | 2.27 |
-| Opus 5.5, with the PDFs, "unknown" allowed | 86 | 0 | 0 | 3.8 | 3.17 |
-| Opus 5.5, with the PDFs, answer required | 86 | 0 | 0 | 3.7 | 2.83 |
-| Haiku 5.5, from memory, "unknown" allowed | 35 | 2.7 | 48.3 | 1.3 | 0.02 |
-| Haiku 5.5, from memory, answer required | 41 | 26.7 | 18.3 | 1.4 | 0.02 |
-| Haiku 5.5, with sate-mcp, "unknown" allowed | 84.3 | 1 | 0.7 | 1.9 | 0.12 |
-| Haiku 5.5, with sate-mcp, answer required | 84 | 2 | 0 | 2.0 | 0.10 |
-| Haiku 5.5, with the PDFs, "unknown" allowed | 84 | 2 | 0 | 4.3 | 0.49 |
-| Haiku 5.5, with the PDFs, answer required | 84.3 | 1.7 | 0 | 4.6 | 0.35 |
+| `sate`, no language model | 86 | 0 | 0 | 0.007 | none |
+| `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 72 | 0 | 14 | 2.7 | none |
+| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 57 | 0 | 29 | 1.2 | none |
+| **Opus 5.5** | | | | | |
+| From memory | 58 | 0.3 | 27.7 | 1.8 | 0.49 |
+| With sate-mcp | 86 | 0 | 0 | 3.0 | 2.07 |
+| With the PDFs | 86 | 0 | 0 | 3.9 | 3.22 |
+| **Haiku 5.5** | | | | | |
+| From memory | 35.7 | 4 | 46.3 | 1.4 | 0.02 |
+| With sate-mcp | 85 | 0.7 | 0.3 | 2.0 | 0.16 |
+| With the PDFs | 85 | 1 | 0 | 3.4 | 0.37 |
 
-A Claude lane is the mean of three sessions. The seconds of a Claude lane
-are those of the question turns. The USD of a session include the opening
-turn. In the answer-required mode, Haiku from memory still answered
-"unknown" to 18.3 questions.
+A Claude lane is the mean of three sessions. Each session was told that it
+may answer "unknown", and that a wrong answer counts against it more than
+"unknown". The seconds of a Claude lane are those of the question turns.
+The USD of a session include the opening turn.
 
 The opening turn and the tool calls of the sessions with tools, as the
 means of three sessions:
 
 | Session | Model turns a question | Tokens in a question | Opening turn | Answers with no tool call (right) |
 |---|---|---|---|---|
-| Opus, with sate-mcp, "unknown" allowed | 2.1 | 73,499 | 2.8 s, USD 0.004 | 8.7 (8.7) |
-| Opus, with sate-mcp, answer required | 2.1 | 82,116 | 4.6 s, USD 0.004 | 9 (9) |
-| Opus, with the PDFs, "unknown" allowed | 2.1 | 107,923 | 34.8 s, USD 0.13 | 10 (10) |
-| Opus, with the PDFs, answer required | 2.1 | 93,782 | 26.3 s, USD 0.10 | 8 (8) |
-| Haiku, with sate-mcp, "unknown" allowed | 2.0 | 108,068 | 3.0 s, USD 0.0004 | 14.7 (14) |
-| Haiku, with sate-mcp, answer required | 2.1 | 92,944 | 2.2 s, USD 0.0001 | 13.7 (13.3) |
-| Haiku, with the PDFs, "unknown" allowed | 2.6 | 180,600 | 18.1 s, USD 0.004 | 7 (7) |
-| Haiku, with the PDFs, answer required | 2.4 | 153,844 | 17.7 s, USD 0.003 | 8 (8) |
+| **Opus 5.5** | | | | |
+| With sate-mcp | 2.0 | 74,735 | 6.6 s, USD 0.001 | 7.7 (7.7) |
+| With the PDFs | 2.2 | 110,978 | 55.9 s, USD 0.14 | 8.7 (8.7) |
+| **Haiku 5.5** | | | | |
+| With sate-mcp | 1.9 | 100,551 | 2.2 s, under USD 0.0001 | 14.7 (14.3) |
+| With the PDFs | 2.5 | 154,703 | 19.2 s, USD 0.003 | 8.3 (8.3) |
 
 Tokens in count the input tokens, the cache reads and the cache writes. In
 the opening turn with the PDFs, every session ran `pdftotext` on the PDFs.
-Over the twelve sessions with the PDFs, Claude Code refused 53 tool calls,
-33 of Haiku's and 20 of Opus's, because a command combined several
-operations, held a variable, or wrote outside the working directory. Six
-other tool calls ran and failed.
-
-`sate` answered questions 72 and 73, the PDU types of the TCP transport,
-with the PDU's data structure, in which the grader found no line that gives
-the PDU type. `sate` answered "not known" to eight questions of the Boot,
-PCIe, RDMA, Computational Programs and Subsystem Local Memory documents.
+Over the six sessions with the PDFs, Claude Code refused 28 tool calls, 15
+of Haiku's and 13 of Opus's, because a command combined several operations,
+held a variable, or wrote outside the working directory. Two other tool
+calls ran and failed.
 
 Each run's `bench/` keeps every answer: `report.html` shows them side by
 side, right in green, wrong in red and unknown in grey, and `lanes/` holds
@@ -114,23 +105,24 @@ the data model of the documents with it, and runs the lanes:
   Claude Code refuses a Bash command that combines several operations,
   holds a variable, or writes outside the working directory.
   The opening turn tells the model that the PDFs are there and lets it
-  prepare them as it sees fit. Each condition runs in two modes: in one,
-  the model may answer "unknown", and a wrong answer counts against it;
-  in the other, the model must answer every question. The benchmark
+  prepare them as it sees fit. The model may answer "unknown", and a wrong
+  answer counts against it. `frontier.modes = ["required"]` in the
+  configuration makes the model answer every question instead. The benchmark
   records the time, model turns, tokens and cost of every turn, and
   records the opening turn separately, because with the PDFs the opening
   turn is where the model processes them. The benchmark also records each
   tool call: the tool, its input, and whether its result was an error. An
   answer given with no tool call shows as such in the report. Each
-  condition and mode runs three times, so the report shows the spread
+  condition runs three times, so the report shows the spread
   between runs. The answers, the figures and the tool calls are kept with
   the run. The full transcript of each session, with the replies and
   the tools' output, holds text of the documents, so the benchmark writes it
   to `~/git/senfd-reports`, outside the repository.
 
 Then `scripts/report.py` grades the answers with `scripts/grade.py`, and
-writes `summary.json` and `report.html`. The run of 2026-11-12 took 50
-minutes. The frontier step took 41 minutes of that, and the llm step 6.
+writes `summary.json` and `report.html`. The run of 2026-11-12 with senfd
+0.18.0 took 30 minutes. The frontier step took 21 minutes of that, and the
+llm step 6.
 `tests/` holds the tests of the scripts, which senfd's `make test` runs.
 
 senfd's repository holds neither the documents nor anything made from

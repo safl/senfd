@@ -35,10 +35,11 @@ question as well, in milliseconds.
 
 .. code-block:: console
 
-   $ llama-server -m Qwen2.5-7B-Instruct-Q4_K_M.gguf --port 8088 --jinja
+   $ llama-server -m Qwen2.5-7B-Instruct-Q4_K_M.gguf --port 8088 --jinja --device none
    $ sate --llm http://127.0.0.1:8088
 
-When the server holds several language models, ``--llm-model NAME`` tells
+``--device none`` keeps the language model on the CPU where llama.cpp was
+built with support for a GPU. When the server holds several language models, ``--llm-model NAME`` tells
 the server which one to use.
 
 The language model chooses the lookup and nothing else. ``sate`` sends the
@@ -49,9 +50,9 @@ cannot state a field, bit or opcode that is not in the figures. When a
 lookup finds nothing, or finds nothing that mentions the question's terms,
 ``sate`` tells the language model so, and the language model chooses
 again, at most three times. After the third try, the answer is that the
-fact is not known. In the benchmark of 2026-11-12, with 86 questions, Qwen
-2.5 7B on a CPU chose lookups that answered 71 questions right, and Qwen
-2.5 1.5B chose lookups that answered 54 right. With either language model,
+fact is not known. In the benchmark of 2026-11-12 with senfd 0.18.0, with
+86 questions, Qwen 2.5 7B on a CPU chose lookups that answered 72 questions
+right, and Qwen 2.5 1.5B chose lookups that answered 57 right. With either language model,
 ``sate --llm`` answered no question wrongly.
 
 .. raw:: html
