@@ -652,6 +652,31 @@ def test_a_byte_diagram_is_read_as_a_layout_of_its_fields():
     assert [d.code for d in diagnostics] == ["byte-diagram"]
 
 
+def test_a_field_of_a_byte_diagram_has_the_byte_order_it_marks():
+    """The protection information formats of the NVM Command Set mark the
+    MSB of each field in its lowest byte: big-endian, against the
+    little-endian order of the other figures, which mark nothing"""
+
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.spec import SpecDocument, add_figure, resolve
+
+    document = SpecDocument()
+    document.meta.stem = "example"
+    figure = diagram_of_bytes(
+        ("Byte", "0", "MSB", "Foo Guard", "", ""),
+        ("1", "", "LSB", "", "", ""),
+        ("2", "MSB", "Foo Tag", "", "", ""),
+        ("3", "", "", "", "", ""),
+        ("4", "", "LSB", "", "", ""),
+    )
+    add_figure(document, normalize_figure(figure, []), "example")
+    (structure,) = resolve(document).structures
+    assert [(f.range, f.byte_order) for f in structure.fields] == [
+        ("1:0", "big-endian"),
+        ("4:2", "big-endian"),
+    ]
+
+
 @pytest.mark.parametrize(
     "rows",
     [

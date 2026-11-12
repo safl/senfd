@@ -158,6 +158,12 @@ class BitsCommon(Model):
     """The range of the field under each condition heading the figure's
     columns of ranges, where those differ; 'range' is the first that is
     present"""
+    byte_order: Optional[Literal["big-endian", "little-endian"]] = None
+    """The order of the field's bytes where the figure marks the byte of its
+    most significant bit (MSB) and that of its least (LSB), as the
+    protection information formats of the NVM Command Set do: "big-endian"
+    where the MSB is in the lowest byte. None where the figure does not mark
+    them, or the field is one byte"""
     values: List["Entry"] = Field(default_factory=list)
     """The values the field takes, as the table in its description gives
     them"""
@@ -715,6 +721,18 @@ def alias(name: str) -> str:
 REGEX_HEX = re.compile(r"^(?P<hex>[0-9A-Fa-f]+)h$")
 
 
+def byte_order_of(
+    columns: Dict[str, str],
+) -> Optional[Literal["big-endian", "little-endian"]]:
+    """The byte order the columns "msb_byte" and "lsb_byte" of a byte diagram
+    give a field, or None where they are not both numbers or are the same"""
+
+    msb, lsb = columns.get("msb_byte", ""), columns.get("lsb_byte", "")
+    if not (msb.isdigit() and lsb.isdigit()) or int(msb) == int(lsb):
+        return None
+    return "big-endian" if int(msb) < int(lsb) else "little-endian"
+
+
 def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
     return ReadBits(
         name=field.name,
@@ -727,6 +745,7 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         section=field.section,
         elided=field.elided,
         columns=field.columns,
+        byte_order=byte_order_of(field.columns),
         placements=[
             Placement(
                 condition=p.condition,
@@ -973,6 +992,7 @@ def checked(
                 union=field.union,
                 alternative=field.alternative,
                 placements=field.placements,
+                byte_order=field.byte_order,
                 values=field.values,
                 cases=cases,
             )
