@@ -84,9 +84,13 @@ QUESTIONS = [
 # The words after which a question names a thing of one kind
 KINDS_AFTER = [
     (re.compile(r"log page(?: is)? $", re.I), "log page"),
+    (re.compile(r"\b(?:lid|lpi|log page identifier) of $", re.I), "log page"),
     (re.compile(r"feature(?: is)? $", re.I), "feature"),
+    (re.compile(r"\b(?:fid|feature identifier) of $", re.I), "feature"),
+    (re.compile(r"\bcns(?: values?)? of $", re.I), "cns"),
+    (re.compile(r"\b(?:register|offset of) $", re.I), "register"),
     (re.compile(r"(?:structure|fields of(?: the)?) $", re.I), "structure"),
-    (re.compile(r"(?:opcode|cdw\d+|dword \d+) of $", re.I), "command"),
+    (re.compile(r"(?:opcode|cdw\d+|dword \d+|dwords|cdws) of $", re.I), "command"),
     (re.compile(r"\b(?:is|are) $", re.I), "acronym"),
 ]
 

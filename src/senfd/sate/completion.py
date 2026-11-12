@@ -216,25 +216,56 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     begun = questions(typed, vocabulary)
     if begun:  # While a common question is begun, only the questions it may be
         return begun
+    # A register by its whole name, "CSTS - Controller Status", whose head is
+    # the register's acronym
+    registers = {
+        name
+        for name in vocabulary.structures
+        if name.partition(" - ")[0] in vocabulary.registers
+    }
     kinds = [
         ("form", WORDS),
         ("command", sorted(vocabulary.commands)),
         ("feature", sorted(vocabulary.features)),
         ("log page", sorted(vocabulary.log_pages)),
+        ("register", sorted(registers)),
         ("structure", sorted(vocabulary.structures)),
         ("acronym", sorted(vocabulary.acronyms)),
     ]
+    known = {
+        "command": vocabulary.commands,
+        "feature": vocabulary.features,
+        "log page": vocabulary.log_pages,
+        "register": registers | {n.partition(" - ")[2] for n in registers},
+        "structure": vocabulary.structures,
+        "cns": vocabulary.cns,
+    }
+
+    def wanted_as(text: str, kind: str, wanted: str) -> bool:
+        """Whether 'text' of 'kind' is a name of the kind 'wanted'; after "cns
+        of", a structure that a CNS value returns"""
+
+        return kind == wanted or (wanted == "cns" and text in vocabulary.cns)
+
     ends = tails(typed, vocabulary)
     best: Dict[str, Tuple[Rank, Offer]] = {}
     for rank, (kind, names) in enumerate(kinds):
         for name in names:
             _, dash, rest = name.partition(" - ")
-            for text in (name, rest) if dash and rest else (name,):
+            # A register is offered by its whole name, typed by either part
+            texts = (name,) if kind == "register" else (name, rest) if rest else (name,)
+            for text in texts:
+                begins = [text] + ([rest] if kind == "register" and rest else [])
                 tail = next(
-                    (t for t in ends if text.lower().startswith(t.typed.lower())),
+                    (
+                        t
+                        for t in ends
+                        if any(b.lower().startswith(t.typed.lower()) for b in begins)
+                    ),
                     None,
                 )
-                if tail is None:
+                # Elsewhere a register completes as a structure, by either part
+                if tail is None or kind == "register" and tail.wanted != "register":
                     continue
                 capitals = len(tail.typed) > 1 and tail.typed.isupper()
                 order = (
@@ -244,7 +275,7 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
                 )
                 key: Rank = (
                     order,
-                    kind != tail.wanted,
+                    not wanted_as(text, kind, tail.wanted),
                     -tail.typed.count(" "),
                     kind == "acronym" and len(text) < 2,
                     -1 if capitals and kind == "acronym" else rank,
@@ -257,17 +288,15 @@ def completions(vocabulary: Vocabulary, typed: str, most: int = 40) -> List[Offe
     # After the words of a kind, as "feature ", a name of another kind is no
     # answer while a name of that kind matches what was typed: "Timestamp"
     # the feature, not the figure of the event named so
-    known = {
-        "command": vocabulary.commands,
-        "feature": vocabulary.features,
-        "log page": vocabulary.log_pages,
-        "structure": vocabulary.structures,
-    }
     for tail in ends:
         if tail.wanted in known and any(
             name.lower().startswith(tail.typed.lower()) for name in known[tail.wanted]
         ):
-            ranked = [o for o in ranked if o.kind in (tail.wanted, "acronym")]
+            ranked = [
+                o
+                for o in ranked
+                if wanted_as(o.text, o.kind, tail.wanted) or o.kind == "acronym"
+            ]
             break
     return ranked[:most]
 
