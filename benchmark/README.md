@@ -51,7 +51,9 @@ means of three sessions:
 | With the PDFs | 2.5 | 154,703 | 19.2 s, USD 0.003 | 8.3 (8.3) |
 
 Tokens in count the input tokens, the cache reads and the cache writes. In
-the opening turn with the PDFs, every session ran `pdftotext` on the PDFs.
+the opening turn, five of the six sessions with the PDFs ran `pdftotext`
+on the PDFs without an error. In Haiku's first session with the PDFs, all
+three `pdftotext` calls of the opening turn returned errors.
 Over the six sessions with the PDFs, Claude Code refused 28 tool calls, 15
 of Haiku's and 13 of Opus's, because a command combined several operations,
 held a variable, or wrote outside the working directory. Two other tool
