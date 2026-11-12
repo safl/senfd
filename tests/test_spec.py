@@ -1599,3 +1599,70 @@ def test_a_field_records_its_range_under_each_condition_heading_the_ranges():
         {"condition": "HDGSTF=0", "range": None, "upper": None, "lower": None},
     ]
     assert structure.fields[0].placements == []
+
+
+def test_a_feature_has_the_dwords_of_the_section_its_identifier_names():
+    """Base 2.4 describes CDW12 of Flexible Data Placement Events (1Eh) in a
+    figure whose caption names Flexible Data Placement (1Dh), and Reservation
+    Notification Mask (82h) in one whose caption names no feature; the
+    section title gives the identifier of each"""
+
+    from senfd.documents.spec import Dwords, Feature, Source, link_features
+
+    def source(figure_nr, section_title):
+        return Source(
+            document="example",
+            figure_nr=figure_nr,
+            section="1.1",
+            section_title=section_title,
+        )
+
+    document = SpecDocument()
+    for identifier, name in ((0x1D, "Foo Placement"), (0x1E, "Foo Placement Events")):
+        document.features[name] = Feature(
+            identifier=identifier, name=name, source=source(1, "Feature Identifiers")
+        )
+    document.dwords = {
+        "foo_placement": [
+            Dwords(lower=11, upper=11, source=source(2, "Foo Placement")),
+            Dwords(
+                lower=12,
+                upper=12,
+                source=source(4, "Foo Placement Events (Feature Identifier 1Eh)"),
+            ),
+        ],
+        "foo_mask": [
+            Dwords(
+                lower=11,
+                upper=11,
+                source=source(3, "Foo Placement Events (Feature Identifier 1Eh)"),
+            )
+        ],
+    }
+    # Of a key, a figure the section places and one nothing places
+    document.dwords["bar"] = [
+        Dwords(
+            lower=13,
+            upper=13,
+            source=source(5, "Foo Placement Events (Feature Identifier 1Eh)"),
+        ),
+        Dwords(lower=14, upper=14, source=source(6, "Bar")),
+    ]
+    used: set = set()
+    link_features(document, used)
+
+    features = document.features
+    assert [d.source.figure_nr for d in features["Foo Placement"].sqe] == [2]
+    assert [d.source.figure_nr for d in features["Foo Placement Events"].sqe] == [
+        3,
+        4,
+        5,
+    ]
+    assert {"foo_placement", "foo_mask"} <= used
+
+    from senfd.documents.spec import unassigned_of
+
+    unassigned = unassigned_of(document.dwords, used)
+    assert {k: [d.source.figure_nr for d in v] for k, v in unassigned.items()} == {
+        "bar": [6]
+    }

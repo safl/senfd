@@ -1671,6 +1671,32 @@ def identified(document: SpecDocument, name_column: str, kind: str):
                 yield int(match["hex"], 16), name, entry.columns, values.source
 
 
+REGEX_FEATURE_SECTION = re.compile(r"\(Feature Identifier ([0-9A-F]+)h\)$")
+
+
+def placed_key(key: str, dwords: "Dwords") -> Tuple[str, str, int]:
+    """What 'used' holds of one figure of dwords under 'key' that is placed
+    while others under the key are not"""
+
+    return (key, dwords.source.document, dwords.source.figure_nr)
+
+
+def unassigned_of(
+    dwords: Dict[str, List["Dwords"]], used: set
+) -> Dict[str, List["Dwords"]]:
+    """The dwords of each key that 'used' says nothing has taken: neither the
+    key nor the figure of the dwords"""
+
+    unassigned = {}
+    for key, described in dwords.items():
+        if key in used:
+            continue
+        left = [d for d in described if placed_key(key, d) not in used]
+        if left:
+            unassigned[key] = left
+    return unassigned
+
+
 def link_features(document: SpecDocument, used: set) -> None:
     """The features of the feature identifier tables, one by identifier, with
     the dwords described for each, which the captions name by the feature"""
@@ -1686,10 +1712,32 @@ def link_features(document: SpecDocument, used: set) -> None:
             identifier=identifier, name=name, columns=columns, source=source
         )
 
+    # The section a figure is in names the feature, where its title gives the
+    # identifier, as "Flexible Data Placement Events (Feature Identifier 1Eh)";
+    # the captions there may name another feature or none
+    by_identifier = {f.identifier: f for f in document.features.values()}
+    left: Dict[str, List[Dwords]] = {}
+    for key, described in document.dwords.items():
+        if key in used:
+            continue
+        cqe = key.startswith("cqe:")
+        left[key] = []
+        for dwords in described:
+            match = REGEX_FEATURE_SECTION.search(dwords.source.section_title or "")
+            feature = by_identifier.get(int(match[1], 16)) if match else None
+            if feature is None:
+                left[key].append(dwords)
+                continue
+            add_dwords(feature.cqe if cqe else feature.sqe, dwords)
+            used.add(placed_key(key, dwords))
+        if not left[key]:
+            used.add(key)
+            del left[key]
+
     # The exact name first, then the looser matches, so that "Asynchronous
     # Event Configuration" is not taken by a feature it merely starts with
     for exact in (True, False):
-        for key, described in document.dwords.items():
+        for key, described in left.items():
             if key in used:
                 continue
             cqe = key.startswith("cqe:")
@@ -1704,6 +1752,9 @@ def link_features(document: SpecDocument, used: set) -> None:
                         add_dwords(feature.cqe if cqe else feature.sqe, dwords)
                     used.add(key)
                     break
+    for feature in document.features.values():
+        for described in (feature.sqe, feature.cqe):
+            described.sort(key=lambda d: (d.source.document, d.source.figure_nr))
 
 
 def log_page_key(name: str) -> str:
@@ -2219,9 +2270,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
                 if (e.source.document, e.source.figure_nr) not in excluded
             ]
 
-    document.unassigned = {
-        key: described for key, described in document.dwords.items() if key not in used
-    }
+    document.unassigned = unassigned_of(document.dwords, used)
     document.diagnostics = [
         d for d in document.diagnostics if d.code != "dwords-unassigned"
     ]
