@@ -729,3 +729,18 @@ def test_a_range_wrapped_inside_its_lower_number_is_made_one():
     assert unwrapped("7:4\n3") == "7:4\n3"  # Two values, not a wrapped range
     assert unwrapped("31:16\n15:00") == "31:16\n15:00"
     assert unwrapped("Reserved") == "Reserved"
+
+
+def test_a_published_pdf_names_its_cns_values_by_their_sections(public, tmp_path):
+    """The CNS values of the NVM Command Set's Identify name no structure in a
+    column; each is named by the title of the section its reference cites"""
+
+    _, path = document_named(public, "NVM Command Set 1.3")
+    figures, _ = read(path)
+    assert figures.sections["4.1.5.1"].startswith("NVM Command Set Identify Namespace")
+    (cns,) = [
+        v for v in public.made(path, tmp_path)["values"] if v["kind"] == "cns_values"
+    ]
+    names = {e["value"]: e["name"] for e in cns["entries"]}
+    assert names["00h"] == "NVM Command Set Identify Namespace Data Structure"
+    assert names["16h"] == "Namespace Granularity List"

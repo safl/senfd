@@ -128,6 +128,8 @@ class NormalizedFigureDocument(Document):
     skipped: Dict[int, str] = Field(default_factory=dict)
     nontabular: List[int] = Field(default_factory=list)
     diagnostics: List[Diagnostic] = Field(default_factory=list)
+    sections: Dict[str, str] = Field(default_factory=dict)
+    """The title of each numbered section, by its number as printed"""
 
 
 def header_of(row: Row) -> Tuple[List[str], List[str]]:
@@ -800,6 +802,7 @@ class FromFigureDocument(Converter):
         document.meta.stem = strip_all_suffixes(path.stem)
         document.meta.file = figure_document.meta.file
         document.meta.sha256 = figure_document.meta.sha256
+        document.sections = figure_document.sections
 
         skip_patterns = SkipPatterns(
             getattr(args, "skip_figures", None), figure_document.figures

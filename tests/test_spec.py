@@ -1484,3 +1484,87 @@ def test_a_case_for_a_code_has_that_code_as_its_value():
         [("01h", 1)],
         [("02h to FFFFh", None)],
     ]
+
+
+SECTIONS = {
+    "5.1": "Identify Controller Data Structure (CNS 01h)",
+    "5.2": "Active Namespace ID list (CNS 02h)",
+    "5.3": "Get Underlying Controller List (CNS 21h)",
+    "5.4": "I/O Command Set specific Identify Controller (CNS 06h, CSI 04h)",
+    "5.5": "Personality (Personality Identifier 3h)",
+    "5.6": "Event of another table (Event Type 00h)",
+}
+
+
+def cns_values(rows):
+    """A table of CNS values of 'rows', each a value, its reference and
+    whether its row says Reserved, as the Identify command's"""
+
+    from senfd.documents.spec import Entry, Source, Values
+
+    return Values(
+        kind="cns_values",
+        name="Identify",
+        columns=["cns_value", "description", "reference"],
+        entries=[
+            Entry(
+                value=value,
+                value_column="cns_value",
+                columns={"reference": reference}
+                | ({"event": "Reserved"} if reserved else {}),
+            )
+            for value, reference, reserved in rows
+        ],
+        source=Source(document="Base", figure_nr=336),
+    )
+
+
+def test_a_code_is_named_by_the_section_its_reference_cites():
+    from senfd.documents.spec import name_by_sections
+
+    document = SpecDocument()
+    document.values.append(
+        cns_values(
+            [
+                ("01h", "5.1", False),
+                ("06h", "5.4", False),
+                ("03h", "5.5", False),
+                ("1Fh", "", False),
+                ("00h", "5.6", True),
+                ("0Bh to 0Fh", "5.1", False),
+            ]
+        )
+    )
+    name_by_sections(document, SECTIONS)
+    assert [e.name for e in document.values[0].entries] == [
+        "Identify Controller Data Structure",
+        "I/O Command Set specific Identify Controller",
+        "Personality",
+        None,
+        None,
+        None,
+    ]
+    assert document.errata == []
+
+
+def test_a_reference_to_the_section_of_another_code_is_a_candidate_erratum():
+    """CNS 14h of Base 2.4 cites the section of CNS 21h, and CNS 02h cites "0";
+    each takes the section whose title names it, where there is one"""
+
+    from senfd.documents.spec import name_by_sections
+
+    document = SpecDocument()
+    document.values.append(
+        cns_values([("14h", "5.3", False), ("02h", "0", False), ("01h", "5.1", False)])
+    )
+    name_by_sections(document, SECTIONS)
+    assert [e.name for e in document.values[0].entries] == [
+        None,
+        "Active Namespace ID list",
+        "Identify Controller Data Structure",
+    ]
+    (erratum,) = document.errata
+    assert (erratum.code, erratum.found) == ("reference", "5.3")
+    assert erratum.message.startswith(
+        "14h: the reference 5.3 is the section of CNS 21h"
+    )

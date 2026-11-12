@@ -307,7 +307,10 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
         if deleted:
             errors.append(Error(message=deleted))
 
-    document = FigureDocument(figures=[figures[n] for n in sorted(figures)])
+    document = FigureDocument(
+        figures=[figures[n] for n in sorted(figures)],
+        sections={s.number: s.title for s in numbered if s.number and s.title},
+    )
     document.meta.stem = stem_of(path)
     return document, errors
 
