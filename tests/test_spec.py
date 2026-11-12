@@ -1719,9 +1719,7 @@ def test_completion_dwords_go_to_the_feature_their_section_names():
     )
     document.dwords = {
         "cqe:bar_configuration": [
-            Dwords(
-                lower=0, upper=0, source=source(2, "Foo (Feature Identifier 82h)")
-            )
+            Dwords(lower=0, upper=0, source=source(2, "Foo (Feature Identifier 82h)"))
         ]
     }
     used: set = set()
@@ -1729,3 +1727,35 @@ def test_completion_dwords_go_to_the_feature_their_section_names():
     assert [d.source.figure_nr for d in document.features["Foo"].cqe] == [2]
     assert document.features["Foo"].sqe == []
     assert "cqe:bar_configuration" in used
+
+
+def test_a_footnote_marker_after_the_last_sentence_is_a_footnote():
+    """Base 2.4 marks footnote 7 on CNS descriptions, as "... processing the
+    command.7", and footnote 1 on fields of Format NVM, as "... specific
+    definition.1"; the marker is no part of the text"""
+
+    from senfd.documents.spec import entry_of, footnoted
+
+    assert footnoted("Its definition.1") == ("Its definition.", [1])
+    assert footnoted("Of the field.2, 3") == ("Of the field.", [2, 3])
+    assert footnoted("Revision 2.1") == ("Revision 2.1", [])
+    assert footnoted("Set to 1.") == ("Set to 1.", [])
+    entry = entry_of({"value": "05h", "description": "Foo for the command.7"})
+    assert (entry.description, entry.footnotes) == ("Foo for the command.", [7])
+
+
+def test_a_field_has_the_footnotes_marked_at_the_end_of_its_description():
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Structure",
+            ("Bytes", "Description"),
+            ("03:00", "Foo Header (FH): The header, of a specific definition.1"),
+        )
+    )
+    (structure,) = spec.structures
+    (field,) = structure.fields
+    assert (field.description, field.footnotes) == (
+        "The header, of a specific definition.",
+        [1],
+    )

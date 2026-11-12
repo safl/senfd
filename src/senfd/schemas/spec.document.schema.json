@@ -294,6 +294,14 @@
                     "description": "The order of the field's bytes where the figure marks the byte of its\nmost significant bit (MSB) and that of its least (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\"\nwhere the MSB is in the lowest byte. None where the figure does not mark\nthem, or the field is one byte",
                     "title": "Byte Order"
                 },
+                "footnotes": {
+                    "description": "The numbers of the footnotes marked at the end of the description",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Footnotes",
+                    "type": "array"
+                },
                 "values": {
                     "description": "The values the field takes, as the table in its description gives\nthem",
                     "items": {
@@ -826,6 +834,14 @@
                     "description": "The values of the row's columns of a known kind, by their keys",
                     "title": "Typed",
                     "type": "object"
+                },
+                "footnotes": {
+                    "description": "The numbers of the footnotes marked at the end of the description",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Footnotes",
+                    "type": "array"
                 }
             },
             "required": [
