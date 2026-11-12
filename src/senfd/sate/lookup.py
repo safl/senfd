@@ -124,7 +124,20 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
         ):
             if not nothing(lines):
                 found += lines + [""]
-        return found or [f"No feature or log page of identifier {understood.argument}"]
+        # The status codes, CNS values and other tables of values; the tables
+        # of identifiers and of requirements repeat the features and log pages
+        values = q.value(
+            spec,
+            understood.argument,
+            verbose=describe,
+            markdown=True,
+            skip=("feature_identifiers", "log_page_identifiers", "requirements"),
+        )
+        if not nothing(values):
+            found += bullets(values)
+        return found or [
+            f"No feature, log page or table value of identifier {understood.argument}"
+        ]
     if understood.query == "register":
         found = []
         for s in spec.structures:

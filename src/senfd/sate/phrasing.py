@@ -24,7 +24,7 @@ comes from.
 | `cdw12 of write` | the fields of Command Dword 12 of Write |
 | `feature 07h` | the name of feature 07h and its fields |
 | `log page 1Fh` | the name of log page 1Fh and its fields |
-| `1Fh` | feature 1Fh and log page 1Fh |
+| `1Fh` | each feature, log page, status code and CNS value 1Fh |
 | `status code 82h` | each status code 82h, and each range that includes 82h |
 | `what does status 0x4281 mean?` | what the SCT and SC in status 4281h mean |
 | `CNS 05h` | each entry for the CNS value 05h |
