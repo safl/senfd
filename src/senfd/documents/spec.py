@@ -929,6 +929,9 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
 
     if figure.layout is None:
         if figure.entries:
+            # Which column has the codes is decided once for the table
+            code = code_column(figure.columns, figure.entries)
+            named = named_by(figure.columns, code)
             document.values.append(
                 Values(
                     kind=subject.kind,
@@ -936,7 +939,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                     qualifier=subject.qualifier,
                     scope=subject.scope,
                     columns=figure.columns,
-                    entries=[entry_of(entry) for entry in figure.entries],
+                    entries=[entry_of(e, code, named) for e in figure.entries],
                     source=source,
                 )
             )
@@ -1155,21 +1158,75 @@ def type_values(values: "Values") -> List["Erratum"]:
     return errata
 
 
-def entry_of(entry: Dict[str, str]) -> Entry:
-    """An entry by its value, whichever column holds it"""
+# A code as a table writes it, "01h" or "0010b", a range of codes, as "C0h to
+# FFh", or a code an expression goes on from, as an offset counted from the
+# first, "1000h + (2 * STRIDE)"
+CODE = r"(?:[0-9A-F]+h|[01]+b)"
+REGEX_CODE = re.compile(
+    rf"^{CODE}(?:\s*\+.*|(?:\s*(?:to|-)\s*{CODE})?" + FOOTNOTES + r")$"
+)
+
+
+def code_column(columns: List[str], entries: List[Dict[str, str]]) -> Optional[str]:
+    """The column of 'columns' holding the code of each of 'entries', or None
+    of a table without one
+
+    A column holds codes where more than half of the entries have a code in
+    it, and its other cells are left open, as "N/A" or "Reserved". The code of
+    an entry is no other entry's: the column is the one whose header says it
+    combines the codes of the others, as "Combined Opcode", where it has no
+    code twice; else the first column of codes, where no column of codes has
+    a code twice. Codes that repeat, as flags or the major and minor parts of
+    a version, say something of an entry, not which it is."""
+
+    holding: Dict[str, List[str]] = {}
+    for column in columns:
+        texts = [entry[column] for entry in entries if entry.get(column)]
+        codes = [text for text in texts if REGEX_CODE.match(text)]
+        if 2 * len(codes) > len(entries) and all(
+            (typed := typed_of(text)) is not None and typed.kind in COMMON
+            for text in texts
+            if not REGEX_CODE.match(text)
+        ):
+            holding[column] = codes
+    once = [c for c, codes in holding.items() if len(set(codes)) == len(codes)]
+    combined = [c for c in once if c == "opcode" or c.startswith("combined_")]
+    if combined:
+        return combined[0]
+    return once[0] if once and len(once) == len(holding) else None
+
+
+def named_by(columns: List[str], code: Optional[str]) -> Optional[str]:
+    """The column of 'columns' naming what the column 'code' has the code of,
+    where no column is a name by its header: the command, else the first
+    column, which is what the table lists"""
+
+    if code is None or any(c == "name" or c.endswith("_name") for c in columns):
+        return None
+    if "command" in columns:
+        return "command"
+    return columns[0] if columns[0] != code else None
+
+
+def entry_of(
+    entry: Dict[str, str], code: Optional[str] = None, named: Optional[str] = None
+) -> Entry:
+    """An entry by its value, whichever column holds it: one that is a value
+    by its header, else 'code', the column of the table's codes, else the
+    command or the name, else the first; an entry of no name of its own has
+    that of the column 'named'"""
 
     keys = ("value", "cns_value", "identifier")
-    key = next(
+    by_header = next(
         (k for k in keys if entry.get(k)),
-        next(
-            (k for k in entry if k.endswith("_value") and entry[k]),
-            next(
-                (k for k in ("command", "name") if entry.get(k)), next(iter(entry), "")
-            ),
-        ),
+        next((k for k in entry if k.endswith("_value") and entry[k]), ""),
     )
+    others = [k for k in (code or "", "command", "name") if entry.get(k)]
+    key = by_header or next(iter(others), next(iter(entry), ""))
     names = [k for k in entry if k == "name" or (k.endswith("_name") and k != key)]
     name_key = next((k for k in names if entry.get(k)), None)
+    if name_key is None and not by_header and key == code and entry.get(named or ""):
+        name_key = named
     return Entry(
         value=entry.get(key, ""),
         value_column=key,

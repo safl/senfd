@@ -2,7 +2,7 @@
   "meta": {
     "format": 1,
     "version": "0.17.0",
-    "senfd_sha256": "ceed0895fb9e56bdf3710e6a09c02e3e1ceba1935dabfbdb5542eb9c6afc22d8",
+    "senfd_sha256": "d3c54133bd14e3eba2a432524705beb8f976391704e3be21272410ab4b692286",
     "stem": "example",
     "file": "example.docx",
     "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
@@ -4913,12 +4913,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Get",
-          "value_column": "command",
-          "name": null,
+          "value": "C2h",
+          "value_column": "opcode",
+          "name": "Foo Get",
           "description": "",
           "columns": {
-            "opcode": "C2h",
             "i_o": "M",
             "admin": "O",
             "discovery": "P",
@@ -5734,12 +5733,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Capabilities",
-          "value_column": "name",
+          "value": "00h",
+          "value_column": "offset_ofst",
           "name": "Foo Capabilities",
           "description": "",
           "columns": {
-            "offset_ofst": "00h",
             "size_in_bytes": "8",
             "i_o_controller": "M",
             "administrative_controller": "M",
@@ -5838,14 +5836,13 @@
       ],
       "entries": [
         {
-          "value": "Ding Dong",
-          "value_column": "command",
-          "name": null,
+          "value": "05h",
+          "value_column": "opcode",
+          "name": "Ding Dong",
           "description": "",
           "columns": {
             "command_1": "Ding",
-            "command_2": "Dong",
-            "opcode": "05h"
+            "command_2": "Dong"
           },
           "typed": {}
         }
@@ -6010,12 +6007,11 @@
       ],
       "entries": [
         {
-          "value": "Foo Get",
-          "value_column": "command",
-          "name": null,
+          "value": "C2h",
+          "value_column": "opcode",
+          "name": "Foo Get",
           "description": "",
           "columns": {
-            "opcode": "C2h",
             "i_o": "M",
             "admin": "O"
           },
@@ -6518,7 +6514,7 @@
     "example": {
       "format": 1,
       "version": "0.17.0",
-      "senfd_sha256": "ceed0895fb9e56bdf3710e6a09c02e3e1ceba1935dabfbdb5542eb9c6afc22d8",
+      "senfd_sha256": "d3c54133bd14e3eba2a432524705beb8f976391704e3be21272410ab4b692286",
       "stem": "example",
       "file": "example.docx",
       "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
