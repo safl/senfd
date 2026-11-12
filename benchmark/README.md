@@ -12,26 +12,27 @@ answer: an opcode, an identifier, a status code, a bit or a byte offset.
 Each question names its `source`, the PDF and the figure that holds the
 answer, and each answer was checked against that figure.
 
-The latest run, of 2026-11-12, asked all 86 questions with senfd 0.18.0.
+The latest run, of 2026-11-12, asked all 86 questions with senfd 0.19.0.
 The run made its data model from the PDFs that NVM Express publishes. The
-run of 2026-11-12 with senfd 0.17.0 asked the 86 questions too, and asked
+run of 2026-11-12 with senfd 0.18.0 asked the same questions in the same
+way. The run of 2026-11-12 with senfd 0.17.0 asked the 86 questions too, and asked
 Claude both with "unknown" allowed and with an answer required. The runs
 of 2026-11-11, 2026-11-10, 2026-11-09 and 2026-11-08 asked 71 or fewer of
 the questions, and asked Claude Opus and Sonnet from memory only.
 
-| Lane, 2026-11-12, senfd 0.18.0 | Right | Wrong | Unknown | Seconds a question | USD a session |
+| Lane, 2026-11-12, senfd 0.19.0 | Right | Wrong | Unknown | Seconds a question | USD a session |
 |---|---|---|---|---|---|
 | `sate`, no language model | 86 | 0 | 0 | 0.007 | none |
 | `sate --llm`, Qwen 2.5 7B Q4_K_M, CPU only | 72 | 0 | 14 | 2.7 | none |
-| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 57 | 0 | 29 | 1.2 | none |
+| `sate --llm`, Qwen 2.5 1.5B Q4_K_M, CPU only | 57 | 0 | 29 | 1.5 | none |
 | **Opus 5.5** | | | | | |
-| From memory | 58 | 0.3 | 27.7 | 1.8 | 0.49 |
-| With sate-mcp | 86 | 0 | 0 | 3.0 | 2.07 |
-| With the PDFs | 86 | 0 | 0 | 3.9 | 3.22 |
+| From memory | 57 | 1 | 28 | 1.8 | 0.50 |
+| With sate-mcp | 86 | 0 | 0 | 2.9 | 1.91 |
+| With the PDFs | 86 | 0 | 0 | 3.8 | 3.16 |
 | **Haiku 5.5** | | | | | |
-| From memory | 35.7 | 4 | 46.3 | 1.4 | 0.02 |
-| With sate-mcp | 85 | 0.7 | 0.3 | 2.0 | 0.16 |
-| With the PDFs | 85 | 1 | 0 | 3.4 | 0.37 |
+| From memory | 35.7 | 3.7 | 46.7 | 1.2 | 0.02 |
+| With sate-mcp | 84.3 | 1.7 | 0 | 2.0 | 0.10 |
+| With the PDFs | 84.7 | 1 | 0.3 | 3.2 | 0.45 |
 
 A Claude lane is the mean of three sessions. Each session was told that it
 may answer "unknown", and that a wrong answer counts against it more than
@@ -44,20 +45,18 @@ means of three sessions:
 | Session | Model turns a question | Tokens in a question | Opening turn | Answers with no tool call (right) |
 |---|---|---|---|---|
 | **Opus 5.5** | | | | |
-| With sate-mcp | 2.0 | 74,735 | 6.6 s, USD 0.001 | 7.7 (7.7) |
-| With the PDFs | 2.2 | 110,978 | 55.9 s, USD 0.14 | 8.7 (8.7) |
+| With sate-mcp | 2.0 | 66,526 | 2.6 s, USD 0.011 | 7 (7) |
+| With the PDFs | 2.1 | 106,429 | 53.0 s, USD 0.15 | 7 (7) |
 | **Haiku 5.5** | | | | |
-| With sate-mcp | 1.9 | 100,551 | 2.2 s, under USD 0.0001 | 14.7 (14.3) |
-| With the PDFs | 2.5 | 154,703 | 19.2 s, USD 0.003 | 8.3 (8.3) |
+| With sate-mcp | 2.0 | 87,944 | 2.1 s, USD 0.0003 | 14.3 (13.7) |
+| With the PDFs | 2.6 | 175,012 | 20.0 s, USD 0.004 | 7 (7) |
 
 Tokens in count the input tokens, the cache reads and the cache writes. In
-the opening turn, five of the six sessions with the PDFs ran `pdftotext`
-on the PDFs without an error. In Haiku's first session with the PDFs, all
-three `pdftotext` calls of the opening turn returned errors.
-Over the six sessions with the PDFs, Claude Code refused 28 tool calls, 15
-of Haiku's and 13 of Opus's, because a command combined several operations,
-held a variable, or wrote outside the working directory. Two other tool
-calls ran and failed.
+the opening turn, each of the six sessions with the PDFs ran `pdftotext` on
+the PDFs. 29 of the 57 `pdftotext` calls of the six opening turns returned
+errors, and each session had at least one call that ran without an error. Over the
+six sessions with the PDFs, Claude Code refused 22 tool calls, 13 of
+Haiku's and 9 of Opus's. 13 other tool calls ran and failed.
 
 Each run's `bench/` keeps every answer: `report.html` shows them side by
 side, right in green, wrong in red and unknown in grey, and `lanes/` holds
@@ -123,8 +122,8 @@ the data model of the documents with it, and runs the lanes:
 
 Then `scripts/report.py` grades the answers with `scripts/grade.py`, and
 writes `summary.json` and `report.html`. The run of 2026-11-12 with senfd
-0.18.0 took 30 minutes. The frontier step took 21 minutes of that, and the
-llm step 6.
+0.19.0 took 28 minutes. The frontier step took 19 minutes of that, and the
+llm step 7.
 `tests/` holds the tests of the scripts, which senfd's `make test` runs.
 
 senfd's repository holds neither the documents nor anything made from
