@@ -95,7 +95,7 @@ commands = 0
 features = 0
 log_pages = 1
 structures = 60
-errata = 0
+errata = 1
 document_errors = 0
 not_modelled = 1
 

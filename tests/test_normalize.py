@@ -353,6 +353,41 @@ def test_words_in_parentheses_after_the_name_of_an_entry_are_no_acronym():
     ]
 
 
+def test_an_acronym_whose_parenthesis_is_left_open_is_read_and_noted():
+    """A row that is "Name (ACRONYM" and nothing more has its name and its
+    acronym, and the defect of the document is noted; text that goes on, or
+    is cut short in words, is no acronym"""
+
+    from senfd.documents.normalized import parse_layout
+
+    assert parse_field_description("Foo Master Enable (FME") == (
+        "Foo Master Enable",
+        "FME",
+        "",
+    )
+    assert parse_field_description("Foo Master Enable (refer to")[0] is None
+    assert parse_field_description("Foo Master Enable (FME\nIt enables.")[0] is None
+
+    diagnostics = []
+    layout = parse_layout(
+        rows(("03", "Foo Slave Enable (FSE)"), ("02", "Foo Master Enable (FME")),
+        ["bits", "name"],
+        diagnostics,
+    )
+    assert [(f.name, f.acronym) for f in layout.fields] == [
+        ("Foo Slave Enable", "FSE"),
+        ("Foo Master Enable", "FME"),
+    ]
+    assert [(d.severity, d.code, d.message) for d in diagnostics] == [
+        (
+            "note",
+            "acronym-open",
+            "Field 02 Foo Master Enable: the parenthesis of its acronym 'FME' "
+            "is not closed",
+        )
+    ]
+
+
 def test_a_header_below_a_title_row_is_found_and_noted():
     from senfd.documents.normalized import normalize_figure
     from senfd.documents.plain import Figure

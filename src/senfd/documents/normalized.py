@@ -25,6 +25,7 @@ from senfd.documents.plain import FigureDocument
 from senfd.errors import Error
 from senfd.normalize import (
     REGEX_ENTRY_ACRONYM,
+    left_open,
     slug,
     Diagnostic,
     Range,
@@ -224,6 +225,18 @@ def values_of(row: Row, grid: List[str]) -> Optional[Values]:
     return values
 
 
+def note_left_open(text: str, what: str, diagnostics: List[Diagnostic]) -> None:
+    """A note in 'diagnostics' where 'text' is a name and an acronym whose
+    parenthesis the document leaves open; 'what' says which row has it, as
+    "Field 02"; the spec document takes the note as a candidate erratum"""
+
+    opened = left_open(text)
+    if opened:
+        name, acronym = opened
+        said = f"the parenthesis of its acronym '{acronym}' is not closed"
+        diagnostics.append(note("acronym-open", f"{what} {name}: {said}"))
+
+
 def parse_layout(
     rows: List[Row],
     grid: List[str],
@@ -324,6 +337,9 @@ def parse_layout(
         name, acronym, description = parse_field_description(
             values.texts.get(text_column, "")
         )
+        note_left_open(
+            values.texts.get(text_column, ""), f"Field {rng.text}", diagnostics
+        )
         if text_column == "name" and "description" in values.texts:
             description = values.texts["description"]
         if name is None and description:
@@ -379,6 +395,11 @@ def nest_bits(
     )
     byte_cells = values.cells.get("bytes", [])
     byte_text = byte_cells[0].text if byte_cells else values.texts.get("bytes", "")
+    note_left_open(
+        values.texts.get(text_column, ""),
+        f"Field {texts.get('bits') or normalize_text(byte_text)}",
+        diagnostics,
+    )
     if texts.get("bits", "").lower() in ("", "n/a"):
         rng = parse_range("bytes", byte_text)
         if rng is None:
@@ -509,6 +530,7 @@ def parse_entries(
             continue
         if entry.get("description") and "name" not in entry:
             name, acronym, rest = parse_field_description(values.texts["description"])
+            note_left_open(values.texts["description"], "Entry", diagnostics)
             if name:
                 entry["name"] = name
                 if acronym and REGEX_ENTRY_ACRONYM.match(acronym):
@@ -519,6 +541,7 @@ def parse_entries(
                 entry["description"] = normalize_text(rest)
         elif entry.get("name") and "acronym" not in entry:
             name, acronym, _ = parse_field_description(values.texts["name"])
+            note_left_open(values.texts["name"], "Entry", diagnostics)
             if name and acronym and REGEX_ENTRY_ACRONYM.match(acronym):
                 entry["name"], entry["acronym"] = name, acronym
         if section:

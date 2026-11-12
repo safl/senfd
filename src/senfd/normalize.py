@@ -207,12 +207,34 @@ REGEX_FIELD_NO_COLON = re.compile(
 )
 
 
+# "Name (ACRONYM" and nothing more, the parenthesis of the acronym left open
+REGEX_FIELD_OPEN = re.compile(rf"^{NAME}\s*\((?P<acronym>[A-Z][A-Z0-9_]*)$")
+
+
+def left_open(text: str) -> Optional[Tuple[str, str]]:
+    """The name and the acronym of 'text', all a row gives of its field,
+    where it is "Name (ACRONYM" with the parenthesis of the acronym not
+    closed, a defect of the document; None of other text, as text going on
+    after it, or cut short in words, as "Name (refer to" """
+
+    text = text.strip()
+    match = REGEX_FIELD_OPEN.match(normalize_text(text))
+    if "\n" in text or not match or len(match["name"]) > 80:
+        return None
+    return match["name"].strip(), match["acronym"]
+
+
 def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], str]:
     """
     The name, acronym and description of a field, from the text of its
     description cell: "Name (ACRONYM): description", the description going on in
-    the paragraphs after the first
+    the paragraphs after the first; "Name (ACRONYM" alone is the name and the
+    acronym, by left_open()
     """
+
+    opened = left_open(text)
+    if opened:
+        return *opened, ""
 
     first, _, more = text.strip().partition("\n")
     first = normalize_text(first)
