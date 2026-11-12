@@ -20,10 +20,11 @@ def show(markdown: str, raw: bool = False) -> None:
     if raw:
         print(markdown)
         return
-    from rich.console import Console
     from rich.markdown import Markdown
 
-    Console().print(Markdown(markdown))
+    from senfd.sate.session import console_for
+
+    console_for(markdown).print(Markdown(markdown))
 
 
 def first_word(argv: List[str]) -> Optional[int]:

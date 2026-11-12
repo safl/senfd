@@ -980,6 +980,23 @@ def test_a_generic_word_is_no_term_in_its_plural_either():
     assert phrasing.terms("Which feature sets the foo levels?") == ["foo", "level"]
 
 
+def test_the_table_of_forms_is_at_most_80_columns_wide_and_answers_are_not(
+    monkeypatch,
+):
+    monkeypatch.setenv("COLUMNS", "133")
+    assert senfd.sate.session.console_for(phrasing.HELP).width == 80
+    assert senfd.sate.session.console_for("- an answer").width == 133
+    monkeypatch.setenv("COLUMNS", "60")
+    assert senfd.sate.session.console_for(phrasing.HELP).width == 60
+
+
+def test_the_one_shot_answer_is_as_wide_as_the_terminal(monkeypatch, capsys):
+    monkeypatch.setenv("COLUMNS", "133")
+    senfd.sate.cli.show("- " + "word " * 60)
+    lines = capsys.readouterr().out.splitlines()
+    assert max(len(line) for line in lines) > 80
+
+
 def test_the_status_of_an_answer_comes_before_the_answer():
     """The status says how sate read the question; above the answer, a
     reader does not take it for a part of the answer"""
