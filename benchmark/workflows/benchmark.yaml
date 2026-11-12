@@ -11,7 +11,7 @@ doc: |
   made to answer. Every answer is kept, and the report
   grades them against the data model of the documents.
 
-    cijoe workflows/benchmark.yaml -c configs/default.toml -o results/<run>
+    cijoe workflows/benchmark.yaml -c configs/default.toml -o ~/git/senfd-results/<run>
 
 steps:
 - name: facts

@@ -64,14 +64,16 @@ refresh:
 	python3 toolbox/web_screenshots.py --spec $(HOME)/.cache/senfd/merged.spec.document.json docs/_static/web
 
 # The benchmark, as benchmark/README.md describes it, of the senfd release this
-# checkout is, into benchmark/results/<date>-v<version>
+# checkout is, into $(RESULTS)/<date>-v<version>, a repository of its own
 BENCHMARK_CONFIG?=configs/default.toml
+RESULTS?=$(HOME)/git/senfd-results
 
 benchmark:
 	@cd benchmark && grep -q '^commit = "v$(PROJECT_VERSION)"' $(BENCHMARK_CONFIG) \
 		|| (echo "benchmark: $(BENCHMARK_CONFIG) does not pin senfd v$(PROJECT_VERSION)"; exit 1)
+	@test -d $(RESULTS) || (echo "benchmark: no directory $(RESULTS) for the records"; exit 1)
 	cd benchmark && cijoe workflows/benchmark.yaml -c $(BENCHMARK_CONFIG) \
-		-o results/$$(date +%F)-v$(PROJECT_VERSION)
+		-o $(RESULTS)/$$(date +%F)-v$(PROJECT_VERSION)
 
 format:
 	pre-commit run --all-files

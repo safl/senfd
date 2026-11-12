@@ -9,7 +9,6 @@ path = [
     "CHANGELOG.md",
     "LICENSE",
     "benchmark/questions.json",
-    "benchmark/results/**",
     "docs/_static/**",
     "docs/_templates/**",
     "docs/casts/**",

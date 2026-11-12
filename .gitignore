@@ -14,10 +14,9 @@
 benchmark/**/*.figure.document.*
 benchmark/**/*.spec.document.*
 
-# A benchmark run keeps its bench/ directory, the transcripts and the report;
-# the rest is cijoe's working state
-benchmark/results/*/*
-!benchmark/results/*/bench/
+# The records of a benchmark run go to ~/git/senfd-results, outside the
+# repository
+benchmark/results/
 benchmark/output/
 
 docs/_build
@@ -192,7 +191,3 @@ cython_debug/
 
 # Editors/IDEs
 .vscode/
-
-# Last, so that '*.log' above does not drop them: a benchmark run's
-# llama-server logs are among its records
-!benchmark/results/*/bench/**/*.log

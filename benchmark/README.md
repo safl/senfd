@@ -12,11 +12,10 @@ answer: an opcode, an identifier, a status code, a bit or a byte offset.
 Each question names its `source`, the PDF and the figure that holds the
 answer, and each answer was checked against that figure.
 
-The latest run, `results/2026-11-12-v0.17.0`, asked all 86 questions. The
-run made its data model from the PDFs that NVM Express publishes, with
-senfd 0.17.0. The runs of 2026-11-11, 2026-11-10, 2026-11-09 and 2026-11-08
-are kept beside it. Those runs asked 71 or fewer of the questions, and
-asked Claude Opus and Sonnet from memory only.
+The latest run, of 2026-11-12, asked all 86 questions. The run made its
+data model from the PDFs that NVM Express publishes, with senfd 0.17.0.
+The runs of 2026-11-11, 2026-11-10, 2026-11-09 and 2026-11-08 asked 71 or
+fewer of the questions, and asked Claude Opus and Sonnet from memory only.
 
 | Lane, 2026-11-12, senfd 0.17.0 | Right | Wrong | Unknown | Seconds a question | USD a session |
 |---|---|---|---|---|---|
@@ -71,7 +70,9 @@ Each run's `bench/` keeps every answer: `report.html` shows them side by
 side, right in green, wrong in red and unknown in grey, and `lanes/` holds
 the lanes' records, with what `sate` understood each question as and each
 lookup it tried, the tool calls of the Claude sessions, and the
-llama-server logs.
+llama-server logs. The records of a run take tens of thousands of lines, so
+they are kept in a repository of their own, `~/git/senfd-results`, which is
+not published. The documentation publishes the `report.html` of each run.
 
 ## How it is run
 
@@ -87,8 +88,9 @@ top of the repository:
     make benchmark BENCHMARK_CONFIG=configs/default.toml
 
 `make benchmark` runs `cijoe workflows/benchmark.yaml` in `benchmark/`, with
-the output in `results/<date>-v<version>`. It refuses to run unless the
-configuration pins the senfd release that the checkout is.
+the output in `~/git/senfd-results/<date>-v<version>`; `RESULTS=<dir>`
+names another directory. It refuses to run unless the configuration pins
+the senfd release that the checkout is, and unless the directory exists.
 
 The workflow records the machine, the documents' SHA-256 and the senfd
 commit. The workflow then makes a virtual environment of that senfd, makes
@@ -121,8 +123,8 @@ the data model of the documents with it, and runs the lanes:
   tool call: the tool, its input, and whether its result was an error. An
   answer given with no tool call shows as such in the report. Each
   condition and mode runs three times, so the report shows the spread
-  between runs. The answers, the figures and the tool calls are committed
-  with the run. The full transcript of each session, with the replies and
+  between runs. The answers, the figures and the tool calls are kept with
+  the run. The full transcript of each session, with the replies and
   the tools' output, holds text of the documents, so the benchmark writes it
   to `~/git/senfd-reports`, outside the repository.
 
@@ -131,5 +133,5 @@ writes `summary.json` and `report.html`. The run of 2026-11-12 took 50
 minutes. The frontier step took 41 minutes of that, and the llm step 6.
 `tests/` holds the tests of the scripts, which senfd's `make test` runs.
 
-The repository holds neither the documents nor anything made from them,
-apart from the names, acronyms, bits and citations in the lanes' records.
+senfd's repository holds neither the documents nor anything made from
+them, apart from the report of each run in the documentation.
