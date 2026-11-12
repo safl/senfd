@@ -22,7 +22,7 @@ from senfd.sate.reading import (
     spot,
 )
 from senfd.sate.vocabulary import Vocabulary
-from senfd.documents.spec import alias
+from senfd.documents.spec import CITED, alias
 
 
 SEVERAL = "several commands"
@@ -135,10 +135,17 @@ def elsewhere(
     return named[1]
 
 
-def unmentioned(question: str, lines: List[str]) -> List[str]:
-    """The terms of 'question' that the answer 'lines' does not mention"""
+def unmentioned(
+    question: str, lines: List[str], vocabulary: Optional[Vocabulary] = None
+) -> List[str]:
+    """The terms of 'question' that the answer 'lines' does not mention, nor
+    the captions and section titles of a document that the answer cites, as
+    NBFT of the Boot document, its subject"""
 
     text = " ".join(lines).lower()
+    if vocabulary:
+        cited = {m[1].split(", ")[0] for m in CITED.finditer(" ".join(lines))}
+        text += " ".join(vocabulary.documents.get(name, "") for name in cited)
 
     def pattern(term: str) -> str:
         # A value asked as "0x5" is the term 5h; the data model writes 05h
