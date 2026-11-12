@@ -706,7 +706,7 @@ def test_a_field_acronym_that_is_a_register_s_too_is_of_the_structure_named(
         (
             "help",
             "help('')",
-            "| `write` | the opcode, command-dwords and fields |",
+            "| `dwords of write` | the opcode, command-dwords and fields |",
         ),
         ("section 1.2", "section('1.2')", "- example 1.2 Ding command"),
         ("errata", "errata('')", "Command Zing: opcode is not a value"),
@@ -1135,7 +1135,7 @@ def test_each_row_of_the_table_of_forms_takes_at_most_two_lines():
             heights[-1] += 1
         else:
             heights.append(1)
-    assert len(heights) == 16
+    assert len(heights) == 19
     assert max(heights) <= 2
 
 
