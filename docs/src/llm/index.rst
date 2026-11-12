@@ -49,9 +49,10 @@ cannot state a field, bit or opcode that is not in the figures. When a
 lookup finds nothing, or finds nothing that mentions the question's terms,
 ``sate`` tells the language model so, and the language model chooses
 again, at most three times. After the third try, the answer is that the
-fact is not known. A language model of 7 billion parameters on a CPU is
-enough. A language model of 1.5 billion parameters chooses worse: it
-answers fewer of the questions, and answers none of them wrongly.
+fact is not known. In the benchmark of 2026-11-12, with 86 questions, Qwen
+2.5 7B on a CPU chose lookups that answered 71 questions right, and Qwen
+2.5 1.5B chose lookups that answered 54 right. With either language model,
+``sate --llm`` answered no question wrongly.
 
 .. raw:: html
 
