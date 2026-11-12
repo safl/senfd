@@ -866,8 +866,8 @@ def uncovered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     return errata
 
 
-def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
-    source = Source(
+def source_of(figure: NormalizedFigure, stem: str) -> Source:
+    return Source(
         document=stem,
         figure_nr=figure.figure_nr,
         page_nr=figure.page_nr,
@@ -875,6 +875,38 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         section=figure.section,
         section_title=figure.section_title,
     )
+
+
+# What the normalised figure document notes that is a defect of the document
+# rather than a variant of writing, by the code of the erratum it is
+NOTED_ERRATA: Dict[str, ErratumCode] = {"acronym-open": "acronym"}
+
+
+def noted_errata(normalized: NormalizedFigureDocument, stem: str) -> List[Erratum]:
+    """The candidate errata among the diagnostics of 'normalized', which has
+    read what the document means, as the acronym of "Name (ACRONYM", so that
+    the data model has it, and the authors are told of the defect"""
+
+    figures = {figure.figure_nr: figure for figure in normalized.figures}
+    errata = []
+    for diagnostic in normalized.diagnostics:
+        figure = figures.get(diagnostic.figure_nr or 0)
+        if diagnostic.code not in NOTED_ERRATA or figure is None:
+            continue
+        quoted = re.findall(r"'([^']*)'", diagnostic.message)
+        errata.append(
+            Erratum(
+                code=NOTED_ERRATA[diagnostic.code],
+                message=diagnostic.message,
+                found=quoted[-1] if quoted else "",
+                source=source_of(figure, stem),
+            )
+        )
+    return errata
+
+
+def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
+    source = source_of(figure, stem)
     subject = figure.subject
     # A register whose layout is a figure of a format it shares, as VS of the
     # Specification Version Descriptor, is named by the title of its section
@@ -1713,6 +1745,7 @@ class FromNormalizedDocument(Converter):
         document.documents[document.meta.stem] = document.meta.model_copy()
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)
+        document.errata += noted_errata(normalized, document.meta.stem)
         return resolve(document), []
 
 

@@ -745,6 +745,37 @@ def test_only_a_figure_laying_out_the_whole_of_something_must_cover_it(tmp_path)
     assert errata_of("other") == []
 
 
+def test_an_acronym_left_open_is_the_fields_and_a_candidate_erratum(tmp_path):
+    """The field has the acronym the document means, and the authors are told
+    of the parenthesis that is not closed"""
+
+    toolbox = runpy.run_path("toolbox/example_docx.py")
+    path = tmp_path / "docx" / "open.docx"
+    path.parent.mkdir()
+    table = {
+        "header": ("Bits", "Name"),
+        "rows": [("03", "Foo Slave Enable (FSE)"), ("02", "Foo Master Enable (FME")],
+    }
+    toolbox["write"](path, [("Offset 04h: FOO - Foo", table)])
+    spec = spec_of(path, tmp_path)
+
+    (structure,) = spec.structures
+    assert [(f.range, f.name, f.acronym) for f in structure.fields] == [
+        ("03", "Foo Slave Enable", "FSE"),
+        ("02", "Foo Master Enable", "FME"),
+    ]
+    assert [(e.code, e.message, e.found, e.source.figure_nr) for e in spec.errata] == [
+        (
+            "acronym",
+            "Field 02 Foo Master Enable: the parenthesis of its acronym 'FME' "
+            "is not closed",
+            "FME",
+            1,
+        )
+    ]
+    assert [d.code for d in spec.diagnostics] == []
+
+
 def values_of_table(header, *rows):
     """The table of values senfd makes of a figure of 'header' and 'rows'"""
 
