@@ -4,10 +4,11 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 doc: |
-  NVMe questions answered four ways: by sate from the words of each
-  question, by sate with a local language model on the target's CPU
-  choosing the lookups, and by frontier language models from memory, allowed
-  to say "unknown" and made to answer. Every answer is kept, and the report
+  NVMe questions answered by sate from the words of each question, by sate
+  with a local language model on the target's CPU choosing the lookups, and
+  by frontier language models as a coding agent asked in one session: from
+  memory, with sate-mcp, and with the PDFs, allowed to say "unknown" and
+  made to answer. Every answer is kept, and the report
   grades them against the data model of the documents.
 
     cijoe workflows/benchmark.yaml -c configs/default.toml -o results/<run>
@@ -24,6 +25,6 @@ steps:
 - name: llm
   uses: lane_llm
 - name: frontier
-  uses: lane_frontier
+  uses: lane_agent
 - name: report
   uses: report
