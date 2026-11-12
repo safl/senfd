@@ -1256,3 +1256,228 @@ def test_a_row_of_a_range_and_a_table_is_a_field_named_by_its_range():
         ("00", "FA"),
     ]
     assert [d.code for d in spec.diagnostics] == []
+
+
+def table_of(*rows):
+    """A table of 'rows', a cell given as text or as a cell"""
+
+    from senfd.tables import Cell, Row, Table
+
+    return Table(
+        rows=[
+            Row(cells=[c if isinstance(c, Cell) else Cell(text=c) for c in row])
+            for row in rows
+        ]
+    )
+
+
+def holding(text, *tables, merged=None):
+    """A cell of 'text' holding 'tables'"""
+
+    from senfd.tables import Cell
+
+    return Cell(text=text, tables=list(tables), merged=merged)
+
+
+def foo_receive():
+    """Command Dword 13 of Foo Receive, as that of Zone Management Receive
+    and Zone Management Send: fields whose cells hold a table by the value
+    of Foo Action, the field of bits 07:00"""
+
+    options = table_of(
+        ("Value", "Definition"),
+        ("0h", "List all foos."),
+        ("1h", "List the idle foos."),
+        ("2h to FFh", "Reserved"),
+    )
+    lifetime = table_of(("Value", "Definition"), ("0h", "No estimate"), ("1h", "Short"))
+    managed = table_of(
+        ("Bits", "Description"),
+        ("07:06", "Reserved"),
+        ("05:00", holding("Foo Lifetime (FL): An estimate.", lifetime)),
+    )
+    partial = "Partial Ding (PD): If this bit is set to '1', the ding is partial."
+    return figure_of(
+        1,
+        "Foo Receive \u2013 Command Dword 13",
+        ("Bits", "Description"),
+        ("31:25", "Reserved"),
+        (
+            "24:17",
+            holding(
+                "Foo Management (FM): Attributes of the action.",
+                table_of(
+                    ("Foo Action", "Definition"),
+                    ("Ding", holding("", managed)),
+                    ("All other values", "Reserved"),
+                ),
+            ),
+        ),
+        (
+            "16",
+            holding(
+                "Foo Action Specific Features (FASF):",
+                table_of(
+                    ("Foo Action", "Definition"),
+                    ("Ding", partial),
+                    ("Loud Ding", holding(partial, merged="up")),
+                    ("All others", "Reserved"),
+                ),
+            ),
+        ),
+        (
+            "15:08",
+            holding(
+                "Foo Action Specific (FAS):",
+                table_of(
+                    ("Foo\nAction", "Description"),
+                    ("Ding", holding("Ding Options:", options)),
+                    ("Loud\nDing", holding("Ding Options:", merged="up")),
+                    ("Ring", "A sentence that names nothing."),
+                    ("All other values", "Reserved"),
+                ),
+            ),
+        ),
+        (
+            "07:00",
+            holding(
+                "Foo Action (FA):",
+                table_of(
+                    ("Value", "Definition"),
+                    ("00h", "Ding: Dings."),
+                    ("01h", "Loud Ding: Dings loudly."),
+                    ("02h", "Ring: Rings."),
+                    ("03h to FFh", "Reserved"),
+                ),
+            ),
+        ),
+    )
+
+
+def test_a_table_by_the_value_of_another_field_is_the_cases_of_its_field():
+    """As ZRAS of Zone Management Receive is the Reporting Options, with
+    their values, while ZRA is Report Zones or Extended Report Zones, and
+    reserved for all other values: the rows are no values of ZRAS"""
+
+    spec = document_of(foo_receive())
+    fields = {f.acronym: f for f in spec.dwords["foo_receive"][0].fields}
+    specific = fields["FAS"]
+    ding, ring, others = specific.cases
+
+    assert specific.values == []
+    assert (ding.selector, ding.otherwise, ding.name, ding.role) == (
+        "FA",
+        False,
+        "Ding Options",
+        "field",
+    )
+    assert [(w.name, w.value) for w in ding.when] == [("Ding", 0), ("Loud Ding", 1)]
+    assert [(v.value, v.name, v.description) for v in ding.values] == [
+        ("0h", None, "List all foos."),
+        ("1h", None, "List the idle foos."),
+        ("2h to FFh", "Reserved", ""),
+    ]
+    assert ding.values[0].typed["value"].lower == 0
+    assert (ring.name, ring.description, [w.value for w in ring.when]) == (
+        None,
+        "A sentence that names nothing.",
+        [2],
+    )
+    assert (others.otherwise, others.when, others.name, others.role) == (
+        True,
+        [],
+        "Reserved",
+        "reserved",
+    )
+    # The values of the field deciding the cases are its own
+    assert [v.value for v in fields["FA"].values][:2] == ["00h", "01h"]
+    assert fields["FA"].cases == []
+
+
+def test_a_case_names_what_the_field_is_and_lays_it_out():
+    """As ZSASO of Zone Management Send is ZRWA Allocation (ZRWAA) while ZSA
+    is Open Zone, and ZM has the Data Lifetime in its bits 05:00"""
+
+    spec = document_of(foo_receive())
+    fields = {f.acronym: f for f in spec.dwords["foo_receive"][0].fields}
+    partial, others = fields["FASF"].cases
+    managed, _ = fields["FM"].cases
+
+    assert (partial.name, partial.acronym, partial.description) == (
+        "Partial Ding",
+        "PD",
+        "If this bit is set to '1', the ding is partial.",
+    )
+    assert [(w.name, w.value) for w in partial.when] == [("Ding", 0), ("Loud Ding", 1)]
+    assert (others.otherwise, others.role) == (True, "reserved")
+    assert fields["FASF"].values == [] and fields["FM"].values == []
+    assert (managed.name, [w.value for w in managed.when]) == (None, [0])
+    assert [(f.range, f.name, f.acronym, f.role) for f in managed.fields] == [
+        ("07:06", "Reserved", None, "reserved"),
+        ("05:00", "Foo Lifetime", "FL", "field"),
+    ]
+    assert [v.value for v in managed.fields[1].values] == ["0h", "1h"]
+
+
+def test_a_table_headed_by_no_other_field_is_the_values_of_its_field():
+    """A table of two columns whose first header names no field of the
+    layout stays the values of its field, whatever its rows hold"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Receive \u2013 Command Dword 13",
+            ("Bits", "Description"),
+            (
+                "31:08",
+                holding(
+                    "Foo Kind (FK):",
+                    table_of(("Bar Action", "Definition"), ("Ding", "Dings.")),
+                ),
+            ),
+            ("07:00", "Foo Action (FA)"),
+        )
+    )
+    kind = spec.dwords["foo_receive"][0].fields[0]
+
+    assert kind.cases == []
+    assert [(v.value, v.description) for v in kind.values] == [("Ding", "Dings.")]
+
+
+def test_a_case_for_a_value_written_as_a_code_has_that_value():
+    """As the Further Error Information of the Terminate Connection Request
+    PDUs is one thing or another by the Fatal Error Status, the rows giving
+    the status as "01h"; a range of codes is no one value"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Request Data Structure",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Error Status (FES)"),
+            (
+                "05:02",
+                holding(
+                    "Foo Error Information (FEI):",
+                    table_of(
+                        ("FES", "Definition"),
+                        ("00", "Reserved"),
+                        ("01h", "Foo Offset: Where the error is."),
+                        ("02h to FFFFh", "Reserved"),
+                    ),
+                ),
+            ),
+        )
+    )
+    cases = spec.structures[0].fields[1].cases
+
+    assert [(c.selector, c.name, c.role) for c in cases] == [
+        ("FES", "Reserved", "reserved"),
+        ("FES", "Foo Offset", "field"),
+        ("FES", "Reserved", "reserved"),
+    ]
+    assert [[(w.name, w.value) for w in c.when] for c in cases] == [
+        [("00", 0)],
+        [("01h", 1)],
+        [("02h to FFFFh", None)],
+    ]

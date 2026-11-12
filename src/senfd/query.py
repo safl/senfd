@@ -26,6 +26,7 @@ from senfd.documents.spec import value_names as senfd_value_names
 from senfd.documents.spec import (
     linked,
     Bits,
+    Case,
     Command,
     Dwords,
     Entry,
@@ -91,8 +92,41 @@ def lines_of_fields(
                 yield f"{indent}    values in [{cite(field.values_in)}]"
             for told in array_and_structure(field):
                 yield f"{indent}    {told}"
+            for case in field.cases:
+                yield f"{indent}    {case_label(case)}"
+                if case.name and case.description:
+                    yield f"{indent}      {joined(case.description)}"
+                for value in case.values:
+                    yield f"{indent}      = {value.value} {value_label(value)}".rstrip()
+                yield from lines_of_fields(case.fields, verbose, indent + "      ")
         if field.fields:
             yield from lines_of_fields(field.fields, verbose, indent + "    ")
+
+
+def value_label(value: Entry) -> str:
+    """A value by its name, else by the start of its description"""
+
+    return (senfd_value_names(value) or [value.description[:60]])[0]
+
+
+def case_label(case: Case) -> str:
+    """A case as a line: the values of the deciding field it is for, and what
+    the field is then, as "while ZRA is Report Zones (0h) or Extended Report
+    Zones (1h): Reporting Options" and "for all other values of ZRA:
+    Reserved" """
+
+    if case.otherwise:
+        when = f"for all other values of {case.selector}"
+    else:
+        named = [
+            f"{w.name} ({w.value:X}h)" if w.value is not None else w.name
+            for w in case.when
+        ]
+        when = f"while {case.selector} is {' or '.join(named)}"
+    what = case.name or joined(case.description)
+    if case.name and case.acronym:
+        what += f" ({case.acronym})"
+    return f"{when}: {what}" if what else when
 
 
 def array_and_structure(field: Bits) -> List[str]:
@@ -184,6 +218,13 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
                     text += f" Values in [{cite(field.values_in)}]"
                 for told in array_and_structure(field):
                     text += f" {told[0].upper()}{told[1:]}."
+                for case in field.cases:
+                    label = case_label(case)
+                    text += f" {label[0].upper()}{label[1:]}."
+                    if case.values:
+                        text += " Values: " + ", ".join(
+                            f"{v.value} {value_label(v)}" for v in case.values
+                        )
                 row.append(cell(text))
             yield "| " + " | ".join(row) + " |"
             yield from rows(field.fields, path or parent)

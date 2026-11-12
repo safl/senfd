@@ -104,6 +104,20 @@ has, as "an I/O Command Set Vector". The ``kind`` of a structure that lays
 out the entries of an array is ``data_structure``, whatever its caption
 says.
 
+A field can be one thing or another by the value of another field of its
+figure. Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, are
+the Reporting Options while ZRA is Report Zones or Extended Report Zones,
+and are reserved for all other values of ZRA. The figure says so with a
+table in the cell of ZRAS, whose first column is headed "Zone Receive
+Action". Such a field has ``cases``. A case has the ``selector``, which is
+the acronym of the deciding field, and ``when``, the values of the deciding
+field that the case is for, each with its ``name`` as the figure writes it
+and its ``value`` as a number. ``otherwise`` is true of the case for all
+other values. A case has the ``name``, ``acronym``, ``role`` and
+``description`` of what the field is in the case, and the ``values`` and
+the ``fields`` that the field has in the case. The ``values`` of the field
+itself are those it takes whatever the deciding field holds.
+
 A figure can draw a structure as a diagram instead of a table of ranges:
 the bits 7 to 0 across, a row for each byte, and each field from the row
 marked "MSB" to the row marked "LSB". The 16b, 32b and 64b Guard

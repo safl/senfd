@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "ad1b5b11fbecf3178c5bfda1051c2120d37f263c8e42b00f95d969ac3232fcf1",
+    "senfd_sha256": "b54ef9e7f16e870636de68ffcf2141a4f64d5350b775f17514b94b57aa003dc6",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "3f7f316890c64cf5653c3b699a92408df6a7e3cc9271b87e9009caa5e62aaac1",
+    "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -8683,6 +8683,276 @@
               {
                 "text": "LSB",
                 "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 101,
+      "caption": "Figure 101: Foo Migrate – Command Dword 13",
+      "description": "Foo Migrate – Command Dword 13",
+      "page_nr": 101,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 99,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 101: Foo Migrate – Command Dword 13",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 101: Foo Migrate – Command Dword 13",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bits",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "31:16",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "15:08",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Action Specific (QAS):\n",
+                "tables": [
+                  {
+                    "table_nr": 0,
+                    "rows": [
+                      {
+                        "cells": [
+                          {
+                            "text": "Qux Action",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Description",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "Sweep",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Qux Options:\n",
+                            "tables": [
+                              {
+                                "table_nr": 0,
+                                "rows": [
+                                  {
+                                    "cells": [
+                                      {
+                                        "text": "Value",
+                                        "tables": [],
+                                        "merged": null
+                                      },
+                                      {
+                                        "text": "Definition",
+                                        "tables": [],
+                                        "merged": null
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "cells": [
+                                      {
+                                        "text": "0h",
+                                        "tables": [],
+                                        "merged": null
+                                      },
+                                      {
+                                        "text": "List all quxes.",
+                                        "tables": [],
+                                        "merged": null
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "cells": [
+                                      {
+                                        "text": "1h",
+                                        "tables": [],
+                                        "merged": null
+                                      },
+                                      {
+                                        "text": "List the idle quxes.",
+                                        "tables": [],
+                                        "merged": null
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "cells": [
+                                      {
+                                        "text": "2h to FFh",
+                                        "tables": [],
+                                        "merged": null
+                                      },
+                                      {
+                                        "text": "Reserved",
+                                        "tables": [],
+                                        "merged": null
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ],
+                            "merged": null
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "Deep Sweep",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Qux Options:\n",
+                            "tables": [],
+                            "merged": "up"
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "All other values",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Reserved",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "07:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Action (QA):\n",
+                "tables": [
+                  {
+                    "table_nr": 0,
+                    "rows": [
+                      {
+                        "cells": [
+                          {
+                            "text": "Value",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Definition",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "00h",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Sweep: Sweeps.",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "01h",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Deep Sweep: Sweeps deeply.",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      },
+                      {
+                        "cells": [
+                          {
+                            "text": "02h to FFh",
+                            "tables": [],
+                            "merged": null
+                          },
+                          {
+                            "text": "Reserved",
+                            "tables": [],
+                            "merged": null
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
                 "merged": null
               }
             ]

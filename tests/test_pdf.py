@@ -386,6 +386,23 @@ def test_a_table_in_a_cell_of_a_table_in_a_cell_is_read_as_a_table(public):
     assert [r.cells[1].merged for r in inner.rows] == [None, None, "up", None]
 
 
+def test_a_published_pdf_gives_the_cases_of_a_field(public, tmp_path):
+    """Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, by
+    the value of ZRA: the table of values in a cell of the table in the cell
+    of ZRAS is the values of the first case"""
+
+    _, path = document_named(public, "Zoned Namespace Command Set 1.5")
+    described = public.made(path, tmp_path)["dwords"]["zone_management_receive"]
+    cdw13 = next(d for d in described if d["lower"] == 13)
+    zras = next(f for f in cdw13["fields"] if f["acronym"] == "ZRAS")
+    first, others = zras["cases"]
+
+    assert zras["values"] == [] and "Value" not in zras["description"]
+    assert (first["selector"], [w["value"] for w in first["when"]]) == ("ZRA", [0, 1])
+    assert [v["value"] for v in first["values"]][:3] == ["0h", "1h", "2h"]
+    assert (others["otherwise"], others["role"]) == (True, "reserved")
+
+
 def test_the_compressed_data_model_is_the_same_bytes_every_time(public, tmp_path):
     model = tmp_path / "merged.spec.document.json"
     model.write_text(json.dumps({}), encoding="utf-8")

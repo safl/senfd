@@ -2,12 +2,12 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "ad1b5b11fbecf3178c5bfda1051c2120d37f263c8e42b00f95d969ac3232fcf1",
+    "senfd_sha256": "b54ef9e7f16e870636de68ffcf2141a4f64d5350b775f17514b94b57aa003dc6",
     "stem": "merged",
     "file": null,
     "sha256": null,
-    "input_sha256": "4a6a13edf035c2fbc39bf0c704f383f6aa27043d7b758c2fa57b7e6cdadd2e4b",
-    "combined_sha256": "b2a0cfac95e6d2e278cf79b32f38579462783e05d6b153325b069cf09dbea995"
+    "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
+    "combined_sha256": "f2381bca8a91b4b23d19473fdbd44626ee1d809b6100b12c833b55e46be61661"
   },
   "command_sets": {
     "foobar": {
@@ -43,6 +43,7 @@
                   "width": 16,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 },
@@ -66,6 +67,7 @@
                   "width": 16,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -105,6 +107,7 @@
                   "width": 31,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 },
@@ -128,6 +131,7 @@
                   "width": 1,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -167,6 +171,7 @@
                   "width": 64,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -206,6 +211,7 @@
                   "width": 64,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -245,6 +251,7 @@
                   "width": 128,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -284,6 +291,7 @@
                   "width": 64,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -325,6 +333,7 @@
                   "width": 32,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -384,6 +393,7 @@
                   "width": 24,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 },
@@ -407,6 +417,7 @@
                   "width": 8,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -446,6 +457,7 @@
                   "width": 128,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -521,6 +533,7 @@
                   "width": 16,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -560,6 +573,7 @@
                   "width": 32,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -620,6 +634,7 @@
                   "width": 24,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 },
@@ -716,6 +731,7 @@
                   "width": 8,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -755,6 +771,7 @@
                   "width": 29,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 },
@@ -836,6 +853,7 @@
                   "width": 3,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -847,6 +865,242 @@
                 "pdf_page": null,
                 "section": "1.2",
                 "section_title": "Ding command"
+              }
+            },
+            {
+              "lower": 13,
+              "upper": 13,
+              "condition": null,
+              "qualifier": null,
+              "fields": [
+                {
+                  "name": "Reserved",
+                  "acronym": null,
+                  "upper": 31,
+                  "lower": 16,
+                  "range": "31:16",
+                  "description": "",
+                  "section": null,
+                  "elided": false,
+                  "columns": {},
+                  "union": null,
+                  "alternative": null,
+                  "values": [],
+                  "unit": "bits",
+                  "role": "reserved",
+                  "kind": "span",
+                  "formula": null,
+                  "width": 16,
+                  "fields": [],
+                  "values_in": null,
+                  "cases": [],
+                  "array": null,
+                  "structure": null
+                },
+                {
+                  "name": "Qux Action Specific",
+                  "acronym": "QAS",
+                  "upper": 15,
+                  "lower": 8,
+                  "range": "15:08",
+                  "description": "",
+                  "section": null,
+                  "elided": false,
+                  "columns": {},
+                  "union": null,
+                  "alternative": null,
+                  "values": [],
+                  "unit": "bits",
+                  "role": "field",
+                  "kind": "span",
+                  "formula": null,
+                  "width": 8,
+                  "fields": [],
+                  "values_in": null,
+                  "cases": [
+                    {
+                      "selector": "QA",
+                      "when": [
+                        {
+                          "name": "Sweep",
+                          "value": 0
+                        },
+                        {
+                          "name": "Deep Sweep",
+                          "value": 1
+                        }
+                      ],
+                      "otherwise": false,
+                      "name": "Qux Options",
+                      "acronym": null,
+                      "description": "",
+                      "values": [
+                        {
+                          "value": "0h",
+                          "value_column": "value",
+                          "name": null,
+                          "description": "List all quxes.",
+                          "columns": {},
+                          "typed": {
+                            "value": {
+                              "kind": "identifier",
+                              "level": null,
+                              "flag": null,
+                              "lower": 0,
+                              "upper": 0,
+                              "note": null,
+                              "reference": null,
+                              "footnotes": []
+                            }
+                          }
+                        },
+                        {
+                          "value": "1h",
+                          "value_column": "value",
+                          "name": null,
+                          "description": "List the idle quxes.",
+                          "columns": {},
+                          "typed": {
+                            "value": {
+                              "kind": "identifier",
+                              "level": null,
+                              "flag": null,
+                              "lower": 1,
+                              "upper": 1,
+                              "note": null,
+                              "reference": null,
+                              "footnotes": []
+                            }
+                          }
+                        },
+                        {
+                          "value": "2h to FFh",
+                          "value_column": "value",
+                          "name": "Reserved",
+                          "description": "",
+                          "columns": {},
+                          "typed": {
+                            "value": {
+                              "kind": "identifier",
+                              "level": null,
+                              "flag": null,
+                              "lower": 2,
+                              "upper": 255,
+                              "note": null,
+                              "reference": null,
+                              "footnotes": []
+                            }
+                          }
+                        }
+                      ],
+                      "role": "field",
+                      "fields": []
+                    },
+                    {
+                      "selector": "QA",
+                      "when": [],
+                      "otherwise": true,
+                      "name": "Reserved",
+                      "acronym": null,
+                      "description": "",
+                      "values": [],
+                      "role": "reserved",
+                      "fields": []
+                    }
+                  ],
+                  "array": null,
+                  "structure": null
+                },
+                {
+                  "name": "Qux Action",
+                  "acronym": "QA",
+                  "upper": 7,
+                  "lower": 0,
+                  "range": "07:00",
+                  "description": "",
+                  "section": null,
+                  "elided": false,
+                  "columns": {},
+                  "union": null,
+                  "alternative": null,
+                  "values": [
+                    {
+                      "value": "00h",
+                      "value_column": "value",
+                      "name": "Sweep",
+                      "description": "Sweeps.",
+                      "columns": {},
+                      "typed": {
+                        "value": {
+                          "kind": "identifier",
+                          "level": null,
+                          "flag": null,
+                          "lower": 0,
+                          "upper": 0,
+                          "note": null,
+                          "reference": null,
+                          "footnotes": []
+                        }
+                      }
+                    },
+                    {
+                      "value": "01h",
+                      "value_column": "value",
+                      "name": "Deep Sweep",
+                      "description": "Sweeps deeply.",
+                      "columns": {},
+                      "typed": {
+                        "value": {
+                          "kind": "identifier",
+                          "level": null,
+                          "flag": null,
+                          "lower": 1,
+                          "upper": 1,
+                          "note": null,
+                          "reference": null,
+                          "footnotes": []
+                        }
+                      }
+                    },
+                    {
+                      "value": "02h to FFh",
+                      "value_column": "value",
+                      "name": "Reserved",
+                      "description": "",
+                      "columns": {},
+                      "typed": {
+                        "value": {
+                          "kind": "identifier",
+                          "level": null,
+                          "flag": null,
+                          "lower": 2,
+                          "upper": 255,
+                          "note": null,
+                          "reference": null,
+                          "footnotes": []
+                        }
+                      }
+                    }
+                  ],
+                  "unit": "bits",
+                  "role": "field",
+                  "kind": "span",
+                  "formula": null,
+                  "width": 8,
+                  "fields": [],
+                  "values_in": null,
+                  "cases": [],
+                  "array": null,
+                  "structure": null
+                }
+              ],
+              "source": {
+                "document": "example",
+                "figure_nr": 101,
+                "page_nr": 101,
+                "pdf_page": null,
+                "section": "4.2",
+                "section_title": "Baz Capabilities"
               }
             }
           ],
@@ -884,6 +1138,7 @@
                       "width": 32,
                       "fields": [],
                       "values_in": null,
+                      "cases": [],
                       "array": null,
                       "structure": null
                     }
@@ -941,6 +1196,7 @@
                       "width": 32,
                       "fields": [],
                       "values_in": null,
+                      "cases": [],
                       "array": null,
                       "structure": null
                     }
@@ -1037,6 +1293,7 @@
                   "width": 32,
                   "fields": [],
                   "values_in": null,
+                  "cases": [],
                   "array": null,
                   "structure": null
                 }
@@ -1107,6 +1364,7 @@
                       "width": 16,
                       "fields": [],
                       "values_in": null,
+                      "cases": [],
                       "array": null,
                       "structure": null
                     },
@@ -1130,6 +1388,7 @@
                       "width": 16,
                       "fields": [],
                       "values_in": null,
+                      "cases": [],
                       "array": null,
                       "structure": null
                     }
@@ -1244,6 +1503,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -1267,6 +1527,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1306,6 +1567,7 @@
             "width": 31,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -1329,6 +1591,7 @@
             "width": 1,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1368,6 +1631,7 @@
             "width": 64,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1407,6 +1671,7 @@
             "width": 64,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1446,6 +1711,7 @@
             "width": 128,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1485,6 +1751,7 @@
             "width": 64,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1526,6 +1793,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1567,6 +1835,7 @@
             "width": 24,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -1590,6 +1859,7 @@
             "width": 8,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1629,6 +1899,7 @@
             "width": 128,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1670,6 +1941,7 @@
             "width": 24,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -1766,6 +2038,7 @@
             "width": 8,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1805,6 +2078,7 @@
             "width": 29,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -1886,6 +2160,7 @@
             "width": 3,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1897,6 +2172,242 @@
           "pdf_page": null,
           "section": "1.2",
           "section_title": "Ding command"
+        }
+      },
+      {
+        "lower": 13,
+        "upper": 13,
+        "condition": null,
+        "qualifier": null,
+        "fields": [
+          {
+            "name": "Reserved",
+            "acronym": null,
+            "upper": 31,
+            "lower": 16,
+            "range": "31:16",
+            "description": "",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "values": [],
+            "unit": "bits",
+            "role": "reserved",
+            "kind": "span",
+            "formula": null,
+            "width": 16,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "structure": null
+          },
+          {
+            "name": "Qux Action Specific",
+            "acronym": "QAS",
+            "upper": 15,
+            "lower": 8,
+            "range": "15:08",
+            "description": "",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "values": [],
+            "unit": "bits",
+            "role": "field",
+            "kind": "span",
+            "formula": null,
+            "width": 8,
+            "fields": [],
+            "values_in": null,
+            "cases": [
+              {
+                "selector": "QA",
+                "when": [
+                  {
+                    "name": "Sweep",
+                    "value": 0
+                  },
+                  {
+                    "name": "Deep Sweep",
+                    "value": 1
+                  }
+                ],
+                "otherwise": false,
+                "name": "Qux Options",
+                "acronym": null,
+                "description": "",
+                "values": [
+                  {
+                    "value": "0h",
+                    "value_column": "value",
+                    "name": null,
+                    "description": "List all quxes.",
+                    "columns": {},
+                    "typed": {
+                      "value": {
+                        "kind": "identifier",
+                        "level": null,
+                        "flag": null,
+                        "lower": 0,
+                        "upper": 0,
+                        "note": null,
+                        "reference": null,
+                        "footnotes": []
+                      }
+                    }
+                  },
+                  {
+                    "value": "1h",
+                    "value_column": "value",
+                    "name": null,
+                    "description": "List the idle quxes.",
+                    "columns": {},
+                    "typed": {
+                      "value": {
+                        "kind": "identifier",
+                        "level": null,
+                        "flag": null,
+                        "lower": 1,
+                        "upper": 1,
+                        "note": null,
+                        "reference": null,
+                        "footnotes": []
+                      }
+                    }
+                  },
+                  {
+                    "value": "2h to FFh",
+                    "value_column": "value",
+                    "name": "Reserved",
+                    "description": "",
+                    "columns": {},
+                    "typed": {
+                      "value": {
+                        "kind": "identifier",
+                        "level": null,
+                        "flag": null,
+                        "lower": 2,
+                        "upper": 255,
+                        "note": null,
+                        "reference": null,
+                        "footnotes": []
+                      }
+                    }
+                  }
+                ],
+                "role": "field",
+                "fields": []
+              },
+              {
+                "selector": "QA",
+                "when": [],
+                "otherwise": true,
+                "name": "Reserved",
+                "acronym": null,
+                "description": "",
+                "values": [],
+                "role": "reserved",
+                "fields": []
+              }
+            ],
+            "array": null,
+            "structure": null
+          },
+          {
+            "name": "Qux Action",
+            "acronym": "QA",
+            "upper": 7,
+            "lower": 0,
+            "range": "07:00",
+            "description": "",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "values": [
+              {
+                "value": "00h",
+                "value_column": "value",
+                "name": "Sweep",
+                "description": "Sweeps.",
+                "columns": {},
+                "typed": {
+                  "value": {
+                    "kind": "identifier",
+                    "level": null,
+                    "flag": null,
+                    "lower": 0,
+                    "upper": 0,
+                    "note": null,
+                    "reference": null,
+                    "footnotes": []
+                  }
+                }
+              },
+              {
+                "value": "01h",
+                "value_column": "value",
+                "name": "Deep Sweep",
+                "description": "Sweeps deeply.",
+                "columns": {},
+                "typed": {
+                  "value": {
+                    "kind": "identifier",
+                    "level": null,
+                    "flag": null,
+                    "lower": 1,
+                    "upper": 1,
+                    "note": null,
+                    "reference": null,
+                    "footnotes": []
+                  }
+                }
+              },
+              {
+                "value": "02h to FFh",
+                "value_column": "value",
+                "name": "Reserved",
+                "description": "",
+                "columns": {},
+                "typed": {
+                  "value": {
+                    "kind": "identifier",
+                    "level": null,
+                    "flag": null,
+                    "lower": 2,
+                    "upper": 255,
+                    "note": null,
+                    "reference": null,
+                    "footnotes": []
+                  }
+                }
+              }
+            ],
+            "unit": "bits",
+            "role": "field",
+            "kind": "span",
+            "formula": null,
+            "width": 8,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "structure": null
+          }
+        ],
+        "source": {
+          "document": "example",
+          "figure_nr": 101,
+          "page_nr": 101,
+          "pdf_page": null,
+          "section": "4.2",
+          "section_title": "Baz Capabilities"
         }
       }
     ],
@@ -1927,6 +2438,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -1968,6 +2480,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2024,6 +2537,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2063,6 +2577,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2104,6 +2619,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2145,6 +2661,7 @@
             "width": 24,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -2168,6 +2685,7 @@
             "width": 8,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2209,6 +2727,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2250,6 +2769,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2291,6 +2811,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2332,6 +2853,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           },
@@ -2355,6 +2877,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2396,6 +2919,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -2439,6 +2963,7 @@
           "width": 512,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2480,6 +3005,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2521,6 +3047,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -2544,6 +3071,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2585,6 +3113,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2626,6 +3155,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2667,6 +3197,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -2709,6 +3240,7 @@
               "width": 7,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -2732,11 +3264,13 @@
               "width": 1,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
           ],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -2760,6 +3294,7 @@
           "width": 503,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2801,6 +3336,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2842,6 +3378,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2883,6 +3420,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2924,6 +3462,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -2965,6 +3504,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -2988,6 +3528,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3029,6 +3570,7 @@
           "width": 62,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3052,6 +3594,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3093,6 +3636,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3134,6 +3678,7 @@
           "width": 64,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3175,6 +3720,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3219,6 +3765,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3245,6 +3792,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3286,6 +3834,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3327,6 +3876,7 @@
           "width": 64,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3368,6 +3918,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3409,6 +3960,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3450,6 +4002,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3491,6 +4044,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3532,6 +4086,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3573,6 +4128,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3614,6 +4170,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3657,6 +4214,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3700,6 +4258,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3743,6 +4302,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3768,6 +4328,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3793,6 +4354,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3818,6 +4380,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3843,6 +4406,7 @@
           "width": null,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3868,6 +4432,7 @@
           "width": null,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3893,6 +4458,7 @@
           "width": null,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -3918,6 +4484,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -3961,6 +4528,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4005,6 +4573,7 @@
           "width": 31,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4031,6 +4600,7 @@
           "width": 1,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4072,6 +4642,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4113,6 +4684,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4154,6 +4726,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4195,6 +4768,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4236,6 +4810,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4277,6 +4852,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4318,6 +4894,7 @@
           "width": 1,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4341,6 +4918,7 @@
           "width": 1,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4364,6 +4942,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4387,6 +4966,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4410,6 +4990,7 @@
           "width": 12,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4453,6 +5034,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4478,6 +5060,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4519,6 +5102,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Slot Descriptor",
             "acronym": null,
@@ -4550,6 +5134,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Slot Descriptor",
             "acronym": null,
@@ -4581,6 +5166,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Slot Descriptor",
             "acronym": null,
@@ -4612,6 +5198,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4653,6 +5240,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4695,6 +5283,7 @@
               "width": 4,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -4718,11 +5307,13 @@
               "width": 4,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
           ],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4746,6 +5337,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4787,6 +5379,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4810,6 +5403,7 @@
           "width": 12,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4833,6 +5427,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4856,6 +5451,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4879,6 +5475,7 @@
           "width": 32,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -4920,6 +5517,7 @@
           "width": 1,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4943,6 +5541,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -4966,6 +5565,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Result",
             "acronym": "FR",
@@ -4997,6 +5597,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Result",
             "acronym": "FR",
@@ -5028,6 +5629,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Foo Result",
             "acronym": "FR",
@@ -5077,6 +5679,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5100,6 +5703,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5160,6 +5764,7 @@
               "width": 254,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -5183,6 +5788,7 @@
               "width": 1,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -5206,11 +5812,13 @@
               "width": 1,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
           ],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5253,6 +5861,7 @@
               "width": 254,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -5276,6 +5885,7 @@
               "width": 1,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -5299,11 +5909,13 @@
               "width": 1,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
           ],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5327,6 +5939,7 @@
           "width": 4032,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5375,6 +5988,7 @@
             "section": "4.2",
             "section_title": "Baz Capabilities"
           },
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5405,6 +6019,7 @@
             "section": "4.2",
             "section_title": "Baz Capabilities"
           },
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5446,6 +6061,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5469,6 +6085,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Format Support",
             "acronym": "QF",
@@ -5507,6 +6124,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Format Support",
             "acronym": "QF",
@@ -5545,6 +6163,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Format Support",
             "acronym": "QF",
@@ -5583,6 +6202,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Vector",
             "acronym": "QV",
@@ -5621,6 +6241,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Vector",
             "acronym": "QV",
@@ -5659,6 +6280,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": {
             "name": "Qux Vector",
             "acronym": "QV",
@@ -5715,6 +6337,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5738,6 +6361,7 @@
           "width": 16,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5779,6 +6403,7 @@
           "width": 63,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5802,6 +6427,7 @@
           "width": 1,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5846,6 +6472,7 @@
           "width": 2,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5872,6 +6499,7 @@
           "width": 3,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -5913,6 +6541,7 @@
           "width": 8,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5936,6 +6565,7 @@
           "width": 4,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -5959,6 +6589,7 @@
           "width": 3,
           "fields": [],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         },
@@ -6001,6 +6632,7 @@
               "width": 4,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -6024,11 +6656,13 @@
               "width": 4,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
           ],
           "values_in": null,
+          "cases": [],
           "array": null,
           "structure": null
         }
@@ -7412,6 +8046,7 @@
               "width": 24,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             },
@@ -7435,6 +8070,7 @@
               "width": 8,
               "fields": [],
               "values_in": null,
+              "cases": [],
               "array": null,
               "structure": null
             }
@@ -7511,6 +8147,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7579,6 +8216,7 @@
             "width": 16,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7631,6 +8269,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7672,6 +8311,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7713,6 +8353,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7754,6 +8395,7 @@
             "width": 32,
             "fields": [],
             "values_in": null,
+            "cases": [],
             "array": null,
             "structure": null
           }
@@ -7927,17 +8569,17 @@
     "example": {
       "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "ad1b5b11fbecf3178c5bfda1051c2120d37f263c8e42b00f95d969ac3232fcf1",
+      "senfd_sha256": "b54ef9e7f16e870636de68ffcf2141a4f64d5350b775f17514b94b57aa003dc6",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "3f7f316890c64cf5653c3b699a92408df6a7e3cc9271b87e9009caa5e62aaac1",
+      "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
       "input_sha256": null,
       "combined_sha256": null
     },
     "invalid": {
       "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "ad1b5b11fbecf3178c5bfda1051c2120d37f263c8e42b00f95d969ac3232fcf1",
+      "senfd_sha256": "b54ef9e7f16e870636de68ffcf2141a4f64d5350b775f17514b94b57aa003dc6",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
