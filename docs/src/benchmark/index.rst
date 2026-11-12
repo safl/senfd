@@ -169,8 +169,10 @@ sate-mcp answered 85 questions right at USD 0.16 a session. Opus with the
 PDFs answered 86 right at USD 3.22 a session, 20 times as much.
 
 The opening turn of a session with the PDFs took Opus 55.9 seconds and USD
-0.14, and Haiku 19.2 seconds. In that turn, every session with the PDFs ran
-``pdftotext`` on the PDFs. The cost with the PDFs is that of the PDFs as
+0.14, and Haiku 19.2 seconds. In that turn, five of the six sessions with
+the PDFs ran ``pdftotext`` on the PDFs without an error. In Haiku's first
+session with the PDFs, all three ``pdftotext`` calls of the opening turn
+returned errors. The cost with the PDFs is that of the PDFs as
 NVM Express publishes them, prepared by Claude Code in the way it chose;
 the benchmark measured no other preparation.
 
