@@ -106,8 +106,45 @@ def understand(question: str, vocabulary: Vocabulary) -> Understood:
     led by "describe" or "explain", with the fields' descriptions"""
 
     describe, text = described(" ".join(question.strip().split()))
-    understood = read_question(text, vocabulary)
+    understood = held(read_question(text, vocabulary), text, vocabulary)
     return replace(understood, describe=True) if describe else understood
+
+
+# The field a question asks of, written last by its name and its acronym, as
+# "Force Unit Access (FUA)" of "Which bit of cdw12 of Write is Force Unit
+# Access (FUA)?", or "... are Directive Specific (DSPEC), when CETYPE is 0h?"
+ASKED_FIELD = re.compile(
+    r"\b(?:is|are)\s+(?P<name>[^?()]*?)\s*\((?P<acronym>[A-Z][A-Za-z0-9_]*)\)"
+    r"\s*(?:,[^?]*)?\??$"
+)
+
+
+def outside_field(text: str) -> str:
+    """'text' without the name of the field asked of, whose capitals, as ID of
+    "Namespace ID (NSID)", are a part of that name, not a register's acronym"""
+
+    asked = ASKED_FIELD.search(text)
+    return text[: asked.start("name")] + text[asked.end("name") :] if asked else text
+
+
+def held(understood: Understood, text: str, vocabulary: Vocabulary) -> Understood:
+    """'understood', or the lookup of the acronym of the field asked of where
+    what 'understood' names has no field of that acronym: the question names
+    the structure or command the field is of in words other than its name"""
+
+    asked = ASKED_FIELD.search(text)
+    if not asked or understood.query not in ("structure", "command", "register"):
+        return understood
+    acronym = asked["acronym"]
+    # The structure lookup finds "Identify - Identify Controller" by its rest
+    named = understood.argument.lower()
+    alike = [n for n in vocabulary.structures if n.lower().partition(" - ")[2] == named]
+    known = vocabulary.fields_of(understood.argument, understood.dword) + [
+        a for n in alike for a in vocabulary.fields_of(n)
+    ]
+    if acronym not in vocabulary.acronyms or acronym in known:
+        return understood
+    return Understood("acronym", acronym)
 
 
 def read_question(question: str, vocabulary: Vocabulary) -> Understood:
@@ -176,7 +213,9 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
 
     dword = re.search(DWORD, lower)
     capitals = [
-        w for w in re.findall(r"\b[A-Z][A-Z0-9]+\b", text) if w in vocabulary.acronyms
+        w
+        for w in re.findall(r"\b[A-Z][A-Z0-9]+\b", outside_field(text))
+        if w in vocabulary.acronyms
     ]
     registers = [w for w in capitals if w in vocabulary.registers]
     # A register named by its acronym, "CSTS", is what a question without a
