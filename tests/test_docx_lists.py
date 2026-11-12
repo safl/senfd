@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: LGPL-2.1-only
 
+from argparse import Namespace
+from pathlib import Path
+
 import docx
 from docx.oxml import parse_xml
 
@@ -75,3 +78,16 @@ def test_a_number_is_written_as_the_format_of_its_level_says():
     assert numbered(4, "upperRoman") == "IV"
     assert numbered(14, "lowerRoman") == "xiv"
     assert numbered(3, "decimal") == "3"
+
+
+def test_a_docx_gives_the_title_of_each_section(tmp_path):
+    """The figure document of the example .docx has every numbered section's
+    title, and each figure's section is among them"""
+
+    from senfd.documents.plain import FromDocx
+
+    figures, _ = FromDocx.convert(Path("example") / "example.docx", Namespace())
+    assert figures.sections
+    for figure in figures.figures:
+        if figure.section:
+            assert figures.sections[figure.section] == figure.section_title

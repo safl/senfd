@@ -76,6 +76,8 @@ class FigureDocument(Document):
     FILENAME_HTML_TEMPLATE: ClassVar[str] = "plain.figure.document.html.jinja2"
 
     figures: List[Figure] = Field(default_factory=list)
+    sections: Dict[str, str] = Field(default_factory=dict)
+    """The title of each numbered section, by its number as printed"""
 
 
 # Heading styles by the level of their heading; an annex numbers by a letter
@@ -151,11 +153,17 @@ class Sections:
 
 def sections_of(
     docx_document,
-) -> Tuple[Dict[int, Tuple[str, str]], Dict[int, Tuple[str, str]], List[Error]]:
+) -> Tuple[
+    Dict[int, Tuple[str, str]],
+    Dict[int, Tuple[str, str]],
+    Dict[str, str],
+    List[Error],
+]:
     """
     The section of each top-level table, by its index from 1, and of each
-    figure whose caption is a paragraph, by the figure's number; and the errors
-    of headings whose number counted disagrees with the table of contents
+    figure whose caption is a paragraph, by the figure's number; the title of
+    each section, by its number; and the errors of headings whose number
+    counted disagrees with the table of contents
 
     The table of contents has the numbers as the document prints them, so a
     heading it lists takes its number from there, the count going on from it;
@@ -175,6 +183,7 @@ def sections_of(
     sections = Sections()
     by_table: Dict[int, Tuple[str, str]] = {}
     by_caption: Dict[int, Tuple[str, str]] = {}
+    titles: Dict[str, str] = {}
     table_nr = 0
     listed = 0
     for element in docx_document.element.body.iterchildren():
@@ -210,12 +219,14 @@ def sections_of(
                             )
                         )
                         sections.renumber(number)
+            if sections.current:
+                titles[sections.current[0]] = sections.current[1]
             continue
         caption = Figure.from_regex(Figure.REGEX_TABLE_ROW, text)
         if caption and sections.current and style != "table of figures":
             by_caption[caption.figure_nr] = sections.current
 
-    return by_table, by_caption, errors
+    return by_table, by_caption, titles, errors
 
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -570,7 +581,7 @@ class FromDocx(Converter):
                 figures[figure.figure_nr] = figure
 
         # The section of each figure
-        by_table, by_caption, section_errors = sections_of(docx_document)
+        by_table, by_caption, titles, section_errors = sections_of(docx_document)
         errors += section_errors
         for figure in figures.values():
             figure_table = figure.table.table_nr if figure.table else None
@@ -647,6 +658,7 @@ class FromDocx(Converter):
             FigureDocument(
                 meta=DocumentMeta(stem=path.stem.replace(".", "-")),
                 figures=list(figures.values()),
+                sections=titles,
             ),
             errors,
         )

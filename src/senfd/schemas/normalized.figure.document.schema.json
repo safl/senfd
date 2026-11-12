@@ -48,7 +48,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 2,
+                    "default": 3,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
@@ -646,6 +646,14 @@
             },
             "title": "Diagnostics",
             "type": "array"
+        },
+        "sections": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "description": "The title of each numbered section, by its number as printed",
+            "title": "Sections",
+            "type": "object"
         }
     },
     "title": "NormalizedFigureDocument",

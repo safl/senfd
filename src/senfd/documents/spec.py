@@ -540,6 +540,7 @@ ErratumCode = Literal[
     "opcode",
     "gap",
     "layout-gap",
+    "reference",
 ]
 
 
@@ -554,7 +555,8 @@ class Erratum(Model):
     code: ErratumCode
     """What kind it is: "value", "acronym", "range" (text that is no range),
     "range-outside", "range-reversed", "opcode", "gap" (of a command's
-    dwords) or 'layout-gap' (of a structure)"""
+    dwords), 'layout-gap' (of a structure) or "reference" (to the section of
+    another value)"""
     message: str
     """What is wrong, said for a person"""
     found: str = ""
@@ -2184,6 +2186,88 @@ def resolve(document: SpecDocument) -> SpecDocument:
     return document
 
 
+REGEX_NAMED_CODE = re.compile(r"^(?:[0-9A-F]+h|[01]+b|\d+)$")
+REGEX_SECTION_NUMBER = re.compile(r"^[A-Z]?\d*(?:\.\d+)+$")
+REGEX_TITLE_CODE = re.compile(
+    r"\s*\((?P<label>[A-Za-z][\w /-]*?) (?P<code>[0-9A-F]+h)(?:,[^)]*)?\)$"
+)
+
+
+def code_value(code: str) -> int:
+    """The number a code as "1Fh", "10b" or "12" writes"""
+
+    if code.endswith("h"):
+        return int(code[:-1], 16)
+    if code.endswith("b"):
+        return int(code[:-1], 2)
+    return int(code)
+
+
+def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
+    """
+    A code that its row names in no column, as CNS 01h of Identify, takes the
+    title of the section its reference column cites, "Identify Controller Data
+    Structure" of 5.2.14.2.1. A title ending in a label and a code, as "(CNS
+    01h)", names the code it describes; the parenthesis is left out of the
+    name.
+
+    A reference to a section whose title names another code is a candidate
+    erratum, as CNS 14h citing the section of CNS 21h. A code whose reference
+    fails so, or is no section, takes the section whose title names it with
+    the label the table's references name, as "(CNS 02h)" for 02h, whose
+    reference reads "0". A code with no reference, or reserved, is left
+    unnamed.
+    """
+
+    for values in document.values:
+        cited: Dict[int, Tuple[str, str]] = {}
+        labels: Dict[str, int] = {}
+        for i, entry in enumerate(values.entries):
+            number = entry.columns.get("reference", "").strip()
+            if REGEX_SECTION_NUMBER.match(number) and number in sections:
+                cited[i] = (number, sections[number])
+                match = REGEX_TITLE_CODE.search(sections[number])
+                if match:
+                    labels[match["label"]] = labels.get(match["label"], 0) + 1
+        label = max(labels, key=lambda k: labels[k]) if labels else None
+        by_code = {
+            int(match["code"][:-1], 16): title
+            for title in sections.values()
+            for match in [REGEX_TITLE_CODE.search(title)]
+            if match and match["label"] == label
+        }
+        for i, entry in enumerate(values.entries):
+            reference = entry.columns.get("reference", "").strip()
+            if (
+                entry.name
+                or not reference
+                or not REGEX_NAMED_CODE.match(entry.value)
+                or "Reserved" in entry.columns.values()
+            ):
+                continue
+            title: Optional[str] = None
+            if i in cited:
+                number, title = cited[i]
+                match = REGEX_TITLE_CODE.search(title)
+                if match and int(match["code"][:-1], 16) != code_value(entry.value):
+                    document.errata.append(
+                        Erratum(
+                            code="reference",
+                            message=(
+                                f"{entry.value}: the reference {number} is the "
+                                f"section of {match['label']} {match['code']}, "
+                                f"'{title}'"
+                            ),
+                            found=number,
+                            source=values.source,
+                        )
+                    )
+                    title = None
+            title = title or by_code.get(code_value(entry.value))
+            if title:
+                entry.name = REGEX_TITLE_CODE.sub("", title)
+
+
 class FromNormalizedDocument(Converter):
     @staticmethod
     def is_applicable(path: Path) -> bool:
@@ -2201,6 +2285,7 @@ class FromNormalizedDocument(Converter):
         document.documents[document.meta.stem] = document.meta.model_copy()
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)
+        name_by_sections(document, normalized.sections)
         document.errata += noted_errata(normalized, document.meta.stem)
         return resolve(document), []
 

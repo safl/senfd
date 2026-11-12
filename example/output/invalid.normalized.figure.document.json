@@ -1,8 +1,8 @@
 {
   "meta": {
-    "format": 2,
+    "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "0474914b704a5b1c6fc1085cf8152caf43ae51a09167bbcdab8aa9c3d4c9f8f4",
+    "senfd_sha256": "6e08c2e92c24c7ae887928dda28210f59abeab1821242a88eb2c9d89f50bcf4b",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
@@ -244,5 +244,8 @@
   "nontabular": [
     6
   ],
-  "diagnostics": []
+  "diagnostics": [],
+  "sections": {
+    "1.1": "FIgures"
+  }
 }

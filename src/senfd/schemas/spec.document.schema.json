@@ -616,7 +616,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 2,
+                    "default": 3,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
@@ -813,7 +813,7 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "What kind it is: \"value\", \"acronym\", \"range\" (text that is no range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords) or 'layout-gap' (of a structure)",
+                    "description": "What kind it is: \"value\", \"acronym\", \"range\" (text that is no range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords), 'layout-gap' (of a structure) or \"reference\" (to the section of\nanother value)",
                     "enum": [
                         "value",
                         "acronym",
@@ -822,7 +822,8 @@
                         "range-reversed",
                         "opcode",
                         "gap",
-                        "layout-gap"
+                        "layout-gap",
+                        "reference"
                     ],
                     "title": "Code",
                     "type": "string"
