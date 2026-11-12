@@ -253,14 +253,18 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 if entry:
                     entries[int(entry[1])] = int(entry[3])
             elif node.name == "/Table":
-                found, extent = table_of(pages, rows(node.element, node.page), errors)
+                said: List[Error] = []
+                found, extent = table_of(pages, rows(node.element, node.page), said)
                 inner = wrapped(node.element)
                 if inner is not None and not any(
                     c.text.strip() for row in found for c in row.cells
                 ):
+                    # The read of the wrapping table read this table too, as one
+                    # nested in its cell; its errors are those of the read here
                     found, extent = table_of(pages, rows(inner, node.page), errors)
                 else:
                     inner = None
+                    errors += said
                 if not found:
                     continue
                 # The section is the outline's, by where the table is; the
