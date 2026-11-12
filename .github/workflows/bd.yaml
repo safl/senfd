@@ -23,6 +23,10 @@ defaults:
   run:
     shell: bash
 
+# The jobs read the repository and write nothing with the token
+permissions:
+  contents: read
+
 jobs:
   release-ready:
     if: github.event_name == 'pull_request'
