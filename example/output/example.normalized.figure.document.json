@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
+    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
+    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -5755,6 +5755,290 @@
           "name": "Reserved"
         }
       ],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 97,
+      "caption": "Qux List Data Structure",
+      "page_nr": 97,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "data_structure",
+        "name": "Qux List",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Bytes",
+        "Description"
+      ],
+      "columns": [
+        "bytes",
+        "description"
+      ],
+      "layout": {
+        "unit": "bytes",
+        "fields": [
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "03:00",
+              "upper": 3,
+              "lower": 0
+            },
+            "name": "Number of Qux Formats",
+            "acronym": "NQF",
+            "description": "",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "07:04",
+              "upper": 7,
+              "lower": 4
+            },
+            "name": "Qux Format 0 Support",
+            "acronym": "QF0",
+            "description": "The first format. The Qux Format is defined in Figure 98, and listed by Figure 97.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "11:08",
+              "upper": 11,
+              "lower": 8
+            },
+            "name": "Qux Format 1 Support",
+            "acronym": "QF1",
+            "description": "The second format. The Qux Format is defined in Figure 98.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "35:32",
+              "upper": 35,
+              "lower": 32
+            },
+            "name": "Qux Format 7 Support",
+            "acronym": "QF7",
+            "description": "The last format. The Qux Format is defined in Figure 98.",
+            "columns": {},
+            "section": null,
+            "elided": true,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "43:36",
+              "upper": 43,
+              "lower": 36
+            },
+            "name": "Qux Vector 0",
+            "acronym": "QV0",
+            "description": "This field contains a Qux Vector.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "51:44",
+              "upper": 51,
+              "lower": 44
+            },
+            "name": "Qux Vector 1",
+            "acronym": "QV1",
+            "description": "This field contains a Qux Vector.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "67:60",
+              "upper": 67,
+              "lower": 60
+            },
+            "name": "Qux Vector 3",
+            "acronym": "QV3",
+            "description": "This field contains a Qux Vector.",
+            "columns": {},
+            "section": null,
+            "elided": true,
+            "layouts": [],
+            "values": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 98,
+      "caption": "Qux Format Data Structure",
+      "page_nr": 98,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "data_structure",
+        "name": "Qux Format",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Bits",
+        "Description"
+      ],
+      "columns": [
+        "bits",
+        "description"
+      ],
+      "layout": {
+        "unit": "bits",
+        "fields": [
+          {
+            "range": {
+              "unit": "bits",
+              "text": "31:16",
+              "upper": 31,
+              "lower": 16
+            },
+            "name": "Reserved",
+            "acronym": null,
+            "description": "",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bits",
+              "text": "15:00",
+              "upper": 15,
+              "lower": 0
+            },
+            "name": "Qux Size",
+            "acronym": "QSZ",
+            "description": "",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 99,
+      "caption": "Qux Vector",
+      "page_nr": 99,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "other",
+        "name": "Qux Vector",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Bits",
+        "Description"
+      ],
+      "columns": [
+        "bits",
+        "description"
+      ],
+      "layout": {
+        "unit": "bits",
+        "fields": [
+          {
+            "range": {
+              "unit": "bits",
+              "text": "63:01",
+              "upper": 63,
+              "lower": 1
+            },
+            "name": "Reserved",
+            "acronym": null,
+            "description": "",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bits",
+              "text": "00",
+              "upper": 0,
+              "lower": 0
+            },
+            "name": "Qux Enabled",
+            "acronym": "QE",
+            "description": "",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
       "notes": [],
       "rows": []
     }

@@ -1,5 +1,77 @@
 {
     "$defs": {
+        "Array": {
+            "description": "The array that a field is an entry of, where a figure writes the entries\nof an array as fields numbered by their index and leaves out the rows\nbetween two of them, as LBAF0, LBAF1, \"...\" and LBAF63 of Identify\nNamespace; each entry written has the array, with its own index",
+            "properties": {
+                "name": {
+                    "description": "The name of the entries without their index, as 'LBA Format Support'",
+                    "title": "Name",
+                    "type": "string"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the entries without their index, as 'LBAF'",
+                    "title": "Acronym"
+                },
+                "index": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The index of this entry, as 63 of LBAF63; None of a last entry whose\nrange the figure gives by a formula",
+                    "title": "Index"
+                },
+                "first": {
+                    "description": "The index of the first entry, 0 or 1 as the figure counts",
+                    "title": "First",
+                    "type": "integer"
+                },
+                "count": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "How many entries the array has, as 64; None where the figure gives the\nrange of the last entry by a formula, the count a value of the data",
+                    "title": "Count"
+                },
+                "stride": {
+                    "description": "How many bits or bytes each entry is, in the unit of the field",
+                    "title": "Stride",
+                    "type": "integer"
+                },
+                "lower": {
+                    "description": "The lower bound of the first entry, where the array starts",
+                    "title": "Lower",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "first",
+                "stride",
+                "lower"
+            ],
+            "title": "Array",
+            "type": "object"
+        },
         "Bits": {
             "allOf": [
                 {
@@ -281,6 +353,30 @@
                     ],
                     "default": null,
                     "description": "The figure holding the table of the values the field takes, where the\ndescription of the field names that figure instead of giving the values,\nas \"Refer to Figure 336\"; the table is the one of the data model's\n'values' with this source"
+                },
+                "array": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The array the field is an entry of, where the figure writes entries\nnumbered by their index and leaves rows out between them"
+                },
+                "structure": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The figure of the structure laying the field out, where the\ndescription of the field names that figure, as \"defined in Figure 125\",\nor the field is an entry of an array and names the structure, as \"an I/O\nCommand Set Vector\"; the structure is the one of the data model's\n'structures' with this source"
                 }
             },
             "required": [

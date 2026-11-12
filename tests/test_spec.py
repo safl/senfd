@@ -1054,3 +1054,164 @@ def test_the_link_to_a_table_of_values_is_of_the_same_document_when_merged():
     for spec in (merged, again):
         (field,) = spec.structures[0].fields
         assert (field.values_in.document, field.values_in.figure_nr) == ("first", 2)
+
+
+FOO_FORMAT = (
+    "Foo Format Data Structure",
+    ("Bits", "Description"),
+    ("31:16", "Reserved"),
+    ("15:00", "Foo Size (FS)"),
+)
+
+
+def test_fields_numbered_by_their_index_with_rows_left_out_are_an_array():
+    """As Identify Namespace writes LBAF0, LBAF1, "..." and LBAF63, each
+    "defined in Figure 125", and Identify I/O Command Set writes IOCSC0 to
+    IOCSC511, each "an I/O Command Set Vector", which no caption calls a
+    data structure"""
+
+    from senfd.documents.spec import Array
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo List Data Structure",
+            ("Bytes", "Description"),
+            ("03:00", "Number of Foo Formats (NFF)"),
+            (
+                "07:04",
+                "Foo Format 0 Support (FF0): The Foo Format is defined in "
+                "Figure 2. More of it is in Figure 3.",
+            ),
+            ("11:08", "Foo Format 1 Support (FF1): Defined in Figure 2."),
+            ("...", ""),
+            ("35:32", "Foo Format 7 Support (FF7): Defined in Figure 2."),
+            ("43:36", "Bar Set 0 (BS0): This field contains a Bar Vector."),
+            ("51:44", "Bar Set 1 (BS1): This field contains a Bar Vector."),
+            ("...", ""),
+            ("67:60", "Bar Set 3 (BS3)"),
+            ("75:68", "Bar Vector Count (BVC): How many a Bar Vector holds."),
+        ),
+        figure_of(2, *FOO_FORMAT),
+        figure_of(
+            3,
+            "Foo Format Extension Data Structure",
+            ("Bits", "Description"),
+            ("63:00", "Foo Extension (FE)"),
+        ),
+        figure_of(
+            4,
+            "Bar Vector",
+            ("Bits", "Description"),
+            ("63:01", "Reserved"),
+            ("00", "Bar Enabled (BE)"),
+        ),
+    )
+    fields = {f.acronym: f for f in spec.structures[0].fields}
+    formats = dict(
+        name="Foo Format Support", acronym="FF", first=0, count=8, stride=4, lower=4
+    )
+
+    assert fields["FF0"].array == Array(index=0, **formats)
+    assert fields["FF7"].array == Array(index=7, **formats)
+    assert fields["BS3"].array == Array(
+        name="Bar Set", acronym="BS", index=3, first=0, count=4, stride=8, lower=36
+    )
+    assert fields["NFF"].array is None and fields["BVC"].array is None
+    # Of the figures FF0 names, the structure of 4 bytes lays it out; the
+    # entries of BS have the structure that their descriptions name, BS3 too
+    linked = {
+        a: f.structure.figure_nr if f.structure else None for a, f in fields.items()
+    }
+    assert linked == {
+        "NFF": None,
+        "FF0": 2,
+        "FF1": 2,
+        "FF7": 2,
+        "BS0": 4,
+        "BS1": 4,
+        "BS3": 4,
+        "BVC": None,
+    }
+    assert [(s.name, s.kind) for s in spec.structures][2:] == [
+        ("Foo Format Extension", "data_structure"),
+        ("Bar Vector", "data_structure"),
+    ]
+
+
+def test_an_array_whose_last_entry_is_given_by_a_formula_has_no_count():
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo List Data Structure",
+            ("Bytes", "Description"),
+            ("07:00", "Number of Entries (NUMENT)"),
+            ("15:08", "Entry 0"),
+            ("23:16", "Entry 1"),
+            ("...", ""),
+            ("(NUMENT*8)+7:(NUMENT*8)", "Entry NUMENT-1"),
+        )
+    )
+    arrays = [f.array for f in spec.structures[0].fields]
+
+    assert arrays[0] is None
+    assert [
+        (a.name, a.index, a.first, a.count, a.stride, a.lower) for a in arrays[1:]
+    ] == [
+        ("Entry", 0, 0, None, 8, 8),
+        ("Entry", 1, 0, None, 8, 8),
+        ("Entry", None, 0, None, 8, 8),
+    ]
+
+
+def test_fields_that_are_not_where_their_numbers_put_them_are_no_array():
+    """Entries of 4 bytes from byte 0 put the entry 7 at byte 28, not 36;
+    fields of other names with rows left out between them are none either"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo List Data Structure",
+            ("Bytes", "Description"),
+            ("03:00", "Foo 0 (F0)"),
+            ("07:04", "Foo 1 (F1)"),
+            ("...", ""),
+            ("39:36", "Foo 7 (F7)"),
+            ("43:40", "Bar Low (BL1)"),
+            ("...", ""),
+            ("51:48", "Baz High (BH2)"),
+        )
+    )
+
+    assert [f.array for f in spec.structures[0].fields] == [None] * 5
+
+
+def test_a_field_that_lays_itself_out_is_linked_to_no_structure():
+    """As LBAF0 of the Exported Controller Configuration State has the
+    fields of an LBA Format in its own description"""
+
+    from senfd.tables import Cell, Row, Table
+
+    nested = Table(
+        rows=[
+            Row(cells=[Cell(text=t) for t in row])
+            for row in (FOO_FORMAT[1], *FOO_FORMAT[2:])
+        ]
+    )
+    described = Cell(text="Foo Format 0 (FF0): As in Figure 2.", tables=[nested])
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo State",
+            ("Bytes", "Description"),
+            ("03:00", described),
+            ("07:04", "Foo Format Kept (FFK): A format, as in Figure 2."),
+        ),
+        figure_of(2, *FOO_FORMAT),
+    )
+    laid_out, kept = spec.structures[0].fields
+
+    assert [f.acronym for f in laid_out.fields] == [None, "FS"]
+    assert laid_out.structure is None
+    assert kept.structure == spec.structures[1].source
+    assert spec.structures[0].kind == "other"

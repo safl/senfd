@@ -151,6 +151,32 @@ class ReadBits(BitsCommon):
     """The rows within this one, as its description lays them out"""
 
 
+class Array(Model):
+    """
+    The array that a field is an entry of, where a figure writes the entries
+    of an array as fields numbered by their index and leaves out the rows
+    between two of them, as LBAF0, LBAF1, "..." and LBAF63 of Identify
+    Namespace; each entry written has the array, with its own index
+    """
+
+    name: str
+    """The name of the entries without their index, as 'LBA Format Support'"""
+    acronym: Optional[str] = None
+    """The acronym of the entries without their index, as 'LBAF'"""
+    index: Optional[int] = None
+    """The index of this entry, as 63 of LBAF63; None of a last entry whose
+    range the figure gives by a formula"""
+    first: int
+    """The index of the first entry, 0 or 1 as the figure counts"""
+    count: Optional[int] = None
+    """How many entries the array has, as 64; None where the figure gives the
+    range of the last entry by a formula, the count a value of the data"""
+    stride: int
+    """How many bits or bytes each entry is, in the unit of the field"""
+    lower: int
+    """The lower bound of the first entry, where the array starts"""
+
+
 class Bits(BitsCommon):
     """
     A field of bits or bytes, made with what it needs; 'upper' and 'lower'
@@ -186,6 +212,15 @@ class Bits(BitsCommon):
     description of the field names that figure instead of giving the values,
     as "Refer to Figure 336"; the table is the one of the data model's
     'values' with this source"""
+    array: Optional[Array] = None
+    """The array the field is an entry of, where the figure writes entries
+    numbered by their index and leaves rows out between them"""
+    structure: Optional[Source] = None
+    """The figure of the structure laying the field out, where the
+    description of the field names that figure, as "defined in Figure 125",
+    or the field is an entry of an array and names the structure, as "an I/O
+    Command Set Vector"; the structure is the one of the data model's
+    'structures' with this source"""
 
     @model_validator(mode="after")
     def of_its_kind(self) -> "Bits":
@@ -809,7 +844,90 @@ def checked(
             )
         )
 
+    arrays_of(kept)
     return kept, errata, unnamed
+
+
+def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
+    """The ways 'text' is a name around a number: what is before the number,
+    the number, and what is after it, as ("LBAF", 0, "") of "LBAF0" """
+
+    name = text or ""
+    return [
+        (name[: match.start()], int(match[0]), name[match.end() :])
+        for match in re.finditer(r"\d+", name)
+    ]
+
+
+def arrays_of(fields: List[Bits]) -> None:
+    """
+    The array of each of 'fields' that is an entry of one: fields next to one
+    another whose acronyms, or names where they have no acronyms, differ by
+    a number only, with rows left out between two of them, each as wide as
+    the others and where its number puts it, counted from the first. The
+    last entry may be given by a formula, as "Entry NUMENT-1"; the array
+    then has no count.
+    """
+
+    def entry(field: Bits, of: str, before: str, after: str) -> Optional[int]:
+        """The index of 'field' as an entry named 'before', a number and
+        'after', or None"""
+
+        for prefix, number, suffix in numbered(getattr(field, of)):
+            if (prefix, suffix) == (before, after) and field.kind == "span":
+                return number
+        return None
+
+    for at, last in enumerate(fields):
+        if not last.elided or at == 0 or last.array or fields[at - 1].array:
+            continue
+        above = fields[at - 1]
+        if above.kind != "span":
+            continue
+        of = "acronym" if above.acronym else "name"
+        text = getattr(last, of) or ""
+        for before, _, after in numbered(getattr(above, of)):
+            closes = last.kind == "formula" and text.startswith(before)
+            if entry(last, of, before, after) is not None or (
+                closes and text.endswith(after) and len(text) > len(before + after)
+            ):
+                break
+        else:
+            continue
+
+        start, end = at - 1, at
+        while start and entry(fields[start - 1], of, before, after) is not None:
+            start -= 1
+        while (
+            last.kind == "span"
+            and end + 1 < len(fields)
+            and entry(fields[end + 1], of, before, after) is not None
+        ):
+            end += 1
+        run = fields[start : end + 1]
+        indexes = [entry(field, of, before, after) for field in run]
+        spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
+        first, lowest = min(spans, key=lambda span: span[0])
+        stride = lowest.width or 0
+        if not stride or any(
+            f.width != stride or f.lower != (lowest.lower or 0) + (i - first) * stride
+            for i, f in spans
+        ):
+            continue
+        whole = len(spans) == len(run)
+        name = next(
+            (b + a for b, n, a in numbered(lowest.name) if n == first), lowest.name
+        )
+        for index, field in zip(indexes, run):
+            field.array = Array(
+                name=" ".join(name.split()),
+                acronym=before + after if of == "acronym" else None,
+                index=index,
+                first=first,
+                count=max(i for i, _ in spans) - first + 1 if whole else None,
+                stride=stride,
+                lower=lowest.lower or 0,
+            )
 
 
 def took(
@@ -1769,6 +1887,88 @@ def link_values(document: SpecDocument) -> None:
                 field.values_in = found[0].source
 
 
+def bits_wide(structure: Structure) -> Optional[int]:
+    """How many bits 'structure' is, where every field of it is a span"""
+
+    if not structure.fields or any(f.upper is None for f in structure.fields):
+        return None
+    upper = max(f.upper or 0 for f in structure.fields)
+    return (upper + 1) * (8 if structure.unit == "bytes" else 1)
+
+
+def link_structures(document: SpecDocument) -> None:
+    """
+    The structure laying out each field that lays out nothing itself and
+    whose description names the figure of a structure of its document, as
+    LBAF0 of Identify Namespace says "defined in Figure 125": the one
+    structure among those named that is as wide as the field, which tells
+    the LBA Format of 4 bytes from the data structure the description
+    names for more. An entry of an array naming no such figure has the one
+    structure of its document, as wide as the entry, whose name its
+    description has, as "an I/O Command Set Vector", and the entries of an
+    array have the structure that any of them has. A structure of the
+    entries of an array is a data structure, whatever its caption says; its
+    fields are then checked to lie one after another.
+    """
+
+    structures = {
+        (s.source.document, s.source.figure_nr): s for s in document.structures
+    }
+    widths = {key: bits_wide(structure) for key, structure in structures.items()}
+
+    def laying_out(field: Bits, source: Source) -> Optional[Source]:
+        size = field.array.stride if field.array else field.width
+        bits = (size or 0) * (8 if field.unit == "bytes" else 1)
+        named = [
+            (source.document, int(number))
+            for number in dict.fromkeys(REGEX_FIGURE.findall(field.description))
+            if int(number) != source.figure_nr
+        ]
+        found = [key for key in named if key in widths and widths[key] == bits]
+        if not found and field.array:
+            text = f" {alias(field.description).replace('_', ' ')} "
+            found = [
+                key
+                for key, structure in structures.items()
+                if key[0] == source.document
+                and key[1] != source.figure_nr
+                and widths[key] == bits
+                and "_" in alias(structure.name)
+                and f" {alias(structure.name).replace('_', ' ')} " in text
+            ]
+        return structures[found[0]].source if len(found) == 1 else None
+
+    def link(fields: List[Bits], source: Source) -> None:
+        arrays: Dict[Tuple[str, int], List[Bits]] = {}
+        for field in fields:
+            field.structure = None
+            if field.role == "field" and not field.fields:
+                field.structure = laying_out(field, source)
+            if field.array:
+                arrays.setdefault((field.array.name, field.array.lower), []).append(
+                    field
+                )
+            link(field.fields, source)
+        for entries in arrays.values():
+            linked = [e.structure for e in entries if e.structure]
+            if not linked or any(other != linked[0] for other in linked):
+                continue
+            for entry in entries:
+                entry.structure = linked[0]
+            of = structures[(linked[0].document, linked[0].figure_nr)]
+            if of.kind == "other":
+                of.kind = "data_structure"
+                told = any(e.source == of.source for e in document.errata) or any(
+                    d.code == "field-name" and d.message.startswith(cite(of.source))
+                    for d in document.diagnostics
+                )
+                if not told:
+                    document.errata += uncovered(of.fields, of.unit, of.source)
+
+    for source, fields in laid_out(document):
+        link(fields, source)
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -1799,6 +1999,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_directives(document, used)
     link_operations(document, used)
     link_features(document, used)
+    link_structures(document)
     link_log_pages(document)
     link_values(document)
 

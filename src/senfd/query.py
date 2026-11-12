@@ -89,8 +89,36 @@ def lines_of_fields(
                 yield f"{indent}    = {value.value} {name}".rstrip()
             if field.values_in:
                 yield f"{indent}    values in [{cite(field.values_in)}]"
+            for told in array_and_structure(field):
+                yield f"{indent}    {told}"
         if field.fields:
             yield from lines_of_fields(field.fields, verbose, indent + "    ")
+
+
+def array_and_structure(field: Bits) -> List[str]:
+    """What the data model says of 'field' as an entry of an array and of
+    the structure laying it out, a line of each, as "entry 0 of 64, each of
+    4 bytes" and "laid out in [NVM 1.3, Figure 125]" """
+
+    told = []
+    if field.array:
+        index = (
+            "last entry" if field.array.index is None else f"entry {field.array.index}"
+        )
+        count = field.array.count or "as many as the data says"
+        told.append(f"{index} of {count}, each of {field.array.stride} {field.unit}")
+    if field.structure:
+        told.append(f"laid out in [{cite(field.structure)}]")
+    return told
+
+
+def structure_of(spec: SpecDocument, field: Bits) -> Optional[Structure]:
+    """The structure laying out 'field' that the data model links the field
+    to, as the LBA Format of LBAF0 of Identify Namespace, or None"""
+
+    if field.structure is None:
+        return None
+    return next((s for s in spec.structures if s.source == field.structure), None)
 
 
 def cell(text: str) -> str:
@@ -154,6 +182,8 @@ def table_of_fields(fields: List[Bits], verbose: bool, unit: str = "bits") -> Li
                     text += " Values: " + ", ".join(values)
                 if field.values_in:
                     text += f" Values in [{cite(field.values_in)}]"
+                for told in array_and_structure(field):
+                    text += f" {told[0].upper()}{told[1:]}."
                 row.append(cell(text))
             yield "| " + " | ".join(row) + " |"
             yield from rows(field.fields, path or parent)
