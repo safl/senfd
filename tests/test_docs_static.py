@@ -22,9 +22,57 @@ def test_the_logo_and_the_favicon_the_configuration_names_exist():
     conf = runpy.run_path("docs/conf.py")
 
     assert conf["html_logo"] == "_static/logo.svg"
-    assert conf["html_favicon"] == "_static/favicon.ico"
+    assert conf["html_favicon"] == "_static/favicon.svg"
     for name in (conf["html_logo"], conf["html_favicon"]):
         assert (Path("docs") / name).is_file(), name
+
+
+def contrast(foreground: str, background: str) -> float:
+    """The WCAG contrast ratio of two colours written as "#RRGGBB" """
+
+    def luminance(colour: str) -> float:
+        channels = [int(colour[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+        linear = [
+            c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+            for c in channels
+        ]
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+    light, dark = sorted((luminance(foreground), luminance(background)), reverse=True)
+    return (light + 0.05) / (dark + 0.05)
+
+
+def test_the_text_and_link_colours_are_readable_on_both_backgrounds():
+    """WCAG asks 7:1 of body text and 4.5:1 of other text and of links, on
+    the page's background and on the sidebar's"""
+
+    gruvbox = runpy.run_path("docs/conf.py")["GRUVBOX"]
+    needs = {
+        "foreground-primary": 7.0,
+        "foreground-secondary": 4.5,
+        "foreground-muted": 4.5,
+        "brand-primary": 4.5,
+        "brand-content": 4.5,
+    }
+    for mode in ("light", "dark"):
+        colours = gruvbox[mode]
+        for name, need in needs.items():
+            for background in ("background-primary", "background-secondary"):
+                ratio = contrast(colours[name], colours[background])
+                assert ratio >= need, (mode, name, background, round(ratio, 2))
+
+
+def test_the_documentation_uses_the_palette_of_the_web_page():
+    from senfd.sate import web
+
+    gruvbox = runpy.run_path("docs/conf.py")["GRUVBOX"]
+    _, light, dark = web.THEMES["gruvbox"]
+    for mode, values in (("light", light), ("dark", dark)):
+        page = dict(zip(web.TOKENS, values.split()))
+        assert gruvbox[mode]["background-primary"] == page["bg"]
+        assert gruvbox[mode]["foreground-primary"] == page["fg"]
+    options = runpy.run_path("docs/conf.py")["html_theme_options"]
+    assert options["dark_css_variables"]["color-brand-content"] == "#fabd2f"
 
 
 def console_blocks(text: str) -> List[List[str]]:

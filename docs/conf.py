@@ -38,11 +38,46 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
+# The Gruvbox palette of sate's web page, with mustard links. Where a
+# colour fell short of WCAG on either background, its lightness is changed
+# and its hue kept; tests/test_docs_static.py checks the contrast.
+GRUVBOX = {
+    "light": {
+        "background-primary": "#fbf1c7",
+        "background-secondary": "#f2e5bc",
+        "background-hover": "#ebdbb2",
+        "background-border": "#d5c4a1",
+        "foreground-primary": "#3c3836",
+        "foreground-secondary": "#504945",
+        "foreground-muted": "#70635a",
+        "foreground-border": "#a5874a",
+        "brand-primary": "#8c5b0f",
+        "brand-content": "#8c5b0f",
+        "brand-visited": "#8c5b0f",
+        "highlighted-background": "#ebdbb2",
+    },
+    "dark": {
+        "background-primary": "#282828",
+        "background-secondary": "#3c3836",
+        "background-hover": "#504945",
+        "background-border": "#504945",
+        "foreground-primary": "#ebdbb2",
+        "foreground-secondary": "#d5c4a1",
+        "foreground-muted": "#aca095",
+        "foreground-border": "#7a706a",
+        "brand-primary": "#fabd2f",
+        "brand-content": "#fabd2f",
+        "brand-visited": "#fabd2f",
+        "highlighted-background": "#504945",
+    },
+}
 html_theme_options = {
     "sidebar_hide_name": True,
+    "light_css_variables": {f"color-{k}": v for k, v in GRUVBOX["light"].items()},
+    "dark_css_variables": {f"color-{k}": v for k, v in GRUVBOX["dark"].items()},
 }
 html_static_path = ["_static"]
 html_logo = "_static/logo.svg"
-html_favicon = "_static/favicon.ico"
+html_favicon = "_static/favicon.svg"
 
 linkcheck_report_timeouts_as_broken = False
