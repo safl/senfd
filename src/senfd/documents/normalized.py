@@ -550,6 +550,59 @@ def parse_entries(
     return entries
 
 
+BITS_OF_A_BYTE = [str(bit) for bit in range(7, -1, -1)]
+
+
+def parse_byte_diagram(rows: List[Row]) -> Optional[Layout]:
+    """
+    The layout of a diagram of bytes by their bits, as the protection
+    information formats are drawn: a row of the bits 7 to 0 under "Bit", then
+    a row for each byte, numbered from 0. A field is the bytes from the row
+    marked "MSB" to the row marked "LSB", named by the one other text of its
+    rows; the bytes holding its most and its least significant bits are its
+    columns "msb_byte" and "lsb_byte". None where the rows are no such
+    diagram, or a byte of it is of no field so delimited.
+    """
+
+    texts = [
+        [t for t in (normalize_text(c.text) for c in row.cells if not c.merged) if t]
+        for row in rows
+    ]
+    if (
+        BITS_OF_A_BYTE not in texts
+        or ["Bit"] not in texts[: texts.index(BITS_OF_A_BYTE)]
+    ):
+        return None
+
+    layout = Layout(unit="bytes")
+    first: Optional[int] = None
+    names: List[str] = []
+    for byte, row in enumerate(texts[texts.index(BITS_OF_A_BYTE) + 1 :]):
+        told = row[1:] if row[:1] == ["Byte"] else row
+        if told[:1] != [str(byte)]:
+            return None
+        if "MSB" in told:
+            if first is not None:
+                return None
+            first = byte
+        if first is None:
+            return None
+        names += [t for t in told[1:] if t not in ("MSB", "LSB")]
+        if "LSB" in told:
+            rng = parse_range("bytes", f"{byte}:{first}")
+            if len(names) != 1 or rng is None:
+                return None
+            layout.fields.append(
+                LayoutField(
+                    range=rng,
+                    name=names[0],
+                    columns={"msb_byte": str(first), "lsb_byte": str(byte)},
+                )
+            )
+            first, names = None, []
+    return layout if layout.fields and first is None else None
+
+
 def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
     caption, caption_diagnostics = normalize_caption(figure.description)
     diagnostics += caption_diagnostics
@@ -564,6 +617,12 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
     )
 
     rows = figure.table.rows[1:]  # The first row is the caption
+    diagram = parse_byte_diagram(rows)
+    if diagram:
+        normalized.headers, normalized.columns = ["Byte", "Bit"], ["bytes", "bits"]
+        normalized.shape, normalized.layout = "layout", diagram
+        diagnostics.append(note("byte-diagram", "Diagram of bytes by their bits"))
+        return normalized
     idx, headers, grid, shape = find_header(rows)
     normalized.headers, normalized.columns, normalized.shape = (
         unique(headers),

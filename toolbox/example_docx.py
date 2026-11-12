@@ -854,6 +854,22 @@ FIGURES = [
             "rows": [("63:01", "Reserved"), ("00", "Qux Enabled (QE)")],
         },
     ),
+    # A diagram of bytes by their bits: a field is the bytes from the row
+    # marked MSB to the row marked LSB, its name across the bits between
+    (
+        "Qux Guard Format",
+        {
+            "header": ("", "", "Bit", *[LEFT] * 7),
+            "rows": [
+                ("", "", "7", "6", "5", "4", "3", "2", "1", "0"),
+                ("Byte", "0", "MSB", "Qux Guard", *[LEFT] * 5, ""),
+                (UP, "1", *[""] * 7, "LSB"),
+                (UP, "2", "MSB", "Qux Tag", *[LEFT] * 5, ""),
+                (UP, "3", *[""] * 8),
+                (UP, "4", *[""] * 7, "LSB"),
+            ],
+        },
+    ),
 ]
 
 

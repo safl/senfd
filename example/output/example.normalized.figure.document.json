@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
+    "senfd_sha256": "271c27517f37e5b5651d8bbdd21ada755c44bb0248e79de05cbaa9a0c49d2523",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
+    "sha256": "c4a168e8ac0f816a66aeb14231cc2ba96f4fdbf9f991b0bffa8531703de56ecc",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -6041,6 +6041,80 @@
       "entries": [],
       "notes": [],
       "rows": []
+    },
+    {
+      "figure_nr": 100,
+      "caption": "Qux Guard Format",
+      "page_nr": 100,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "other",
+        "name": "Qux Guard Format",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Byte",
+        "Bit"
+      ],
+      "columns": [
+        "bytes",
+        "bits"
+      ],
+      "layout": {
+        "unit": "bytes",
+        "fields": [
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "1:0",
+              "upper": 1,
+              "lower": 0
+            },
+            "name": "Qux Guard",
+            "acronym": null,
+            "description": "",
+            "columns": {
+              "msb_byte": "0",
+              "lsb_byte": "1"
+            },
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "4:2",
+              "upper": 4,
+              "lower": 2
+            },
+            "name": "Qux Tag",
+            "acronym": null,
+            "description": "",
+            "columns": {
+              "msb_byte": "2",
+              "lsb_byte": "4"
+            },
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
+      "notes": [],
+      "rows": []
     }
   ],
   "skipped": {},
@@ -6095,6 +6169,12 @@
       "severity": "note",
       "code": "range-symbolic",
       "message": "Range not a number: '(NFE*32)+15:(NFE*32)-16'"
+    },
+    {
+      "figure_nr": 100,
+      "severity": "note",
+      "code": "byte-diagram",
+      "message": "Diagram of bytes by their bits"
     }
   ]
 }

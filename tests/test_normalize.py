@@ -535,3 +535,84 @@ def test_a_name_wrapped_by_a_narrow_column_is_one_name():
         parse_field_description("Foo bar baz qux quux\nsee (refer to Figure 3)")[1]
         is None
     )
+
+
+def diagram_of_bytes(*rows):
+    """A figure of a diagram of bytes by their bits, its rows as the reader
+    of a PDF gives them: of as many cells as the row has borders for"""
+
+    from senfd.documents.plain import Figure
+    from senfd.tables import Table
+
+    caption = "Figure 1: Foo Guard Format"
+    head = [
+        Row(cells=[Cell(text=caption)]),
+        Row(
+            cells=[
+                Cell(text=caption, merged="up"),
+                *[Cell(text=t) for t in ("", "Bit", "")],
+            ]
+        ),
+        Row(
+            cells=[
+                Cell(text=caption, merged="up"),
+                *[Cell(text=t) for t in " 76543210 "],
+            ]
+        ),
+    ]
+    body = [Row(cells=[Cell(text=t) for t in row]) for row in rows]
+    return Figure(
+        figure_nr=1,
+        caption=caption,
+        description="Foo Guard Format",
+        table=Table(rows=[row for row in head + body]),
+    )
+
+
+def test_a_diagram_of_bytes_by_their_bits_is_a_layout_of_the_fields_it_delimits():
+    """As the protection information formats are drawn: the bits 7 to 0
+    across, a row for each byte, and each field from the row marked MSB to
+    the row marked LSB"""
+
+    from senfd.documents.normalized import normalize_figure
+
+    diagnostics = []
+    normalized = normalize_figure(
+        diagram_of_bytes(
+            ("Byte", "0", "MSB", "Foo Guard", "", ""),
+            ("1", "", "LSB", "", "", ""),
+            ("2", "MSB", "Foo Tag", "", "", ""),
+            ("3", "", "", "", "", ""),
+            ("4", "", "LSB", "", "", ""),
+        ),
+        diagnostics,
+    )
+
+    assert (normalized.shape, normalized.layout.unit) == ("layout", "bytes")
+    assert [
+        (f.range.text, f.range.upper, f.range.lower, f.name, f.columns)
+        for f in normalized.layout.fields
+    ] == [
+        ("1:0", 1, 0, "Foo Guard", {"msb_byte": "0", "lsb_byte": "1"}),
+        ("4:2", 4, 2, "Foo Tag", {"msb_byte": "2", "lsb_byte": "4"}),
+    ]
+    assert [d.code for d in diagnostics] == ["byte-diagram"]
+
+
+@pytest.mark.parametrize(
+    "rows",
+    [
+        # A byte after the last LSB, of no field
+        [("Byte", "0", "MSB", "Foo Guard", "LSB"), ("1", "", "")],
+        # A field that is not closed by an LSB
+        [("Byte", "0", "MSB", "Foo Guard", ""), ("1", "", "")],
+        # Two names between an MSB and its LSB
+        [("Byte", "0", "MSB", "Foo Guard", ""), ("1", "Foo Tag", "LSB")],
+        # Bytes that are not numbered from 0, each the next
+        [("Byte", "0", "MSB", "Foo Guard", ""), ("2", "", "LSB")],
+    ],
+)
+def test_a_diagram_with_a_byte_that_no_field_is_delimited_for_is_no_layout(rows):
+    from senfd.documents.normalized import normalize_figure
+
+    assert normalize_figure(diagram_of_bytes(*rows), []).layout is None

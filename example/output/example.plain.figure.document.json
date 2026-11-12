@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
+    "senfd_sha256": "271c27517f37e5b5651d8bbdd21ada755c44bb0248e79de05cbaa9a0c49d2523",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
+    "sha256": "c4a168e8ac0f816a66aeb14231cc2ba96f4fdbf9f991b0bffa8531703de56ecc",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -8236,6 +8236,452 @@
               },
               {
                 "text": "Qux Enabled (QE)",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 100,
+      "caption": "Figure 100: Qux Guard Format",
+      "description": "Qux Guard Format",
+      "page_nr": 100,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 98,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Figure 100: Qux Guard Format",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Bit",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "7",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "6",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "5",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "4",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "3",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "2",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "1",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "0",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Byte",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "0",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "MSB",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Guard",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Byte",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "1",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "LSB",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Byte",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "2",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "MSB",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "Qux Tag",
+                "tables": [],
+                "merged": "left"
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Byte",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "3",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Byte",
+                "tables": [],
+                "merged": "up"
+              },
+              {
+                "text": "4",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "LSB",
                 "tables": [],
                 "merged": null
               }

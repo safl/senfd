@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>98 figures, 0 skipped, 1 not tables, 8 diagnostics</p>
+<p>99 figures, 0 skipped, 1 not tables, 9 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -2294,6 +2294,35 @@ th { background-color: #f2f2f2; }
 
 
 
+<h3>Figure 100: Qux Guard Format</h3>
+<p>Subject: other, name: Qux Guard Format. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>1:0</td>
+  <td>Qux Guard</td>
+  <td></td>
+  <td>
+  </td>
+  <td>msb_byte: 0<br>lsb_byte: 1<br></td>
+</tr>
+
+<tr>
+  <td>4:2</td>
+  <td>Qux Tag</td>
+  <td></td>
+  <td>
+  </td>
+  <td>msb_byte: 2<br>lsb_byte: 4<br></td>
+</tr>
+
+</table>
+
+
+
+
 
 <h2>Diagnostics</h2>
 <ul>
@@ -2313,6 +2342,8 @@ th { background-color: #f2f2f2; }
 <li class="note">Figure 78: note header-rows: Header of more than one row</li>
 
 <li class="note">Figure 88: note range-symbolic: Range not a number: '(NFE*32)+15:(NFE*32)-16'</li>
+
+<li class="note">Figure 100: note byte-diagram: Diagram of bytes by their bits</li>
 
 </ul>
 </body>
