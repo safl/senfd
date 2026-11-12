@@ -104,6 +104,16 @@ has, as "an I/O Command Set Vector". The ``kind`` of a structure that lays
 out the entries of an array is ``data_structure``, whatever its caption
 says.
 
+A figure can draw a structure as a diagram instead of a table of ranges:
+the bits 7 to 0 across, a row for each byte, and each field from the row
+marked "MSB" to the row marked "LSB". The 16b, 32b and 64b Guard
+protection information formats of the NVM Command Set specification are
+drawn so. senfd reads such a diagram as a structure of bytes. Each field
+has, in ``columns``, ``msb_byte`` and ``lsb_byte``: the byte that holds
+the most significant bits of the field, and the byte that holds the least
+significant. The Guard of the 16b format is bytes 1:0 with ``msb_byte`` 0,
+so the field is stored with its most significant byte first.
+
 A value in a table of a known kind
 is ``typed`` as what it is: a requirement level, a flag, an identifier, a
 range, a note, a reference, reserved or vendor specific. Every part has a

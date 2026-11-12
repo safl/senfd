@@ -114,7 +114,7 @@ Each finding is a candidate. A person decides whether the figure or senfd
 is wrong. A figure of a shape that senfd does not know is a gap for senfd
 to close. The eleven documents ratified in 2026, as NVM Express publishes
 them as PDF, give these findings: 12 candidate errata and 9 document
-errors for the authors, and 14 rows that name no field, 23 figures that
+errors for the authors, and 14 rows that name no field, 19 figures that
 senfd does not model, 16 worked examples and 19 unassigned dwords. Six of
 the candidate errata are formulas in Base 2.4, Figure 432. In five of
 them, the upper bound of a range, "... + 59", is below its lower bound,

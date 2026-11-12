@@ -2,10 +2,10 @@
   "meta": {
     "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
+    "senfd_sha256": "271c27517f37e5b5651d8bbdd21ada755c44bb0248e79de05cbaa9a0c49d2523",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
+    "sha256": "c4a168e8ac0f816a66aeb14231cc2ba96f4fdbf9f991b0bffa8531703de56ecc",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -5774,6 +5774,76 @@
         "section": "4.2",
         "section_title": "Baz Capabilities"
       }
+    },
+    {
+      "name": "Qux Guard Format",
+      "kind": "other",
+      "unit": "bytes",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Qux Guard",
+          "acronym": null,
+          "upper": 1,
+          "lower": 0,
+          "range": "1:0",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {
+            "msb_byte": "0",
+            "lsb_byte": "1"
+          },
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 2,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        },
+        {
+          "name": "Qux Tag",
+          "acronym": null,
+          "upper": 4,
+          "lower": 2,
+          "range": "4:2",
+          "description": "",
+          "section": null,
+          "elided": false,
+          "columns": {
+            "msb_byte": "2",
+            "lsb_byte": "4"
+          },
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 3,
+          "fields": [],
+          "values_in": null,
+          "array": null,
+          "structure": null
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 100,
+        "page_nr": 100,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
     }
   ],
   "values": [
@@ -7564,10 +7634,10 @@
     "example": {
       "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "9b046a8cee341473a4329fe46a8b4f69208e57017aa808f6d3788f1e01e2bdbb",
+      "senfd_sha256": "271c27517f37e5b5651d8bbdd21ada755c44bb0248e79de05cbaa9a0c49d2523",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "b10baf7ed9fe21e4e80e2a2e03ab3fb1db5b9b1a2590d412fa58e596b1621f20",
+      "sha256": "c4a168e8ac0f816a66aeb14231cc2ba96f4fdbf9f991b0bffa8531703de56ecc",
       "input_sha256": null,
       "combined_sha256": null
     }

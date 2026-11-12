@@ -81,10 +81,10 @@ sha256 = "a5c192fe239777c3c7a70417c16317fcfc24445a8cd72832286651ce76cefc4b"
 commands = 8
 features = 6
 log_pages = 8
-structures = 58
+structures = 62
 errata = 0
 document_errors = 0
-not_modelled = 8
+not_modelled = 4
 
 [[document]]
 name = "NVMe over PCIe Transport 1.4"
