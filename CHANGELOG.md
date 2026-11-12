@@ -10,6 +10,56 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.19.0
+
+The data model now records links between figures that a code generator
+had to find by reading the descriptions. The format of the data model is
+2.
+
+A field whose values are in a table of another figure has `values_in`,
+the source of that table. CNS of Identify links to the CNS values in Base
+Figure 336, CSI of Identify and of Get Log Page to the Command Set
+Identifiers in Base Figure 337, and DTYPE of the Directive commands to the
+Directive Types in Base Figure 702. senfd links a table only when the
+description of the field refers to its figure, its codes fit in the field,
+and the table is named for the field. `senfd.query.tables_of_values()`
+returns the linked table, and with `every=True` also the tables of the
+same kind in the other documents, for example the CNS values that each
+command set specification adds. The entries of the Directive Types now
+have names, taken from the first column.
+
+The entries of an array have `array`, with the name without the index,
+the index, the first index, the number of entries, the size of an entry
+and the offset of the first entry. For example, LBAF0, LBAF1 and LBAF63 of
+Identify Namespace are entries 0, 1 and 63 of an array of 64. A field has
+`structure`, the source of the structure that lays it out, where its
+description refers to the figure of a structure as wide as the field:
+LBAF0 links to the LBA Format in NVM Figure 125. An entry of an array can
+name the structure instead, as IOCSC0 names the I/O Command Set Vector. A
+structure that lays out the entries of an array is a data structure.
+
+A field whose meaning depends on the value of another field of its figure
+has `cases`. Each case gives the values of the controlling field that it
+applies to, by name and by number, and the name, values and subfields of
+the field in that case. ZRAS of Zone Management Receive is the Reporting
+Options when ZRA is 0h or 1h, and reserved otherwise; senfd 0.18.0 read
+the reporting options as text. senfd also finds the cases of ZRASPF, ZSASO
+and ZM in the Zoned Namespace Command Set, of TTSI, EXATLEN and EXATVAL in
+the Base specification, and of FEI in the TCP transport.
+
+The 16b, 32b and 64b Guard protection information formats, NVM Figures
+155, 156, 157 and 159, are now structures. The figures draw them as
+diagrams with one row for each byte, which senfd now reads. The columns
+`msb_byte` and `lsb_byte` of a field give the bytes that hold its most and
+its least significant bits.
+
+The PDF reader now reads tables nested two levels deep. Before, it copied
+the text of the inner table into the outermost cell, which put table text
+into the descriptions of 55 fields, and it used the borders of the
+enclosing table as columns of the inner table. The data model now has a
+field for an unnamed byte whose bits are defined in a nested table, named
+after its range, for example "Byte 00".
+
 ## 0.18.0
 
 senfd takes the value of an entry of a table of values from the table's
