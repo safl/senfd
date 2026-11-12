@@ -106,6 +106,16 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
     ]
 
 
+def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
+    """ "cns 0x5" is read as 5h, and the data model writes the value as 05h"""
+
+    answer = ["- **05h** Identify I/O Command Set specific Namespace, CNS value"]
+    assert grounding.unmentioned("cns 0x5", answer) == []
+    assert grounding.unmentioned("CNS 05h", answer) == []
+    assert grounding.unmentioned("cns 0x50", answer) == ["50h"]
+    assert grounding.unmentioned("cns 0x0", ["- **00h** Namespace, CNS value"]) == []
+
+
 def offered(vocabulary, typed):
     return [text for text, *_ in completions(vocabulary, typed, most=1000)]
 

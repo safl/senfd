@@ -127,8 +127,11 @@ def unmentioned(question: str, lines: List[str]) -> List[str]:
     """The terms of 'question' that the answer 'lines' does not mention"""
 
     text = " ".join(lines).lower()
-    return [
-        t
-        for t in terms(question)
-        if not re.search(rf"(?<![a-z0-9]){re.escape(t)}s?(?![a-z0-9])", text)
-    ]
+
+    def pattern(term: str) -> str:
+        # A value asked as "0x5" is the term 5h; the data model writes 05h
+        if re.fullmatch(r"[0-9a-f]+h", term):
+            return rf"(?<![a-z0-9])0*{term[:-1].lstrip('0') or '0'}h(?![a-z0-9])"
+        return rf"(?<![a-z0-9]){re.escape(term)}s?(?![a-z0-9])"
+
+    return [t for t in terms(question) if not re.search(pattern(t), text)]
