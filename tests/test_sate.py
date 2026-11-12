@@ -106,6 +106,21 @@ def test_an_answer_not_mentioning_a_term_of_the_question_is_not_shown():
     ]
 
 
+def test_an_identifier_alone_also_finds_the_status_codes_and_other_values(
+    spec, vocabulary
+):
+    """C0h is a feature, a log page and a Generic Command status code"""
+
+    text, tried = senfd.sate.respond(spec, "C0h", vocabulary)
+
+    assert tried == ["identifier('c0h')"]
+    assert "### Feature C0h Foo Config" in text
+    assert "### Log page C0h Foo Statistics" in text
+    assert "**C0h** Foo Invalid, Generic Command status code" in text
+    assert "log page identifier of Get Log Page" not in text
+    assert "requirement of Foo Feature" not in text
+
+
 def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
     """ "cns 0x5" is read as 5h, and the data model writes the value as 05h"""
 

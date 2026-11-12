@@ -469,14 +469,20 @@ def within(written: str, value: int) -> bool:
 
 
 def value(
-    spec: SpecDocument, text: str, verbose=False, markdown=False, limit: int = 40
+    spec: SpecDocument,
+    text: str,
+    verbose=False,
+    markdown=False,
+    limit: int = 40,
+    skip: Tuple[str, ...] = (),
 ) -> List[str]:
     """The entries of the tables of values 'text' asks for, each with its
     table and where it is: by the kind of table, as "status code", "status
     code type" or "CNS", by the value, as "82h" or "0x82", and by words of
     the entry's name or its table's, as "zone boundary error", all of which
     an entry found meets; of every kind where none is named. With 'verbose',
-    an entry's description and its other columns too."""
+    an entry's description and its other columns too. The tables of the kinds
+    in 'skip' are left out."""
 
     lower = " ".join(text.lower().split())
     kind = ""
@@ -509,7 +515,7 @@ def value(
 
     found = []
     for table in spec.values:
-        if not of_kind(table, kind):
+        if not of_kind(table, kind) or table.kind in skip:
             continue
         about = spaced(f"{table_title(table)} {document_name(table.source.document)}")
         for entry in table.entries:
