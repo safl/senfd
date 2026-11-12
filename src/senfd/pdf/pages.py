@@ -10,6 +10,7 @@ changes shown has its deletions on the page too, struck through; they are
 not its text, and are kept apart, to be reported as an error of the document.
 """
 
+import re
 from bisect import bisect_left, bisect_right
 from collections import OrderedDict, defaultdict
 from typing import Dict, List, Optional, Sequence, Tuple
@@ -208,7 +209,10 @@ class Pages:
                     )
                     lines.append("".join(c["text"] for c in along).strip())
             else:
-                lines.append(text_of_chars(chars, y_tolerance=LINE))
+                # A word broken at its hyphen over two lines of a paragraph is
+                # one word, as "non-" and "zero"
+                text = text_of_chars(chars, y_tolerance=LINE)
+                lines.append(re.sub(r"(?<=[A-Za-z]-)\n(?=[a-z])", "", text))
         return "\n".join(lines), boxes
 
     def verticals(self, number: int, box: Box, pad: float = 2.0) -> List[Vertical]:

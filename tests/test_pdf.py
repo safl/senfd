@@ -744,3 +744,13 @@ def test_a_published_pdf_names_its_cns_values_by_their_sections(public, tmp_path
     names = {e["value"]: e["name"] for e in cns["entries"]}
     assert names["00h"] == "NVM Command Set Identify Namespace Data Structure"
     assert names["16h"] == "Namespace Granularity List"
+
+
+def test_a_published_pdf_joins_a_word_broken_at_its_hyphen(public, tmp_path):
+    """NVM 1.3 breaks the caption of Figure 156 after "non-"; the word is
+    "non-zero", as in the .docx"""
+
+    _, path = document_named(public, "NVM Command Set 1.3")
+    figures, _ = read(path)
+    (figure,) = [f for f in figures.figures if f.figure_nr == 156]
+    assert figure.caption.endswith("when STS field is non-zero")
