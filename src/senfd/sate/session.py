@@ -36,7 +36,7 @@ import senfd
 import senfd.query
 from senfd.sate.answering import exchange
 from senfd.sate.completion import Offer, completions, recognised, wanted
-from senfd.sate.phrasing import HELP
+from senfd.sate.phrasing import FORMS, HELP
 from senfd.sate.reading import understand
 from senfd.sate.vocabulary import Vocabulary
 from senfd.documents.spec import SpecDocument
@@ -208,6 +208,14 @@ def height_of(console: Console, answer: Markdown) -> int:
     return len(console.render_lines(answer, console.options, pad=False))
 
 
+def console_for(markdown: str) -> Console:
+    """A console as wide as the terminal, and for the table of question forms
+    at most 80 columns, so that each row reads on one or two lines"""
+
+    width = Console().width
+    return Console(width=min(width, 80) if FORMS.strip() in markdown else width)
+
+
 def show(console: Console, question: str, markdown: str, status: str) -> None:
     """An answer, opened by a rule naming the question, so that where each
     answer starts stands out when scrolling back, and by the status, so that
@@ -218,6 +226,8 @@ def show(console: Console, question: str, markdown: str, status: str) -> None:
 
     console.rule(f"[bold]{escape(question.strip())}[/bold]", align="left")
     console.print(status_of(status))
+    if FORMS.strip() in markdown:
+        console = console_for(markdown)
     answer = Markdown(markdown)
     if height_of(console, answer) + 4 > console.size.height:
         # Colour, stay on the screen when quit, and no pager for one screen
@@ -244,7 +254,7 @@ def interact(
     console.print(f"[bold]sate {senfd.__version__}[/bold]  {holds(vocabulary)}")
     shown = str(source or senfd.query.default_spec_path())
     console.print(f"[dim]{shown.replace(str(Path.home()), '~', 1)}[/dim]")
-    console.print(Markdown(HELP))
+    console_for(HELP).print(Markdown(HELP))
 
     bindings = KeyBindings()
     menu = has_completions & completion_is_selected
@@ -263,7 +273,7 @@ def interact(
     @bindings.add("f1")
     def forms(event: KeyPressEvent) -> None:
         """F1: the forms a question can take, with examples"""
-        run_in_terminal(lambda: console.print(Markdown(HELP)))
+        run_in_terminal(lambda: console_for(HELP).print(Markdown(HELP)))
 
     _ = vocabulary.names  # The pattern of names, built before the first key
     session: PromptSession[str] = PromptSession(
