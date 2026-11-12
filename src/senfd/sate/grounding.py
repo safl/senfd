@@ -85,7 +85,7 @@ def elsewhere(
     kinds = [
         of
         for word, of in (
-            (r"\blog ?pages?\b|\blid\b", "log_page"),
+            (r"\blog ?pages?\b|\blid\b|\blpi\b", "log_page"),
             (r"\bfeatures?\b|\bfid\b", "feature"),
             (r"\bstructures?\b", "structure"),
         )

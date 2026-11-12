@@ -11,7 +11,14 @@ import re
 from dataclasses import dataclass, replace
 from typing import List, Optional, Tuple
 
-from senfd.sate.phrasing import ASKS_COMMAND, DWORD, GENERIC, terms, words_of
+from senfd.sate.phrasing import (
+    ASKS_COMMAND,
+    DWORD,
+    GENERIC,
+    singular,
+    terms,
+    words_of,
+)
 from senfd.sate.vocabulary import Vocabulary
 
 
@@ -143,7 +150,7 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
         named = ("command", command) if command else named
     # "feature 02h of Set Features" is that feature, whatever command carries it
     kind_and_id = re.search(
-        r"\b(feature|fid|log ?page|lid)\s+(?:identifier\s+)?(?:0x)?([0-9a-f]{1,2})h?\b",
+        r"\b(feature|fid|log ?page|lid|lpi)\s+(?:identifier\s+)?(?:0x)?([0-9a-f]{1,2})h?\b",
         lower,
     )
     if kind_and_id and not asks_command:
@@ -155,12 +162,12 @@ def read_question(question: str, vocabulary: Vocabulary) -> Understood:
         key = (identifier[1] or identifier[2]) + "h"
         if re.search(r"\bfeature", lower):
             return Understood("feature", key)
-        if re.search(r"\blog ?page|\blid\b", lower):
+        if re.search(r"\blog ?page|\blid\b|\blpi\b", lower):
             return Understood("log_page", key)
         return Understood("identifier", key)
     for prefix, query in (
         (r"(?:feature|feat)(?:\s+identifier)?\s+(?:of\s+)?", "feature"),
-        (r"(?:log\s*page|lid)(?:\s+identifier)?\s+(?:of\s+)?", "log_page"),
+        (r"(?:log\s*page|lid|lpi)(?:\s+identifier)?\s+(?:of\s+)?", "log_page"),
         (r"(?:structure|struct)\s+", "structure"),
     ):
         match = re.match(prefix + r"(.+)$", lower)
@@ -290,14 +297,23 @@ def value_asked(text: str, named: Optional[Tuple[str, str]]) -> str:
         value = (anywhere[1] or anywhere[2]) if anywhere else None
     if value:
         return f"{kind} {value}h"
-    bare = match["kind"] in ("sct", "cns", "status")
+    # "cns of identify controller" asks of the table, as "cns value of" does
+    bare = match["kind"] in ("sct", "status") or (
+        match["kind"] == "cns"
+        and not re.match(r"\s+(?:of|for)\b", lower[match.end() :])
+    )
     if bare or re.search(r"\bfields?\b", lower):
         return ""
     # A structure named is what a CNS value returns; a status code asked of a
     # log page or a structure named is a question of that, not of a table
     if named and named[0] != "command" and kind != "cns":
         return ""
-    rest = [t for t in terms(text) if t not in KIND_WORDS]
+    # Each word as written, since an entry is found by its words: "capabilities"
+    rest = [
+        w
+        for w in re.findall(r"[a-z0-9/]+", lower)
+        if len(w) > 1 and not {w, singular(w)} & (GENERIC | KIND_WORDS)
+    ]
     return f"{kind} {' '.join(rest)}" if rest else kind
 
 
@@ -323,7 +339,7 @@ def kind_asked(lower: str) -> str:
     match = re.search(
         r"\b(?:which|what)\s+(log ?page|feature)s?\b"
         r"|\b(log ?page|feature)\s+identifiers?\s+(?:of|for)\b"
-        r"|\b(lid|fid)\s+(?:of|for)\b",
+        r"|\b(lid|lpi|fid)\s+(?:of|for)\b",
         lower,
     )
     if not match:
