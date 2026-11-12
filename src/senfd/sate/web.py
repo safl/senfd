@@ -27,7 +27,7 @@ import json
 import os
 import re
 import sys
-from urllib.parse import quote_plus
+from urllib.parse import quote, quote_plus
 from pathlib import Path
 from typing import TYPE_CHECKING, List, Optional
 
@@ -336,6 +336,8 @@ def page(
 
     return PAGE.format(
         version=html.escape(senfd.__version__),
+        logo=LOGO,
+        favicon=quote(LOGO),
         question=html.escape(question, quote=True),
         # An answer page leaves the input field unfocused, so the arrow and
         # page keys scroll the answer; the start page focuses the field
@@ -497,12 +499,25 @@ def serve(spec: SpecDocument, host: str, port: int, browse: bool = False) -> Non
     server.run()
 
 
+# The small logo of senfd, a flower of four mustard petals, drawn in the
+# title button and given as the favicon
+LOGO = (
+    '<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"'
+    ' aria-hidden="true"><g fill="#E1AD01" stroke="#2B2F36" stroke-width="1.65">'
+    '<rect x="3.6" y="3.6" width="11.5" height="11.5" rx="3.3"/>'
+    '<rect x="16.9" y="3.6" width="11.5" height="11.5" rx="3.3"/>'
+    '<rect x="3.6" y="16.9" width="11.5" height="11.5" rx="3.3"/>'
+    '<rect x="16.9" y="16.9" width="11.5" height="11.5" rx="3.3"/></g>'
+    '<circle cx="16" cy="16" r="3.25" fill="#2B2F36"/></svg>'
+)
+
 PAGE = """<!doctype html>
 <html lang="en" data-theme="{theme}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>sate</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{favicon}">
 <script>
 // Apply the stored theme and mode before the page is drawn, so the page
 // does not flash in the first theme's colours
@@ -541,8 +556,24 @@ header {{
   padding: 0.5rem 1.5rem; background: var(--chosen);
   border-bottom: 1px solid var(--line);
 }}
-header h1 {{ margin: 0; font-size: 1.1rem; flex: 1; }}
+header h1 {{
+  margin: 0; font-size: 1.1rem; flex: 1;
+  display: flex; gap: 0.6rem; align-items: center;
+}}
 header h1 a {{ color: inherit; text-decoration: none; }}
+header h1 a.home {{
+  display: inline-flex; gap: 0.5rem; align-items: center;
+  padding: 0.2rem 0.65rem 0.2rem 0.4rem; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg);
+}}
+header h1 a.home:hover, header h1 a.home:focus-visible {{ border-color: var(--accent); }}
+header h1 .logo {{ width: 1.6rem; height: 1.6rem; }}
+/* The name in the colours of the logo: mustard, outlined in slate */
+header h1 .name {{
+  color: #E1AD01; -webkit-text-stroke: 0.04em #2B2F36; paint-order: stroke fill;
+  font-size: 1.25rem; letter-spacing: 0.02em;
+}}
+header h1 .version {{ color: var(--dim); font-size: 0.75rem; font-weight: normal; }}
 header nav {{ display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; }}
 header nav a, header nav label, header nav button {{
   display: inline-flex; gap: 0.4rem; align-items: center;
@@ -669,7 +700,7 @@ footer p {{ margin: 0; }}
 </head>
 <body>
 <header>
-<h1><a href=".">sate {version}</a></h1>
+<h1><a class="home" href=".">{logo}<span class="name">sate</span></a><span class="version">v{version}</span></h1>
 <nav>
 <a href="https://safl.dk/senfd/" target="_blank" rel="noopener"
  title="The documentation of senfd and sate"><svg viewBox="0 0 24 24"
