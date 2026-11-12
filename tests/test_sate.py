@@ -231,6 +231,17 @@ def test_a_question_naming_a_table_of_codes_and_an_entry_is_read_as_the_entry(
     assert str(senfd.sate.reading.understand(question, vocabulary)) == understood
 
 
+def test_the_words_spelled_out_by_an_acronym_mentioned_need_no_mention():
+    lines = ["- 3h HFI Descriptor [Boot 1.4, 3.2.1, Figure 6]: NBFT"]
+    question = "the HFI Descriptor in the NVMe Boot Firmware Table (NBFT)?"
+
+    assert grounding.unmentioned(question, lines) == []
+    assert grounding.unmentioned("the HFI Descriptor in the Firmware Table", lines) == [
+        "firmware",
+        "table",
+    ]
+
+
 def test_a_value_asked_in_hex_is_mentioned_with_leading_zeros_too():
     """ "cns 0x5" is read as 5h, and the data model writes the value as 05h"""
 
