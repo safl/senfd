@@ -77,7 +77,11 @@ to ``upper`` with their ``fields``, possibly under a ``condition``. A field,
 ``Bits``, is a ``range`` of bits or bytes, as given by ``unit``. A field
 has a ``name``, an ``acronym`` and nested ``fields``. Where fields share
 bits, a field also names the ``union`` and ``alternative`` it belongs to.
-A field lists the ``values`` it takes. A value in a table of a known kind
+A field lists the ``values`` it takes. Where the description of a field
+names the figure of a table of values instead of giving the values, as CNS
+of the Identify command says "Refer to Figure 336", the field has
+``values_in``: the ``source`` of that table, which is the table of
+``values`` with the same ``source``. A value in a table of a known kind
 is ``typed`` as what it is: a requirement level, a flag, an identifier, a
 range, a note, a reference, reserved or vendor specific. Every part has a
 ``source``: the document, the section and its title, the figure and the

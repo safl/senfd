@@ -269,6 +269,18 @@
                     },
                     "title": "Fields",
                     "type": "array"
+                },
+                "values_in": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The figure holding the table of the values the field takes, where the\ndescription of the field names that figure instead of giving the values,\nas \"Refer to Figure 336\"; the table is the one of the data model's\n'values' with this source"
                 }
             },
             "required": [
@@ -410,7 +422,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 1,
+                    "default": 2,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"

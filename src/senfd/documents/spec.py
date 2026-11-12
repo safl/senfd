@@ -14,7 +14,7 @@ model leaves out is a diagnostic.
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import ClassVar, Dict, List, Literal, Optional, Tuple
+from typing import ClassVar, Dict, Iterator, List, Literal, Optional, Tuple
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.config import JsonDict
@@ -181,6 +181,11 @@ class Bits(BitsCommon):
     of '16*N + 15:16*N'"""
     fields: List["Bits"] = Field(default_factory=list)
     """The fields within this one, as its description lays them out"""
+    values_in: Optional[Source] = None
+    """The figure holding the table of the values the field takes, where the
+    description of the field names that figure instead of giving the values,
+    as "Refer to Figure 336"; the table is the one of the data model's
+    'values' with this source"""
 
     @model_validator(mode="after")
     def of_its_kind(self) -> "Bits":
@@ -1669,6 +1674,101 @@ def link_operations(document: SpecDocument, used: set) -> None:
         used.add(key)
 
 
+def laid_out(document: SpecDocument) -> Iterator[Tuple[Source, List[Bits]]]:
+    """The fields of every figure of 'document' that lays fields out, the
+    dwords of a command or a structure, with the figure"""
+
+    for described in document.dwords.values():
+        for dwords in described:
+            yield dwords.source, dwords.fields
+    for structure in document.structures:
+        yield structure.source, structure.fields
+
+
+def fields_within(fields: List[Bits]) -> Iterator[Bits]:
+    """'fields' and the fields within them, each before those within it"""
+
+    for field in fields:
+        yield field
+        yield from fields_within(field.fields)
+
+
+REGEX_FIGURE = re.compile(r"\bFigure\s+(\d+)")
+# The words of a caption that say it holds values, and not what they are of
+VALUES_WORDS = {"value", "code", "definition", "encoding", "list"}
+
+
+def name_words(name: Optional[str]) -> set:
+    """The words of 'name' that say what it names, each without the "s" of a
+    plural, as "Directive Types" and "Directive Type" have the same"""
+
+    words = [re.sub(r"(?<=..[^s])s$", "", w) for w in alias(name or "").split("_")]
+    return {w for w in words if w and w not in VALUES_WORDS}
+
+
+def names_field(values: Values, field: Bits) -> bool:
+    """
+    Whether the table 'values' is named for 'field': the header of its column
+    of values is the name or the acronym of the field, as "CNS Value" of CNS;
+    its kind is that of the field, as the log page identifiers of Log Page
+    Identifier; or its caption has the words of the name of the field, or the
+    name those of the caption, as "Directive Types" of Directive Type and
+    "Power Scale" of Power Threshold Scale
+    """
+
+    names = {alias(name) for name in (field.name, field.acronym) if name}
+    column = values.entries[0].value_column if values.entries else ""
+    if column.removesuffix("_value") in names or values.kind.removesuffix("s") in names:
+        return True
+    caption, name = name_words(values.name), name_words(field.name)
+    return bool(caption and name) and (caption <= name or name <= caption)
+
+
+def holds_values_of(values: Values, field: Bits) -> bool:
+    """Whether the entries of 'values' can be values of 'field': more than
+    half of them have a code, and each code fits the bits of the field"""
+
+    bits = (field.width or 0) * (8 if field.unit == "bytes" else 1)
+    codes = [
+        typed
+        for typed in (typed_of(entry.value) for entry in values.entries)
+        if typed is not None and typed.kind in ("identifier", "number")
+    ]
+    return 2 * len(codes) > len(values.entries) and all(
+        (typed.upper or 0) < 2**bits for typed in codes
+    )
+
+
+def link_values(document: SpecDocument) -> None:
+    """
+    The table of the values of each field that gives none itself and whose
+    description names the figure of a table of values of its document, as
+    CNS of Identify says "Refer to Figure 336": the one table among those
+    named whose entries can be values of the field and that is named for the
+    field, as the description of CSI of Identify names the figure of the CNS
+    values and that of the Command Set Identifiers
+    """
+
+    tables = {(v.source.document, v.source.figure_nr): v for v in document.values}
+    for source, fields in laid_out(document):
+        for field in fields_within(fields):
+            field.values_in = None
+            if field.role != "field" or field.values or field.fields:
+                continue
+            named = [
+                tables[(source.document, int(number))]
+                for number in dict.fromkeys(REGEX_FIGURE.findall(field.description))
+                if (source.document, int(number)) in tables
+            ]
+            found = [
+                values
+                for values in named
+                if holds_values_of(values, field) and names_field(values, field)
+            ]
+            if len(found) == 1:
+                field.values_in = found[0].source
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -1700,6 +1800,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_operations(document, used)
     link_features(document, used)
     link_log_pages(document)
+    link_values(document)
 
     # A gap where a field was left out as an erratum is that erratum again
     document.errata = [e for e in document.errata if e.code != "gap"]

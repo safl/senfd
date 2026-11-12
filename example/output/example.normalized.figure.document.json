@@ -1,11 +1,11 @@
 {
   "meta": {
-    "format": 1,
+    "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
+    "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -5593,6 +5593,168 @@
         "notes": []
       },
       "entries": [],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 94,
+      "caption": "Qux Data Structure",
+      "page_nr": 94,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "data_structure",
+        "name": "Qux",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Bits",
+        "Description"
+      ],
+      "columns": [
+        "bits",
+        "description"
+      ],
+      "layout": {
+        "unit": "bits",
+        "fields": [
+          {
+            "range": {
+              "unit": "bits",
+              "text": "15:08",
+              "upper": 15,
+              "lower": 8
+            },
+            "name": "Qux Type",
+            "acronym": "QT",
+            "description": "The type of the qux. Refer to Figure 95.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          },
+          {
+            "range": {
+              "unit": "bits",
+              "text": "07:00",
+              "upper": 7,
+              "lower": 0
+            },
+            "name": "Qux Kind",
+            "acronym": "QK",
+            "description": "This field is qux type specific (refer to Figure 95). The kinds are those of Figure 96.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 95,
+      "caption": "Qux Types",
+      "page_nr": 95,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "other",
+        "name": "Qux Types",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "value",
+      "headers": [
+        "Value",
+        "Definition"
+      ],
+      "columns": [
+        "value",
+        "description"
+      ],
+      "layout": null,
+      "entries": [
+        {
+          "value": "00h",
+          "description": "A qux that dings.",
+          "name": "Ding Qux"
+        },
+        {
+          "value": "01h",
+          "description": "A qux that rings.",
+          "name": "Ring Qux"
+        },
+        {
+          "value": "02h to FFh",
+          "description": "",
+          "name": "Reserved"
+        }
+      ],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 96,
+      "caption": "Qux Kinds",
+      "page_nr": 96,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "subject": {
+        "kind": "other",
+        "name": "Qux Kinds",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "value",
+      "headers": [
+        "Value",
+        "Definition"
+      ],
+      "columns": [
+        "value",
+        "description"
+      ],
+      "layout": null,
+      "entries": [
+        {
+          "value": "00h",
+          "description": "A qux of no kind.",
+          "name": "Plain"
+        },
+        {
+          "value": "01h",
+          "description": "A qux of a kind.",
+          "name": "Fancy"
+        },
+        {
+          "value": "02h to FFh",
+          "description": "",
+          "name": "Reserved"
+        }
+      ],
       "notes": [],
       "rows": []
     }

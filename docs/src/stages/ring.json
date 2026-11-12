@@ -41,7 +41,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "source": {
@@ -77,7 +78,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "source": {

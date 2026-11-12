@@ -1,13 +1,13 @@
 {
   "meta": {
-    "format": 1,
+    "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
     "stem": "merged",
     "file": null,
     "sha256": null,
-    "input_sha256": "d0cd10540e5d2addfc97448be913563515d23c6d435407859cf6b3663d9ff9cb",
-    "combined_sha256": "9ad856db58247b4c065bf5740cce94a117d212a425dbc777f2b456e6a3d39356"
+    "input_sha256": "0608f4b11ec682274542e0f22ad36c6bd9164b4bf2c6f23c29e4bded18a66bba",
+    "combined_sha256": "a3e0a7cf65c8ebe843c6147724408bf406167ac09e72afa0f1256ae66a8084bf"
   },
   "command_sets": {
     "foobar": {
@@ -41,7 +41,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 16,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 },
                 {
                   "name": "Foo Count",
@@ -61,7 +62,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 16,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -97,7 +99,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 31,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 },
                 {
                   "name": "Foo Mode",
@@ -117,7 +120,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 1,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -153,7 +157,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 64,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -189,7 +194,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 64,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -225,7 +231,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 128,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -261,7 +268,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 64,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -299,7 +307,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 32,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -355,7 +364,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 24,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 },
                 {
                   "name": "Bar Kind",
@@ -375,7 +385,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 8,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -411,7 +422,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 128,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -483,7 +495,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 16,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -519,7 +532,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 32,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -576,7 +590,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 24,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 },
                 {
                   "name": "Select",
@@ -669,7 +684,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 8,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -705,7 +721,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 29,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 },
                 {
                   "name": "Mode",
@@ -783,7 +800,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 3,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -828,7 +846,8 @@
                       "kind": "span",
                       "formula": null,
                       "width": 32,
-                      "fields": []
+                      "fields": [],
+                      "values_in": null
                     }
                   ],
                   "source": {
@@ -882,7 +901,8 @@
                       "kind": "span",
                       "formula": null,
                       "width": 32,
-                      "fields": []
+                      "fields": [],
+                      "values_in": null
                     }
                   ],
                   "source": {
@@ -975,7 +995,8 @@
                   "kind": "span",
                   "formula": null,
                   "width": 32,
-                  "fields": []
+                  "fields": [],
+                  "values_in": null
                 }
               ],
               "source": {
@@ -1042,7 +1063,8 @@
                       "kind": "span",
                       "formula": null,
                       "width": 16,
-                      "fields": []
+                      "fields": [],
+                      "values_in": null
                     },
                     {
                       "name": "Bar Reset Count",
@@ -1062,7 +1084,8 @@
                       "kind": "span",
                       "formula": null,
                       "width": 16,
-                      "fields": []
+                      "fields": [],
+                      "values_in": null
                     }
                   ],
                   "source": {
@@ -1173,7 +1196,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Foo Count",
@@ -1193,7 +1217,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1229,7 +1254,8 @@
             "kind": "span",
             "formula": null,
             "width": 31,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Foo Mode",
@@ -1249,7 +1275,8 @@
             "kind": "span",
             "formula": null,
             "width": 1,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1285,7 +1312,8 @@
             "kind": "span",
             "formula": null,
             "width": 64,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1321,7 +1349,8 @@
             "kind": "span",
             "formula": null,
             "width": 64,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1357,7 +1386,8 @@
             "kind": "span",
             "formula": null,
             "width": 128,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1393,7 +1423,8 @@
             "kind": "span",
             "formula": null,
             "width": 64,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1431,7 +1462,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1469,7 +1501,8 @@
             "kind": "span",
             "formula": null,
             "width": 24,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Bar Kind",
@@ -1489,7 +1522,8 @@
             "kind": "span",
             "formula": null,
             "width": 8,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1525,7 +1559,8 @@
             "kind": "span",
             "formula": null,
             "width": 128,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1563,7 +1598,8 @@
             "kind": "span",
             "formula": null,
             "width": 24,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Select",
@@ -1656,7 +1692,8 @@
             "kind": "span",
             "formula": null,
             "width": 8,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1692,7 +1729,8 @@
             "kind": "span",
             "formula": null,
             "width": 29,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Mode",
@@ -1770,7 +1808,8 @@
             "kind": "span",
             "formula": null,
             "width": 3,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1808,7 +1847,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1846,7 +1886,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1899,7 +1940,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1935,7 +1977,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -1973,7 +2016,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2011,7 +2055,8 @@
             "kind": "span",
             "formula": null,
             "width": 24,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Foo Level",
@@ -2031,7 +2076,8 @@
             "kind": "span",
             "formula": null,
             "width": 8,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2069,7 +2115,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2107,7 +2154,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2145,7 +2193,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2183,7 +2232,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           },
           {
             "name": "Bar Reset Count",
@@ -2203,7 +2253,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2241,7 +2292,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -2281,7 +2333,8 @@
           "kind": "span",
           "formula": null,
           "width": 512,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2319,7 +2372,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2357,7 +2411,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Identifier",
@@ -2377,7 +2432,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2415,7 +2471,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2453,7 +2510,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2491,7 +2549,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Attributes",
@@ -2530,7 +2589,8 @@
               "kind": "span",
               "formula": null,
               "width": 7,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Foo On",
@@ -2550,9 +2610,11 @@
               "kind": "span",
               "formula": null,
               "width": 1,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -2572,7 +2634,8 @@
           "kind": "span",
           "formula": null,
           "width": 503,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2610,7 +2673,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2648,7 +2712,8 @@
           "kind": "span",
           "formula": null,
           "width": 2,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2686,7 +2751,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2724,7 +2790,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2762,7 +2829,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -2782,7 +2850,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2820,7 +2889,8 @@
           "kind": "span",
           "formula": null,
           "width": 62,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -2840,7 +2910,8 @@
           "kind": "span",
           "formula": null,
           "width": 2,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2878,7 +2949,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2916,7 +2988,8 @@
           "kind": "span",
           "formula": null,
           "width": 64,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2954,7 +3027,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -2995,7 +3069,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Limit",
@@ -3018,7 +3093,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3056,7 +3132,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3094,7 +3171,8 @@
           "kind": "span",
           "formula": null,
           "width": 64,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3132,7 +3210,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3170,7 +3249,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3208,7 +3288,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3246,7 +3327,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3284,7 +3366,8 @@
           "kind": "span",
           "formula": null,
           "width": 2,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3322,7 +3405,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3360,7 +3444,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3400,7 +3485,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3440,7 +3526,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3480,7 +3567,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -3502,7 +3590,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Mode",
@@ -3524,7 +3613,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Entry",
@@ -3546,7 +3636,8 @@
           "kind": "formula",
           "formula": "N + 3:N",
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Tail",
@@ -3568,7 +3659,8 @@
           "kind": "open",
           "formula": null,
           "width": null,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Descriptor 0",
@@ -3590,7 +3682,8 @@
           "kind": "open",
           "formula": null,
           "width": null,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Descriptor NBD-1",
@@ -3612,7 +3705,8 @@
           "kind": "open",
           "formula": null,
           "width": null,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Ignored",
@@ -3634,7 +3728,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [
@@ -3674,7 +3769,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3715,7 +3811,8 @@
           "kind": "span",
           "formula": null,
           "width": 31,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Enable",
@@ -3738,7 +3835,8 @@
           "kind": "span",
           "formula": null,
           "width": 1,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3776,7 +3874,8 @@
           "kind": "span",
           "formula": null,
           "width": 2,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3814,7 +3913,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3852,7 +3952,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3890,7 +3991,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3928,7 +4030,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -3966,7 +4069,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4004,7 +4108,8 @@
           "kind": "span",
           "formula": null,
           "width": 1,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4024,7 +4129,8 @@
           "kind": "span",
           "formula": null,
           "width": 1,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo IPv6 Address",
@@ -4044,7 +4150,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo IPv4 Address",
@@ -4064,7 +4171,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4084,7 +4192,8 @@
           "kind": "span",
           "formula": null,
           "width": 12,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4124,7 +4233,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Bar Size",
@@ -4146,7 +4256,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4184,7 +4295,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Slot 1 Descriptor",
@@ -4204,7 +4316,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Slot 7 Descriptor",
@@ -4224,7 +4337,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Version",
@@ -4244,7 +4358,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4282,7 +4397,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Entry Pair",
@@ -4321,7 +4437,8 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Foo High",
@@ -4341,9 +4458,11 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4363,7 +4482,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4401,7 +4521,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4421,7 +4542,8 @@
           "kind": "span",
           "formula": null,
           "width": 12,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Entry 0",
@@ -4441,7 +4563,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Entry 1",
@@ -4461,7 +4584,8 @@
           "kind": "span",
           "formula": null,
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Entry NFE-1",
@@ -4481,7 +4605,8 @@
           "kind": "formula",
           "formula": "32*NFE + 15:32*NFE - 16",
           "width": 32,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4519,7 +4644,8 @@
           "kind": "span",
           "formula": null,
           "width": 1,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Flags",
@@ -4539,7 +4665,8 @@
           "kind": "span",
           "formula": null,
           "width": 2,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Result 1",
@@ -4559,7 +4686,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Result 2",
@@ -4579,7 +4707,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Result 5",
@@ -4599,7 +4728,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4637,7 +4767,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Foo Minor Version",
@@ -4657,7 +4788,8 @@
           "kind": "span",
           "formula": null,
           "width": 16,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4714,7 +4846,8 @@
               "kind": "span",
               "formula": null,
               "width": 254,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Zing Supported",
@@ -4734,7 +4867,8 @@
               "kind": "span",
               "formula": null,
               "width": 1,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Ring Supported",
@@ -4754,9 +4888,11 @@
               "kind": "span",
               "formula": null,
               "width": 1,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         },
         {
           "name": "Baz Enabled",
@@ -4795,7 +4931,8 @@
               "kind": "span",
               "formula": null,
               "width": 254,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Zing Enabled",
@@ -4815,7 +4952,8 @@
               "kind": "span",
               "formula": null,
               "width": 1,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Ring Enabled",
@@ -4835,9 +4973,11 @@
               "kind": "span",
               "formula": null,
               "width": 1,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4857,7 +4997,8 @@
           "kind": "span",
           "formula": null,
           "width": 4032,
-          "fields": []
+          "fields": [],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -4865,6 +5006,80 @@
         "document": "example",
         "figure_nr": 93,
         "page_nr": 93,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "name": "Qux",
+      "kind": "data_structure",
+      "unit": "bits",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Qux Type",
+          "acronym": "QT",
+          "upper": 15,
+          "lower": 8,
+          "range": "15:08",
+          "description": "The type of the qux. Refer to Figure 95.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 8,
+          "fields": [],
+          "values_in": {
+            "document": "example",
+            "figure_nr": 95,
+            "page_nr": 95,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        },
+        {
+          "name": "Qux Kind",
+          "acronym": "QK",
+          "upper": 7,
+          "lower": 0,
+          "range": "07:00",
+          "description": "This field is qux type specific (refer to Figure 95). The kinds are those of Figure 96.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "values": [],
+          "unit": "bits",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 8,
+          "fields": [],
+          "values_in": {
+            "document": "example",
+            "figure_nr": 96,
+            "page_nr": 96,
+            "pdf_page": null,
+            "section": "4.2",
+            "section_title": "Baz Capabilities"
+          }
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 94,
+        "page_nr": 94,
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
@@ -4895,7 +5110,8 @@
           "kind": "span",
           "formula": null,
           "width": 8,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Name",
@@ -4915,7 +5131,8 @@
           "kind": "span",
           "formula": null,
           "width": 4,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Reserved",
@@ -4935,7 +5152,8 @@
           "kind": "span",
           "formula": null,
           "width": 3,
-          "fields": []
+          "fields": [],
+          "values_in": null
         },
         {
           "name": "Name with spaces",
@@ -4974,7 +5192,8 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Name with spaces",
@@ -4994,9 +5213,11 @@
               "kind": "span",
               "formula": null,
               "width": 4,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
-          ]
+          ],
+          "values_in": null
         }
       ],
       "notes": [],
@@ -6252,6 +6473,94 @@
         "section": "4.1",
         "section_title": "Offset 18h: FOOVER – Foo Version"
       }
+    },
+    {
+      "kind": "other",
+      "name": "Qux Types",
+      "qualifier": null,
+      "scope": null,
+      "columns": [
+        "value",
+        "description"
+      ],
+      "entries": [
+        {
+          "value": "00h",
+          "value_column": "value",
+          "name": "Ding Qux",
+          "description": "A qux that dings.",
+          "columns": {},
+          "typed": {}
+        },
+        {
+          "value": "01h",
+          "value_column": "value",
+          "name": "Ring Qux",
+          "description": "A qux that rings.",
+          "columns": {},
+          "typed": {}
+        },
+        {
+          "value": "02h to FFh",
+          "value_column": "value",
+          "name": "Reserved",
+          "description": "",
+          "columns": {},
+          "typed": {}
+        }
+      ],
+      "source": {
+        "document": "example",
+        "figure_nr": 95,
+        "page_nr": 95,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "kind": "other",
+      "name": "Qux Kinds",
+      "qualifier": null,
+      "scope": null,
+      "columns": [
+        "value",
+        "description"
+      ],
+      "entries": [
+        {
+          "value": "00h",
+          "value_column": "value",
+          "name": "Plain",
+          "description": "A qux of no kind.",
+          "columns": {},
+          "typed": {}
+        },
+        {
+          "value": "01h",
+          "value_column": "value",
+          "name": "Fancy",
+          "description": "A qux of a kind.",
+          "columns": {},
+          "typed": {}
+        },
+        {
+          "value": "02h to FFh",
+          "value_column": "value",
+          "name": "Reserved",
+          "description": "",
+          "columns": {},
+          "typed": {}
+        }
+      ],
+      "source": {
+        "document": "example",
+        "figure_nr": 96,
+        "page_nr": 96,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
     }
   ],
   "features": {
@@ -6288,7 +6597,8 @@
               "kind": "span",
               "formula": null,
               "width": 24,
-              "fields": []
+              "fields": [],
+              "values_in": null
             },
             {
               "name": "Foo Level",
@@ -6308,7 +6618,8 @@
               "kind": "span",
               "formula": null,
               "width": 8,
-              "fields": []
+              "fields": [],
+              "values_in": null
             }
           ],
           "source": {
@@ -6381,7 +6692,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "notes": [],
@@ -6446,7 +6758,8 @@
             "kind": "span",
             "formula": null,
             "width": 16,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "notes": [],
@@ -6495,7 +6808,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -6533,7 +6847,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -6571,7 +6886,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -6609,7 +6925,8 @@
             "kind": "span",
             "formula": null,
             "width": 32,
-            "fields": []
+            "fields": [],
+            "values_in": null
           }
         ],
         "source": {
@@ -6779,19 +7096,19 @@
   ],
   "documents": {
     "example": {
-      "format": 1,
+      "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+      "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
+      "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
       "input_sha256": null,
       "combined_sha256": null
     },
     "invalid": {
-      "format": 1,
+      "format": 2,
       "version": "0.18.0",
-      "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+      "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

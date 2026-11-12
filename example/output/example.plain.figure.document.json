@@ -1,11 +1,11 @@
 {
   "meta": {
-    "format": 1,
+    "format": 2,
     "version": "0.18.0",
-    "senfd_sha256": "08d1c46616bb187343afcae7d8b33363e2c054c044be5c21467f1648dc2c4f1d",
+    "senfd_sha256": "7f01bb25570a20d43e147e987b0efb7568b6ba8ddddcaad20c3b947947302193",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "7ee29b6a44edbcd69487978dff960898b74c866950bef5cb481e8772299af6f0",
+    "sha256": "d61c9d80c3f3fe0645fda5fee315f7dba6a13d00571b525677fbd66cf2b8b55e",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -7685,6 +7685,244 @@
               },
               {
                 "text": "n/a",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 94,
+      "caption": "Figure 94: Qux Data Structure",
+      "description": "Qux Data Structure",
+      "page_nr": 94,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 92,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 94: Qux Data Structure",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 94: Qux Data Structure",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bits",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "15:08",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Type (QT): The type of the qux. Refer to Figure 95.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "07:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Qux Kind (QK): This field is qux type specific (refer to Figure 95). The kinds are those of Figure 96.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 95,
+      "caption": "Figure 95: Qux Types",
+      "description": "Qux Types",
+      "page_nr": 95,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 93,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 95: Qux Types",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 95: Qux Types",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Value",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Definition",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "00h",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Ding Qux: A qux that dings.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "01h",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Ring Qux: A qux that rings.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "02h to FFh",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Reserved",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 96,
+      "caption": "Figure 96: Qux Kinds",
+      "description": "Qux Kinds",
+      "page_nr": 96,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "table": {
+        "table_nr": 94,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 96: Qux Kinds",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 96: Qux Kinds",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Value",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Definition",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "00h",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Plain: A qux of no kind.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "01h",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Fancy: A qux of a kind.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "02h to FFh",
                 "tables": [],
                 "merged": null
               },
