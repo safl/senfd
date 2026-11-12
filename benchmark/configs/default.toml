@@ -19,7 +19,7 @@
 [senfd]
 repo = "https://github.com/safl/senfd"
 # A commit, a tag or a branch; the run records it
-commit = "v0.14.0"
+commit = "v0.18.0"
 python = "3.13"
 
 [spec]
@@ -61,7 +61,7 @@ sha256 = "1adf0b11065d8ad2e8123ea110d1ec956dab4ab038eab665614adba04b6c3370"
 [frontier]
 models = ["claude-opus-5-5", "claude-haiku-5-5"]
 conditions = ["memory", "mcp", "pdf"]
-modes = ["allowed", "required"]
+modes = ["allowed"]
 runs = 3
 # Sessions at once; the most a session may cost, and a turn take
 jobs = 4
