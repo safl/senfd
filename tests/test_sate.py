@@ -970,6 +970,25 @@ def test_a_generic_word_is_no_term_in_its_plural_either():
     assert phrasing.terms("Which feature sets the foo levels?") == ["foo", "level"]
 
 
+def test_the_status_of_an_answer_comes_before_the_answer():
+    """The status says how sate read the question; above the answer, a
+    reader does not take it for a part of the answer"""
+
+    import io
+
+    from rich.console import Console
+
+    out = io.StringIO()
+    console = Console(file=out, width=80, color_system=None)
+    senfd.sate.session.show(
+        console, "cdw12 of write", "Force Unit Access", "read as x | 1 lookup"
+    )
+    text = out.getvalue()
+
+    assert text.index("cdw12 of write") < text.index("read as x")
+    assert text.index("read as x") < text.index("Force Unit Access")
+
+
 def test_an_answer_opens_with_a_rule_naming_the_question_and_pages_when_tall(
     monkeypatch,
 ):
