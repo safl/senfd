@@ -808,8 +808,14 @@ def checked(
             )
             continue
         except senfd.fields.Unnamed as exc:
-            unnamed.append(f"Field {what}: {exc}")
-            continue
+            if not field.fields:
+                unnamed.append(f"Field {what}: {exc}")
+                continue
+            # A row of a range and the table laying it out, as a byte whose
+            # bits are fields: the field is named by its range
+            one = rng.width == 1
+            unit = field.unit[:-1] if one else field.unit
+            made = senfd.fields.Identity("field", f"{unit.capitalize()} {field.range}")
         # Bits nested in a range of bytes lie within its bytes
         within, holding = None, "its dwords"
         if rng.unit == "bytes" and rng.width is not None:

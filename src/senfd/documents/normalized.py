@@ -293,8 +293,10 @@ def parse_layout(
             continue
 
         # A row of one cell spanning the table is its notes, or heads the rows
-        # below it; so does a row of one text
-        if values.spans == 1 or len(set(filled)) == 1:
+        # below it; so does a row of one text, unless a cell of it holds a
+        # table, as a byte of no name whose bits a table lays out
+        tabled = any(c.tables for cells in values.cells.values() for c in cells)
+        if values.spans == 1 or (len(set(filled)) == 1 and not tabled):
             text = filled[0] if filled else None
             if text and REGEX_NOTES.match(text):
                 layout.notes.append(text)

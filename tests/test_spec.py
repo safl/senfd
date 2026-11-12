@@ -1215,3 +1215,44 @@ def test_a_field_that_lays_itself_out_is_linked_to_no_structure():
     assert laid_out.structure is None
     assert kept.structure == spec.structures[1].source
     assert spec.structures[0].kind == "other"
+
+
+def test_a_row_of_a_range_and_a_table_is_a_field_named_by_its_range():
+    """A byte that the figure gives no name, its bits laid out by the table
+    in its cell: the row is no heading of the rows below it, and its field
+    is named by its range, so that the fields of its bits are kept"""
+
+    from senfd.tables import Cell, Row, Table
+
+    bits = Table(
+        rows=[
+            Row(cells=[Cell(text=t) for t in row])
+            for row in (
+                ("Bits", "Description"),
+                ("07:01", "Reserved"),
+                ("00", "Foo Active (FA): Whether the foo is active."),
+            )
+        ]
+    )
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Descriptor Data Structure",
+            ("Bytes", "Description"),
+            ("00", Cell(text="", tables=[bits])),
+            ("02:01", Cell(text="", tables=[bits])),
+            ("03", "Foo Type (FT)"),
+        )
+    )
+    fields = spec.structures[0].fields
+
+    assert [(f.range, f.name, f.section) for f in fields] == [
+        ("00", "Byte 00", None),
+        ("02:01", "Bytes 02:01", None),
+        ("03", "Foo Type", None),
+    ]
+    assert [(f.range, f.acronym) for f in fields[0].fields] == [
+        ("07:01", None),
+        ("00", "FA"),
+    ]
+    assert [d.code for d in spec.diagnostics] == []
