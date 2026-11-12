@@ -153,4 +153,13 @@ def unmentioned(
             return rf"(?<![a-z0-9])0*{term[:-1].lstrip('0') or '0'}h(?![a-z0-9])"
         return rf"(?<![a-z0-9]){re.escape(term)}s?(?![a-z0-9])"
 
-    return [t for t in terms(question) if not re.search(pattern(t), text)]
+    missing = [t for t in terms(question) if not re.search(pattern(t), text)]
+    # The words that an acronym mentioned spells out, as "NVMe Boot Firmware
+    # Table" of "(NBFT)", which the answer names by the acronym
+    for spelled in re.finditer(
+        r"((?:[A-Z][\w/-]*\s+)+)\(([A-Z][A-Za-z0-9]+)\)", question
+    ):
+        if spelled[2].lower() not in missing:
+            words = set(terms(spelled[1]))
+            missing = [t for t in missing if t not in words]
+    return missing
