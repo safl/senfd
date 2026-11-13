@@ -2015,3 +2015,96 @@ def test_an_array_ending_in_a_formula_has_the_maximum_its_figure_s_text_states()
         ],
     )
     assert [f.array.maximum for f in zones + lost + counted] == [511, 511, 511, None]
+
+
+def test_a_field_is_linked_to_the_structure_of_the_section_it_cites():
+    """VER of Identify Controller "contains the value reported in the Version
+    property (i.e., VS property) defined in section 3.1.4.2", where Figure 37
+    lays out VS; it cites no figure"""
+
+    def in_section(figure, section):
+        figure.section = section
+        return figure
+
+    spec = document_of(
+        in_section(
+            figure_of(
+                1,
+                "Foo Register",
+                ("Bits", "Description"),
+                ("31:16", "Major (MJR): The major."),
+                ("15:00", "Minor (MNR): The minor."),
+            ),
+            "3.1",
+        ),
+        in_section(
+            figure_of(
+                2,
+                "Identify - Foo Data Structure",
+                ("Bytes", "Description"),
+                ("03:00", "Version (VER): The value of VS defined in section 3.1."),
+                ("05:04", "Short (SH): A value defined in section 3.1."),
+                ("09:08", "Domain (DID): Reported in the list of section 3.2."),
+            ),
+            "5.1",
+        ),
+        in_section(
+            figure_of(
+                3,
+                "Command Dword 11 - Foo Specific Identifier",
+                ("Bits", "Description"),
+                ("15:00", "Domain (DID): The domain."),
+            ),
+            "3.2",
+        ),
+    )
+    ver, short, domain = spec.structures[1].fields
+    assert ver.structure is not None and ver.structure.figure_nr == 1
+    assert short.structure is None
+    # A structure of the field alone, as DID of a CNS Specific Identifier
+    assert domain.structure is None
+
+
+def test_a_field_is_linked_to_the_structure_its_name_captions_in_its_section():
+    """CATTR of each range of NVM 1.3 Figure 47, in section 3.3.3, has no
+    description; Figure 48 of section 3.3.3.2 lays out the "Dataset
+    Management - Context Attributes" """
+
+    def in_section(figure, section):
+        figure.section = section
+        return figure
+
+    spec = document_of(
+        in_section(
+            figure_of(
+                1,
+                "Foo - Range Definition",
+                ("Bytes", "Description"),
+                ("03:00", "Context Attributes (CATTR)"),
+                ("07:04", "Length (LEN)"),
+            ),
+            "3.3",
+        ),
+        in_section(
+            figure_of(
+                2,
+                "Foo - Context Attributes",
+                ("Bits", "Description"),
+                ("31:08", "Size (SZ): The size."),
+                ("07:00", "Flags (FL): The flags."),
+            ),
+            "3.3.2",
+        ),
+        in_section(
+            figure_of(
+                3,
+                "Bar - Length",
+                ("Bits", "Description"),
+                ("31:00", "Length (LEN): The length."),
+            ),
+            "4.1",
+        ),
+    )
+    cattr, length = spec.structures[0].fields
+    assert cattr.structure is not None and cattr.structure.figure_nr == 2
+    assert length.structure is None
