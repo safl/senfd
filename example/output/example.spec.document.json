@@ -2,7 +2,7 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "fb091b51ac829cee17bb2f1fe13cafaa63d2f50560b2dd6336061006cb673135",
+    "senfd_sha256": "32fef9417ec334bd1179a384e2d8e19c72bcb4071f241a411f7966a3e06b6751",
     "stem": "example",
     "file": "example.docx",
     "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -8931,7 +8931,7 @@
     "example": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "fb091b51ac829cee17bb2f1fe13cafaa63d2f50560b2dd6336061006cb673135",
+      "senfd_sha256": "32fef9417ec334bd1179a384e2d8e19c72bcb4071f241a411f7966a3e06b6751",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",

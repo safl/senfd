@@ -2142,6 +2142,8 @@ def fields_within(fields: List[Bits]) -> Iterator[Bits]:
 
 REGEX_FIGURE = re.compile(r"\bFigure\s+(\d+)")
 REGEX_SECTION = re.compile(r"\bsection\s+(\d+(?:\.\d+)+)\b")
+# A parenthesis giving an example, with the parentheses nested in it
+REGEX_EXAMPLE = re.compile(r"\(e\.g\.,(?:[^()]|\([^()]*\))*\)")
 # Words of a caption that mark a table of values without naming its field
 VALUES_WORDS = {"value", "code", "definition", "encoding", "list"}
 
@@ -2259,9 +2261,12 @@ def link_structures(document: SpecDocument) -> None:
     def laying_out(field: Bits, source: Source) -> Optional[Source]:
         size = field.array.stride if field.array else field.width
         bits = (size or 0) * (8 if field.unit == "bytes" else 1)
+        # A figure given as an example, as "(e.g., the Create I/O Completion
+        # Queue command (refer to Figure 571))" of PRP1, lays out one case
+        described = REGEX_EXAMPLE.sub("", field.description)
         named = [
             (source.document, int(number))
-            for number in dict.fromkeys(REGEX_FIGURE.findall(field.description))
+            for number in dict.fromkeys(REGEX_FIGURE.findall(described))
             if int(number) != source.figure_nr
         ]
         found = [key for key in named if key in widths and widths[key] == bits]
