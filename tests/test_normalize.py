@@ -827,3 +827,29 @@ def test_a_table_of_numbered_records_is_a_layout_of_an_array_of_them():
         ("Range 1", "Range", 1, 10, 12),
         ("Range 9", "Range", 9, 10, 12),
     ]
+
+
+def test_a_long_name_a_pdf_wraps_over_two_lines_is_one_line_and_no_name():
+    """The Base 2.4 PDF wraps "Asynchronous Event Request Limit Exceeded" of
+    Figure 104 after "Limit"; the first line read as a name, the rest as its
+    description. The .docx gives one line, which names nothing by itself, a
+    name of more than four words being left to the list it is in."""
+
+    text = "Asynchronous Event Request Limit\nExceeded"
+    assert parse_field_description(text) == (
+        None,
+        None,
+        "Asynchronous Event Request Limit Exceeded",
+    )
+    assert parse_field_description("Foo Bar\nThe value is set.") == (
+        "Foo Bar",
+        None,
+        "The value is set.",
+    )
+    # A name of four words or fewer is a name, as "Replay Protected Memory
+    # Block" of Base 2.4 Figure 459 wrapped after "Memory"
+    assert parse_field_description("Replay Protected Memory\nBlock") == (
+        "Replay Protected Memory Block",
+        None,
+        "",
+    )
