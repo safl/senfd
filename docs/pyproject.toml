@@ -4,7 +4,7 @@
 
 [tool.poetry]
 name = "autogen"
-version = "0.19.0"
+version = "0.20.0"
 description = ""
 authors = ["Simon A. F. Lund <os@safl.dk>"]
 
