@@ -874,3 +874,43 @@ def test_an_empty_cell_beyond_the_header_is_no_cell_of_the_row():
     )
     assert [f.acronym for f in layout.fields] == ["KSDBDS", "SGLS"]
     assert [d.code for d in diagnostics] == ["row-length"]
+
+
+def test_tables_a_description_gives_by_condition_are_the_cases_of_the_field():
+    """DPTR of the Common Command Format, Base 2.4 Figure 93: "If CDW0.PSDT is
+    cleared to 00b, then the definition of this field is:" a table of PRP2
+    and PRP1, and "If CDW0.PSDT is set to 01b or 10b" one of SGL1; the
+    tables have no header"""
+
+    from senfd.documents.normalized import parse_layout
+    from senfd.tables import Table
+
+    def table(*texts):
+        return Table(rows=rows(*texts))
+
+    described = Cell(
+        text=(
+            "Data Pointer (DPTR): The data.\n"
+            "If CDW0.PSDT is cleared to 00b, then the definition of this\nfield is:\n"
+            "If CDW0.PSDT is set to 01b or 10b, then the definition of this field is:"
+        ),
+        tables=[
+            table(
+                ("39:32", "PRP Entry 2 (PRP2): The second."),
+                ("31:24", "PRP Entry 1 (PRP1): The first."),
+            ),
+            table(("39:24", "SGL Entry 1 (SGL1): The first segment.")),
+        ],
+    )
+    layout = parse_layout(
+        [Row(cells=[Cell(text="39:24"), described])], ["bytes", "description"], []
+    )
+    (dptr,) = layout.fields
+    assert [(c.selector, c.when) for c in dptr.cases] == [
+        ("PSDT", ["00b"]),
+        ("PSDT", ["01b", "10b"]),
+    ]
+    assert [[f.acronym for f in c.layouts[0].fields] for c in dptr.cases] == [
+        ["PRP2", "PRP1"],
+        ["SGL1"],
+    ]
