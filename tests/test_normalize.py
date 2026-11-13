@@ -853,3 +853,24 @@ def test_a_long_name_a_pdf_wraps_over_two_lines_is_one_line_and_no_name():
         None,
         "",
     )
+
+
+def test_an_empty_cell_beyond_the_header_is_no_cell_of_the_row():
+    """The Base 2.4 PDF gives the row of bits 01:00 of SGLS in Figure 338,
+    whose description holds a table of values, an empty cell more than the
+    header has; the row is a field as the .docx gives it"""
+
+    from senfd.documents.normalized import parse_layout
+
+    diagnostics = []
+    layout = parse_layout(
+        rows(
+            ("02", "Keyed (KSDBDS): Keyed."),
+            ("01:00", "SGL Support (SGLS): Valid values.", ""),
+            ("03", "Foo (F): Foo.", "x"),
+        ),
+        ["bits", "description"],
+        diagnostics,
+    )
+    assert [f.acronym for f in layout.fields] == ["KSDBDS", "SGLS"]
+    assert [d.code for d in diagnostics] == ["row-length"]
