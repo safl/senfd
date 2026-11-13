@@ -914,3 +914,21 @@ def test_tables_a_description_gives_by_condition_are_the_cases_of_the_field():
         ["PRP2", "PRP1"],
         ["SGL1"],
     ]
+
+
+def test_a_command_s_own_dword_0_or_1_is_of_its_completion_queue_entry():
+    """Dwords 0 and 1 of a submission queue entry are CDW0 and NSID, which
+    every command shares, so "Create Exported NVM Subsystem - Dword 0" of
+    Base 2.4 Figure 382 is Dword 0 of the completion queue entry, as the
+    text referring to it says"""
+
+    subject = parse_caption("Create Foo Subsystem - Dword 0")
+    assert (subject.kind, subject.name, subject.lower) == (
+        "completion_dword",
+        "Create Foo Subsystem",
+        0,
+    )
+    subject = parse_caption("Foo - Dword 12")
+    assert (subject.kind, subject.lower) == ("command_dword", 12)
+    subject = parse_caption("Foo - Command Dword 0")
+    assert (subject.kind, subject.lower) == ("command_dword", 0)

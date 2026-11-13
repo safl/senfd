@@ -406,6 +406,9 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
         "opcodes",
         [r"^Opcodes for " + NAME + r"(?: Commands| Command Set(?: Commands)?)?$"],
     ),
+    # Dwords 0 and 1 of a submission queue entry are CDW0 and NSID, which
+    # every command shares; a command's own "Dword 0" is of its completion
+    ("completion_dword", [r"^" + NAME + r" - Dword (?P<lower>[01])$"]),
     (
         "command_dword",
         [
