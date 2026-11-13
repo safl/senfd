@@ -1827,3 +1827,72 @@ def test_an_entry_naming_a_value_of_another_field_links_to_it():
         (38, "ZS", "Eh", "ZSF"),
     ]
     assert links[2] is None
+
+
+def test_a_code_is_named_by_the_section_of_the_document_its_reference_names():
+    """CNS 00h and 09h of Base 2.4 cite "NVM Express NVM Command Set
+    Specification", whose sections titled "(CNS 00h)" and "(CNS 09h, CSI
+    00h)" describe them; ZNS 1.5 cites it without "NVM Express". CNS 0Ah
+    cites "I/O Command Set Specification", and two of the three command
+    sets title its section alike. Neither code that one title of two names,
+    nor one of a document without its section, nor one of no document, is
+    named."""
+
+    from senfd.documents.spec import name_by_documents
+
+    nvm = "NVM Express Foo Command Set Specification, Revision 1-3 Ratified 2026-07-31"
+    zns = "NVM Express Zoned Foo Command Set Specification, Revision 1-5"
+    kv = "NVM Express Key Foo Command Set Specification, Revision 1-4"
+    merged = SpecDocument()
+    merged.values = [
+        cns_values(
+            [
+                ("01h", "5.1", False),
+                ("00h", "NVM Express Foo Command Set Specification", False),
+                # As ZNS 1.5 cites the NVM Command Set, without "NVM Express"
+                ("09h", "Foo Command Set Specification", False),
+                ("0Ah", "I/O Command Set Specification", False),
+                ("0Bh", "NVM Express Foo Command Set Specification", False),
+                ("0Ch", "I/O Command Set Specification", False),
+                ("0Dh", "NVM Express Bar Specification", False),
+            ]
+        )
+    ]
+    merged.values[0].entries[0].name = "Identify Controller Data Structure"
+    merged.sections = {
+        "Base": {"5.1": SECTIONS["5.1"]},
+        nvm: {
+            "4.1": "Foo Identify Namespace Data Structure (CNS 00h)",
+            "4.2": "Foo Identify Namespace Data Structure (CNS 09h, CSI 00h)",
+            "4.3": "Foo Specific Namespace (CNS 0Ah, CSI 00h)",
+            "4.4": "Foo Feature (Feature Identifier 0Bh)",
+        },
+        zns: {
+            "4.3": "Foo specific Namespace (CNS 0Ah, CSI 02h)",
+            "4.4": "Bar Namespace (CNS 0Ch, CSI 02h)",
+        },
+        kv: {
+            "4.3": "Specific Foo Namespace (CNS 0Ah, CSI 01h)",
+            "4.4": "Specific Foo Namespace (CNS 0Ch, CSI 01h)",
+        },
+    }
+    name_by_documents(merged)
+    assert [e.name for e in merged.values[0].entries] == [
+        "Identify Controller Data Structure",
+        "Foo Identify Namespace Data Structure",
+        "Foo Identify Namespace Data Structure",
+        "Foo Specific Namespace",
+        None,
+        None,
+        None,
+    ]
+
+
+def test_the_section_titles_of_each_document_are_kept_in_its_merge(tmp_path):
+    """A merge names a code by a section of another document, so the spec
+    document of each document keeps its section titles, and the merge those
+    of every document"""
+
+    spec = spec_of(Path("example") / "example.docx", tmp_path)
+    assert spec.sections["example"]["1.2"] == "Ding command"
+    assert merge([spec]).sections == spec.sections

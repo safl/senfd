@@ -1745,6 +1745,17 @@
             "title": "Errata",
             "type": "array"
         },
+        "sections": {
+            "additionalProperties": {
+                "additionalProperties": {
+                    "type": "string"
+                },
+                "type": "object"
+            },
+            "description": "The title of each numbered section, by its number as printed, of each\ndocument by its name",
+            "title": "Sections",
+            "type": "object"
+        },
         "documents": {
             "additionalProperties": {
                 "$ref": "#/$defs/DocumentMeta"

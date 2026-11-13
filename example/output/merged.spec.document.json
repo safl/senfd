@@ -2,12 +2,12 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "83c25949cf7774df63be3403a92b8304a50d7792413d95a0fc5644b5f4223970",
+    "senfd_sha256": "f76e928dd47af75db621abf9e0df27da93927143b3838c7fc630ca41773cc8c7",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "57fdb8468bf933cf5c8891fe5eddfd82073c0d15c114c6891b67896f27562cb0"
+    "combined_sha256": "515925fc5779293100395c5c6f235713ae63bddc46e39d68778f4294722a6a1b"
   },
   "command_sets": {
     "foobar": {
@@ -9229,11 +9229,25 @@
       }
     }
   ],
+  "sections": {
+    "example": {
+      "1": "Foobar Command Set",
+      "1.1": "Foobar Commands",
+      "1.2": "Ding command",
+      "2": "Admin Commands",
+      "4": "Data Structures",
+      "4.1": "Offset 18h: FOOVER – Foo Version",
+      "4.2": "Baz Capabilities"
+    },
+    "invalid": {
+      "1.1": "FIgures"
+    }
+  },
   "documents": {
     "example": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "83c25949cf7774df63be3403a92b8304a50d7792413d95a0fc5644b5f4223970",
+      "senfd_sha256": "f76e928dd47af75db621abf9e0df27da93927143b3838c7fc630ca41773cc8c7",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -9243,7 +9257,7 @@
     "invalid": {
       "format": 3,
       "version": "0.19.0",
-      "senfd_sha256": "83c25949cf7774df63be3403a92b8304a50d7792413d95a0fc5644b5f4223970",
+      "senfd_sha256": "f76e928dd47af75db621abf9e0df27da93927143b3838c7fc630ca41773cc8c7",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
