@@ -1896,3 +1896,35 @@ def test_the_section_titles_of_each_document_are_kept_in_its_merge(tmp_path):
     spec = spec_of(Path("example") / "example.docx", tmp_path)
     assert spec.sections["example"]["1.2"] == "Ding command"
     assert merge([spec]).sections == spec.sections
+
+
+def test_a_reference_to_a_number_two_sections_share_names_by_the_one_for_the_code():
+    """The Base 2.4 PDF numbers the sections of CNS 14h and CNS 21h both
+    5.2.14.3.1, and both codes cite it: each takes the section whose title
+    names it, and neither is a candidate erratum"""
+
+    from senfd.documents.spec import name_by_sections
+
+    sections = SECTIONS | {
+        "5.3": "Primary Controller Capabilities (CNS 14h)",
+        "5.3 (2)": "Get Underlying Controller List (CNS 21h)",
+    }
+    document = SpecDocument()
+    document.values.append(
+        cns_values(
+            [
+                ("14h", "5.3", False),
+                ("21h", "5.3", False),
+                ("01h", "5.1", False),
+                ("22h to 2Fh", "5.3", False),
+            ]
+        )
+    )
+    name_by_sections(document, sections)
+    assert [e.name for e in document.values[0].entries] == [
+        "Primary Controller Capabilities",
+        "Get Underlying Controller List",
+        "Identify Controller Data Structure",
+        None,
+    ]
+    assert document.errata == []

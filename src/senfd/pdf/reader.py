@@ -325,12 +325,45 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
         if deleted:
             errors.append(Error(message=deleted))
 
+    titles, numbering = titles_of(numbered)
+    errors += numbering
     document = FigureDocument(
         figures=[figures[n] for n in sorted(figures)],
-        sections={s.number: s.title for s in numbered if s.number and s.title},
+        sections=titles,
     )
     document.meta.stem = stem_of(path)
     return document, errors
+
+
+def titles_of(sections: Sequence[Section]) -> Tuple[Dict[str, str], List[Error]]:
+    """
+    The title of each numbered section of 'sections', by its number. A
+    number given again, as the outline of Base 2.4 gives 5.2.14.3.1 to the
+    sections of both CNS 14h and CNS 21h, keys the later section by the
+    number and how many times it is given, "5.2.14.3.1 (2)", and is an error
+    of the document
+    """
+
+    titles: Dict[str, str] = {}
+    errors: List[Error] = []
+    for section in sections:
+        if not (section.number and section.title):
+            continue
+        key, count = section.number, 1
+        while key in titles:
+            count += 1
+            key = f"{section.number} ({count})"
+        if count > 1:
+            errors.append(
+                Error(
+                    message=(
+                        f"Section {section.number}: numbered twice, "
+                        f"'{titles[section.number]}' and '{section.title}'"
+                    )
+                )
+            )
+        titles[key] = section.title
+    return titles, errors
 
 
 def stem_of(path: Path) -> str:
