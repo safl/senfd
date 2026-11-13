@@ -10,6 +10,96 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.20.0
+
+The data model now records what a code generator of definitions had to
+take from the text of the figures: names of values, byte order, ranges
+under conditions, footnotes and the value a description names. The format
+of the data model is 3.
+
+A code without a name in its table takes the title of the section its
+reference cites, without the "(CNS 01h)" that ends it. A code whose
+reference cites another document, as CNS 00h, 09h and 0Ah, takes the
+title of the section of that document that names it, and the spec
+document keeps the title of every section of each document, in
+`sections`. Of the 30 CNS values of Identify that Base 2.4 Figure 336
+does not reserve, senfd 0.19.0 named 8; senfd now names all 30, from the
+.docx and from the PDF. A reference to the section of another code of the
+same table is a candidate erratum, as for CNS 1Fh of Base 2.4, and such a
+code takes the section whose title names it. The outline of the Base 2.4
+PDF numbers the sections of CNS 14h and CNS 21h both 5.2.14.3.1; senfd
+reports that as a document error and keeps both titles.
+
+A status code or other value whose name the PDF wraps over two lines is
+read as one name, and in a table of codes given by name alone, a name of
+more than four words is the name rather than the description. 18 status
+codes of Base 2.4, NVM 1.3, KV 1.4 and Computational Programs 1.3 had no
+name before.
+
+A table of numbered records is a structure of an array of them: NVM 1.3
+Figure 47, the ranges of Dataset Management, is an array of 256 records
+of 16 bytes, each with CATTR, LLB and SLBA. A figure has `mentions`, the
+paragraphs of its section before it that refer to it by number, and an
+array without a count has `maximum` where they state "up to N" entries of
+its name: the Zone Identifiers of the ZNS 1.5 Changed Zone List, 511.
+
+A field that cites no figure links to the one structure as wide as it in
+a section it cites, as VER of Identify Controller to the VS property, or
+else in its own section or one below it whose name ends in the field's
+name, as CATTR of the Dataset Management ranges to Figure 48, "Dataset
+Management - Context Attributes". A figure cited only as an example, in
+a parenthesis opening "e.g.,", is no link.
+
+The tables a description gives by condition, as "If CDW0.PSDT is cleared
+to 00b, then the definition of this field is:", are cases of the field:
+DPTR of the Common Command Format has PRP2 and PRP1 for PSDT 00b, and SGL1
+for 01b and 10b. A nested table of bits whose fields are named in a
+column with another header than "Description" is a layout, as AUS of
+Base 2.4 Figure 292 and CDFLAGS of Boot 1.4 Figure 9. A command's own
+"Dword 0", as Base 2.4 Figure 382 of Create Exported NVM Subsystem, is a
+dword of its completion queue entry. An empty cell beyond the header of a
+row no longer drops the row, which lost the SGLS field at bits 01:00 of
+Identify Controller from the PDF.
+
+A field of NVMe over TCP Figures 30 and 35 has `placements`: its range
+under each condition heading the ranges, HDGSTF=1 and HDGSTF=0, or none
+where the figure says the field is not present. A field of a byte diagram
+has `byte_order`, "big-endian" or "little-endian", where the figure marks
+the bytes of its most and least significant bits; the protection
+information formats of the NVM Command Set are big-endian. A field or an
+entry has `footnotes`, the numbers of the footnote markers printed after
+the last sentence of its description, which the description no longer
+ends with.
+
+An entry without a name has `refers_to` where its description names the
+value of another field by its acronym and name. The Reporting Options 1h
+to 7h of Zone Management Receive, as "List the zones in the ZSE:Empty
+state.", refer to the zone states 1h, 2h, 3h, 4h, Eh, Dh and Fh of the
+field ZS of the Zone Descriptor, with the acronyms ZSE, ZSIO, ZSEO, ZSC,
+ZSF, ZSRO and ZSO.
+
+A feature takes its dwords by the feature identifier in the title of the
+section each figure is in. Base 2.4 Figure 503 went to Flexible Data
+Placement (1Dh) instead of Flexible Data Placement Events (1Eh), and the
+dwords of 82h, 84h, and of 15h and 28h of NVM 1.3, went to no feature.
+
+A name is split from its description at a colon followed by a space, at
+a colon after an acronym or its footnote marker, and at a colon without a
+space only after a name of two words or more in title case. senfd 0.19.0
+named the Reporting Options "List the zones in the ZSE" and so on, and
+left KV 1.4 status 87h, "KV Key Does Not Exist:The KV key does not
+exist.", without a name.
+
+The PDF reader joins a word broken at its hyphen over two lines, where
+it put a space, as in "non- zero" of the caption of NVM 1.3 Figure 156 and
+in the descriptions of 66 fields. It reads the table of Base 2.4 Figure
+232, which the PDF wraps in a table of one cell, and the extent of a
+table now includes the tables nested in its cells, so Figure 348 keeps
+byte 00.
+
+The docs dependencies are at their latest releases, Sphinx 9.2.0 and
+soupsieve 4.1, and the docs build requires Python 3.13.
+
 ## 0.19.0
 
 The data model now records links between figures that a code generator
