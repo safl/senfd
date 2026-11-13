@@ -785,3 +785,28 @@ def test_a_hyphen_hanging_before_and_or_or_joins_no_word():
         "host-\nor controller-initiated"
     )
     assert JOINED.sub("", "read-\nand write-protected") == "read-\nand write-protected"
+
+
+def test_a_section_number_the_outline_gives_twice_keeps_both_titles():
+    """The outline of Base 2.4 numbers both the section of CNS 14h and that of
+    CNS 21h 5.2.14.3.1; the .docx numbers the second 5.2.14.3.3"""
+
+    from senfd.pdf.reader import titles_of
+
+    titles, errors = titles_of(
+        [
+            Section("5.2.14.3.1", "Primary Controller Capabilities (CNS 14h)"),
+            Section("5.2.14.3.2", "Secondary Controller list (CNS 15h)"),
+            Section("5.2.14.3.1", "Get Underlying Controller List (CNS 21h)"),
+            Section(None, "Loose"),
+        ]
+    )
+    assert titles == {
+        "5.2.14.3.1": "Primary Controller Capabilities (CNS 14h)",
+        "5.2.14.3.2": "Secondary Controller list (CNS 15h)",
+        "5.2.14.3.1 (2)": "Get Underlying Controller List (CNS 21h)",
+    }
+    assert [e.message for e in errors] == [
+        "Section 5.2.14.3.1: numbered twice, 'Primary Controller Capabilities "
+        "(CNS 14h)' and 'Get Underlying Controller List (CNS 21h)'"
+    ]

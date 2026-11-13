@@ -2380,7 +2380,9 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
     fails so, or is no section, takes the section whose title names it with
     the label the table's references name, as "(CNS 02h)" for 02h, whose
     reference reads "0". A code with no reference, or reserved, is left
-    unnamed.
+    unnamed. A reference to a number that the document gives two sections,
+    as the Base 2.4 PDF gives 5.2.14.3.1 to those of CNS 14h and CNS 21h,
+    cites the one whose title names the code.
     """
 
     for values in document.values:
@@ -2390,6 +2392,20 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
             if REGEX_SECTION_NUMBER.match(number) and number in sections:
                 cited[i] = (number, sections[number])
         label = label_of(values, sections)
+        for i, (number, _) in list(cited.items()):
+            if not REGEX_NAMED_CODE.match(values.entries[i].value):
+                continue
+            # Of the sections a document numbers alike, as "5.2.14.3.1" and
+            # "5.2.14.3.1 (2)", the one whose title names the code
+            for key, other in sections.items():
+                match = REGEX_TITLE_CODE.search(other)
+                if (
+                    key.startswith(f"{number} (")
+                    and match
+                    and match["label"] == label
+                    and code_value(match["code"]) == code_value(values.entries[i].value)
+                ):
+                    cited[i] = (number, other)
         # A code that titles of the label name more than once, as CNS 06h of
         # each command set, names no section of its own
         titled: Dict[int, List[str]] = {}
