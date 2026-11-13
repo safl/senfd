@@ -646,6 +646,9 @@ class SpecDocument(Document):
     """What senfd normalised, or could not read as data"""
     errata: List[Erratum] = Field(default_factory=list)
     """The candidate errata of the documents"""
+    sections: Dict[str, Dict[str, str]] = Field(default_factory=dict)
+    """The title of each numbered section, by its number as printed, of each
+    document by its name"""
     documents: Dict[str, DocumentMeta] = Field(default_factory=dict)
     """The documents the data model is of, by name, each with the file it
     was made from and the file's SHA-256, by which a published one is known"""
@@ -2349,6 +2352,21 @@ def code_value(code: str) -> int:
     return int(code)
 
 
+def label_of(values: Values, sections: Dict[str, str]) -> Optional[str]:
+    """The label that the titles of the sections cited by the references of
+    'values' name their codes by most often, as "CNS" of "(CNS 01h)" for the
+    CNS values of Identify; None where no title names a code"""
+
+    labels: Dict[str, int] = {}
+    for entry in values.entries:
+        number = entry.columns.get("reference", "").strip()
+        if REGEX_SECTION_NUMBER.match(number) and number in sections:
+            match = REGEX_TITLE_CODE.search(sections[number])
+            if match:
+                labels[match["label"]] = labels.get(match["label"], 0) + 1
+    return max(labels, key=lambda k: labels[k]) if labels else None
+
+
 def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
     """
     A code that its row names in no column, as CNS 01h of Identify, takes the
@@ -2367,15 +2385,11 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
 
     for values in document.values:
         cited: Dict[int, Tuple[str, str]] = {}
-        labels: Dict[str, int] = {}
         for i, entry in enumerate(values.entries):
             number = entry.columns.get("reference", "").strip()
             if REGEX_SECTION_NUMBER.match(number) and number in sections:
                 cited[i] = (number, sections[number])
-                match = REGEX_TITLE_CODE.search(sections[number])
-                if match:
-                    labels[match["label"]] = labels.get(match["label"], 0) + 1
-        label = max(labels, key=lambda k: labels[k]) if labels else None
+        label = label_of(values, sections)
         # A code that titles of the label name more than once, as CNS 06h of
         # each command set, names no section of its own
         titled: Dict[int, List[str]] = {}
@@ -2418,6 +2432,78 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
             title = title or by_code.get(code_value(entry.value))
             if title:
                 entry.name = REGEX_TITLE_CODE.sub("", title)
+
+
+def name_by_documents(document: SpecDocument) -> None:
+    """
+    A code without a name whose reference names another document of the
+    merged 'document', as CNS 00h of Identify in Base 2.4 names "NVM Express
+    NVM Command Set Specification", takes the title of the one section of
+    that document whose title names the code with the label of the table,
+    "NVM Command Set Identify Namespace Data Structure (CNS 00h)". A
+    reference may leave out "NVM Express", as ZNS 1.5 does.
+
+    A reference to "I/O Command Set Specification", as of CNS 0Ah, names
+    every document of a command set, and the code takes the title that more
+    than half of those with a section titled for it give, letter case aside.
+    A code that no such title names, or several titles of one document, is
+    left unnamed.
+    """
+
+    def titled(name: str) -> str:
+        """'name' up to its first comma, as the title of a document, without
+        "NVM Express", which a reference may leave out"""
+
+        title = name.split(",")[0].strip()
+        return title.removeprefix("NVM Express ")
+
+    sections = document.sections
+    for values in document.values:
+        own = values.source.document
+        label = label_of(values, sections.get(own, {}))
+        if label is None:
+            continue
+        for entry in values.entries:
+            reference = entry.columns.get("reference", "").strip()
+            if (
+                entry.name
+                or not reference
+                or REGEX_SECTION_NUMBER.match(reference)
+                or not REGEX_NAMED_CODE.match(entry.value)
+                or "Reserved" in entry.columns.values()
+            ):
+                continue
+            if titled(reference) == "I/O Command Set Specification":
+                named = [
+                    stem
+                    for stem in sections
+                    if stem != own
+                    and titled(stem).endswith(" Command Set Specification")
+                ]
+            else:
+                named = [
+                    stem
+                    for stem in sections
+                    if stem != own and titled(stem) == titled(reference)
+                ]
+            names: List[str] = []
+            for stem in named:
+                titles = []
+                for title in sections[stem].values():
+                    match = REGEX_TITLE_CODE.search(title)
+                    if (
+                        match
+                        and match["label"] == label
+                        and code_value(match["code"]) == code_value(entry.value)
+                    ):
+                        titles.append(REGEX_TITLE_CODE.sub("", title))
+                if len(titles) == 1:
+                    names.append(titles[0])
+            for name in names:
+                same = [n for n in names if n.casefold() == name.casefold()]
+                if len(same) * 2 > len(names):
+                    entry.name = name
+                    break
 
 
 # A value of another field named in a description by its acronym and its
@@ -2513,6 +2599,7 @@ class FromNormalizedDocument(Converter):
         document.documents[document.meta.stem] = document.meta.model_copy()
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)
+        document.sections[document.meta.stem] = dict(normalized.sections)
         name_by_sections(document, normalized.sections)
         document.errata += noted_errata(normalized, document.meta.stem)
         document = resolve(document)
@@ -2531,6 +2618,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
     merged.meta.stem = "merged"
     for document in (d.model_copy(deep=True) for d in documents):
         merged.documents.update(document.documents)
+        merged.sections.update(document.sections)
         for key, command_set in document.command_sets.items():
             into = merged.command_sets.setdefault(
                 key, CommandSet(name=command_set.name)
@@ -2545,6 +2633,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
         merged.diagnostics += [
             d for d in document.diagnostics if d.code != "dwords-unassigned"
         ]
+    name_by_documents(merged)
     merged = resolve(merged)
     hashes = [meta.sha256 for meta in merged.documents.values()]
     if hashes and all(hashes):
