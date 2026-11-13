@@ -232,6 +232,13 @@ def values_of(row: Row, grid: List[str]) -> Optional[Values]:
     is merged across positions joins the text of its cells.
     """
 
+    cells = list(row.cells)
+    while (
+        len(cells) > len(grid) and not cells[-1].text.strip() and not cells[-1].tables
+    ):
+        cells.pop()  # An empty cell beyond the header, as a PDF may give a row
+    if len(cells) != len(row.cells):
+        row = row.model_copy(update={"cells": cells})
     if len(row.cells) != len(grid):
         # The row spans other grid columns than the header, as Word allows; its
         # cells are taken one to one with the header's, or as a heading
