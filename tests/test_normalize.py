@@ -932,3 +932,52 @@ def test_a_command_s_own_dword_0_or_1_is_of_its_completion_queue_entry():
     assert (subject.kind, subject.lower) == ("command_dword", 12)
     subject = parse_caption("Foo - Command Dword 0")
     assert (subject.kind, subject.lower) == ("command_dword", 0)
+
+
+def test_a_nested_table_of_bits_with_another_header_for_its_text_is_a_layout():
+    """AUS of Base 2.4 Figure 292 holds a table headed "Bits", "CDP
+    Authentication Method Identifier" and "CDP Authentication Method", and
+    CDFLAGS of Boot 1.4 Figure 9 one headed "Bits" and "Feature"; the column
+    naming the fields is the text of the layout"""
+
+    from senfd.documents.normalized import parse_nested
+    from senfd.tables import Table
+
+    aus = parse_nested(
+        Table(
+            rows=rows(
+                (
+                    "Bits",
+                    "CDP Authentication Method Identifier",
+                    "CDP Authentication Method",
+                ),
+                ("07:02", "Reserved", "Reserved"),
+                ("01", "02h", "Foo Key Support (FKS): This bit indicates a key."),
+                ("00", "01h", "Foo Credential Support (FCS): This bit indicates one."),
+            )
+        ),
+        [],
+    )
+    assert [(f.range.text, f.acronym, f.columns) for f in aus.fields] == [
+        ("07:02", None, {"cdp_authentication_method_identifier": "Reserved"}),
+        ("01", "FKS", {"cdp_authentication_method_identifier": "02h"}),
+        ("00", "FCS", {"cdp_authentication_method_identifier": "01h"}),
+    ]
+    flags = parse_nested(
+        Table(
+            rows=rows(
+                ("Bits", "Feature"),
+                ("07:01", "Reserved"),
+                ("00", "Block Valid (BLKVLD): If this bit is set to '1', it is valid."),
+            )
+        ),
+        [],
+    )
+    assert [f.acronym for f in flags.fields] == [None, "BLKVLD"]
+    # A table of values keyed by bits names no field
+    assert (
+        parse_nested(
+            Table(rows=rows(("Bits", "Meaning"), ("00", "Ding"), ("01", "Ring"))), []
+        )
+        is None
+    )

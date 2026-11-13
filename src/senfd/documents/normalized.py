@@ -698,12 +698,46 @@ def cases_by_condition(
 
 
 def parse_nested(table: Table, diagnostics: List[Diagnostic]) -> Optional[Layout]:
-    """The layout of a table in a cell, which has a header and no caption"""
+    """The layout of a table in a cell, which has a header and no caption; a
+    table of bits or bytes whose text has another header, as "Feature", is
+    one where text_column_of() finds the column naming its fields"""
 
     idx, headers, grid, shape = find_header(table.rows)
-    if shape != "layout" or idx is None:
+    if idx is None:
         return None
+    if shape != "layout":
+        column = text_column_of(table.rows[idx + 1 :], grid)
+        if column is None:
+            return None
+        grid = ["description" if c == column else c for c in grid]
     return parse_layout(table.rows[idx + 1 :], grid, diagnostics, headers)
+
+
+def text_column_of(rows: List[Row], grid: List[str]) -> Optional[str]:
+    """
+    Of a table whose first column is bits or bytes and which has no column of
+    descriptions or names, the column naming its fields, as "CDP
+    Authentication Method" of AUS in Base 2.4 Figure 292: the last column in
+    whose every row a field with an acronym is named, reserved rows aside;
+    None where there is none
+    """
+
+    if (
+        not grid
+        or grid[0] not in ("bits", "bytes")
+        or {"description", "name"} & set(grid)
+    ):
+        return None
+    for column in reversed(unique(grid[1:])):
+        texts = []
+        for row in rows:
+            values = values_of(row, grid)
+            text = values.texts.get(column, "") if values else ""
+            if text and text.lower() != "reserved":
+                texts.append(text)
+        if texts and all(parse_field_description(t)[1] for t in texts):
+            return column
+    return None
 
 
 def parse_nested_values(
