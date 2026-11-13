@@ -282,6 +282,10 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
         return None, None, "\n".join(p for p in [first, more] if p)
 
     name = match["name"].strip()
+    if match["rest"] is None and not match["acronym"] and is_wrapped_name(first, more):
+        # A name a PDF wraps over two lines, which the .docx gives as one
+        joined = normalize_text(f"{first} {more}")
+        return (joined, None, "") if is_name(joined) else (None, None, joined)
     if match["rest"] is None and not match["acronym"] and not is_name(name):
         # A sentence, as "Ignored by the controller", describes and names nothing
         return None, None, "\n".join(p for p in [first, more] if p)
@@ -289,6 +293,29 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
     rest = (match["rest"] or "").strip()
     description = "\n".join(p for p in [rest, more] if p)
     return name, match["acronym"], description
+
+
+def is_long_name(text: str) -> bool:
+    """Whether 'text' reads as a name of more than four words, which is_name()
+    leaves to its context: in title case, with at most one small word, as
+    "of", and no full stop, as "Invalid Number of Controller Resources" """
+
+    words = text.split()
+    return (
+        len(words) > 4
+        and not text.endswith(".")
+        and is_title(text)
+        and sum(w in SMALL_WORDS for w in words) <= 1
+    )
+
+
+def is_wrapped_name(first: str, more: str) -> bool:
+    """Whether 'first' and the one line 'more' are one long name"""
+
+    if not more or "\n" in more or any(c in more for c in ":()"):
+        return False
+    joined = normalize_text(f"{first} {more}")
+    return is_name(joined) or is_long_name(joined)
 
 
 def unwrapped_name(text: str) -> Optional[Tuple[str, str]]:
