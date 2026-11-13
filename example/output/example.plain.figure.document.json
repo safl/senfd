@@ -2,7 +2,7 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "81f875e35bb1c6d7620a6dd0e89e644390f0fa6c94f2766f2ff6f42e9b5e540b",
+    "senfd_sha256": "6d092050cf2b7aee0a096eec240d9ad9f12f10bdad1c2e8b45a5f39043a19099",
     "stem": "example",
     "file": "example.docx",
     "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -18,6 +18,7 @@
       "pdf_page": null,
       "section": "1.1",
       "section_title": "Foobar Commands",
+      "mentions": [],
       "table": {
         "table_nr": 1,
         "rows": [
@@ -264,6 +265,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 2,
         "rows": [
@@ -334,6 +336,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 3,
         "rows": [
@@ -404,6 +407,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 4,
         "rows": [
@@ -460,6 +464,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 5,
         "rows": [
@@ -516,6 +521,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 6,
         "rows": [
@@ -572,6 +578,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 7,
         "rows": [
@@ -628,6 +635,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 8,
         "rows": [
@@ -684,6 +692,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 9,
         "rows": [
@@ -754,6 +763,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 10,
         "rows": [
@@ -838,6 +848,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 11,
         "rows": [
@@ -894,6 +905,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 12,
         "rows": [
@@ -950,6 +962,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 13,
         "rows": [
@@ -1006,6 +1019,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 14,
         "rows": [
@@ -1202,6 +1216,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 15,
         "rows": [
@@ -1334,6 +1349,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 16,
         "rows": [
@@ -1390,6 +1406,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 17,
         "rows": [
@@ -1446,6 +1463,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 18,
         "rows": [
@@ -1502,6 +1520,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 19,
         "rows": [
@@ -1558,6 +1577,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 20,
         "rows": [
@@ -1614,6 +1634,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 21,
         "rows": [
@@ -1670,6 +1691,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "table": {
         "table_nr": 22,
         "rows": [
@@ -1726,6 +1748,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 23,
         "rows": [
@@ -1944,6 +1967,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 24,
         "rows": [
@@ -2060,6 +2084,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 25,
         "rows": [
@@ -2130,6 +2155,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 26,
         "rows": [
@@ -2261,6 +2287,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 27,
         "rows": [
@@ -2331,6 +2358,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 28,
         "rows": [
@@ -2387,6 +2415,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 29,
         "rows": [
@@ -2443,6 +2472,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 30,
         "rows": [
@@ -2527,6 +2557,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 31,
         "rows": [
@@ -2628,6 +2659,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 32,
         "rows": [
@@ -2698,6 +2730,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 33,
         "rows": [
@@ -2886,6 +2919,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "table": {
         "table_nr": 34,
         "rows": [
@@ -2996,6 +3030,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 35,
         "rows": [
@@ -3128,6 +3163,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 36,
         "rows": [
@@ -3184,6 +3220,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 37,
         "rows": [
@@ -3240,6 +3277,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 38,
         "rows": [
@@ -3296,6 +3334,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 39,
         "rows": [
@@ -3352,6 +3391,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 40,
         "rows": [
@@ -3422,6 +3462,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 41,
         "rows": [
@@ -3492,6 +3533,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 42,
         "rows": [
@@ -3548,6 +3590,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 43,
         "rows": [
@@ -3604,6 +3647,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 44,
         "rows": [
@@ -3674,6 +3718,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 45,
         "rows": [
@@ -3730,6 +3775,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 46,
         "rows": [
@@ -3786,6 +3832,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 47,
         "rows": [
@@ -3856,6 +3903,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 48,
         "rows": [
@@ -3912,6 +3960,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 49,
         "rows": [
@@ -3968,6 +4017,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 50,
         "rows": [
@@ -4024,6 +4074,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 51,
         "rows": [
@@ -4134,6 +4185,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 52,
         "rows": [
@@ -4190,6 +4242,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 53,
         "rows": [
@@ -4246,6 +4299,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 54,
         "rows": [
@@ -4302,6 +4356,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 55,
         "rows": [
@@ -4358,6 +4413,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 56,
         "rows": [
@@ -4474,6 +4530,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 57,
         "rows": [
@@ -4530,6 +4587,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 58,
         "rows": [
@@ -4631,6 +4689,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 59,
         "rows": [
@@ -4702,6 +4761,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 60,
         "rows": [
@@ -4758,6 +4818,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 61,
         "rows": [
@@ -4814,6 +4875,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 62,
         "rows": [
@@ -4870,6 +4932,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 63,
         "rows": [
@@ -4926,6 +4989,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 64,
         "rows": [
@@ -4982,6 +5046,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 65,
         "rows": [
@@ -5038,6 +5103,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 66,
         "rows": [
@@ -5109,6 +5175,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 67,
         "rows": [
@@ -5195,6 +5262,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 68,
         "rows": [
@@ -5513,6 +5581,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 69,
         "rows": [
@@ -5599,6 +5668,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 70,
         "rows": [
@@ -5711,6 +5781,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 71,
         "rows": [
@@ -5767,6 +5838,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 72,
         "rows": [
@@ -5823,6 +5895,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 73,
         "rows": [
@@ -5933,6 +6006,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 74,
         "rows": [
@@ -6023,6 +6097,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 75,
         "rows": [
@@ -6157,6 +6232,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 76,
         "rows": [
@@ -6227,6 +6303,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 77,
         "rows": [
@@ -6283,6 +6360,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 78,
         "rows": [
@@ -6393,6 +6471,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 79,
         "rows": [
@@ -6449,6 +6528,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 80,
         "rows": [
@@ -6505,6 +6585,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 81,
         "rows": [
@@ -6561,6 +6642,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 82,
         "rows": [
@@ -6617,6 +6699,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 82,
         "rows": [
@@ -6673,6 +6756,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 83,
         "rows": [
@@ -6785,6 +6869,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 84,
         "rows": [
@@ -6875,6 +6960,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 85,
         "rows": [
@@ -6987,6 +7073,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 86,
         "rows": [
@@ -7119,6 +7206,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 87,
         "rows": [
@@ -7231,6 +7319,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "table": {
         "table_nr": 88,
         "rows": [
@@ -7357,6 +7446,7 @@
       "pdf_page": null,
       "section": "4.1",
       "section_title": "Offset 18h: FOOVER – Foo Version",
+      "mentions": [],
       "table": {
         "table_nr": 89,
         "rows": [
@@ -7427,6 +7517,7 @@
       "pdf_page": null,
       "section": "4.1",
       "section_title": "Offset 18h: FOOVER – Foo Version",
+      "mentions": [],
       "table": {
         "table_nr": 90,
         "rows": [
@@ -7483,6 +7574,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 91,
         "rows": [
@@ -7706,6 +7798,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 92,
         "rows": [
@@ -7776,6 +7869,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 93,
         "rows": [
@@ -7860,6 +7954,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 94,
         "rows": [
@@ -7944,6 +8039,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 95,
         "rows": [
@@ -8112,6 +8208,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 96,
         "rows": [
@@ -8182,6 +8279,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 97,
         "rows": [
@@ -8252,6 +8350,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 98,
         "rows": [
@@ -8698,6 +8797,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "table": {
         "table_nr": 99,
         "rows": [
@@ -8968,6 +9068,7 @@
       "pdf_page": null,
       "section": "4.1",
       "section_title": "Offset 18h: FOOVER – Foo Version",
+      "mentions": [],
       "table": null
     }
   ],

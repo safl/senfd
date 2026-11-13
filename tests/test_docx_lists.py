@@ -91,3 +91,25 @@ def test_a_docx_gives_the_title_of_each_section(tmp_path):
     for figure in figures.figures:
         if figure.section:
             assert figures.sections[figure.section] == figure.section_title
+
+
+def test_the_paragraphs_before_a_table_since_its_heading_are_given_by_table():
+    """A figure's paragraphs are those of its section before it, as the one
+    stating "up to 511 Zone Identifier entries" before ZNS 1.5 Figure 47"""
+
+    from docx.enum.style import WD_STYLE_TYPE
+
+    from senfd.documents.plain import mentioning, paragraphs_before_tables
+
+    document = docx.Document()
+    document.styles.add_style("NVMe H1", WD_STYLE_TYPE.PARAGRAPH)
+    document.add_paragraph("Of another section, Figure 1.")
+    document.add_paragraph("Changed Zone List", style="NVMe H1")
+    document.add_paragraph("Up to 511 entries, as defined in Figure 1.")
+    document.add_table(rows=1, cols=1).cell(0, 0).text = "Figure 1: Foo"
+    document.add_paragraph("After Figure 1, and before Figure 2.")
+    document.add_table(rows=1, cols=1).cell(0, 0).text = "Figure 2: Bar"
+
+    before = paragraphs_before_tables(document)
+    assert mentioning(before[1], 1) == ["Up to 511 entries, as defined in Figure 1."]
+    assert mentioning(before[2], 2) == ["After Figure 1, and before Figure 2."]

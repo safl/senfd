@@ -61,6 +61,19 @@
                     "description": "The offset of the first entry, which is where the array starts",
                     "title": "Lower",
                     "type": "integer"
+                },
+                "maximum": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The most entries the array holds, where it has no count and a\nparagraph referring to its figure states it, as \"up to 511 Zone\nIdentifier entries\" of the Changed Zone List of ZNS 1.5",
+                    "title": "Maximum"
                 }
             },
             "required": [

@@ -20,11 +20,11 @@ from typing import Dict, List, NamedTuple, Optional, Sequence, Tuple
 import pdfplumber
 import pikepdf
 
-from senfd.documents.plain import Figure, FigureDocument
+from senfd.documents.plain import Figure, FigureDocument, mentioning
 from senfd.errors import Error, FigureDuplicateNumberError
 from senfd.pdf.pages import Pages
 from senfd.pdf.tables import table_of
-from senfd.pdf.tree import HEADINGS, paragraphs, rows, walk, wrapped
+from senfd.pdf.tree import HEADINGS, Node, paragraphs, rows, walk, wrapped
 from senfd.tables import Cell, Row, Table
 
 CAPTION = re.compile(r"^Figure\s+(\d+)\s*:\s*(.*?)$", re.S)
@@ -235,8 +235,14 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
         pieces: Dict[int, List[Tuple[int, Table]]] = {}
         last: Optional[Figure] = None
         begun = 0
+        # The paragraphs since the last heading or table, read only where a
+        # figure begins after them
+        pending: List[Node] = []
         for node in walk(root["/K"]):
-            if node.name in HEADINGS:
+            if node.name == "/P":
+                pending.append(node)
+            elif node.name in HEADINGS:
+                pending = []
                 text = words(pages.text(paragraphs(node.element, node.page))[0])
                 match = NUMBERED.match(text)
                 title = match[2] if match else text
@@ -253,6 +259,7 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                 if entry:
                     entries[int(entry[1])] = int(entry[3])
             elif node.name == "/Table":
+                before, pending = pending, []
                 said: List[Error] = []
                 found, extent = table_of(pages, rows(node.element, node.page), said)
                 inner = wrapped(node.element)
@@ -313,6 +320,10 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     pdf_page=min(extent) + 1 if extent else None,
                     section=where.number,
                     section_title=where.title,
+                    mentions=mentioning(
+                        [pages.text(paragraphs(p.element, p.page))[0] for p in before],
+                        number,
+                    ),
                     table=table,
                 )
                 pieces[number] = []

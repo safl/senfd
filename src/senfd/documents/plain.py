@@ -49,6 +49,9 @@ class Figure(BaseModel):
     # The number and title of the section the figure is in, as "5.2.4"
     section: Optional[str] = None
     section_title: Optional[str] = None
+    # The paragraphs of its section before it that refer to it by number, as
+    # "The Changed Zone List log page is defined in Figure 47."
+    mentions: List[str] = Field(default_factory=list)
     table: Optional[senfd.tables.Table] = None
 
     @classmethod
@@ -227,6 +230,36 @@ def sections_of(
             by_caption[caption.figure_nr] = sections.current
 
     return by_table, by_caption, titles, errors
+
+
+def mentioning(texts: List[str], figure_nr: int) -> List[str]:
+    """Of the paragraphs 'texts', those that refer to Figure 'figure_nr' by
+    its number; its caption is not one"""
+
+    pattern = re.compile(rf"\bFigure\s+{figure_nr}(?![\d:])")
+    return [" ".join(t.split()) for t in texts if pattern.search(t)]
+
+
+def paragraphs_before_tables(docx_document) -> Dict[int, List[str]]:
+    """The text of the paragraphs before each top-level table, by its index
+    from 1, since the heading or the table before it"""
+
+    before: Dict[int, List[str]] = {}
+    texts: List[str] = []
+    table_nr = 0
+    for element in docx_document.element.body.iterchildren():
+        tag = element.tag.rsplit("}", 1)[-1]
+        if tag == "tbl":
+            table_nr += 1
+            before[table_nr], texts = texts, []
+        elif tag == "p":
+            paragraph = docx.text.paragraph.Paragraph(element, docx_document)
+            style = paragraph.style.name if paragraph.style is not None else ""
+            if heading_level(style):
+                texts = []
+            elif not style.startswith("toc") and style != "table of figures":
+                texts.append(text_of_paragraph(element))
+    return before
 
 
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
@@ -583,10 +616,15 @@ class FromDocx(Converter):
         # The section of each figure
         by_table, by_caption, titles, section_errors = sections_of(docx_document)
         errors += section_errors
+        before = paragraphs_before_tables(docx_document)
         for figure in figures.values():
             figure_table = figure.table.table_nr if figure.table else None
             section = by_table.get(figure_table) if figure_table else None
             figure.section, figure.section_title = section or (None, None)
+            if figure_table:
+                figure.mentions = mentioning(
+                    before.get(figure_table, []), figure.figure_nr
+                )
 
         # Update tabular figures with page_nr
         # Add non-tabular figures

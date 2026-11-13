@@ -258,6 +258,10 @@ class Array(Model):
     """The size of one entry, in the unit of the field"""
     lower: int
     """The offset of the first entry, which is where the array starts"""
+    maximum: Optional[int] = None
+    """The most entries the array holds, where it has no count and a
+    paragraph referring to its figure states it, as "up to 511 Zone
+    Identifier entries" of the Changed Zone List of ZNS 1.5"""
 
 
 class Case(CaseCommon):
@@ -1176,6 +1180,27 @@ def arrays_of(fields: List[Bits]) -> None:
             )
 
 
+def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
+    """Set the maximum of each array of 'fields' without a count that one of
+    'mentions', the paragraphs referring to their figure, states as "up to
+    511 Zone Identifier entries" or "up to 511 Lost Host Communication
+    Entries" """
+
+    for field in fields:
+        array = field.array
+        if array is None or array.count is not None:
+            continue
+        name = re.escape(array.name)
+        if array.name.endswith("Entry"):
+            name = re.escape(array.name[: -len("Entry")]) + "(?:Entry|Entries)"
+        pattern = re.compile(
+            rf"\bup to (\d+) {name}(?:\s+entries)?\b", flags=re.IGNORECASE
+        )
+        found = {int(m[1]) for text in mentions for m in pattern.finditer(text)}
+        if len(found) == 1:
+            array.maximum = found.pop()
+
+
 def took(
     document: "SpecDocument",
     errata: List[Erratum],
@@ -1387,6 +1412,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         return
 
     fields, errata, unnamed = checked(fields_of(figure.layout), None, source)
+    maxima_of(fields, figure.mentions)
     if subject.kind in WHOLE and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
     took(document, errata, unnamed, source)

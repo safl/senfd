@@ -810,3 +810,28 @@ def test_a_section_number_the_outline_gives_twice_keeps_both_titles():
         "Section 5.2.14.3.1: numbered twice, 'Primary Controller Capabilities "
         "(CNS 14h)' and 'Get Underlying Controller List (CNS 21h)'"
     ]
+
+
+def test_a_published_pdf_gives_a_figure_the_paragraphs_that_refer_to_it(public):
+    """ZNS 1.5 states the most Zone Identifiers of the Changed Zone List only
+    in the paragraph that refers to Figure 47, before it"""
+
+    _, path = document_named(public, "Zoned Namespace Command Set 1.5")
+    figures, _ = read(path)
+    (figure,) = [f for f in figures.figures if f.figure_nr == 47]
+    (mention,) = figure.mentions
+    assert "up to 511 Zone Identifier entries" in mention
+    assert "Figure 47" in mention
+
+
+def test_a_figure_is_mentioned_by_its_number_and_not_by_its_caption():
+    from senfd.documents.plain import mentioning
+
+    assert mentioning(
+        [
+            "The log page is defined in Figure 47.",
+            "Figure 47: Changed Zone List Log Page",
+            "Refer to Figure 470 and Figure 4.",
+        ],
+        47,
+    ) == ["The log page is defined in Figure 47."]
