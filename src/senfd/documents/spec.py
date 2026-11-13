@@ -1067,7 +1067,9 @@ def decide(case: Case, fields: List[Bits]) -> None:
     """Set the selector of 'case' to the acronym of the controlling field,
     found among 'fields', and set the number of each value in 'case.when'.
     The number comes from the controlling field's value of that name, or from
-    the code that the case writes in place of a name."""
+    the code that the case writes in place of a name, also where the
+    controlling field is of another figure, as PSDT of CDW0 for the Data
+    Pointer."""
 
     names = (alias(case.selector),)
     by = next(
@@ -1078,11 +1080,10 @@ def decide(case: Case, fields: List[Bits]) -> None:
         ),
         None,
     )
-    if by is None:
-        return
-    case.selector = by.acronym or by.name
     numbers: Dict[str, int] = {}
-    for value in by.values:
+    if by is not None:
+        case.selector = by.acronym or by.name
+    for value in by.values if by is not None else []:
         typed = value.typed.get(value.value_column)
         if typed is None or typed.lower is None or typed.lower != typed.upper:
             continue

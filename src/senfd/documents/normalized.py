@@ -488,6 +488,10 @@ def parse_layout(
     # known, because a table of cases is recognised by the other field that
     # heads its first column
     for field, tables in held:
+        conditional = cases_by_condition(field, tables, layout.unit, diagnostics)
+        if conditional:
+            field.cases += conditional
+            continue
         siblings = [other for other in layout.fields if other is not field]
         for table in tables:
             cases = parse_cases(table, siblings, diagnostics)
@@ -646,6 +650,50 @@ def parse_cases(
             for nested in cell.tables:
                 read_nested(nested, case, diagnostics)
         cases.append(case)
+    return cases
+
+
+# A sentence before a table in a cell that says when the table defines the
+# field, as "If CDW0.PSDT is set to 01b or 10b, then the definition of this
+# field is:" of the Data Pointer
+REGEX_DEFINED_WHEN = re.compile(
+    r"\bIf (?:\w+\.)?(?P<selector>[A-Z][A-Z0-9]*) is (?:cleared|set) to "
+    r"(?P<values>.+?), then the definition of this field is:"
+)
+
+
+def cases_by_condition(
+    field: LayoutField, tables: List[Table], unit: Unit, diagnostics: List[Diagnostic]
+) -> List[LayoutCase]:
+    """
+    The cases of 'field' where its description says, before each of
+    'tables', for which values of another field the table defines it, as the
+    Data Pointer of the Common Command Format by the PSDT of CDW0; a table
+    without a header is rows of a range in 'unit' and a description. None
+    where the sentences and the tables are not one to one.
+    """
+
+    conditions = list(REGEX_DEFINED_WHEN.finditer(" ".join(field.description.split())))
+    if not tables or len(conditions) != len(tables):
+        return []
+    cases: List[LayoutCase] = []
+    for condition, table in zip(conditions, tables):
+        nested = parse_nested(table, diagnostics)
+        if nested is None and all(
+            len(row.cells) == 2 and parse_range(unit, row.cells[0].text)
+            for row in table.rows
+        ):
+            nested = parse_layout(table.rows, [unit, "description"], diagnostics)
+        if nested is None or not nested.fields:
+            return []
+        when = re.split(r",\s*(?:or\s+)?|\s+or\s+", condition["values"])
+        cases.append(
+            LayoutCase(
+                selector=condition["selector"],
+                when=[value.strip() for value in when if value.strip()],
+                layouts=[nested],
+            )
+        )
     return cases
 
 

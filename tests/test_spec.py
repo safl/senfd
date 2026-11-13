@@ -2108,3 +2108,47 @@ def test_a_field_is_linked_to_the_structure_its_name_captions_in_its_section():
     cattr, length = spec.structures[0].fields
     assert cattr.structure is not None and cattr.structure.figure_nr == 2
     assert length.structure is None
+
+
+def test_a_case_by_a_field_of_another_figure_has_the_numbers_of_its_codes():
+    """The cases of DPTR of Base 2.4 Figure 93 are by PSDT of CDW0, which
+    another figure lays out; "00b", "01b" and "10b" are codes"""
+
+    from senfd.tables import Cell, Table
+
+    def table(*texts):
+        from senfd.tables import Row
+
+        return Table(rows=[Row(cells=[Cell(text=t) for t in row]) for row in texts])
+
+    described = Cell(
+        text=(
+            "Data Pointer (DPTR): The data.\n"
+            "If CDW0.PSDT is cleared to 00b, then the definition of this field is:\n"
+            "If CDW0.PSDT is set to 01b or 10b, then the definition of this field is:"
+        ),
+        tables=[
+            table(
+                ("39:32", "PRP Entry 2 (PRP2): The second."),
+                ("31:24", "PRP Entry 1 (PRP1): The first."),
+            ),
+            table(("39:24", "SGL Entry 1 (SGL1): The first segment.")),
+        ],
+    )
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Command Format",
+            ("Bytes", "Description"),
+            ("23:00", "Foo (F): Foo."),
+            ("39:24", described),
+        )
+    )
+    dptr = spec.structures[0].fields[1]
+    assert [
+        (c.selector, [(w.name, w.value) for w in c.when], [f.acronym for f in c.fields])
+        for c in dptr.cases
+    ] == [
+        ("PSDT", [("00b", 0)], ["PRP2", "PRP1"]),
+        ("PSDT", [("01b", 1), ("10b", 2)], ["SGL1"]),
+    ]
