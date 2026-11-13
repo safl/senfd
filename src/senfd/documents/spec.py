@@ -34,7 +34,14 @@ from senfd.documents.normalized import (
 )
 from senfd.errors import Error
 from senfd.fields import Role
-from senfd.normalize import CaptionKind, Diagnostic, note, warning
+from senfd.normalize import (
+    CaptionKind,
+    Diagnostic,
+    is_long_name,
+    normalize_text,
+    note,
+    warning,
+)
 from senfd.ranges import RangeKind, Unit
 import senfd.fields
 import senfd.identity
@@ -2352,6 +2359,30 @@ def code_value(code: str) -> int:
     return int(code)
 
 
+def name_lists_of_names(document: SpecDocument) -> None:
+    """
+    An entry whose description is a name of more than four words, as
+    "Invalid Number of Controller Resources" of Base 2.4 Figure 104, takes it
+    as its name, where the list the entry is in is of names: no entry of it
+    has both a name and a description, and as many entries have a name as
+    have none, counting single codes only. A range of values is left as it
+    is.
+    """
+
+    lists = [values.entries for values in document.values]
+    lists += [field.values for field, _ in fields_with_sources(document)]
+    for entries in lists:
+        codes = [e for e in entries if REGEX_NAMED_CODE.match(e.value)]
+        named = [e for e in codes if e.name]
+        unnamed = [e for e in codes if not e.name]
+        if any(e.description for e in named) or len(named) < len(unnamed):
+            continue
+        for entry in unnamed:
+            text = normalize_text(entry.description)
+            if is_long_name(text):
+                entry.name, entry.description = text, ""
+
+
 def label_of(values: Values, sections: Dict[str, str]) -> Optional[str]:
     """The label that the titles of the sections cited by the references of
     'values' name their codes by most often, as "CNS" of "(CNS 01h)" for the
@@ -2616,6 +2647,7 @@ class FromNormalizedDocument(Converter):
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)
         document.sections[document.meta.stem] = dict(normalized.sections)
+        name_lists_of_names(document)
         name_by_sections(document, normalized.sections)
         document.errata += noted_errata(normalized, document.meta.stem)
         document = resolve(document)

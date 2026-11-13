@@ -1928,3 +1928,52 @@ def test_a_reference_to_a_number_two_sections_share_names_by_the_one_for_the_cod
         None,
     ]
     assert document.errata == []
+
+
+def test_a_long_name_in_a_list_of_names_is_a_name():
+    """Base 2.4 Figure 104 gives the status codes by name alone; a name of
+    more than four words, as "Invalid Number of Controller Resources", reads
+    as no name by itself, but the list it is in is of names. A range, and a
+    list whose entries have descriptions, are left as they are."""
+
+    from senfd.documents.spec import Entry, Source, Values, name_lists_of_names
+
+    def values(*rows):
+        return Values(
+            kind="status_values",
+            columns=["value", "description"],
+            entries=[
+                Entry(value=value, value_column="value", name=name, description=text)
+                for value, name, text in rows
+            ],
+            source=Source(document="Base", figure_nr=104),
+        )
+
+    names = values(
+        ("20h", "Invalid Secondary Controller State", ""),
+        ("21h", None, "Invalid Number of Controller Resources"),
+        ("22h", "Invalid Controller Identifier", ""),
+        ("23h", None, "Sanitize Prohibited While Persistent Memory Region is Enabled"),
+        ("80h to BFh", None, "I/O Command Set Specific or Fabrics Command Specific"),
+    )
+    described = values(
+        ("01h", "Invalid Field", "A reserved field is set."),
+        ("02h", None, "Invalid Number of Controller Resources"),
+    )
+    sentences = values(
+        ("01h", "Foo", ""),
+        ("02h", None, "The value is not supported by the controller."),
+        ("03h", None, "Ignored by the Controller in Any State"),
+    )
+    document = SpecDocument(values=[names, described, sentences])
+    name_lists_of_names(document)
+    assert [e.name for e in names.entries] == [
+        "Invalid Secondary Controller State",
+        "Invalid Number of Controller Resources",
+        "Invalid Controller Identifier",
+        "Sanitize Prohibited While Persistent Memory Region is Enabled",
+        None,
+    ]
+    assert names.entries[1].description == ""
+    assert [e.name for e in described.entries] == ["Invalid Field", None]
+    assert [e.name for e in sentences.entries] == ["Foo", None, None]
