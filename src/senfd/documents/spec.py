@@ -2140,6 +2140,7 @@ def fields_within(fields: List[Bits]) -> Iterator[Bits]:
 
 
 REGEX_FIGURE = re.compile(r"\bFigure\s+(\d+)")
+REGEX_SECTION = re.compile(r"\bsection\s+(\d+(?:\.\d+)+)\b")
 # Words of a caption that mark a table of values without naming its field
 VALUES_WORDS = {"value", "code", "definition", "encoding", "list"}
 
@@ -2237,7 +2238,13 @@ def link_structures(document: SpecDocument) -> None:
     description of LBAF0 also refers to Figure 127, which is wider. An entry
     of an array that refers to no such figure is linked to the one structure,
     as wide as the entry, whose name appears in its description, for example
-    "an I/O Command Set Vector". All entries of an array get the structure
+    "an I/O Command Set Vector". A field whose description refers to no
+    figure is linked to the one structure as wide as it in a section its
+    description cites, as VER of Identify Controller to VS, "defined in
+    section 3.1.4.2", or else in the section of its own figure or one below
+    it, whose name ends in the field's name, as CATTR of the ranges of
+    Dataset Management to the "Dataset Management - Context Attributes".
+    All entries of an array get the structure
     that any of them has. A structure that lays out the entries of an array
     becomes a data structure whatever its caption says, and uncovered() then
     checks its fields for gaps.
@@ -2257,6 +2264,34 @@ def link_structures(document: SpecDocument) -> None:
             if int(number) != source.figure_nr
         ]
         found = [key for key in named if key in widths and widths[key] == bits]
+        others = [
+            key
+            for key in structures
+            if key[0] == source.document
+            and key[1] != source.figure_nr
+            and widths[key] == bits
+        ]
+        if not found and not named:
+            # Of the structures of the sections cited, one whose only field is
+            # the field itself, as DID of a CNS Specific Identifier, lays out
+            # nothing of it
+            cited = set(REGEX_SECTION.findall(field.description))
+            found = [
+                key
+                for key in others
+                if structures[key].source.section in cited
+                and [f.acronym for f in structures[key].fields] != [field.acronym]
+            ]
+        if not found and not named and field.name and source.section:
+            name = alias(field.name)
+            found = [
+                key
+                for key in others
+                if (structures[key].source.section or "").startswith(source.section)
+                and (structures[key].source.section or "")[len(source.section) :][:1]
+                in ("", ".")
+                and alias(structures[key].name).endswith(f"_{name}")
+            ]
         if not found and field.array:
             text = f" {alias(field.description).replace('_', ' ')} "
             found = [
