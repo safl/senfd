@@ -117,6 +117,8 @@ class NormalizedFigure(BaseModel):
     pdf_page: Optional[int] = None
     section: Optional[str] = None
     section_title: Optional[str] = None
+    # The paragraphs of its section before it that refer to it by number
+    mentions: List[str] = Field(default_factory=list)
     subject: Subject
     shape: Optional[str] = None
     headers: List[str] = Field(default_factory=list)
@@ -798,6 +800,7 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         pdf_page=figure.pdf_page,
         section=figure.section,
         section_title=figure.section_title,
+        mentions=figure.mentions,
         subject=parse_caption(caption),
     )
 

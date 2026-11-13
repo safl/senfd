@@ -1977,3 +1977,41 @@ def test_a_long_name_in_a_list_of_names_is_a_name():
     assert names.entries[1].description == ""
     assert [e.name for e in described.entries] == ["Invalid Field", None]
     assert [e.name for e in sentences.entries] == ["Foo", None, None]
+
+
+def test_an_array_ending_in_a_formula_has_the_maximum_its_figure_s_text_states():
+    """ZNS 1.5 Figure 47 gives the last Zone Identifier as "Zone Identifier
+    NZID-1", at a formula; the paragraph before it says the log page holds
+    "up to 511 Zone Identifier entries", and Base 2.4 says "up to 511 Lost
+    Host Communication Entries" of entries named in the singular"""
+
+    from senfd.documents.spec import Array, Bits, maxima_of
+
+    def entry(name, index):
+        return Bits(
+            name=f"{name} {index}",
+            unit="bytes",
+            range="15:08",
+            role="field",
+            kind="span",
+            upper=15,
+            lower=8,
+            width=8,
+            array=Array(name=name, index=index, first=0, stride=8, lower=8),
+        )
+
+    zones = [entry("Zone Identifier", 0), entry("Zone Identifier", None)]
+    lost = [entry("Lost Host Communication Entry", 0)]
+    counted = [entry("Foo", 0)]
+    counted[0].array.count = 4
+    maxima_of(
+        zones + lost + counted,
+        [
+            "This log page contains a Zone Identifier List with up to 511 Zone "
+            "Identifier entries. It is defined in Figure 47.",
+            "A header followed by a list of up to 511 Lost Host Communication "
+            "Entries, as in Figure 47.",
+            "Up to 9 Foo entries.",
+        ],
+    )
+    assert [f.array.maximum for f in zones + lost + counted] == [511, 511, 511, None]

@@ -177,6 +177,13 @@
                     "default": null,
                     "title": "Section Title"
                 },
+                "mentions": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Mentions",
+                    "type": "array"
+                },
                 "table": {
                     "anyOf": [
                         {

@@ -2,7 +2,7 @@
   "meta": {
     "format": 3,
     "version": "0.19.0",
-    "senfd_sha256": "81f875e35bb1c6d7620a6dd0e89e644390f0fa6c94f2766f2ff6f42e9b5e540b",
+    "senfd_sha256": "6d092050cf2b7aee0a096eec240d9ad9f12f10bdad1c2e8b45a5f39043a19099",
     "stem": "example",
     "file": "example.docx",
     "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -17,6 +17,7 @@
       "pdf_page": null,
       "section": "1.1",
       "section_title": "Foobar Commands",
+      "mentions": [],
       "subject": {
         "kind": "opcodes",
         "name": "Foobar",
@@ -97,6 +98,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ding",
@@ -169,6 +171,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ding",
@@ -241,6 +244,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ding",
@@ -295,6 +299,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ding",
@@ -349,6 +354,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "data_pointer",
         "name": "Ding",
@@ -403,6 +409,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "metadata_pointer",
         "name": "Ding",
@@ -457,6 +464,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "completion_dword",
         "name": "Ding",
@@ -511,6 +519,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": "Ding",
@@ -553,6 +562,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Dong",
@@ -625,6 +635,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "data_pointer",
         "name": "Dong",
@@ -679,6 +690,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "data_buffer",
         "name": "Dong",
@@ -733,6 +745,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Dong - Data",
@@ -787,6 +800,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Migrate",
@@ -881,6 +895,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Migrate",
@@ -969,6 +984,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Pause",
@@ -1023,6 +1039,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Go Management Operation",
@@ -1077,6 +1094,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ring",
@@ -1131,6 +1149,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ring",
@@ -1185,6 +1204,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Ring",
@@ -1239,6 +1259,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Zap",
@@ -1293,6 +1314,7 @@
       "pdf_page": null,
       "section": "1.2",
       "section_title": "Ding command",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": "Status Code",
@@ -1330,6 +1352,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "opcodes",
         "name": "Admin",
@@ -1402,6 +1425,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "requirements",
         "name": "Admin",
@@ -1450,6 +1474,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "requirements",
         "name": "I/O Controller",
@@ -1490,6 +1515,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "cns_values",
         "name": "Identify",
@@ -1541,6 +1567,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": null,
@@ -1613,6 +1640,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": null,
@@ -1667,6 +1695,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Get - Log Specific Identifier",
@@ -1721,6 +1750,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "log_page_identifiers",
         "name": "Get Log Page",
@@ -1765,6 +1795,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "feature_identifiers",
         "name": "Foobar Command Set",
@@ -1811,6 +1842,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Config",
@@ -1883,6 +1915,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "requirements",
         "name": "Foo Feature",
@@ -1949,6 +1982,7 @@
       "pdf_page": null,
       "section": "2",
       "section_title": "Admin Commands",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foobar Command Set Specification Version Descriptor Field Values",
@@ -1997,6 +2031,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo Statistics",
@@ -2130,6 +2165,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Identify - Foo Namespace",
@@ -2184,6 +2220,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "FB Format",
@@ -2238,6 +2275,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "log_page",
         "name": "Foo Statistics",
@@ -2292,6 +2330,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "example",
         "name": null,
@@ -2346,6 +2385,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo - Create Queue Specific",
@@ -2418,6 +2458,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "PRP Entry - Foo Layout",
@@ -2490,6 +2531,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo - Management Operation Specific",
@@ -2544,6 +2586,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Report Data for Foo Zones",
@@ -2598,6 +2641,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Element Types",
@@ -2640,6 +2684,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Acronym definitions",
@@ -2676,6 +2721,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Asynchronous Event Information - Foo Status",
@@ -2713,6 +2759,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": null,
@@ -2755,6 +2802,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": "Status Code",
@@ -2792,6 +2840,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": null,
@@ -2829,6 +2878,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Management - Host Software Specified Fields",
@@ -2883,6 +2933,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "register",
         "name": "FOOCAP - Foo Capabilities",
@@ -2965,6 +3016,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Get - Foo Specific Fields",
@@ -3019,6 +3071,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Submission Queue Entry",
@@ -3073,6 +3126,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Descriptor",
@@ -3127,6 +3181,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Completion Queue Entry Layout - Foo",
@@ -3181,6 +3236,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Property Definition",
@@ -3230,6 +3286,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Event Data Format (Event Type 02h)",
@@ -3284,6 +3341,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "RPMB - Foo Write Flow",
@@ -3329,6 +3387,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo State Transition Conditions",
@@ -3368,6 +3427,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Response",
@@ -3422,6 +3482,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Attributes Entry",
@@ -3476,6 +3537,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Additional Hardware Error Information - Foo",
@@ -3530,6 +3592,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Request Fields",
@@ -3584,6 +3647,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "management_dword",
         "name": "NVMe Management Foo",
@@ -3638,6 +3702,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "pcie_request_dword",
         "name": "Foo",
@@ -3692,6 +3757,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Request PDU (FooReq)",
@@ -3750,6 +3816,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo to Bar Mapping Table",
@@ -3806,6 +3873,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Bar",
@@ -4006,6 +4074,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Supported Foo Operations",
@@ -4048,6 +4117,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "status_values",
         "name": "Foo Get",
@@ -4094,6 +4164,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "completion_dword",
         "name": null,
@@ -4148,6 +4219,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Set",
@@ -4202,6 +4274,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "register",
         "name": "BARCTL - Bar Control",
@@ -4284,6 +4357,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Directive Types",
@@ -4328,6 +4402,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Bar - Directive Operations",
@@ -4382,6 +4457,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Bar Reset",
@@ -4454,6 +4530,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Bar Directive - Bar Report",
@@ -4508,6 +4585,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "requirements",
         "name": null,
@@ -4550,6 +4628,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Numbered Layout",
@@ -4604,6 +4683,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Indented Layout",
@@ -4658,6 +4738,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Wrapped Layout",
@@ -4712,6 +4793,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Joined Layout",
@@ -4766,6 +4848,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Joining Layout",
@@ -4820,6 +4903,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo Address",
@@ -4946,6 +5030,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Size Fields",
@@ -5024,6 +5109,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo Table",
@@ -5132,6 +5218,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo Entry",
@@ -5265,6 +5352,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo List",
@@ -5391,6 +5479,7 @@
       "pdf_page": null,
       "section": "4",
       "section_title": "Data Structures",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Foo Results",
@@ -5517,6 +5606,7 @@
       "pdf_page": null,
       "section": "4.1",
       "section_title": "Offset 18h: FOOVER – Foo Version",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Version Descriptor",
@@ -5589,6 +5679,7 @@
       "pdf_page": null,
       "section": "4.1",
       "section_title": "Offset 18h: FOOVER – Foo Version",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Foo Overview",
@@ -5625,6 +5716,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Baz Capabilities",
@@ -5839,6 +5931,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Qux",
@@ -5911,6 +6004,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Qux Types",
@@ -5958,6 +6052,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Qux Kinds",
@@ -6005,6 +6100,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Qux List",
@@ -6167,6 +6263,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "data_structure",
         "name": "Qux Format",
@@ -6239,6 +6336,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Qux Vector",
@@ -6311,6 +6409,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "other",
         "name": "Qux Guard Format",
@@ -6389,6 +6488,7 @@
       "pdf_page": null,
       "section": "4.2",
       "section_title": "Baz Capabilities",
+      "mentions": [],
       "subject": {
         "kind": "command_dword",
         "name": "Foo Migrate",
