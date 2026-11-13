@@ -2152,3 +2152,34 @@ def test_a_case_by_a_field_of_another_figure_has_the_numbers_of_its_codes():
         ("PSDT", [("00b", 0)], ["PRP2", "PRP1"]),
         ("PSDT", [("01b", 1), ("10b", 2)], ["SGL1"]),
     ]
+
+
+def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
+    """PRP1 of the Common Command Format is "the first PRP entry for the
+    command; or a PRP List pointer, depending on the command (e.g., the
+    Create I/O Completion Queue command (refer to Figure 571))": the PRP
+    Entry 1 of that one command"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Command Format",
+            ("Bytes", "Description"),
+            (
+                "07:00",
+                "PRP Entry 1 (PRP1): The first PRP entry, depending on the "
+                "command (e.g., the Create Foo command (refer to Figure 2)).",
+            ),
+            ("15:08", "Bar Entry (BE): The entry as in Figure 2."),
+        ),
+        figure_of(
+            2,
+            "Create Foo - PRP Entry 1",
+            ("Bits", "Description"),
+            ("63:12", "Base (BASE): The base."),
+            ("11:00", "Reserved"),
+        ),
+    )
+    prp1, bar = spec.structures[0].fields
+    assert prp1.structure is None
+    assert bar.structure is not None and bar.structure.figure_nr == 2
