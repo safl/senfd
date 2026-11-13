@@ -745,3 +745,85 @@ def test_a_colon_inside_a_word_separates_no_name_from_its_description():
         None,
         "Its description.",
     )
+
+
+def test_a_table_of_numbered_records_is_a_layout_of_an_array_of_them():
+    """As NVM 1.3 Figure 47, the ranges of Dataset Management: a column numbers
+    each record, merged down over the rows of its fields, whose bytes count
+    from the start of the figure"""
+
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.plain import Figure
+    from senfd.documents.spec import SpecDocument, add_figure, resolve
+    from senfd.tables import Table
+
+    def record(number, *fields):
+        name = f"Range {number}"
+        return [
+            Row(
+                cells=[
+                    Cell(text=name, merged="up" if i else None),
+                    Cell(text=bytes_),
+                    Cell(text=text),
+                ]
+            )
+            for i, (bytes_, text) in enumerate(fields)
+        ]
+
+    caption = "Figure 1: Foo - Range Definition"
+    figure = Figure(
+        figure_nr=1,
+        caption=caption,
+        description="Foo - Range Definition",
+        table=Table(
+            rows=[
+                Row(cells=[Cell(text=caption)]),
+                *rows(("Range", "Bytes", "Field")),
+                *record(
+                    0,
+                    ("03:00", "Context Attributes (CATTR)"),
+                    ("11:04", "Starting LBA (SLBA)"),
+                ),
+                *record(
+                    1,
+                    ("15:12", "Context Attributes (CATTR)"),
+                    ("23:16", "Starting LBA (SLBA)"),
+                ),
+                *rows(("...", "...", "...")),
+                *record(
+                    9,
+                    ("111:108", "Context Attributes (CATTR)"),
+                    ("119:112", "Starting LBA (SLBA)"),
+                ),
+            ]
+        ),
+    )
+    diagnostics = []
+    normalized = normalize_figure(figure, diagnostics)
+    assert normalized.shape == "layout"
+    assert [
+        (
+            f.range.text,
+            f.name,
+            f.elided,
+            [(n.range.text, n.acronym) for n in f.layouts[0].fields],
+        )
+        for f in normalized.layout.fields
+    ] == [
+        ("11:00", "Range 0", False, [("03:00", "CATTR"), ("11:04", "SLBA")]),
+        ("23:12", "Range 1", False, [("03:00", "CATTR"), ("11:04", "SLBA")]),
+        ("119:108", "Range 9", True, [("03:00", "CATTR"), ("11:04", "SLBA")]),
+    ]
+
+    document = SpecDocument()
+    document.meta.stem = "example"
+    add_figure(document, normalized, "example")
+    (structure,) = resolve(document).structures
+    assert [
+        (f.name, f.array.name, f.array.index, f.array.count, f.array.stride)
+        for f in structure.fields
+    ] == [
+        ("Range 0", "Range", 0, 10, 12),
+        ("Range 1", "Range", 1, 10, 12),
+        ("Range 9", "Range", 9, 10, 12),
+    ]

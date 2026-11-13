@@ -840,7 +840,14 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
     shape = shape_of(grid) or shape
     normalized.shape = shape
 
-    if shape == "layout":
+    column = record_column(grid, body) if shape is None else None
+    if column:
+        normalized.shape = "layout"
+        filled = [r for r in body if any(normalize_text(c.text) for c in r.cells)]
+        layout = parse_layout(filled, grid, diagnostics, headers)
+        normalized.layout = records_of(layout, column)
+        diagnostics.append(note("records", f"Records numbered by '{column}'"))
+    elif shape == "layout":
         normalized.layout = parse_layout(body, grid, diagnostics, headers)
     elif shape:
         normalized.entries = parse_entries(
@@ -859,6 +866,90 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
             for row in body
         ]
     return normalized
+
+
+# A record of a table of records, as "Range 0" of the ranges of Dataset Management
+REGEX_RECORD = re.compile(r"^(?P<name>[A-Za-z][A-Za-z ]*?) (?P<index>\d+)$")
+
+
+def record_column(grid: List[str], body: List[Row]) -> Optional[str]:
+    """
+    The first column of 'grid' where it numbers the records of a table of
+    their fields by bytes, as "Range 0" and "Range 1" of NVM 1.3 Figure 47,
+    and otherwise None
+    """
+
+    if not grid or "bytes" not in grid or not {"name", "description"} & set(grid):
+        return None
+    column = grid[0]
+    if column in ("bytes", "bits", "name", "description"):
+        return None
+    names, numbers = set(), set()
+    for row in body:
+        text = normalize_text(row.cells[0].text) if row.cells else ""
+        if not text or REGEX_ELISION.match(text):
+            continue
+        match = REGEX_RECORD.match(text)
+        if not match:
+            return None
+        names.add(match["name"])
+        numbers.add(int(match["index"]))
+    return column if len(names) == 1 and len(numbers) > 1 else None
+
+
+def records_of(layout: Layout, column: str) -> Layout:
+    """
+    'layout' as a field for each record that 'column' numbers, its range the
+    bytes of the record's fields, and its layout those fields with their bytes
+    counted from the start of the record; 'layout' as it is where a field has
+    a range that is no number
+    """
+
+    def text(upper: int, lower: int) -> str:
+        return f"{upper:02d}:{lower:02d}" if upper != lower else f"{lower:02d}"
+
+    groups: List[Tuple[str, List[LayoutField]]] = []
+    for field in layout.fields:
+        if field.range.upper is None or field.range.lower is None:
+            return layout
+        name = field.columns.get(column, "")
+        if not groups or groups[-1][0] != name:
+            groups.append((name, []))
+        groups[-1][1].append(field)
+
+    records = Layout(unit=layout.unit, notes=layout.notes)
+    for name, fields in groups:
+        upper = max(f.range.upper or 0 for f in fields)
+        lower = min(f.range.lower or 0 for f in fields)
+        inner = [
+            f.model_copy(
+                update={
+                    "range": Range(
+                        unit=f.range.unit,
+                        text=text(
+                            (f.range.upper or 0) - lower, (f.range.lower or 0) - lower
+                        ),
+                        upper=(f.range.upper or 0) - lower,
+                        lower=(f.range.lower or 0) - lower,
+                    ),
+                    "columns": {k: v for k, v in f.columns.items() if k != column},
+                    "elided": False,
+                }
+            )
+            for f in fields
+        ]
+        records.fields.append(
+            LayoutField(
+                range=Range(
+                    unit=layout.unit, text=text(upper, lower), upper=upper, lower=lower
+                ),
+                name=name,
+                section=fields[0].section,
+                elided=fields[0].elided,
+                layouts=[Layout(unit=layout.unit, fields=inner)],
+            )
+        )
+    return records
 
 
 def is_named_header(headers: List[str]) -> bool:
