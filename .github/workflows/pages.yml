@@ -54,7 +54,7 @@ jobs:
       run: ls -R docs/_build
 
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3.0.1
+      uses: actions/upload-pages-artifact@v5.0.0
       with:
         path: 'docs/_build'
 
