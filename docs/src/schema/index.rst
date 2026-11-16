@@ -35,7 +35,8 @@ has these parts:
   in it.
 * ``command_sets``: each command set by its name, with its commands. A
   command has its ``opcode``, its submission queue entry dwords ``sqe``,
-  its completion queue entry dwords ``cqe``, and its ``operations``. An
+  its completion queue entry dwords ``cqe``, its ``operations``, and its
+  ``status_values``, the tables of the status values specific to it. An
   operation is what the command does for one value of a selecting field,
   as for each directive operation.
 * ``features`` and ``log_pages``: features and log pages by identifier. A
@@ -104,9 +105,28 @@ has no subfields to a structure when the description of the field refers
 to the figure of the structure, for example "defined in Figure 125", and
 the structure is as wide as the field. senfd links an entry of an array
 that refers to no figure to the structure whose name appears in its
-description, for example "an I/O Command Set Vector". The ``kind`` of a
-structure that lays out the entries of an array is ``data_structure``,
-whatever its caption says.
+description, for example "an I/O Command Set Vector". A field that refers
+to no figure is linked to the one structure as wide as it in a section its
+description cites, or, of several, to the one whose fields the others
+divide further, as SGL1 to the Generic SGL Descriptor Format. A field
+named with a number, as "PRP Entry 1", is linked to the structure captioned
+with that name, as "PRP Entry - Page Base Address and Offset". The ``kind``
+of a structure that lays out the entries of an array is
+``data_structure``, whatever its caption says.
+
+An entry of a table of CNS values has ``selects``, the ``source`` of each
+structure the value selects. For CNS 01h of the Base specification, these
+are the Identify Controller data structure and the structures nested in it,
+in the section that the entry's reference cites. An entry whose reference
+cites another document selects what the same value selects there. An entry
+that the Command Set Identifier selects, with "Y" in its CSI column, and
+that selects nothing in its own document, selects what the same value
+selects in the document of each command set: CNS 05h selects the I/O
+Command Set specific Identify Namespace data structure of the NVM, Key
+Value, Zoned Namespace, Subsystem Local Memory and Computational Programs
+command sets. The command sets are those whose documents the entries of
+the Command Set Identifiers name, and such an entry has ``document``, the
+name of the document whose subject it names.
 
 The meaning of a field can depend on the value of another field of its
 figure. Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, are
