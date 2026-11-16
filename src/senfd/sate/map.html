@@ -1,0 +1,544 @@
+<!doctype html>
+<!--
+SPDX-FileCopyrightText: Simon A. F. Lund <os@safl.dk>
+
+SPDX-License-Identifier: LGPL-2.1-only
+-->
+<html lang="en" data-theme="@@THEME@@">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sate map</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,@@FAVICON@@">
+@@THEME_PRELOAD@@
+<style>
+@@THEMES@@
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html { font-size: 125%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 1rem/1.5 system-ui, sans-serif;
+  display: flex; flex-direction: column; height: 100vh;
+}
+@@HEADER_STYLE@@
+/* The colours of the kinds of nodes: hues apart from each other, at the
+   lightness and chroma that the script sets for the theme's background */
+:root {
+  --kl: 0.52; --kc: 0.13;
+  --k-home: var(--fg); --k-group: var(--dim);
+  --k-doc: oklch(var(--kl) var(--kc) 300); --k-cmdset: oklch(var(--kl) var(--kc) 45);
+  --k-command: oklch(var(--kl) var(--kc) 70); --k-feature: oklch(var(--kl) var(--kc) 160);
+  --k-logpage: oklch(var(--kl) var(--kc) 225); --k-structure: oklch(var(--kl) var(--kc) 260);
+  --k-register: oklch(var(--kl) var(--kc) 20); --k-values: oklch(var(--kl) var(--kc) 125);
+  --k-cns: oklch(var(--kl) var(--kc) 335);
+}
+.bar {
+  display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;
+  padding: 0.45rem 1.5rem; border-bottom: 1px solid var(--line); font-size: 0.8rem;
+}
+.bar button {
+  font: inherit; color: var(--fg); background: var(--bg); cursor: pointer;
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.15rem 0.6rem;
+}
+.bar button:hover, .bar button:focus-visible { border-color: var(--accent); }
+#searchwrap { position: relative; flex: 1; min-width: 12rem; max-width: 40rem; }
+#search {
+  width: 100%; padding: 0.35rem 0.6rem; font: inherit; font-family: ui-monospace, monospace;
+  color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+}
+#search:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+#results {
+  position: absolute; z-index: 3; top: 2.1rem; left: 0; right: 0; max-height: 60vh; overflow: auto;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px; display: none;
+}
+#results div { padding: 0.2rem 0.6rem; cursor: pointer; display: flex; gap: 0.5rem; align-items: baseline; }
+#results div.sel { background: var(--chosen); box-shadow: inset 4px 0 0 var(--accent); }
+#results small { color: var(--dim); margin-left: auto; white-space: nowrap; }
+.filters { display: flex; gap: 0.8rem; color: var(--dim); white-space: nowrap; }
+.filters input { accent-color: var(--accent); }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(22rem, 32%); }
+#stage { position: relative; overflow: hidden; }
+svg#svg { width: 100%; height: 100%; display: block; }
+#legend {
+  position: absolute; left: 0.75rem; top: 0.4rem; right: 0.75rem;
+  display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; font-size: 0.65rem; color: var(--dim);
+}
+#legend span::before {
+  content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%;
+  background: var(--c); margin-right: 0.25rem; vertical-align: -0.05rem;
+}
+#sides {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 1.6rem; display: flex;
+  justify-content: space-between; font-size: 0.65rem; color: var(--dim); pointer-events: none;
+}
+#trail {
+  position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0.3rem; font-size: 0.7rem;
+  color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#trail a { color: var(--accent); cursor: pointer; }
+aside {
+  border-left: 1px solid var(--line); overflow: auto; padding: 0.7rem 1rem 2rem;
+  font-size: 0.75rem;
+}
+aside h2 { font-size: 1.05rem; margin: 0.2rem 0 0; }
+aside h3 {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--dim); margin: 1rem 0 0.3rem;
+}
+.badge {
+  display: inline-block; font-size: 0.6rem; padding: 0 0.45rem; border-radius: 999px;
+  border: 1px solid var(--c); color: var(--fg); white-space: nowrap;
+}
+.badge::before {
+  content: ""; display: inline-block; width: 0.45rem; height: 0.45rem; border-radius: 50%;
+  background: var(--c); margin-right: 0.3rem; vertical-align: 0.02rem;
+}
+.src { color: var(--dim); font-size: 0.7rem; margin-bottom: 0.4rem; }
+table { border-collapse: collapse; width: 100%; }
+td { border-top: 1px solid var(--line); padding: 0.15rem 0.25rem; vertical-align: top; }
+td.r { font-family: ui-monospace, monospace; white-space: nowrap; color: var(--dim); }
+td.a { font-family: ui-monospace, monospace; font-weight: 600; white-space: nowrap; }
+tr.hdr td { font-weight: 600; background: var(--chosen); }
+tr.flash td { background: var(--chosen); box-shadow: inset 0 0 0 1px var(--accent); }
+.desc { color: var(--dim); }
+.case { color: var(--dim); font-style: italic; }
+a.go { color: var(--accent); cursor: pointer; text-decoration: underline dotted; }
+.vals { margin: 0.1rem 0 0.2rem 0.6rem; }
+.list a { display: block; padding: 0.1rem 0; text-decoration: none; }
+.list small { color: var(--dim); }
+details summary { cursor: pointer; color: var(--dim); }
+.tours a { display: block; margin: 0.3rem 0; }
+form.ask { display: flex; gap: 0.4rem; margin: 0.3rem 0; }
+form.ask input {
+  flex: 1; min-width: 0; padding: 0.3rem 0.5rem; font: inherit; font-family: ui-monospace, monospace;
+  color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+}
+form.ask button, .suggest button {
+  font: inherit; color: var(--fg); background: var(--bg); cursor: pointer;
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.1rem 0.5rem;
+}
+form.ask button:hover, .suggest button:hover { border-color: var(--accent); }
+.suggest { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.suggest button { font-family: ui-monospace, monospace; font-size: 0.7rem; }
+#answer { margin-top: 0.4rem; }
+#answer table { font-size: 0.7rem; }
+#answer a { color: var(--accent); }
+.status { color: var(--dim); font-size: 0.65rem; }
+.node text {
+  font-size: 11px; fill: var(--fg); paint-order: stroke; stroke: var(--bg); stroke-width: 3px;
+  pointer-events: none;
+}
+.node text tspan.rel { fill: var(--dim); font-size: 10px; }
+.node circle { stroke: var(--bg); stroke-width: 2px; cursor: pointer; }
+.node.focus circle { stroke: var(--fg); stroke-width: 2.5px; }
+.node.prev circle { stroke: var(--accent); stroke-width: 2.5px; }
+.edge { stroke: var(--line); fill: none; }
+.edge.contains { stroke-dasharray: 2 3; }
+.edge.cns, .edge.csi { stroke: var(--k-cns); stroke-opacity: 0.7; }
+.edge.refers { stroke: var(--k-values); }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--dim); }
+footer {
+  padding: 0.3rem 1.5rem; border-top: 1px solid var(--line);
+  color: var(--dim); font-size: 0.65rem; line-height: 1.4;
+}
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
+  aside { border-left: 0; border-top: 1px solid var(--line); }
+  .filters { display: none; }
+}
+</style>
+</head>
+<body>
+@@HEADER@@
+<div class="bar">
+  <button id="back" title="Back (Alt+Left)" aria-label="Back">&larr;</button>
+  <button id="fwd" title="Forward (Alt+Right)" aria-label="Forward">&rarr;</button>
+  <button id="homebtn" title="The start of the map">Start</button>
+  <div id="searchwrap"><input id="search" placeholder="Find a command, structure, field or acronym (/)" autocomplete="off" spellcheck="false" aria-label="Find"><div id="results"></div></div>
+  <div class="filters">
+    <label><input type="checkbox" id="f-contains" checked> containment</label>
+    <label><input type="checkbox" id="f-link" checked> field links</label>
+    <label><input type="checkbox" id="f-cns" checked> CNS and CSI</label>
+  </div>
+</div>
+<main>
+  <div id="stage">
+    <svg id="svg" aria-label="The item in focus and its neighbours"><g id="edges"></g><g id="nodes"></g></svg>
+    <div id="legend"></div>
+    <div id="sides"><span>&larr; contained in, or linked from</span><span>contains, or links to &rarr;</span></div>
+    <div id="trail"></div>
+    <div id="loading">Making the map of the data model ...</div>
+  </div>
+  <aside id="panel"></aside>
+</main>
+<footer>Not endorsed by NVM Express. The map shows what senfd read from the
+specification documents, and that reading can be wrong: check the figure each
+item cites.</footer>
+<script>
+"use strict";
+@@THEME_SCRIPT@@
+
+// The kinds of nodes take a lightness and chroma that read on the theme's
+// background: dark text-like colours on a light background, light ones on a
+// dark background
+function tuned() {
+  const probe = document.createElement("span");
+  probe.style.color = "var(--bg)";
+  document.body.appendChild(probe);
+  const [r, g, b] = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g).map(Number);
+  probe.remove();
+  const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.5;
+  root.style.setProperty("--kl", dark ? "0.78" : "0.52");
+  root.style.setProperty("--kc", dark ? "0.12" : "0.14");
+  if (G) render(focus, false);
+}
+new MutationObserver(tuned).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-mode"] });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tuned);
+
+let G = null, N = new Map(), OUT = new Map(), IN = new Map();
+const KINDLABEL = { home: "Start", doc: "Document", group: "Group", cmdset: "Command set", command: "Command",
+  feature: "Feature", logpage: "Log page", structure: "Structure", values: "Values" };
+function colorKey(n) {
+  if (n.kind === "structure" && n.sub === "register") return "register";
+  if (n.kind === "values" && n.sub === "cns_values") return "cns";
+  return n.kind;
+}
+function color(n) { return getComputedStyle(root).getPropertyValue("--k-" + colorKey(n)).trim(); }
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+function short(s, n) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+function hex(v) { return typeof v === "number" ? v.toString(16).toUpperCase().padStart(2, "0") + "h" : ""; }
+let first = "";  // The document most items are of, which labels leave out
+function label(n) {
+  if (n.kind === "structure" || n.kind === "values") {
+    const d = n.where && n.where.doc !== first ? n.where.doc + " · " : "";
+    return d + n.label + (n.where?.figure ? "  (F" + n.where.figure + ")" : "");
+  }
+  if (n.kind === "command") return n.label + " " + hex(n.opcode);
+  return n.label;
+}
+function subtitle(n) {
+  const w = n.where, parts = [];
+  if (w) {
+    if (w.doc) parts.push(w.doc);
+    if (w.section) parts.push(w.section + (w.section_title ? " " + w.section_title : ""));
+    if (w.figure) parts.push("Figure " + w.figure);
+    if (w.page) parts.push("page " + w.page);
+  }
+  if (n.opcode !== undefined) parts.unshift("opcode " + hex(n.opcode));
+  if (typeof n.identifier === "number") parts.unshift("identifier " + hex(n.identifier));
+  return parts.join(", ");
+}
+
+document.getElementById("legend").innerHTML = [["home", "Start"], ["doc", "Document"], ["group", "Group"],
+  ["cmdset", "Command set"], ["command", "Command"], ["feature", "Feature"], ["logpage", "Log page"],
+  ["structure", "Structure"], ["register", "Register"], ["values", "Values"], ["cns", "CNS values"]]
+  .map(([k, t]) => `<span style="--c:var(--k-${k})">${t}</span>`).join("");
+
+const show = { contains: true, link: true, cns: true };
+function edgeShown(e) {
+  if (e.kind === "contains") return show.contains;
+  if (e.kind === "cns" || e.kind === "csi") return show.cns;
+  return show.link;
+}
+for (const k of ["contains", "link", "cns"]) {
+  document.getElementById("f-" + k).onchange = ev => { show[k] = ev.target.checked; render(focus, false); };
+}
+
+// Navigation: the focus, the way back and forward, and the trail
+let focus = "home", prev = null, hist = [], fwd = [];
+const trail = [];
+function go(id, row) {
+  if (!N.has(id)) return;
+  if (id !== focus) { hist.push(focus); fwd = []; prev = focus; }
+  focus = id;
+  if (trail[trail.length - 1] !== id) trail.push(id);
+  if (trail.length > 14) trail.shift();
+  history.replaceState(null, "", "#" + encodeURIComponent(id));
+  render(id, true);
+  showPanel(id, row);
+}
+function step(from, to) {
+  if (!from.length) return;
+  to.push(focus); prev = focus; focus = from.pop();
+  history.replaceState(null, "", "#" + encodeURIComponent(focus));
+  render(focus, true); showPanel(focus);
+}
+document.getElementById("back").onclick = () => step(hist, fwd);
+document.getElementById("fwd").onclick = () => step(fwd, hist);
+document.getElementById("homebtn").onclick = () => go("home");
+window.addEventListener("keydown", ev => {
+  if (ev.altKey && ev.key === "ArrowLeft") step(hist, fwd);
+  if (ev.altKey && ev.key === "ArrowRight") step(fwd, hist);
+  if (ev.key === "/" && !["INPUT", "SELECT"].includes(document.activeElement.tagName)) {
+    ev.preventDefault(); search.focus(); search.select();
+  }
+});
+window.addEventListener("hashchange", () => {
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (id !== focus && N.has(id)) go(id);
+});
+
+// The focus at the centre; what it contains or links to on the right, what
+// contains it or links to it on the left, in columns curved like brackets
+const svg = document.getElementById("svg");
+const STATIC = new URLSearchParams(location.search).has("static");
+const pos = new Map();
+let anim = null;
+const ROW = 17, COL = 330, R0 = 175;
+function capacity(W, H) {
+  const perCol = Math.max(6, Math.floor((H - 90) / ROW));
+  const cols = Math.max(1, Math.floor((W / 2 - R0 + COL - 60) / COL));
+  return { perCol, max: perCol * cols };
+}
+function neighbours(id) {
+  const right = [], left = [], seen = new Set([id]);
+  for (const e of (OUT.get(id) || []).filter(edgeShown)) if (!seen.has(e.t)) { seen.add(e.t); right.push({ id: e.t, e }); }
+  for (const e of (IN.get(id) || []).filter(edgeShown)) if (!seen.has(e.s)) { seen.add(e.s); left.push({ id: e.s, e }); }
+  const order = (a, b) => (a.e.kind === b.e.kind ? 0 : a.e.kind === "contains" ? 1 : -1)
+    || (a.e.kind === "contains" ? 0 : (a.e.labels[0] || "").localeCompare(b.e.labels[0] || "", undefined, { numeric: true }))
+    || label(N.get(a.id)).localeCompare(label(N.get(b.id)), undefined, { numeric: true });
+  right.sort(order); left.sort(order);
+  return { left, right };
+}
+function place(items, side, W, H) {
+  const cx = W / 2, cy = H / 2;
+  const { perCol } = capacity(W, H);
+  return items.map((it, i) => {
+    const col = Math.floor(i / perCol), k = i % perCol;
+    const count = Math.min(perCol, items.length - col * perCol);
+    const dy = (k - (count - 1) / 2) * ROW;
+    const half = Math.max(1, (perCol - 1) / 2 * ROW);
+    return { ...it, x: cx + side * (R0 + col * COL - 70 * Math.pow(dy / half, 2)), y: cy + dy, side };
+  });
+}
+function render(id, animate) {
+  if (!G) return;
+  const W = svg.clientWidth, H = svg.clientHeight;
+  const { left, right } = neighbours(id);
+  const MAX = capacity(W, H).max;
+  const items = [{ id, x: W / 2, y: H / 2, side: 0 }]
+    .concat(place(right.slice(0, MAX), 1, W, H), place(left.slice(0, MAX), -1, W, H));
+  const start = new Map(items.map(it => [it.id, pos.get(it.id) || pos.get(id) || { x: W / 2, y: H / 2 }]));
+  const D = animate && !STATIC && !matchMedia("(prefers-reduced-motion: reduce)").matches ? 650 : 0;
+  if (anim) cancelAnimationFrame(anim);
+  const t0 = performance.now();
+  const frame = t => {
+    const p = D ? Math.min(1, (t - t0) / D) : 1, q = 1 - Math.pow(1 - p, 3);
+    const at = new Map();
+    for (const it of items) { const s = start.get(it.id); at.set(it.id, { x: s.x + (it.x - s.x) * q, y: s.y + (it.y - s.y) * q }); }
+    draw(items, at, q);
+    if (p < 1) anim = requestAnimationFrame(frame); else { pos.clear(); for (const [k, v] of at) pos.set(k, v); }
+  };
+  if (D) anim = requestAnimationFrame(frame); else frame(t0);
+  const more = Math.max(0, right.length - MAX) + Math.max(0, left.length - MAX);
+  const t = document.getElementById("trail");
+  t.innerHTML = trail.map(x => `<a data-id="${esc(x)}">${esc(short(label(N.get(x)), 28))}</a>`).join(" &rsaquo; ")
+    + (more ? ` &middot; ${more} more neighbours are listed beside the map` : "");
+  for (const a of t.querySelectorAll("a")) a.onclick = () => go(a.dataset.id);
+}
+function draw(items, at, q) {
+  const c = at.get(focus);
+  let eh = "", nh = "";
+  for (const it of items) {
+    if (it.id === focus) continue;
+    const p = at.get(it.id);
+    eh += `<path class="edge ${it.e.kind}" d="M${c.x},${c.y} C${c.x + (p.x - c.x) * 0.6},${c.y} ${c.x + (p.x - c.x) * 0.4},${p.y} ${p.x},${p.y}" opacity="${0.25 + 0.75 * q}"/>`;
+  }
+  for (const it of items) {
+    const n = N.get(it.id), p = at.get(it.id), isF = it.id === focus;
+    const rel = !isF && it.e.labels.length ? short(it.e.labels.join(", "), 30) : "";
+    const name = isF ? short(label(n), 70) : short(label(n), rel ? 30 : 40);
+    const txt = isF || !rel ? esc(name) : it.side < 0
+      ? `<tspan class="rel">${esc(rel)}</tspan>  ${esc(name)}` : `${esc(name)}  <tspan class="rel">${esc(rel)}</tspan>`;
+    const anchor = isF ? "middle" : it.side < 0 ? "end" : "start";
+    const dx = isF ? 0 : it.side < 0 ? -11 : 11, dy = isF ? -20 : 4;
+    nh += `<g class="node${isF ? " focus" : ""}${it.id === prev ? " prev" : ""}" data-id="${esc(it.id)}" transform="translate(${p.x},${p.y})">`
+      + `<circle r="${isF ? 13 : 7}" fill="${color(n)}"><title>${esc(label(n))}\n${esc(subtitle(n))}</title></circle>`
+      + `<text x="${dx}" y="${dy}" text-anchor="${anchor}"${isF ? ' style="font-weight:600;font-size:13px"' : ""}>${txt}</text></g>`;
+  }
+  document.getElementById("edges").innerHTML = eh;
+  document.getElementById("nodes").innerHTML = nh;
+}
+document.getElementById("nodes").addEventListener("click", ev => {
+  const g = ev.target.closest(".node"); if (g) go(g.dataset.id);
+});
+window.addEventListener("resize", () => render(focus, false));
+
+// The panel: what the focus is, its fields or entries, questions to ask
+// sate about it, and its neighbours
+const panel = document.getElementById("panel");
+function link(id, text) { return N.has(id) ? `<a class="go" data-id="${esc(id)}">${esc(text ?? label(N.get(id)))}</a>` : esc(text); }
+function valuesHtml(vals) {
+  if (!vals || !vals.length) return "";
+  return `<div class="vals">` + vals.slice(0, 80).map(v => `<div><b>${esc(v.value)}</b> ${esc(v.name || "")}`
+    + (v.desc && !v.name ? ` <span class="desc">${esc(short(v.desc, 140))}</span>` : "") + `</div>`).join("")
+    + (vals.length > 80 ? `<div class="desc">and ${vals.length - 80} more</div>` : "") + `</div>`;
+}
+function rowsHtml(rows) {
+  let h = "<table>";
+  rows.forEach((r, i) => {
+    if (r.header) { h += `<tr class="hdr"><td colspan="3">${esc(r.name)} <span class="desc">${esc(r.desc)}</span></td></tr>`; return; }
+    const tg = (r.targets || []).map(t => " &rarr; " + link(t)).join("");
+    h += `<tr id="row-${i}"><td class="r">${esc(r.range)}</td><td class="a">${"&nbsp;&nbsp;".repeat(r.depth || 0)}${esc(r.acronym || "")}</td>`
+      + `<td>${r.case ? `<span class="case">[${esc(r.case)}]</span> ` : ""}${esc(r.name || "")}${tg}`
+      + (r.desc ? `<details><summary>description</summary><div class="desc">${esc(r.desc)}</div></details>` : "")
+      + valuesHtml(r.values) + `</td></tr>`;
+  });
+  return h + "</table>";
+}
+function entriesHtml(n) {
+  let h = "<table>";
+  for (const e of n.entries) {
+    const sel = (e.selects || []).map(([t, l]) => `<div>${esc(l)} &rarr; ${link(t)}</div>`).join("");
+    const doc = e.document ? ` &rarr; ${link(e.document)}` : "";
+    const cols = Object.entries(e.columns || {}).map(([k, v]) => `${k}: ${v}`).join(", ");
+    h += `<tr><td class="a">${esc(e.value)}</td><td>${esc(e.name || "")}${doc}`
+      + (e.desc && e.desc !== e.name ? `<div class="desc">${esc(short(e.desc, 220))}</div>` : "")
+      + (cols ? `<div class="desc">${esc(cols)}</div>` : "") + sel + `</td></tr>`;
+  }
+  return h + "</table>";
+}
+function neighbourList(list, out) {
+  const groups = new Map();
+  for (const it of list) {
+    const k = it.e.kind === "contains" ? (out ? "Contains" : "Contained in") : (out ? "Links to" : "Linked from");
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(it);
+  }
+  let h = "";
+  for (const [k, items] of groups) {
+    h += `<h3>${k} (${items.length})</h3><div class="list">` + items.map(it => {
+      const n = N.get(it.id);
+      return `<a class="go" data-id="${esc(it.id)}"><span class="badge" style="--c:${color(n)}">${esc(KINDLABEL[n.kind])}</span> ${esc(label(n))}`
+        + (it.e.labels.length ? ` <small>${esc(short(it.e.labels.join(", "), 60))}</small>` : "") + `</a>`;
+    }).join("") + `</div>`;
+  }
+  return h;
+}
+// Questions of sate about a node, in the forms sate answers
+function questions(n) {
+  const name = n.label.toLowerCase();
+  if (n.kind === "command") return [`dwords of ${name}`, `opcode of ${name}`];
+  if (n.kind === "feature") return [`fid of ${name}`];
+  if (n.kind === "logpage") return [`lpi of ${name}`];
+  if (n.kind === "structure" && n.sub === "register") return [n.label.split(" ")[0]];
+  if (n.kind === "structure") return [`structure ${name}`];
+  if (n.kind === "values" && n.sub === "cns_values") return (n.entries || []).slice(0, 4).map(e => `CNS ${e.value}`);
+  return [];
+}
+function showPanel(id, row) {
+  const n = N.get(id);
+  const right = (OUT.get(id) || []).map(e => ({ id: e.t, e }));
+  const left = (IN.get(id) || []).map(e => ({ id: e.s, e }));
+  let h = `<span class="badge" style="--c:${color(n)}">${esc(KINDLABEL[n.kind])}${n.sub ? " · " + esc(n.sub.replace(/_/g, " ")) : ""}</span>`
+    + `<h2>${esc(n.label)}</h2><div class="src">${esc(subtitle(n)) || "&nbsp;"}</div>`;
+  if (id === "home") {
+    h += `<p>Each point is something the specifications define, and each line a relation between two of them that the data model records. Click a point to fly to it: what it contains or links to is on its right, and what contains it or links to it is on its left.</p>`
+      + `<h3>Start with</h3><div class="tours">` + starts().map(([t, i]) => link(i, t)).join("") + `</div>`;
+  }
+  const qs = questions(n);
+  h += `<h3>Ask sate</h3><form class="ask" id="askform"><input id="askq" value="${esc(qs[0] || "")}" placeholder="Ask, as: cdw12 of write" aria-label="Question"><button>Ask</button></form>`
+    + (qs.length > 1 ? `<div class="suggest">${qs.map(q => `<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>` : "")
+    + `<div id="answer"></div>`;
+  if (n.rows && n.rows.length) h += `<h3>${n.kind === "command" || n.kind === "feature" ? "Dwords and fields" : "Fields"}</h3>` + rowsHtml(n.rows);
+  if (n.entries && n.entries.length) h += `<h3>Entries</h3>` + entriesHtml(n);
+  h += neighbourList(right, true) + neighbourList(left, false);
+  panel.innerHTML = h;
+  panel.scrollTop = 0;
+  for (const a of panel.querySelectorAll("a.go")) a.onclick = () => go(a.dataset.id);
+  document.getElementById("askform").onsubmit = ev => { ev.preventDefault(); ask(document.getElementById("askq").value); };
+  for (const b of panel.querySelectorAll(".suggest button")) b.onclick = () => { document.getElementById("askq").value = b.dataset.q; ask(b.dataset.q); };
+  if (row !== undefined) {
+    const tr = document.getElementById("row-" + row);
+    if (tr) { tr.scrollIntoView({ block: "center" }); tr.classList.add("flash"); tr.querySelector("details")?.setAttribute("open", ""); }
+  }
+}
+function starts() {
+  const out = [];
+  const find = (kind, f) => G.nodes.find(n => n.kind === kind && f(n));
+  const identify = find("command", n => n.label === "Identify");
+  if (identify) out.push(["Identify, and what each CNS value returns per command set", identify.id]);
+  const csi = find("values", n => (n.entries || []).filter(e => e.document).length > 1);
+  if (csi) out.push(["The command sets, by their Command Set Identifiers", csi.id]);
+  const ccf = find("structure", n => n.label === "Common Command Format");
+  if (ccf) out.push(["The Common Command Format: DPTR, PRP and SGL", ccf.id]);
+  for (const g of G.nodes.filter(n => n.kind === "group" && /Registers$/.test(n.label))) out.push([g.label, g.id]);
+  for (const id of ["log_pages", "features"]) if (N.has(id)) out.push([N.get(id).label, id]);
+  return out;
+}
+
+// sate's answer to a question, beside the map; its citations lead into the map
+async function ask(q) {
+  const box = document.getElementById("answer");
+  if (!q.trim()) return;
+  box.innerHTML = `<p class="status">Asking ...</p>`;
+  try {
+    const r = await fetch("answer?q=" + encodeURIComponent(q));
+    const a = await r.json();
+    box.innerHTML = `<p class="status">${a.status}</p>${a.answer}`;
+    for (const l of box.querySelectorAll('a[href^="map#"]')) {
+      l.onclick = ev => { ev.preventDefault(); go(decodeURIComponent(l.getAttribute("href").slice(4))); };
+    }
+  } catch (error) {
+    box.innerHTML = `<p class="status">sate failed to answer: ${esc(error)}</p>`;
+  }
+}
+
+// Find: the nodes by name, figure and document, and the fields by acronym and name
+const search = document.getElementById("search"), results = document.getElementById("results");
+let INDEX = [], hits = [], sel = 0;
+function indexed() {
+  for (const n of G.nodes) {
+    INDEX.push({ id: n.id, text: label(n), hay: (label(n) + " " + (n.where?.doc || "") + (n.where?.figure ? " figure " + n.where.figure : "")).toLowerCase(), kind: n.kind });
+    (n.rows || []).forEach((r, i) => {
+      if (r.header || (!r.acronym && !r.name)) return;
+      INDEX.push({ id: n.id, row: i, kind: "field", owner: label(n), acro: (r.acronym || "").toLowerCase(),
+        text: (r.acronym ? r.acronym + " " : "") + (r.name || ""), hay: ((r.acronym || "") + " " + (r.name || "")).toLowerCase() });
+    });
+  }
+}
+search.oninput = () => {
+  const q = search.value.trim().toLowerCase();
+  if (!q) { results.style.display = "none"; return; }
+  const words = q.split(/\s+/);
+  hits = INDEX.filter(x => words.every(w => x.hay.includes(w)))
+    .map(x => ({ x, s: (x.acro === q ? -3 : 0) + (x.hay.startsWith(q) ? -2 : 0) + (x.kind === "field" ? 1 : 0) + x.hay.length / 200 }))
+    .sort((a, b) => a.s - b.s).slice(0, 40).map(h => h.x);
+  sel = 0;
+  results.innerHTML = hits.map((x, i) => `<div data-i="${i}" class="${i === 0 ? "sel" : ""}"><span class="badge" style="--c:${x.kind === "field" ? "var(--dim)" : color(N.get(x.id))}">${x.kind === "field" ? "Field" : esc(KINDLABEL[x.kind])}</span>${esc(short(x.text, 60))}<small>${esc(short(x.owner || subtitle(N.get(x.id)), 50))}</small></div>`).join("") || `<div>Nothing found</div>`;
+  results.style.display = "block";
+};
+function pick(i) { const x = hits[i]; if (!x) return; results.style.display = "none"; search.blur(); go(x.id, x.row); }
+results.onclick = ev => { const d = ev.target.closest("[data-i]"); if (d) pick(+d.dataset.i); };
+search.onkeydown = ev => {
+  if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+    ev.preventDefault();
+    sel = Math.max(0, Math.min(hits.length - 1, sel + (ev.key === "ArrowDown" ? 1 : -1)));
+    [...results.children].forEach((c, i) => c.classList.toggle("sel", i === sel));
+    results.children[sel]?.scrollIntoView({ block: "nearest" });
+  }
+  if (ev.key === "Enter") pick(sel);
+  if (ev.key === "Escape") { results.style.display = "none"; search.blur(); }
+};
+document.addEventListener("click", ev => { if (!ev.target.closest("#searchwrap")) results.style.display = "none"; });
+
+fetch("map/graph.json").then(r => r.json()).then(graph => {
+  G = graph;
+  N = new Map(G.nodes.map(n => [n.id, n]));
+  for (const e of G.edges) {
+    if (!OUT.has(e.s)) OUT.set(e.s, []); OUT.get(e.s).push(e);
+    if (!IN.has(e.t)) IN.set(e.t, []); IN.get(e.t).push(e);
+  }
+  const docs = new Map();
+  for (const n of G.nodes) if (n.where?.doc) docs.set(n.where.doc, (docs.get(n.where.doc) || 0) + 1);
+  first = [...docs].sort((a, b) => b[1] - a[1])[0]?.[0] || "";
+  indexed();
+  document.getElementById("loading").remove();
+  tuned();
+  const start = decodeURIComponent(location.hash.slice(1));
+  go(N.has(start) ? start : "home");
+});
+</script>
+</body>
+</html>

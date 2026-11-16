@@ -435,3 +435,56 @@ def test_serve_listens_where_told_and_opens_the_page(monkeypatch):
 
     assert ran == [("127.0.0.1", 8123)]
     assert opened == ["http://127.0.0.1:8123/"]
+
+
+def test_the_map_is_a_page_in_the_themes_of_sate_web(client):
+    """The map shares the header, the theme selector and the stored theme
+    and mode of the question page, and links back to it"""
+
+    page = client.get("/map").text
+    asked = client.get("/").text
+    assert "@@" not in page
+    assert '<a href="." title="Ask sate a question">' in page
+    assert '<a href="map" title="Fly through the data model by its relations">' in asked
+    for name in web.THEMES:
+        assert f'<option value="{name}">' in page
+        assert f':root[data-theme="{name}"]' in page
+    assert 'localStorage.getItem("theme")' in page
+    assert web.theme_script() in page and web.theme_script() in asked
+
+
+def test_the_map_loads_the_graph_of_the_data_model(client):
+    graph = client.get("/map/graph.json").json()
+    ids = {node["id"] for node in graph["nodes"]}
+    assert "home" in ids
+    assert all(edge["s"] in ids and edge["t"] in ids for edge in graph["edges"])
+
+
+def test_each_citation_of_an_answer_links_its_node_in_the_map(client):
+    """An answer cites "example, 3.1, Figure 87, page 87"; the link after
+    it opens the node of Figure 87 in the map"""
+
+    graph = client.get("/map/graph.json").json()
+    ids = {node["id"] for node in graph["nodes"]}
+    answer = client.get("/answer", params={"q": "structure foo entry"}).json()
+    linked = re.findall(r'href="map#([^"]+)"', answer["answer"])
+    assert linked
+    from urllib.parse import unquote
+
+    assert all(unquote(node) in ids for node in linked)
+    assert (
+        re.findall(
+            r'href="map#([^"]+)"',
+            client.get("/", params={"q": "structure foo entry"}).text,
+        )
+        == linked
+    )
+
+
+def test_a_citation_of_a_figure_the_map_lacks_gets_no_link():
+    answer = "[Foo 1.0, 2.1, Figure 7, page 9](https://example.org/foo.pdf#page=9)"
+    assert web.mapped(answer, {}) == answer
+    assert (
+        web.mapped(answer, {"Foo 1.0:7": "st:Foo 1.0:7"})
+        == answer + " [map](map#st%3AFoo%201.0%3A7)"
+    )

@@ -53,7 +53,7 @@ version = { attr = "senfd.__version__" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-"*" = ["*.jinja2", "*.schema.json", "*.toml"]
+"*" = ["*.jinja2", "*.schema.json", "*.toml", "*.html"]
 
 [tool.pytest.ini_options]
 addopts = "--maxfail=1 --disable-warnings"
