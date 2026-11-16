@@ -277,6 +277,11 @@ class Case(CaseCommon):
     as 'reserved'"""
     fields: List["Bits"] = Field(default_factory=list)
     """The subfields of the field in this case"""
+    selector_in: Optional[Source] = None
+    """The figure of the controlling field where it is a field of another
+    figure, as Base 2.4 Figure 92, Command Dword 0, for PSDT of DPTR, whose
+    description names it "CDW0.PSDT": the structure that the field of the
+    case's figure named before the dot links to"""
 
 
 class Bits(BitsCommon):
@@ -2527,6 +2532,52 @@ def link_selections(document: SpecDocument) -> None:
                         command.status_codes.append(link)
 
 
+def link_selectors(document: SpecDocument) -> None:
+    """
+    Set 'selector_in' on each case whose controlling field is no field of
+    its figure, but of the structure that a field of its figure links to, by
+    the name the field's description gives it, as "CDW0.PSDT"
+    """
+
+    structures = {
+        (s.source.document, s.source.figure_nr): s for s in document.structures
+    }
+
+    def named(fields: List[Bits], acronym: str) -> Optional[Bits]:
+        for field in fields:
+            if field.acronym == acronym:
+                return field
+            found = named(field.fields, acronym)
+            if found:
+                return found
+        return None
+
+    def link(fields: List[Bits], top: List[Bits]) -> None:
+        for field in fields:
+            for case in field.cases:
+                case.selector_in = None
+                if named(top, case.selector):
+                    continue
+                for holder in re.findall(
+                    rf"\b(\w+)\.{re.escape(case.selector)}\b", field.description
+                ):
+                    linked = named(top, holder)
+                    target = linked.structure if linked else None
+                    other = (
+                        structures.get((target.document, target.figure_nr))
+                        if target
+                        else None
+                    )
+                    if other and named(other.fields, case.selector):
+                        case.selector_in = target
+                        break
+                link(case.fields, top)
+            link(field.fields, top)
+
+    for structure in document.structures:
+        link(structure.fields, structure.fields)
+
+
 def affected(text: str) -> List[str]:
     """The command names of a "Commands Affected" cell, as "Dataset
     Management, Read, Write", without the footnote marker that may end a
@@ -2570,6 +2621,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_log_pages(document)
     link_values(document)
     link_selections(document)
+    link_selectors(document)
 
     # A gap where a field was left out as an erratum is that erratum again
     document.errata = [e for e in document.errata if e.code != "gap"]
