@@ -97,3 +97,12 @@ def test_the_screenshots_of_the_map_show_the_cns_values_of_identify():
     spec = senfd.query.load(ROOT / "example" / "output" / "merged.spec.document.json")
     assert tool["focus"](spec) == "val:example:26"
     assert tool["focus"](SpecDocument()) == "home"
+
+
+def test_ci_installs_the_browser_before_the_tests_of_the_map():
+    """tests/test_sate_map_browser.py is skipped without the browser, so CI
+    must install it before it runs the tests"""
+
+    workflow = (ROOT / ".github" / "workflows" / "bd.yaml").read_text()
+    installed = workflow.find("playwright install --with-deps chromium-headless-shell")
+    assert 0 < installed < workflow.find("make test")
