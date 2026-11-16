@@ -2183,3 +2183,149 @@ def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
     prp1, bar = spec.structures[0].fields
     assert prp1.structure is None
     assert bar.structure is not None and bar.structure.figure_nr == 2
+
+
+def test_a_field_citing_a_section_of_several_formats_is_linked_to_the_general():
+    """SGL1 of the Common Command Format cites "section 4.3.2", which lays out
+    the Generic SGL Descriptor Format, Base 2.4 Figure 116, and six SGL
+    descriptors as wide, each of which divides the bytes the generic format
+    divides"""
+
+    def in_section(figure, section):
+        figure.section = section
+        return figure
+
+    spec = document_of(
+        in_section(
+            figure_of(
+                1,
+                "Generic Foo Descriptor Format",
+                ("Bytes", "Description"),
+                ("14:00", "Descriptor Type Specific (DTS): Specific."),
+                ("15", "Foo Identifier (FID): The type."),
+            ),
+            "4.3",
+        ),
+        in_section(
+            figure_of(
+                2,
+                "Foo Data Block descriptor",
+                ("Bytes", "Description"),
+                ("07:00", "Address (ADDR): The address."),
+                ("14:08", "Length (LEN): The length."),
+                ("15", "Foo Identifier (FID): The type."),
+            ),
+            "4.3",
+        ),
+        in_section(
+            figure_of(
+                3,
+                "Foo Segment descriptor",
+                ("Bytes", "Description"),
+                ("07:00", "Address (ADDR): The address."),
+                ("10:08", "Length (LEN): The length."),
+                ("14:11", "Key (KEY): The key."),
+                ("15", "Foo Identifier (FID): The type."),
+            ),
+            "4.3",
+        ),
+        in_section(
+            figure_of(
+                4,
+                "Foo Command Format",
+                ("Bytes", "Description"),
+                (
+                    "15:00",
+                    "Foo Entry 1 (FOO1): Refer to section 4.3 for the descriptors.",
+                ),
+            ),
+            "5.1",
+        ),
+    )
+    (foo1,) = spec.structures[3].fields
+    assert foo1.structure is not None and foo1.structure.figure_nr == 1
+
+
+def test_a_numbered_field_is_linked_to_the_structure_its_name_captions():
+    """PRP1 and PRP2 of the Common Command Format are "PRP Entry 1" and "PRP
+    Entry 2", and Base 2.4 Figure 111 is "PRP Entry - Page Base Address and
+    Offset"; neither description cites it"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Bar Entry - Page Base Address and Offset",
+            ("Bits", "Description"),
+            ("63:00", "Page Base Address and Offset (PBAO): The address."),
+        ),
+        figure_of(
+            2,
+            "Foo Command Format",
+            ("Bytes", "Description"),
+            ("07:00", "Bar Entry 1 (BAR1): The first entry for the command."),
+            ("15:08", "Bar Entry 2 (BAR2): The second entry."),
+            ("19:16", "Bar Entry 3 (BAR3): Narrower than an entry."),
+            ("21:20", "Foo Identifier 0: The first."),
+        ),
+        figure_of(
+            3,
+            "Foo Identifier - Log Specific Identifier",
+            ("Bits", "Description"),
+            ("15:00", "Foo Identifier (FID): The identifier."),
+        ),
+    )
+    bar1, bar2, bar3, foo0 = spec.structures[1].fields
+    assert bar1.structure is not None and bar1.structure.figure_nr == 1
+    assert bar2.structure is not None and bar2.structure.figure_nr == 1
+    assert bar3.structure is None
+    # A structure of the field alone, as the Controller Identifier - Log
+    # Specific Identifier for an entry of the Controller List
+    assert foo0.structure is None
+
+
+def test_a_field_referring_to_a_figure_has_the_link_of_the_field_there():
+    """SGL1 of Authentication Receive, Base 2.4 Figure 631, says only "Refer
+    to Figure 95.", the Fabrics Command SQE, whose SGL1 is at the same bytes"""
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Descriptor",
+            ("Bytes", "Description"),
+            ("07:00", "Address (ADDR): The address."),
+            ("15:08", "Length (LEN): The length."),
+        ),
+        figure_of(
+            2,
+            "Foo Command SQE",
+            ("Bytes", "Description"),
+            ("23:00", "Other (OTH): Other."),
+            ("39:24", "Foo Entry 1 (FOO1): A Foo Descriptor as in Figure 1."),
+        ),
+        figure_of(
+            3,
+            "Foo Receive Command SQE",
+            ("Bytes", "Description"),
+            ("23:00", "Other (OTH): Refer to Figure 2."),
+            ("39:24", "Foo Entry 1 (FOO1): Refer to Figure 2."),
+        ),
+        figure_of(
+            4,
+            "Bar List",
+            ("Bytes", "Description"),
+            ("15:00", "Bar Record 0: The first, as in Figure 5."),
+        ),
+        figure_of(
+            5,
+            "Foo List",
+            ("Bytes", "Description"),
+            ("15:00", "Foo Descriptor 0: A Foo Descriptor as in Figure 1."),
+            ("31:16", "Foo Descriptor 1: A Foo Descriptor as in Figure 1."),
+        ),
+    )
+    other, foo1 = spec.structures[2].fields
+    assert foo1.structure is not None and foo1.structure.figure_nr == 1
+    assert other.structure is None
+    # A field without an acronym is no field of the figure referred to
+    (foo0,) = spec.structures[3].fields
+    assert foo0.structure is None

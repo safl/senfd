@@ -2246,7 +2246,14 @@ def link_structures(document: SpecDocument) -> None:
     description cites, as VER of Identify Controller to VS, "defined in
     section 3.1.4.2", or else in the section of its own figure or one below
     it, whose name ends in the field's name, as CATTR of the ranges of
-    Dataset Management to the "Dataset Management - Context Attributes".
+    Dataset Management to the "Dataset Management - Context Attributes". Of
+    several in a section cited, it is the one whose fields the others
+    divide further, as SGL1 to the Generic SGL Descriptor Format. A field
+    named with a number, as "PRP Entry 1", is otherwise linked to the one
+    structure as wide as it captioned with that name, as "PRP Entry - Page
+    Base Address and Offset". A field whose description refers to a figure
+    where none is as wide, as "Refer to Figure 95." of SGL1 in Connect, has
+    the link of the field of the same acronym and range in that figure.
     All entries of an array get the structure
     that any of them has. A structure that lays out the entries of an array
     becomes a data structure whatever its caption says, and uncovered() then
@@ -2257,18 +2264,34 @@ def link_structures(document: SpecDocument) -> None:
         (s.source.document, s.source.figure_nr): s for s in document.structures
     }
     widths = {key: bits_wide(structure) for key, structure in structures.items()}
+    referring: List[Tuple[Bits, List[Tuple[str, int]]]] = []
 
-    def laying_out(field: Bits, source: Source) -> Optional[Source]:
-        size = field.array.stride if field.array else field.width
-        bits = (size or 0) * (8 if field.unit == "bytes" else 1)
+    def cited(field: Bits, source: Source) -> List[Tuple[str, int]]:
         # A figure given as an example, as "(e.g., the Create I/O Completion
         # Queue command (refer to Figure 571))" of PRP1, lays out one case
         described = REGEX_EXAMPLE.sub("", field.description)
-        named = [
+        return [
             (source.document, int(number))
             for number in dict.fromkeys(REGEX_FIGURE.findall(described))
             if int(number) != source.figure_nr
         ]
+
+    def general(keys: List[Tuple[str, int]]) -> List[Tuple[str, int]]:
+        # The format the others refine: each of them divides its bytes where
+        # it does, as the Generic SGL Descriptor Format of the SGL descriptors
+        bounds = {
+            key: {
+                (f.lower or 0) * (8 if f.unit == "bytes" else 1)
+                for f in structures[key].fields
+            }
+            for key in keys
+        }
+        return [k for k in keys if all(bounds[k] <= bounds[o] for o in keys if o != k)]
+
+    def laying_out(field: Bits, source: Source) -> Optional[Source]:
+        size = field.array.stride if field.array else field.width
+        bits = (size or 0) * (8 if field.unit == "bytes" else 1)
+        named = cited(field, source)
         found = [key for key in named if key in widths and widths[key] == bits]
         others = [
             key
@@ -2281,13 +2304,15 @@ def link_structures(document: SpecDocument) -> None:
             # Of the structures of the sections cited, one whose only field is
             # the field itself, as DID of a CNS Specific Identifier, lays out
             # nothing of it
-            cited = set(REGEX_SECTION.findall(field.description))
+            sections = set(REGEX_SECTION.findall(field.description))
             found = [
                 key
                 for key in others
-                if structures[key].source.section in cited
+                if structures[key].source.section in sections
                 and [f.acronym for f in structures[key].fields] != [field.acronym]
             ]
+            if len(found) > 1:
+                found = general(found)
         if not found and not named and field.name and source.section:
             name = alias(field.name)
             found = [
@@ -2297,6 +2322,15 @@ def link_structures(document: SpecDocument) -> None:
                 and (structures[key].source.section or "")[len(source.section) :][:1]
                 in ("", ".")
                 and alias(structures[key].name).endswith(f"_{name}")
+            ]
+        numbered = re.fullmatch(r"(.+?)\s+\d+", field.name or "")
+        if not found and not named and numbered:
+            subject = alias(numbered[1])
+            found = [
+                key
+                for key in others
+                if alias(structures[key].name.split(" - ")[0]) == subject
+                and [alias(f.name or "") for f in structures[key].fields] != [subject]
             ]
         if not found and field.array:
             text = f" {alias(field.description).replace('_', ' ')} "
@@ -2317,6 +2351,8 @@ def link_structures(document: SpecDocument) -> None:
             field.structure = None
             if field.role == "field" and not field.fields:
                 field.structure = laying_out(field, source)
+                if field.structure is None and cited(field, source):
+                    referring.append((field, cited(field, source)))
             if field.array:
                 arrays.setdefault((field.array.name, field.array.lower), []).append(
                     field
@@ -2342,6 +2378,23 @@ def link_structures(document: SpecDocument) -> None:
 
     for source, fields in laid_out(document):
         link(fields, source)
+    # A field that refers to a figure for its definition, as "Refer to Figure
+    # 95." of SGL1, has the link of the field at the same range there
+    for field, keys in referring:
+        if not field.acronym:
+            continue
+        there = [
+            other.structure
+            for key in keys
+            if key in structures
+            for other in structures[key].fields
+            if other.structure
+            and other.acronym == field.acronym
+            and (other.unit, other.lower, other.upper)
+            == (field.unit, field.lower, field.upper)
+        ]
+        if there and all(other == there[0] for other in there):
+            field.structure = there[0]
 
 
 def resolve(document: SpecDocument) -> SpecDocument:
