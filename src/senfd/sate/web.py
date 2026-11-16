@@ -93,6 +93,58 @@ THEMES = {
 TOKENS = ("bg", "fg", "dim", "line", "accent", "chosen", "note", "warn")
 MODES = ("light", "dark")
 
+# The colour of each kind of entity, the same on the question page and in the
+# map: the red, green, aqua, blue, yellow, purple and orange of the theme's
+# own palette, in light and in dark mode. Rosé Pine has no green, and takes a
+# sage for features. A colour short of 3:1 contrast with the background or
+# the selection is darkened, or lightened in dark mode, in lightness alone.
+ENTITIES = (
+    "command",
+    "feature",
+    "log_page",
+    "structure",
+    "values",
+    "document",
+    "command_set",
+)
+ENTITY_COLOURS = {
+    "gruvbox": (
+        "#9d0006 #79740e #427b58 #076678 #b57614 #8f3f71 #af3a03",
+        "#fb4934 #b8bb26 #8ec07c #83a598 #fabd2f #d3869b #fe8019",
+    ),
+    "one": (
+        "#e45649 #4c9b4b #0184bc #4078f2 #b77e01 #a626a4 #986801",
+        "#e06c75 #98c379 #56b6c2 #61afef #e5c07b #c678dd #d19a66",
+    ),
+    "solarized": (
+        "#dc322f #798a00 #269188 #268bd2 #a67d00 #6c71c4 #cb4b16",
+        "#df3e3b #859900 #2aa198 #268bd2 #b58900 #7075c5 #d54f16",
+    ),
+    "catppuccin": (
+        "#d20f39 #328424 #127e85 #1e66f5 #9e6711 #8839ef #c74801",
+        "#f38ba8 #a6e3a1 #94e2d5 #89b4fa #f9e2af #cba6f7 #fab387",
+    ),
+    "rose-pine": (
+        "#b4637a #6d8f5e #528e99 #286983 #be7615 #907aa9 #d06662",
+        "#eb6f92 #a3be8c #9ccfd8 #327793 #f6c177 #c4a7e7 #ebbcba",
+    ),
+}
+
+# The entity of each kind of icon that has one
+KIND_ENTITY = {
+    "command": "command",
+    "feature": "feature",
+    "log page": "log_page",
+    "log_page": "log_page",
+    "structure": "structure",
+    "register": "structure",
+    "value": "values",
+    "status": "values",
+    "section": "document",
+    "document": "document",
+    "command set": "command_set",
+}
+
 
 def colours(theme: str, dark: bool) -> str:
     """The CSS declarations that set the colour variables of 'theme', for
@@ -106,6 +158,14 @@ def colours(theme: str, dark: bool) -> str:
     return f"color-scheme: {'dark' if dark else 'light'}; {declared}"
 
 
+def entity_colours(theme: str, dark: bool) -> str:
+    """The CSS declarations of the colours of the entities in 'theme', as
+    "--e-command: #9d0006;", for dark mode where 'dark' is true"""
+
+    values = ENTITY_COLOURS[theme][1 if dark else 0]
+    return " ".join(f"--e-{e}: {v};" for e, v in zip(ENTITIES, values.split()))
+
+
 def themed() -> str:
     """The CSS rules of every theme. The data-theme attribute of the html
     element selects the theme, and its data-mode attribute, light or dark,
@@ -116,11 +176,13 @@ def themed() -> str:
     for name in THEMES:
         root = f':root[data-theme="{name}"]'
         rules += [
-            f"{root} {{ {colours(name, False)} }}",
+            f"{root} {{ {colours(name, False)} {entity_colours(name, False)} }}",
             "@media (prefers-color-scheme: dark) {",
-            f'  {root}:not([data-mode="light"]) {{ {colours(name, True)} }}',
+            f'  {root}:not([data-mode="light"]) {{ {colours(name, True)}'
+            f" {entity_colours(name, True)} }}",
             "}",
-            f'{root}[data-mode="dark"] {{ {colours(name, True)} }}',
+            f'{root}[data-mode="dark"] {{ {colours(name, True)}'
+            f" {entity_colours(name, True)} }}",
         ]
     return "\n".join(rules)
 
@@ -177,7 +239,12 @@ def mark(kind: str) -> str:
     drawn = MARKS.get(kind)
     if not drawn:
         return ""
-    return f'<svg class="mark" viewBox="0 0 24 24" aria-hidden="true">{drawn}</svg>'
+    entity = KIND_ENTITY.get(kind)
+    coloured = f" e-{entity}" if entity else ""
+    return (
+        f'<svg class="mark{coloured}" viewBox="0 0 24 24" aria-hidden="true">'
+        f"{drawn}</svg>"
+    )
 
 
 def said(read: str) -> str:
@@ -356,6 +423,7 @@ def map_of() -> str:
         "HEADER_STYLE": HEADER_STYLE,
         "SHARED_STYLE": SHARED_STYLE,
         "MARKS": json.dumps(MARKS),
+        "KIND_ENTITY": json.dumps(KIND_ENTITY),
         "HEADER": header("map"),
         "THEME_SCRIPT": theme_script(),
     }.items():
@@ -652,9 +720,19 @@ header nav svg {
 
 # The CSS that both pages of sate-web share, so an answer, its tags and the
 # icons of the kinds look alike on the question page and in the map
-SHARED_STYLE = """svg.mark {
+SHARED_STYLE = """/* An icon, and a node of the map, in the colour of its entity */
+.e-command { --entity: var(--e-command); }
+.e-feature { --entity: var(--e-feature); }
+.e-log_page { --entity: var(--e-log_page); }
+.e-structure { --entity: var(--e-structure); }
+.e-values { --entity: var(--e-values); }
+.e-document { --entity: var(--e-document); }
+.e-command_set { --entity: var(--e-command_set); }
+.e-start { --entity: var(--fg); }
+.e-group { --entity: var(--dim); }
+svg.mark {
   width: 1em; height: 1em; margin-right: 0.5em; vertical-align: -0.15em;
-  fill: none; stroke: var(--accent); stroke-width: 2;
+  fill: none; stroke: var(--entity, var(--accent)); stroke-width: 2;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .status {

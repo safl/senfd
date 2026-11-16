@@ -286,7 +286,7 @@ def test_the_status_shows_the_icon_and_the_reading_of_the_question(client):
         f'{web.mark("command")}command <span class="what">Ding</span>, cdw10</span>'
         in (response.text)
     )
-    assert web.mark("command").startswith('<svg class="mark"')
+    assert web.mark("command").startswith('<svg class="mark e-command"')
 
 
 @pytest.mark.parametrize(
@@ -498,7 +498,8 @@ def test_the_map_colours_only_by_the_tokens_of_the_theme():
     own = (Path(web.__file__).parent / "map.html").read_text()
     assert not re.findall(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|lch)\(", own)
     tokens = set(re.findall(r"var\(--([a-z]+)\)", own))
-    assert tokens - {"k"} <= set(web.TOKENS) | {"c"}
+    assert tokens <= set(web.TOKENS) | {"entity"}
+    assert set(re.findall(r"var\(--e-([a-z_]+)\)", own)) <= set(web.ENTITIES)
 
 
 def test_the_map_draws_each_kind_by_the_icon_of_the_question_page(client):
@@ -511,3 +512,42 @@ def test_the_map_draws_each_kind_by_the_icon_of_the_question_page(client):
     assert f"const MARKS = {json.dumps(web.MARKS)};" in page
     for kind in ("start", "document", "command set", "group"):
         assert web.mark(kind)
+
+
+@pytest.mark.parametrize("theme", list(web.THEMES))
+@pytest.mark.parametrize("dark", [False, True])
+def test_each_entity_has_a_colour_of_its_own_that_reads_on_the_theme(theme, dark):
+    """An icon needs 3:1 contrast with what it is drawn on, the page or the
+    selection, by WCAG 1.4.11"""
+
+    _, light, darks = web.THEMES[theme]
+    colours = dict(zip(web.TOKENS, (darks if dark else light).split()))
+    entities = web.ENTITY_COLOURS[theme][1 if dark else 0].split()
+    assert len(entities) == len(set(entities)) == len(web.ENTITIES)
+    weak = [
+        f"{entity} {value} on {on}"
+        for entity, value in zip(web.ENTITIES, entities)
+        for on in ("bg", "chosen")
+        if contrast(value, colours[on]) < 3.0
+    ]
+    assert weak == []
+
+
+def test_an_icon_takes_the_colour_of_its_entity_on_both_pages(client):
+    assert 'class="mark e-command"' in web.mark("command")
+    assert 'class="mark e-log_page"' in web.mark("log page")
+    assert 'class="mark"' in web.mark("search")
+    for entity in web.ENTITIES:
+        assert f".e-{entity} {{ --entity: var(--e-{entity}); }}" in web.SHARED_STYLE
+    for theme in web.THEMES:
+        for dark in (False, True):
+            declared = web.entity_colours(theme, dark)
+            assert all(f"--e-{entity}: #" in declared for entity in web.ENTITIES)
+    assert (
+        web.themed() in client.get("/").text and web.themed() in client.get("/map").text
+    )
+    assert (
+        f"const KIND_ENTITY = {json.dumps(web.KIND_ENTITY)};" in client.get("/map").text
+    )
+    asked = client.get("/", params={"q": "opcode of foo get"}).text
+    assert 'class="mark e-command"' in asked
