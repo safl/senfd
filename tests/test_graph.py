@@ -91,3 +91,120 @@ def test_a_cns_value_of_another_command_set_is_labelled_with_its_csi():
     assert "CNS 00h in Foo 1.3" in cited
     # The Command Set Identifiers lead to the documents they name
     assert any(e["t"] == "doc:Foo 1.3" for e in graph["edges"] if e["kind"] == "csi")
+
+
+def test_a_command_leads_to_each_status_value_that_affects_it():
+    from senfd.documents.spec import (
+        Command,
+        CommandSet,
+        Entry,
+        Source,
+        SpecDocument,
+        Values,
+        link_selections,
+    )
+
+    document = SpecDocument()
+    document.command_sets = {
+        "admin": CommandSet(
+            name="Admin",
+            commands={
+                "abort": Command(
+                    name="Abort", opcode=8, source=Source(document="Base", figure_nr=1)
+                ),
+                "identify": Command(
+                    name="Identify",
+                    opcode=6,
+                    source=Source(document="Base", figure_nr=1),
+                ),
+            },
+        )
+    }
+    document.values = [
+        Values(
+            kind="status_values",
+            name="Status Code",
+            source=Source(document="Base", figure_nr=104),
+            entries=[
+                Entry(value="00h", columns={"commands_affected": "Abort"}),
+                Entry(value="01h", columns={"commands_affected": "Identify"}),
+            ],
+        )
+    ]
+    link_selections(document)
+    graph = graph_of(document)
+    nodes = {n["id"]: n for n in graph["nodes"]}
+
+    edge = next(
+        e
+        for e in graph["edges"]
+        if e["s"] == "cmd:admin:abort" and e["t"] == "val:Base:104"
+    )
+    assert edge["labels"] == ["status 00h"]
+    shown = nodes["val:Base:104"]["entries"]
+    assert shown[0]["commands"] == ["cmd:admin:abort"]
+    # The command after one with status values keeps the key of its set
+    assert shown[1]["commands"] == ["cmd:admin:identify"]
+
+
+def test_a_case_leads_to_the_figure_of_its_controlling_field():
+    """DPTR of Figure 93 has cases by PSDT of Figure 92"""
+
+    from senfd.documents.spec import (
+        Bits,
+        Case,
+        Selected,
+        Source,
+        SpecDocument,
+        Structure,
+        link_selectors,
+    )
+
+    def bits(acronym, unit="bits", **more):
+        return Bits(
+            unit=unit,
+            upper=1,
+            lower=0,
+            range="1:0",
+            acronym=acronym,
+            name=acronym,
+            role="field",
+            kind="span",
+            width=2,
+            **more,
+        )
+
+    def structure(figure_nr, fields):
+        return Structure(
+            name=f"Figure {figure_nr}",
+            kind="data_structure",
+            unit="bytes",
+            source=Source(document="Base", figure_nr=figure_nr),
+            fields=fields,
+        )
+
+    cdw0 = structure(92, [bits("PSDT")])
+    cases = [
+        Case(
+            selector="PSDT", when=[Selected(name="00b", value=0)], fields=[bits("PRP1")]
+        )
+    ]
+    common = structure(
+        93,
+        [
+            bits("CDW0", unit="bytes", structure=cdw0.source),
+            bits("DPTR", description="If CDW0.PSDT is cleared to 00b", cases=cases),
+        ],
+    )
+    document = SpecDocument()
+    document.structures = [cdw0, common]
+    link_selectors(document)
+    graph = graph_of(document)
+    nodes = {n["id"]: n for n in graph["nodes"]}
+
+    edge = next(
+        e for e in graph["edges"] if e["s"] == "st:Base:93" and e["t"] == "st:Base:92"
+    )
+    assert "PSDT, case of DPTR" in edge["labels"]
+    dptr = next(r for r in nodes["st:Base:93"]["rows"] if r.get("acronym") == "DPTR")
+    assert dptr["selected_by"] == {"PSDT": "st:Base:92"}
