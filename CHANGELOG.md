@@ -10,6 +10,33 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.22.0
+
+The data model now links a command to the status values that affect it,
+and a case to the figure of its controlling field, and gives a figure in
+the section of a feature to the feature. The format of the data model is
+5.
+
+A command has `status_codes`, each status value whose "Commands Affected"
+names it, by its table, field and value. A name matches a command of the
+table's own document first, and otherwise the one command of that name in
+another document, as Read of the Zoned Namespace table, a command of NVM.
+A case whose controlling field is a field of another figure has
+`selector_in`, the figure of that field: the cases of DPTR of the Common
+Command Format, by "CDW0.PSDT", link Base 2.4 Figure 92, Command Dword 0.
+
+A figure whose section title ends in feature identifiers goes to those
+features, and to no command, even where its caption names a command. Set
+Features no longer has Element Action in Command Dword 11, nor Get
+Features Generate Default Host Metadata; both go to the Host Metadata
+features 7Dh, 7Eh and 7Fh. Controller Data Queue no longer has Command
+Dwords 11 to 13 of the feature of that name.
+
+The map of sate-web draws both links: a command leads to the status values
+that affect it, an entry of a table of status values lists its commands,
+and the controlling field of a case links its figure. Tests drive the map
+in a headless browser, which CI installs.
+
 ## 0.21.0
 
 The data model now records what a CNS value selects and which tables of
