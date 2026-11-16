@@ -125,7 +125,10 @@ def test_the_wizard_serves_its_data_model_without_asking(setup, tmp_path, capsys
 
     assert setup["fetched"] == [] and setup["made"] == []
     assert len(setup["served"]) == 1
-    assert "made by senfd" not in capsys.readouterr().out
+    said = capsys.readouterr().out
+    assert "made by senfd" not in said
+    host, port, _ = setup["served"][0]
+    assert f"http://{host}:{port}/map" in said
 
 
 @pytest.mark.parametrize(
