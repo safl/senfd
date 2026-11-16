@@ -143,6 +143,7 @@ QUESTION = (
     '<path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.4M12 17h.01"/>'
 )
 STRUCTURE = '<rect x="3" y="4" width="18" height="16" rx="1"/><path d="M3 10h18M3 15h18M10 4v16"/>'
+BOOK = '<path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2zM22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/>'
 NUMBER = '<path d="M10 4L8 20M16 4l-2 16M4 9h16M4 15h16"/>'
 MARKS = {
     "question": QUESTION,
@@ -160,8 +161,13 @@ MARKS = {
     "identifier": NUMBER,
     "value": NUMBER,
     "status": NUMBER,
-    "section": '<path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2zM22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/>',
+    "section": BOOK,
     "errata": '<path d="M12 3l10 18H2zM12 10v4M12 17h.01"/>',  # A warning
+    # The kinds of the map that answers do not have
+    "start": '<path d="M3 11l9-8 9 8M5 9v11h14V9"/>',  # A house
+    "document": BOOK,
+    "command set": '<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>',  # Layers
+    "group": '<path d="M3 6h6l2 2h10v11H3z"/>',  # A folder
 }  # fmt: skip
 
 
@@ -348,6 +354,8 @@ def map_of() -> str:
         "THEME_PRELOAD": theme_preload(),
         "THEMES": themed(),
         "HEADER_STYLE": HEADER_STYLE,
+        "SHARED_STYLE": SHARED_STYLE,
+        "MARKS": json.dumps(MARKS),
         "HEADER": header("map"),
         "THEME_SCRIPT": theme_script(),
     }.items():
@@ -394,6 +402,7 @@ def page(
         theme=next(iter(THEMES)),
         marks=json.dumps({kind: mark(kind) for kind in MARKS}),
         header_style=HEADER_STYLE,
+        shared_style=SHARED_STYLE,
         header=header("ask"),
         theme_preload=theme_preload(),
         theme_script=theme_script(),
@@ -641,6 +650,47 @@ header nav svg {
 }
 """
 
+# The CSS that both pages of sate-web share, so an answer, its tags and the
+# icons of the kinds look alike on the question page and in the map
+SHARED_STYLE = """svg.mark {
+  width: 1em; height: 1em; margin-right: 0.5em; vertical-align: -0.15em;
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.status {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0;
+  color: var(--dim); font-size: 0.8rem;
+}
+.tag {
+  display: inline-flex; align-items: center; padding: 0 0.55rem;
+  border: 1px solid var(--line); border-radius: 999px; color: var(--dim);
+}
+.status .what { color: var(--fg); margin-left: 0.25em; }
+.tag svg.mark { margin-right: 0.35em; }
+a { color: var(--accent); }
+code { font-family: ui-monospace, monospace; font-size: 0.9em; }
+table { border-collapse: collapse; margin: 0.5rem 0 1rem; font-size: 0.95rem; }
+th, td {
+  border: 1px solid var(--line); padding: 0.25rem 0.5rem;
+  text-align: left; vertical-align: top;
+}
+h3 { font-size: 1.15rem; }
+.note {
+  margin: 0.5rem 0 1rem; padding: 0.5rem 1rem;
+  background: var(--note); border-left: 4px solid var(--warn); border-radius: 4px;
+}
+.note p { margin: 0.4rem 0; }
+.note strong { color: var(--warn); letter-spacing: 0.05em; margin-right: 0.4rem; }
+blockquote { margin: 0; padding-left: 0.75rem; border-left: 3px solid var(--line); }
+/* Small secondary text, so the footer draws less attention than the field */
+footer {
+  padding: 0.4rem 1.5rem; border-top: 1px solid var(--line);
+  color: var(--dim); font-size: 0.75rem; line-height: 1.4;
+}
+footer p { margin: 0; }
+"""
+
+
 HEADER = """<header>
 <h1><a class="home" href=".">{logo}<span class="name">sate</span></a><span class="version">v{version}</span></h1>
 <nav>
@@ -789,16 +839,6 @@ body {{
 {header_style}
 .holds {{ color: var(--dim); font-size: 0.95rem; }}
 /* The status of an answer: small tags in the secondary text colour */
-.status {{
-  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0;
-  color: var(--dim); font-size: 0.8rem;
-}}
-.status .tag {{
-  display: inline-flex; align-items: center; padding: 0 0.55rem;
-  border: 1px solid var(--line); border-radius: 999px;
-}}
-.status .what {{ color: var(--fg); margin-left: 0.25em; }}
-.status svg.mark {{ margin-right: 0.35em; }}
 form {{ position: relative; margin: 0; }}
 /* The question form sticks to the top of the window while the answer
    scrolls under it. The script adds .stuck, which draws a line under the
@@ -856,11 +896,6 @@ ul.menu li {{
 }}
 ul.menu li .kind {{ color: var(--dim); }}
 ul.menu li .swap {{ font-weight: 700; }}
-svg.mark {{
-  width: 1em; height: 1em; margin-right: 0.5em; vertical-align: -0.15em;
-  fill: none; stroke: var(--accent); stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
-}}
 /* The selected completion gets a frame in the link colour, which has at
    least 4.5:1 contrast with the page in every theme. A tinted background
    strong enough to see would lower the contrast of the text */
@@ -870,27 +905,7 @@ ul.menu li.chosen {{
 }}
 ul.menu li.chosen .kind {{ color: var(--fg); }}
 main {{ overflow-x: auto; }}
-a {{ color: var(--accent); }}
-code {{ font-family: ui-monospace, monospace; font-size: 0.9em; }}
-table {{ border-collapse: collapse; margin: 0.5rem 0 1rem; font-size: 0.95rem; }}
-th, td {{
-  border: 1px solid var(--line); padding: 0.25rem 0.5rem;
-  text-align: left; vertical-align: top;
-}}
-h3 {{ font-size: 1.15rem; }}
-.note {{
-  margin: 0.5rem 0 1rem; padding: 0.5rem 1rem;
-  background: var(--note); border-left: 4px solid var(--warn); border-radius: 4px;
-}}
-.note p {{ margin: 0.4rem 0; }}
-.note strong {{ color: var(--warn); letter-spacing: 0.05em; margin-right: 0.4rem; }}
-blockquote {{ margin: 0; padding-left: 0.75rem; border-left: 3px solid var(--line); }}
-/* Small secondary text, so the footer draws less attention than the field */
-footer {{
-  padding: 0.4rem 1.5rem; border-top: 1px solid var(--line);
-  color: var(--dim); font-size: 0.75rem; line-height: 1.4;
-}}
-footer p {{ margin: 0; }}
+{shared_style}
 </style>
 </head>
 <body>
