@@ -110,7 +110,9 @@ def test_each_way_of_running_the_wizard_is_a_block_of_its_own():
         ]
         assert len(wizards) == 2, page
         assert all(len(block) == 1 for block in wizards), page
+    # The README gives uvx only, so that a reader has one command to copy
     readme = Path("README.md").read_text()
     fenced = re.findall(r"```\n(.*?)```", readme, re.S)
     wizards = [block for block in fenced if "sate-preview-wizard" in block]
-    assert [block.count("\n") for block in wizards] == [1, 1]
+    assert wizards == ["uvx --from senfd@latest sate-preview-wizard\n"]
+    assert "pipx" not in readme
