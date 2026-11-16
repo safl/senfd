@@ -205,6 +205,9 @@ def main(argv: Optional[List[str]] = None, ask: Callable[[str], str] = input) ->
     loaded = senfd.query.load(spec)
     host = "127.0.0.1"
     port = free_port(host, args.port)
-    print(f"sate-web answers at http://{host}:{port}/ until you press Ctrl-C.")
+    print(
+        f"sate-web answers at http://{host}:{port}/, and shows the map of the"
+        f" data model at http://{host}:{port}/map, until you press Ctrl-C."
+    )
     web.serve(loaded, host, port, browse=not args.no_browser)
     return 0
