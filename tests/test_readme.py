@@ -39,16 +39,17 @@ def test_the_dependabot_badge_links_its_configuration():
     assert Path(link.split("/blob/main/")[1]).is_file()
 
 
-def test_the_readme_shows_how_to_try_sate_before_anything_else():
+def test_the_readme_shows_how_to_try_sate_after_the_introductions():
     """The first command of the README runs the wizard of a script the
-    package installs, ahead of every image below the badges and every
-    section"""
+    package installs, after the introductions of senfd and sate and before
+    the first section"""
 
     readme = Path("README.md").read_text()
     command = "uvx --from senfd@latest sate-preview-wizard"
     first = re.search(r"```\n(.*?)\n```", readme, re.DOTALL)
 
     assert first and first[1] == command
-    assert readme.index(command) < readme.index("\n![")
+    assert readme.index("**senfd**") < readme.index("**sate**")
+    assert readme.index("casts/session.svg") < readme.index(command)
     assert readme.index(command) < readme.index("\n## ")
     assert 'sate-preview-wizard = "' in Path("pyproject.toml").read_text()
