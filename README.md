@@ -27,6 +27,20 @@ and fields, and every data structure, register, feature, log page and
 table of values. Each fact in the data model cites the document, section,
 figure and page it comes from.
 
+To try it, run the wizard with [uvx](https://docs.astral.sh/uv/):
+
+```
+uvx --from senfd@latest sate-preview-wizard
+```
+
+The wizard lists the specifications it will download from nvmexpress.org,
+and asks before it makes the data model, because only members of NVM
+Express may make and use the data model. The wizard then opens sate's web
+page in the browser, which answers questions and shows the data model as
+a map. The data model stays in `~/.cache/senfd`, so the next run opens the
+page at once. With pipx instead of uvx, run
+`pipx run --no-cache --spec senfd sate-preview-wizard`.
+
 ![The .pdf and .docx documents go through senfd's stages, read, normalise, define and merge, into one data model](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/senfd.svg)
 
 The data model is JSON, validated by a schema. The same documents give the
@@ -40,25 +54,6 @@ the figure, with a link to its page of the specification on
 nvmexpress.org, so you can check the answer:
 
 [![sate's session: a question put with completion, and answered with the figure it is from](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/casts/session.svg)](https://safl.dk/senfd/sate/)
-
-To try sate in the browser without installing senfd, run the wizard with
-uvx:
-
-```
-uvx --from senfd@latest sate-preview-wizard
-```
-
-Or with pipx:
-
-```
-pipx run --no-cache --spec senfd sate-preview-wizard
-```
-
-The wizard lists the specifications it will download from nvmexpress.org.
-The wizard asks before it makes the data model, because only members of
-NVM Express may make and use the data model. The wizard then opens sate's
-web page in the browser. The data model stays in `~/.cache/senfd`, so the
-next run opens the page without making the data model again.
 
 ## What the data model is for
 

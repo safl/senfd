@@ -37,3 +37,18 @@ def test_the_dependabot_badge_links_its_configuration():
     assert "[![Dependabot](" in readme
     assert f")]({link})" in readme
     assert Path(link.split("/blob/main/")[1]).is_file()
+
+
+def test_the_readme_shows_how_to_try_sate_before_anything_else():
+    """The first command of the README runs the wizard of a script the
+    package installs, ahead of every image below the badges and every
+    section"""
+
+    readme = Path("README.md").read_text()
+    command = "uvx --from senfd@latest sate-preview-wizard"
+    first = re.search(r"```\n(.*?)\n```", readme, re.DOTALL)
+
+    assert first and first[1] == command
+    assert readme.index(command) < readme.index("\n![")
+    assert readme.index(command) < readme.index("\n## ")
+    assert 'sate-preview-wizard = "' in Path("pyproject.toml").read_text()
