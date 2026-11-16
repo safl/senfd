@@ -10,6 +10,45 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.21.0
+
+The data model now records what a CNS value selects and which tables of
+status values belong to a command, and sate-web shows the data model as a
+map that a reader moves through by these relations. The format of the data
+model is 4.
+
+SGL1 of the Common Command Format, the Fabrics Command SQE, Connect,
+Authentication Send and Authentication Receive links to Base 2.4 Figure
+116, the Generic SGL Descriptor Format, and PRP1 and PRP2 of DPTR link to
+Figure 111. A field that cites a section of several formats links to the
+general one that the others refine. A field named by a structure and a
+number, as "Zone Descriptor 1", links to that structure. A field that
+cites a figure takes the link of the field of the same acronym there. The
+same rules link eleven more fields, among them Zone Descriptor 1 of
+Extended Report Zones and I/O Completion Queue State 1.
+
+A CNS value has `selects`, the structures that the section its reference
+cites lays out. Of the 32 entries of Base 2.4 Figure 336, 20 select a
+structure. CNS 00h, 09h and 0Ah cite another document, and select the
+structures of the same value there. A value whose CSI column is "Y", and
+which selects nothing in its own document, selects the structures of the
+same value in each command set, so CNS 05h and 06h select structures of
+the NVM, Key Value, Zoned Namespace, Subsystem Local Memory and
+Computational Programs Command Sets. An entry of the Command Set
+Identifiers, Base 2.4 Figure 337, has `document`, the document it names.
+A command has `status_values`, the tables of status values whose name,
+without an acronym in parentheses, is the command's name: 62 of the 83
+tables, for 53 commands.
+
+sate-web shows a map of the data model at `/map`. The item in focus is at
+the centre, what it contains or links to is on its right, and what
+contains it or links to it is on its left; a click on a neighbour moves
+the focus to it. Each citation in an answer links its item in the map, and
+the map asks sate about the item in focus. Each kind of entity has an icon
+and a colour of its own, the same on both pages, from the palette of the
+theme. `senfd.graph` makes the graph that the map draws, and
+`sate-preview-wizard` names the address of the map.
+
 ## 0.20.0
 
 The data model now records what a code generator of definitions had to
