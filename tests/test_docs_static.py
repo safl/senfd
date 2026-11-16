@@ -98,21 +98,26 @@ def test_the_copy_button_copies_the_commands_without_the_prompt():
     assert conf["copybutton_prompt_text"] == "$ "
 
 
-def test_each_way_of_running_the_wizard_is_a_block_of_its_own():
-    """So that its copy button copies one command, not the alternatives"""
+def test_the_wizard_is_run_with_uvx_alone():
+    """senfd is tried with uvx and installed with uv, so each page gives one
+    command to copy, and none gives pipx"""
 
-    pages = [Path("docs/src/index.rst"), Path("docs/src/sate/index.rst")]
-    for page in pages:
+    command = "uvx --from senfd@latest sate-preview-wizard"
+    for page in (Path("docs/src/index.rst"), Path("docs/src/sate/index.rst")):
+        text = page.read_text()
         wizards = [
             block
-            for block in console_blocks(page.read_text())
-            if any("sate-preview-wizard" in command for command in block)
+            for block in console_blocks(text)
+            if any("sate-preview-wizard" in line for line in block)
         ]
-        assert len(wizards) == 2, page
-        assert all(len(block) == 1 for block in wizards), page
-    # The README gives uvx only, so that a reader has one command to copy
+        assert wizards == [[command]], page
+        assert "pipx" not in text, page
     readme = Path("README.md").read_text()
     fenced = re.findall(r"```\n(.*?)```", readme, re.S)
     wizards = [block for block in fenced if "sate-preview-wizard" in block]
-    assert wizards == ["uvx --from senfd@latest sate-preview-wizard\n"]
+    assert wizards == [f"{command}\n"]
     assert "pipx" not in readme
+
+    install = Path("docs/src/install/index.rst").read_text()
+    assert ["uv tool install senfd"] in console_blocks(install)
+    assert "pipx" not in install

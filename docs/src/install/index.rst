@@ -9,13 +9,13 @@ Install
 
 senfd is a Python package on `PyPI <https://pypi.org/project/senfd/>`_,
 tested on Python 3.13 to 3.15 on Linux and macOS. On Windows, use it in WSL
-or :ref:`in a container <sec-install-container>`. `pipx
-<https://pipx.pypa.io/stable/>`_ installs senfd and its commands in a
+or :ref:`in a container <sec-install-container>`. `uv
+<https://docs.astral.sh/uv/>`_ installs senfd and its commands in a
 virtual environment of their own:
 
 .. code-block:: console
 
-   $ pipx install senfd
+   $ uv tool install senfd
 
 The package installs four commands. ``senfd`` makes the data model and
 lints the documents. ``sate`` answers questions from the data model.

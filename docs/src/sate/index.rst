@@ -242,15 +242,8 @@ with uvx:
 
    $ uvx --from senfd@latest sate-preview-wizard
 
-Or with pipx:
-
-.. code-block:: console
-
-   $ pipx run --no-cache --spec senfd sate-preview-wizard
-
-``@latest`` and ``--no-cache`` fetch the latest release each time. Without
-them, uvx and pipx run the version they ran before, which pipx keeps for 14
-days.
+``@latest`` fetches the latest release each time. Without it, uvx runs
+the version it ran before.
 
 When there is no data model, the wizard lists the specifications that it
 will download from nvmexpress.org, and asks before it makes the data model,

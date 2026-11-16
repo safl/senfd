@@ -54,12 +54,6 @@ wizard with uvx:
 
    $ uvx --from senfd@latest sate-preview-wizard
 
-Or with pipx:
-
-.. code-block:: console
-
-   $ pipx run --no-cache --spec senfd sate-preview-wizard
-
 The wizard lists the specifications that it will download from
 nvmexpress.org, and asks before it makes the data model. The section
 :ref:`on the web <sec-sate-web>` describes the wizard.

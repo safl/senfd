@@ -5,7 +5,7 @@
 """
 sate-preview-wizard: set up sate-web on this machine and open it
 
-    pipx run --spec senfd sate-preview-wizard
+    uvx --from senfd@latest sate-preview-wizard
 
 When there is no data model at the default path, or the one there is of
 another format or of other documents than senfd's table of published
