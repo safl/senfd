@@ -29,7 +29,7 @@ import re
 import sys
 from urllib.parse import quote, quote_plus
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 from markdown_it import MarkdownIt
 from starlette.applications import Starlette
@@ -47,7 +47,8 @@ from senfd.sate.phrasing import FORMS
 from senfd.sate.reading import understand
 from senfd.sate.session import holds
 from senfd.sate.vocabulary import Vocabulary
-from senfd.documents.spec import SpecDocument
+from senfd.documents.spec import CITED, SpecDocument
+from senfd.graph import graph_of
 
 if TYPE_CHECKING:
     import uvicorn
@@ -316,6 +317,44 @@ def manifest(spec: SpecDocument) -> str:
     )
 
 
+def mapped(answer: str, figures: Dict[str, str]) -> str:
+    """'answer' with a link into the map after each citation of a figure the
+    map has, as "[map](map#st:Base 2.4:93)" after "Base 2.4, 4.1.1, Figure
+    93, page 85" """
+
+    def link(match: "re.Match[str]") -> str:
+        cited = match.group(1)
+        figure = re.search(r"Figure (\d+)", cited)
+        node = figures.get(f"{cited.split(', ')[0]}:{figure[1]}") if figure else None
+        if not node:
+            return match.group(0)
+        return f"{match.group(0)} [map](map#{quote(node)})"
+
+    return CITATION.sub(link, answer)
+
+
+# A citation in an answer, linked to a PDF or not
+CITATION = re.compile(CITED.pattern + r"(?:\([^)\s]*\))?")
+
+
+def map_of() -> str:
+    """The page of the map, in the themes of sate-web, which loads the graph
+    of the data model from map/graph.json"""
+
+    text = (Path(__file__).parent / "map.html").read_text(encoding="utf-8")
+    for key, value in {
+        "THEME": next(iter(THEMES)),
+        "FAVICON": quote(LOGO),
+        "THEME_PRELOAD": theme_preload(),
+        "THEMES": themed(),
+        "HEADER_STYLE": HEADER_STYLE,
+        "HEADER": header("map"),
+        "THEME_SCRIPT": theme_script(),
+    }.items():
+        text = text.replace(f"@@{key}@@", value)
+    return text
+
+
 def page(
     spec: SpecDocument,
     vocabulary: Vocabulary,
@@ -388,15 +427,41 @@ def app(spec: SpecDocument, mcp_token: Optional[str] = None) -> Starlette:
     vocabulary = Vocabulary.of(spec)
     _ = vocabulary.names  # Compile the pattern of names before the first request
 
-    async def index(request: Request) -> HTMLResponse:
-        question = request.query_params.get("q", "")
+    graph = graph_of(spec)
+    figures = graph["figures"]
+    MAP = map_of()
+
+    def answered(question: str) -> Tuple[str, str]:
         answer, status = "", ""
         if question.strip():
             try:
                 answer, status = exchange(spec, question, vocabulary, said_as=False)
             except Exception as exc:  # Report a failed lookup on the page
                 answer, status = "", f"sate failed to answer: {exc}"
+        return mapped(answer, figures), status
+
+    async def index(request: Request) -> HTMLResponse:
+        question = request.query_params.get("q", "")
+        answer, status = answered(question)
         return HTMLResponse(page(spec, vocabulary, question, answer, status))
+
+    async def answer(request: Request) -> JSONResponse:
+        """The answer to a question as HTML, for the panel of the map"""
+
+        question = request.query_params.get("q", "")
+        answer, status = answered(question)
+        said = (
+            not_known(question, vocabulary, answer)
+            if status.endswith("| not known")
+            else rendered(answer)
+        )
+        return JSONResponse({"status": marked(status), "answer": said})
+
+    async def map_page(request: Request) -> HTMLResponse:
+        return HTMLResponse(MAP)
+
+    async def map_graph(request: Request) -> JSONResponse:
+        return JSONResponse(graph)
 
     async def complete(request: Request) -> JSONResponse:
         typed = request.query_params.get("q", "")
@@ -406,7 +471,13 @@ def app(spec: SpecDocument, mcp_token: Optional[str] = None) -> Starlette:
             }
         )
 
-    routes = [Route("/", index), Route("/complete", complete)]
+    routes = [
+        Route("/", index),
+        Route("/complete", complete),
+        Route("/answer", answer),
+        Route("/map", map_page),
+        Route("/map/graph.json", map_graph),
+    ]
     if not mcp_token:
         return Starlette(routes=routes)
 
@@ -596,6 +667,12 @@ HEADER = """<header>
 
 VIEWS = {
     "ask": (".", "Ask", "Ask sate a question", QUESTION),
+    "map": (
+        "map",
+        "Map",
+        "Fly through the data model by its relations",
+        '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>',
+    ),
 }
 
 THEME_PRELOAD = """<script>
