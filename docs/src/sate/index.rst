@@ -230,7 +230,10 @@ neighbour moves the focus to it. The panel beside the map lists the fields
 or entries of the item in focus, and asks ``sate`` about it. Each citation
 in an answer links the item of its figure in the map, and the item is in
 the URL, such as ``/map#cmd:admin:identify``. The map has the themes of the
-question page, and keeps the theme and the mode you chose there.
+question page, and keeps the theme and the mode you chose there. Each kind
+of entity, a command, a feature, a log page, a structure, a table of
+values, a document or a command set, has an icon and a colour of its own,
+the same on both pages.
 
 To try the page without installing senfd, run ``sate-preview-wizard``
 with uvx:
