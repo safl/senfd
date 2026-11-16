@@ -1775,7 +1775,16 @@ def identified(document: SpecDocument, name_column: str, kind: str):
                 yield int(match["hex"], 16), name, entry.columns, values.source
 
 
-REGEX_FEATURE_SECTION = re.compile(r"\(Feature Identifier ([0-9A-F]+)h\)$")
+REGEX_FEATURE_SECTION = re.compile(r"(?:\(Feature Identifier [0-9A-F]+h\)(?:,\s*)?)+$")
+
+
+def feature_identifiers(dwords: "Dwords") -> List[int]:
+    """The feature identifiers that end the title of the section of
+    'dwords', as 7Dh, 7Eh and 7Fh of "Host Metadata (Feature Identifier
+    7Dh), (Feature Identifier 7Eh), (Feature Identifier 7Fh)" """
+
+    match = REGEX_FEATURE_SECTION.search(dwords.source.section_title or "")
+    return [int(h, 16) for h in re.findall(r"([0-9A-F]+)h", match[0])] if match else []
 
 
 def placed_key(key: str, dwords: "Dwords") -> Tuple[str, str, int]:
@@ -1827,12 +1836,18 @@ def link_features(document: SpecDocument, used: set) -> None:
         cqe = key.startswith("cqe:")
         left[key] = []
         for dwords in described:
-            match = REGEX_FEATURE_SECTION.search(dwords.source.section_title or "")
-            feature = by_identifier.get(int(match[1], 16)) if match else None
-            if feature is None:
+            if placed_key(key, dwords) in used:
+                continue
+            features = [
+                by_identifier[i]
+                for i in feature_identifiers(dwords)
+                if i in by_identifier
+            ]
+            if not features:
                 left[key].append(dwords)
                 continue
-            add_dwords(feature.cqe if cqe else feature.sqe, dwords)
+            for feature in features:
+                add_dwords(feature.cqe if cqe else feature.sqe, dwords)
             used.add(placed_key(key, dwords))
         if not left[key]:
             used.add(key)
@@ -2605,12 +2620,20 @@ def resolve(document: SpecDocument) -> SpecDocument:
     # A command of the same name in two command sets is one command, as the
     # reservation commands that the base specification describes and the NVM
     # command set lists
+    # A figure in the section of a feature is the feature's, even where its
+    # caption names the command, as "Set Features - Command Dword 11" of Host
+    # Metadata, and goes to the feature below
     for key, described in document.dwords.items():
         cqe = key.startswith("cqe:")
-        for command in by_name.get(key.removeprefix("cqe:"), []):
-            for dwords in described:
+        commands = by_name.get(key.removeprefix("cqe:"), [])
+        taken = [d for d in described if not feature_identifiers(d)]
+        for command in commands:
+            for dwords in taken:
                 add_dwords(command.cqe if cqe else command.sqe, dwords)
+        if commands and len(taken) == len(described):
             used.add(key)
+        elif commands:
+            used.update(placed_key(key, d) for d in taken)
 
     document.features, document.log_pages = {}, {}
     # The operations take their dwords before the looser matching of features

@@ -1729,6 +1729,72 @@ def test_completion_dwords_go_to_the_feature_their_section_names():
     assert "cqe:bar_configuration" in used
 
 
+def test_a_figure_of_a_feature_section_goes_to_the_feature_not_the_command():
+    """Base 2.4 gives Command Dword 11 of Host Metadata, Features 7Dh, 7Eh
+    and 7Fh, in a figure captioned "Set Features - Command Dword 11"; the
+    figure is the features', and Set Features keeps its own figures"""
+
+    from senfd.documents.spec import (
+        Command,
+        CommandSet,
+        Dwords,
+        Entry,
+        Source,
+        Values,
+        alias,
+        resolve,
+    )
+
+    def source(figure_nr, section_title):
+        return Source(
+            document="example",
+            figure_nr=figure_nr,
+            section="1.1",
+            section_title=section_title,
+        )
+
+    document = SpecDocument()
+    document.command_sets = {
+        "admin": CommandSet(
+            name="Admin",
+            commands={
+                "set_features": Command(
+                    name="Set Features", opcode=9, source=source(1, "Opcodes")
+                )
+            },
+        )
+    }
+    metadata = "Host Metadata (Feature Identifier 7Dh), (Feature Identifier 7Eh), "
+    document.dwords = {
+        "set_features": [
+            Dwords(lower=10, upper=10, source=source(2, "Set Features command")),
+            Dwords(
+                lower=11,
+                upper=11,
+                source=source(3, metadata + "(Feature Identifier 7Fh)"),
+            ),
+        ]
+    }
+    names = {"7Dh": "Foo Metadata", "7Eh": "Bar Metadata", "7Fh": "Baz Metadata"}
+    document.values = [
+        Values(
+            kind="feature_identifiers",
+            name="Feature Identifiers",
+            columns=["identifier", "feature_name"],
+            source=source(4, "Feature Identifiers"),
+            entries=[Entry(value=v, name=n) for v, n in names.items()],
+        )
+    ]
+    resolve(document)
+
+    command = document.command_sets["admin"].commands["set_features"]
+    assert [d.source.figure_nr for d in command.sqe] == [2]
+    for name in names.values():
+        feature = document.features[alias(name)]
+        assert [d.source.figure_nr for d in feature.sqe] == [3]
+    assert document.unassigned == {}
+
+
 def test_a_footnote_marker_after_the_last_sentence_is_a_footnote():
     """Base 2.4 marks footnote 7 on CNS descriptions, as "... processing the
     command.7", and footnote 1 on fields of Format NVM, as "... specific
