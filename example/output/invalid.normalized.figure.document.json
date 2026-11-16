@@ -1,8 +1,8 @@
 {
   "meta": {
-    "format": 3,
+    "format": 4,
     "version": "0.20.0",
-    "senfd_sha256": "fbb9100fa2f5e3c4d420baf8fe17455e58920ea4bd6667b84f76af69298388a3",
+    "senfd_sha256": "a0ad087435a7c21e04c8e4909e8ef92d4a225b6fd46a3c50d69da8ceac1080fa",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

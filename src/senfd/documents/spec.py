@@ -399,6 +399,9 @@ class Command(Model):
     """The dwords of its completion queue entry that its figures lay out"""
     operations: List[Operation] = Field(default_factory=list)
     """What it does for the values of its selecting fields, if it has any"""
+    status_values: List[Source] = Field(default_factory=list)
+    """The tables of the status values specific to the command, as Base 2.4
+    Figure 331 of Get Log Page"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
     source: Source
@@ -537,6 +540,15 @@ class Entry(Model):
     refers_to: Optional[ValueLink] = None
     """The value of another field that the description names, where the entry
     has no name of its own"""
+    selects: List[Source] = Field(default_factory=list)
+    """The structures the value selects, as the Identify Controller data
+    structure and its Power State Descriptor for CNS 01h: those of the
+    section its reference cites, those of the same value in a document it
+    cites, or, where the Command Set Identifier selects them, those of the
+    same value in each command set's document"""
+    document: Optional[str] = None
+    """The document whose subject the entry names, as the NVM Command Set
+    Specification for "NVM Command Set" of the Command Set Identifiers"""
 
 
 class Values(Model):
@@ -2397,6 +2409,96 @@ def link_structures(document: SpecDocument) -> None:
             field.structure = there[0]
 
 
+def subject_of(document: str) -> str:
+    """The subject of a document by its title, as "NVM Command Set" of "NVM
+    Express NVM Command Set Specification, Revision 1-3" """
+
+    title = document.split(",")[0].strip()
+    title = title.removeprefix("NVM Express ").removesuffix(" Specification")
+    return title.strip()
+
+
+def link_selections(document: SpecDocument) -> None:
+    """
+    Set 'selects' on each entry of a table of CNS values, 'document' on each
+    entry that names the subject of a document, and 'status_values' on each
+    command whose name a table of status values has. An entry the CSI
+    selects, "Y" in its CSI column, that selects nothing of its own document
+    selects what the same value selects in the document of each command set
+    that the entries of the Command Set Identifiers name.
+    """
+
+    documents = {
+        source.document
+        for source in [s.source for s in document.structures]
+        + [v.source for v in document.values]
+    } | set(document.documents)
+    by_subject = {subject_of(d).casefold(): d for d in documents if subject_of(d)}
+
+    for values in document.values:
+        for entry in values.entries:
+            entry.selects = []
+            entry.document = by_subject.get((entry.name or "").strip().casefold())
+
+    sections: Dict[Tuple[str, str], List[Source]] = {}
+    for structure in document.structures:
+        if structure.kind in ("command_dword", "completion_dword", "example"):
+            continue
+        if structure.source.section:
+            key = (structure.source.document, structure.source.section)
+            sections.setdefault(key, []).append(structure.source)
+
+    tables = [v for v in document.values if v.kind == "cns_values"]
+    selected: Dict[Tuple[str, str], List[Source]] = {}
+    for values in tables:
+        for entry in values.entries:
+            reference = entry.columns.get("reference", "").strip()
+            if re.fullmatch(r"\d+(?:\.\d+)+", reference):
+                entry.selects = list(
+                    sections.get((values.source.document, reference), [])
+                )
+                key = (values.source.document, entry.value)
+                selected.setdefault(key, []).extend(entry.selects)
+    for values in tables:
+        for entry in values.entries:
+            cited = by_subject.get(
+                subject_of(entry.columns.get("reference", "")).casefold()
+            )
+            if not entry.selects and cited and cited != values.source.document:
+                entry.selects = list(selected.get((cited, entry.value), []))
+
+    command_sets = [
+        entry.document
+        for values in document.values
+        if sum(1 for e in values.entries if e.document) > 1
+        for entry in values.entries
+        if entry.document
+    ]
+    for values in tables:
+        for entry in values.entries:
+            if entry.selects or not entry.columns.get("csi", "").startswith("Y"):
+                continue
+            entry.selects = [
+                source
+                for other in dict.fromkeys(command_sets)
+                if other != values.source.document
+                for source in selected.get((other, entry.value), [])
+            ]
+
+    commands: Dict[str, List[Command]] = {}
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            command.status_values = []
+            commands.setdefault(command.name.casefold(), []).append(command)
+    for values in document.values:
+        if values.kind == "status_values" and values.name:
+            # A caption may give the command's acronym, as "Fabric Zoning
+            # Lookup (FZL) - Command Specific Status Values"
+            name = re.sub(r"\s*\([A-Z0-9]+\)$", "", values.name).casefold()
+            for command in commands.get(name, []):
+                command.status_values.append(values.source)
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -2430,6 +2532,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_structures(document)
     link_log_pages(document)
     link_values(document)
+    link_selections(document)
 
     # A gap where a field was left out as an erratum is that erratum again
     document.errata = [e for e in document.errata if e.code != "gap"]

@@ -2329,3 +2329,182 @@ def test_a_field_referring_to_a_figure_has_the_link_of_the_field_there():
     # A field without an acronym is no field of the figure referred to
     (foo0,) = spec.structures[3].fields
     assert foo0.structure is None
+
+
+def selections_document():
+    """Base with a CNS table and a table of Command Set Identifiers, and two
+    command set documents, each with its own CNS table"""
+
+    from senfd.documents.spec import Entry, Source, Structure, Values
+
+    base = "NVM Express Base Specification, Revision 2-4"
+    foo = "NVM Express Foo Command Set Specification, Revision 1-3"
+    bar = "NVM Express Bar Command Set Specification, Revision 1-4"
+
+    def structure(document, figure_nr, section, name, kind="data_structure"):
+        return Structure(
+            name=name,
+            kind=kind,
+            unit="bytes",
+            source=Source(document=document, figure_nr=figure_nr, section=section),
+        )
+
+    def cns(document, figure_nr, rows):
+        return Values(
+            kind="cns_values",
+            name="Identify",
+            columns=["cns_value", "description", "reference", "csi"],
+            entries=[
+                Entry(
+                    value=value,
+                    value_column="cns_value",
+                    columns={"reference": reference, "csi": csi},
+                )
+                for value, reference, csi in rows
+            ],
+            source=Source(document=document, figure_nr=figure_nr),
+        )
+
+    document = SpecDocument()
+    document.structures = [
+        structure(base, 338, "5.1", "Identify Controller"),
+        structure(base, 339, "5.1", "Power State Descriptor"),
+        structure(base, 333, "5.1", "Identify - Command Dword 10", "command_dword"),
+        structure(foo, 123, "4.1", "Identify Namespace"),
+        structure(foo, 127, "4.2", "Foo Specific Identify Namespace (CSI 00h)"),
+        structure(bar, 42, "5.2", "Bar Specific Identify Namespace"),
+    ]
+    document.values = [
+        cns(
+            base,
+            336,
+            [
+                ("01h", "5.1", "N"),
+                ("00h", "NVM Express Foo Command Set Specification", "N"),
+                ("05h", "5.9", "Y"),
+                ("07h", "5.8", "N"),
+            ],
+        ),
+        Values(
+            kind="other",
+            name="Command Set Identifiers",
+            columns=["value", "command_set"],
+            entries=[
+                Entry(value="00h", value_column="value", name="Foo Command Set"),
+                Entry(value="01h", value_column="value", name="Bar Command Set"),
+                Entry(value="02h", value_column="value", name="Baz Command Set"),
+            ],
+            source=Source(document=base, figure_nr=337),
+        ),
+        cns(foo, 122, [("00h", "4.1", "N"), ("05h", "4.2", "Y")]),
+        cns(bar, 41, [("05h", "5.2", "Y")]),
+    ]
+    return document, base, foo, bar
+
+
+def test_a_cns_value_selects_the_structures_of_the_section_its_reference_cites():
+    """CNS 01h of Base 2.4 Figure 336 cites section 5.2.13.2.1, which lays
+    out the Identify Controller data structure and its Power State
+    Descriptor; the dwords of the Identify command are no structure it
+    selects"""
+
+    from senfd.documents.spec import link_selections
+
+    document, base, foo, bar = selections_document()
+    link_selections(document)
+    by_value = {e.value: e for e in document.values[0].entries}
+    assert [s.figure_nr for s in by_value["01h"].selects] == [338, 339]
+    # A section without a structure
+    assert by_value["07h"].selects == []
+
+
+def test_a_cns_value_selects_the_structures_of_the_same_value_in_a_document_it_cites():
+    """CNS 00h of Base 2.4 cites the NVM Command Set Specification, whose
+    own CNS 00h cites its section of the Identify Namespace data structure"""
+
+    from senfd.documents.spec import link_selections
+
+    document, base, foo, bar = selections_document()
+    link_selections(document)
+    by_value = {e.value: e for e in document.values[0].entries}
+    assert [(s.document, s.figure_nr) for s in by_value["00h"].selects] == [(foo, 123)]
+
+
+def test_a_cns_value_the_csi_selects_has_the_structures_of_each_command_set():
+    """CNS 05h of Base 2.4 is "I/O Command Set specific Identify Namespace",
+    with Y in its CSI column, and Base has no structure of it; each command
+    set that the Command Set Identifiers of Figure 337 name has its own"""
+
+    from senfd.documents.spec import link_selections
+
+    document, base, foo, bar = selections_document()
+    link_selections(document)
+    csis = document.values[1].entries
+    assert [e.document for e in csis] == [foo, bar, None]
+    by_value = {e.value: e for e in document.values[0].entries}
+    assert [(s.document, s.figure_nr) for s in by_value["05h"].selects] == [
+        (foo, 127),
+        (bar, 42),
+    ]
+    # The command sets' own CNS 05h select their own structure only
+    assert [s.figure_nr for s in document.values[2].entries[1].selects] == [127]
+
+
+def test_a_command_has_the_tables_of_status_values_its_name_captions():
+    """Base 2.4 Figure 331, "Get Log Page - Command Specific Status Values",
+    gives the status values of Get Log Page"""
+
+    from senfd.documents.spec import (
+        Command,
+        CommandSet,
+        Source,
+        Values,
+        link_selections,
+    )
+
+    document = SpecDocument()
+    document.command_sets = {
+        "admin": CommandSet(
+            name="Admin",
+            commands={
+                "get_log_page": Command(
+                    name="Get Log Page",
+                    opcode=2,
+                    source=Source(document="Base", figure_nr=1),
+                ),
+                "identify": Command(
+                    name="Identify",
+                    opcode=6,
+                    source=Source(document="Base", figure_nr=1),
+                ),
+                "foo_zoning_lookup": Command(
+                    name="Foo Zoning Lookup",
+                    opcode=7,
+                    source=Source(document="Base", figure_nr=1),
+                ),
+            },
+        )
+    }
+    document.values = [
+        Values(
+            kind="status_values",
+            name="Get Log Page",
+            source=Source(document="Base", figure_nr=331),
+        ),
+        Values(
+            kind="status_values",
+            name="Generic Command",
+            source=Source(document="Base", figure_nr=104),
+        ),
+        # As "Fabric Zoning Lookup (FZL) - Command Specific Status Values"
+        Values(
+            kind="status_values",
+            name="Foo Zoning Lookup (FZL)",
+            source=Source(document="Base", figure_nr=604),
+        ),
+    ]
+    link_selections(document)
+    commands = document.command_sets["admin"].commands
+    assert [s.figure_nr for s in commands["get_log_page"].status_values] == [331]
+    assert commands["identify"].status_values == []
+    assert [s.figure_nr for s in commands["foo_zoning_lookup"].status_values] == [604]

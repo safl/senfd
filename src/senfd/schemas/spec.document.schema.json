@@ -570,6 +570,14 @@
                     "title": "Operations",
                     "type": "array"
                 },
+                "status_values": {
+                    "description": "The tables of the status values specific to the command, as Base 2.4\nFigure 331 of Get Log Page",
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "title": "Status Values",
+                    "type": "array"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"
@@ -662,7 +670,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 3,
+                    "default": 4,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
@@ -867,6 +875,27 @@
                     ],
                     "default": null,
                     "description": "The value of another field that the description names, where the entry\nhas no name of its own"
+                },
+                "selects": {
+                    "description": "The structures the value selects, as the Identify Controller data\nstructure and its Power State Descriptor for CNS 01h: those of the\nsection its reference cites, those of the same value in a document it\ncites, or, where the Command Set Identifier selects them, those of the\nsame value in each command set's document",
+                    "items": {
+                        "$ref": "#/$defs/Source"
+                    },
+                    "title": "Selects",
+                    "type": "array"
+                },
+                "document": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The document whose subject the entry names, as the NVM Command Set\nSpecification for \"NVM Command Set\" of the Command Set Identifiers",
+                    "title": "Document"
                 }
             },
             "required": [

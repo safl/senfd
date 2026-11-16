@@ -1,8 +1,8 @@
 {
   "meta": {
-    "format": 3,
+    "format": 4,
     "version": "0.20.0",
-    "senfd_sha256": "fbb9100fa2f5e3c4d420baf8fe17455e58920ea4bd6667b84f76af69298388a3",
+    "senfd_sha256": "a0ad087435a7c21e04c8e4909e8ef92d4a225b6fd46a3c50d69da8ceac1080fa",
     "stem": "example",
     "file": "example.docx",
     "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -376,6 +376,16 @@
             }
           ],
           "operations": [],
+          "status_values": [
+            {
+              "document": "example",
+              "figure_nr": 9,
+              "page_nr": 9,
+              "pdf_page": null,
+              "section": "1.2",
+              "section_title": "Ding command"
+            }
+          ],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "01b",
@@ -510,6 +520,7 @@
           ],
           "cqe": [],
           "operations": [],
+          "status_values": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "10b",
@@ -632,6 +643,7 @@
           ],
           "cqe": [],
           "operations": [],
+          "status_values": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "00b",
@@ -723,7 +735,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "1h",
@@ -749,7 +763,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "2h",
@@ -775,7 +791,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     }
                   ],
                   "unit": "bits",
@@ -867,7 +885,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "001b",
@@ -888,7 +908,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "010b to 111b",
@@ -909,7 +931,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     }
                   ],
                   "unit": "bits",
@@ -1026,7 +1050,9 @@
                             }
                           },
                           "footnotes": [],
-                          "refers_to": null
+                          "refers_to": null,
+                          "selects": [],
+                          "document": null
                         },
                         {
                           "value": "1h",
@@ -1047,7 +1073,9 @@
                             }
                           },
                           "footnotes": [],
-                          "refers_to": null
+                          "refers_to": null,
+                          "selects": [],
+                          "document": null
                         },
                         {
                           "value": "2h to FFh",
@@ -1068,7 +1096,9 @@
                             }
                           },
                           "footnotes": [],
-                          "refers_to": null
+                          "refers_to": null,
+                          "selects": [],
+                          "document": null
                         }
                       ],
                       "role": "field",
@@ -1124,7 +1154,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "01h",
@@ -1145,7 +1177,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     },
                     {
                       "value": "02h to FFh",
@@ -1166,7 +1200,9 @@
                         }
                       },
                       "footnotes": [],
-                      "refers_to": null
+                      "refers_to": null,
+                      "selects": [],
+                      "document": null
                     }
                   ],
                   "unit": "bits",
@@ -1316,6 +1352,7 @@
               }
             }
           ],
+          "status_values": [],
           "columns": {
             "function": "0001 00b",
             "data_transfer": "01b",
@@ -1341,6 +1378,16 @@
           "sqe": [],
           "cqe": [],
           "operations": [],
+          "status_values": [
+            {
+              "document": "example",
+              "figure_nr": 70,
+              "page_nr": 70,
+              "pdf_page": null,
+              "section": "4",
+              "section_title": "Data Structures"
+            }
+          ],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "10b",
@@ -1406,6 +1453,7 @@
           ],
           "cqe": [],
           "operations": [],
+          "status_values": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "01b",
@@ -1517,6 +1565,7 @@
               }
             }
           ],
+          "status_values": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "01b",
@@ -1559,6 +1608,7 @@
               }
             }
           ],
+          "status_values": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "10b",
@@ -2126,7 +2176,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "1h",
@@ -2152,7 +2204,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "2h",
@@ -2178,7 +2232,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               }
             ],
             "unit": "bits",
@@ -2270,7 +2326,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "001b",
@@ -2291,7 +2349,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "010b to 111b",
@@ -2312,7 +2372,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               }
             ],
             "unit": "bits",
@@ -2429,7 +2491,9 @@
                       }
                     },
                     "footnotes": [],
-                    "refers_to": null
+                    "refers_to": null,
+                    "selects": [],
+                    "document": null
                   },
                   {
                     "value": "1h",
@@ -2450,7 +2514,9 @@
                       }
                     },
                     "footnotes": [],
-                    "refers_to": null
+                    "refers_to": null,
+                    "selects": [],
+                    "document": null
                   },
                   {
                     "value": "2h to FFh",
@@ -2471,7 +2537,9 @@
                       }
                     },
                     "footnotes": [],
-                    "refers_to": null
+                    "refers_to": null,
+                    "selects": [],
+                    "document": null
                   }
                 ],
                 "role": "field",
@@ -2527,7 +2595,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "01h",
@@ -2548,7 +2618,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               },
               {
                 "value": "02h to FFh",
@@ -2569,7 +2641,9 @@
                   }
                 },
                 "footnotes": [],
-                "refers_to": null
+                "refers_to": null,
+                "selects": [],
+                "document": null
               }
             ],
             "unit": "bits",
@@ -7049,7 +7123,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "81h",
@@ -7059,7 +7135,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7089,7 +7167,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7159,7 +7239,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7202,7 +7284,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "Dong",
@@ -7225,7 +7309,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7317,7 +7403,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7358,7 +7446,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "C1h",
@@ -7379,7 +7469,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "C2h",
@@ -7400,7 +7492,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7468,7 +7562,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7546,7 +7642,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "C1h to C3h",
@@ -7603,7 +7701,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "C4h-C7h",
@@ -7658,7 +7758,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "C8h",
@@ -7703,7 +7805,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7739,7 +7843,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "1.1",
@@ -7753,7 +7859,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7783,7 +7891,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "1h",
@@ -7793,7 +7903,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7823,7 +7935,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7853,7 +7967,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7883,7 +7999,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "7h",
@@ -7893,7 +8011,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7923,7 +8043,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7953,7 +8075,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -7993,7 +8117,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8030,7 +8156,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8064,7 +8192,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8099,7 +8229,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8131,7 +8263,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "83h",
@@ -8143,7 +8277,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8176,7 +8312,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "01h",
@@ -8188,7 +8326,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8223,7 +8363,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "All other values",
@@ -8236,7 +8378,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "01h",
@@ -8249,7 +8393,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8305,7 +8451,9 @@
             }
           },
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8337,7 +8485,9 @@
           },
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8367,7 +8517,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "01h",
@@ -8377,7 +8529,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "02h to FFh",
@@ -8387,7 +8541,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8417,7 +8573,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "01h",
@@ -8427,7 +8585,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         },
         {
           "value": "02h to FFh",
@@ -8437,7 +8597,9 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
-          "refers_to": null
+          "refers_to": null,
+          "selects": [],
+          "document": null
         }
       ],
       "source": {
@@ -8943,9 +9105,9 @@
   },
   "documents": {
     "example": {
-      "format": 3,
+      "format": 4,
       "version": "0.20.0",
-      "senfd_sha256": "fbb9100fa2f5e3c4d420baf8fe17455e58920ea4bd6667b84f76af69298388a3",
+      "senfd_sha256": "a0ad087435a7c21e04c8e4909e8ef92d4a225b6fd46a3c50d69da8ceac1080fa",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
