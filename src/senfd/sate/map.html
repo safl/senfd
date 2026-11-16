@@ -22,17 +22,7 @@ body {
   display: flex; flex-direction: column; height: 100vh;
 }
 @@HEADER_STYLE@@
-/* The colours of the kinds of nodes: hues apart from each other, at the
-   lightness and chroma that the script sets for the theme's background */
-:root {
-  --kl: 0.52; --kc: 0.13;
-  --k-home: var(--fg); --k-group: var(--dim);
-  --k-doc: oklch(var(--kl) var(--kc) 300); --k-cmdset: oklch(var(--kl) var(--kc) 45);
-  --k-command: oklch(var(--kl) var(--kc) 70); --k-feature: oklch(var(--kl) var(--kc) 160);
-  --k-logpage: oklch(var(--kl) var(--kc) 225); --k-structure: oklch(var(--kl) var(--kc) 260);
-  --k-register: oklch(var(--kl) var(--kc) 20); --k-values: oklch(var(--kl) var(--kc) 125);
-  --k-cns: oklch(var(--kl) var(--kc) 335);
-}
+@@SHARED_STYLE@@
 .bar {
   display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;
   padding: 0.45rem 1.5rem; border-bottom: 1px solid var(--line); font-size: 0.8rem;
@@ -64,10 +54,7 @@ svg#svg { width: 100%; height: 100%; display: block; }
   position: absolute; left: 0.75rem; top: 0.4rem; right: 0.75rem;
   display: flex; flex-wrap: wrap; gap: 0.2rem 0.7rem; font-size: 0.65rem; color: var(--dim);
 }
-#legend span::before {
-  content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%;
-  background: var(--c); margin-right: 0.25rem; vertical-align: -0.05rem;
-}
+#legend svg.mark { margin-right: 0.3em; }
 #sides {
   position: absolute; left: 0.75rem; right: 0.75rem; bottom: 1.6rem; display: flex;
   justify-content: space-between; font-size: 0.65rem; color: var(--dim); pointer-events: none;
@@ -86,17 +73,9 @@ aside h3 {
   font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--dim); margin: 1rem 0 0.3rem;
 }
-.badge {
-  display: inline-block; font-size: 0.6rem; padding: 0 0.45rem; border-radius: 999px;
-  border: 1px solid var(--c); color: var(--fg); white-space: nowrap;
-}
-.badge::before {
-  content: ""; display: inline-block; width: 0.45rem; height: 0.45rem; border-radius: 50%;
-  background: var(--c); margin-right: 0.3rem; vertical-align: 0.02rem;
-}
 .src { color: var(--dim); font-size: 0.7rem; margin-bottom: 0.4rem; }
-table { border-collapse: collapse; width: 100%; }
-td { border-top: 1px solid var(--line); padding: 0.15rem 0.25rem; vertical-align: top; }
+aside table { width: 100%; margin: 0.3rem 0; font-size: inherit; }
+aside .tag { font-size: 0.7rem; }
 td.r { font-family: ui-monospace, monospace; white-space: nowrap; color: var(--dim); }
 td.a { font-family: ui-monospace, monospace; font-weight: 600; white-space: nowrap; }
 tr.hdr td { font-weight: 600; background: var(--chosen); }
@@ -122,26 +101,25 @@ form.ask button:hover, .suggest button:hover { border-color: var(--accent); }
 .suggest { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .suggest button { font-family: ui-monospace, monospace; font-size: 0.7rem; }
 #answer { margin-top: 0.4rem; }
-#answer table { font-size: 0.7rem; }
-#answer a { color: var(--accent); }
-.status { color: var(--dim); font-size: 0.65rem; }
 .node text {
   font-size: 11px; fill: var(--fg); paint-order: stroke; stroke: var(--bg); stroke-width: 3px;
   pointer-events: none;
 }
 .node text tspan.rel { fill: var(--dim); font-size: 10px; }
-.node circle { stroke: var(--bg); stroke-width: 2px; cursor: pointer; }
-.node.focus circle { stroke: var(--fg); stroke-width: 2.5px; }
-.node.prev circle { stroke: var(--accent); stroke-width: 2.5px; }
+/* A node is the icon of its kind, as the question page draws it, in a disc */
+.node .dot { fill: var(--bg); stroke: var(--line); stroke-width: 1px; cursor: pointer; }
+.node:hover .dot { stroke: var(--accent); }
+.node.focus .dot { stroke: var(--accent); stroke-width: 2px; }
+.node.prev .dot { fill: var(--chosen); stroke: var(--accent); }
+.node .icon {
+  fill: none; stroke: var(--accent); stroke-width: 1.5px; vector-effect: non-scaling-stroke;
+  stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+}
+.node .icon * { vector-effect: non-scaling-stroke; }
 .edge { stroke: var(--line); fill: none; }
 .edge.contains { stroke-dasharray: 2 3; }
-.edge.cns, .edge.csi { stroke: var(--k-cns); stroke-opacity: 0.7; }
-.edge.refers { stroke: var(--k-values); }
+.edge.cns, .edge.csi, .edge.refers { stroke: var(--accent); stroke-opacity: 0.6; }
 #loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--dim); }
-footer {
-  padding: 0.3rem 1.5rem; border-top: 1px solid var(--line);
-  color: var(--dim); font-size: 0.65rem; line-height: 1.4;
-}
 @media (max-width: 900px) {
   main { grid-template-columns: 1fr; grid-template-rows: 55% 45%; }
   aside { border-left: 0; border-top: 1px solid var(--line); }
@@ -172,39 +150,32 @@ footer {
   </div>
   <aside id="panel"></aside>
 </main>
-<footer>Not endorsed by NVM Express. The map shows what senfd read from the
+<footer><p>
+Not endorsed by NVM Express. The map shows what senfd read from the
 specification documents, and that reading can be wrong: check the figure each
-item cites.</footer>
+item cites.
+</p></footer>
 <script>
 "use strict";
 @@THEME_SCRIPT@@
 
-// The kinds of nodes take a lightness and chroma that read on the theme's
-// background: dark text-like colours on a light background, light ones on a
-// dark background
-function tuned() {
-  const probe = document.createElement("span");
-  probe.style.color = "var(--bg)";
-  document.body.appendChild(probe);
-  const [r, g, b] = getComputedStyle(probe).color.match(/\d+(\.\d+)?/g).map(Number);
-  probe.remove();
-  const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < 0.5;
-  root.style.setProperty("--kl", dark ? "0.78" : "0.52");
-  root.style.setProperty("--kc", dark ? "0.12" : "0.14");
-  if (G) render(focus, false);
-}
-new MutationObserver(tuned).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-mode"] });
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", tuned);
 
 let G = null, N = new Map(), OUT = new Map(), IN = new Map();
 const KINDLABEL = { home: "Start", doc: "Document", group: "Group", cmdset: "Command set", command: "Command",
   feature: "Feature", logpage: "Log page", structure: "Structure", values: "Values" };
-function colorKey(n) {
+function kindOf(n) {
   if (n.kind === "structure" && n.sub === "register") return "register";
   if (n.kind === "values" && n.sub === "cns_values") return "cns";
   return n.kind;
 }
-function color(n) { return getComputedStyle(root).getPropertyValue("--k-" + colorKey(n)).trim(); }
+// The icons of the question page, by the kind of a node
+const MARKS = @@MARKS@@;
+const ICON = { home: "start", doc: "document", cmdset: "command set", group: "group",
+  command: "command", feature: "feature", logpage: "log page", structure: "structure",
+  register: "register", values: "value", cns: "value" };
+function icon(key) { return MARKS[ICON[key] || key] || ""; }
+function mark(key) { return `<svg class="mark" viewBox="0 0 24 24" aria-hidden="true">${icon(key)}</svg>`; }
+function badge(key, text) { return `<span class="tag">${mark(key)}${text}</span>`; }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function short(s, n) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
 function hex(v) { return typeof v === "number" ? v.toString(16).toUpperCase().padStart(2, "0") + "h" : ""; }
@@ -232,8 +203,8 @@ function subtitle(n) {
 
 document.getElementById("legend").innerHTML = [["home", "Start"], ["doc", "Document"], ["group", "Group"],
   ["cmdset", "Command set"], ["command", "Command"], ["feature", "Feature"], ["logpage", "Log page"],
-  ["structure", "Structure"], ["register", "Register"], ["values", "Values"], ["cns", "CNS values"]]
-  .map(([k, t]) => `<span style="--c:var(--k-${k})">${t}</span>`).join("");
+  ["structure", "Structure or register"], ["values", "Values"]]
+  .map(([k, t]) => `<span>${mark(k)}${t}</span>`).join("");
 
 const show = { contains: true, link: true, cns: true };
 function edgeShown(e) {
@@ -352,9 +323,11 @@ function draw(items, at, q) {
     const txt = isF || !rel ? esc(name) : it.side < 0
       ? `<tspan class="rel">${esc(rel)}</tspan>  ${esc(name)}` : `${esc(name)}  <tspan class="rel">${esc(rel)}</tspan>`;
     const anchor = isF ? "middle" : it.side < 0 ? "end" : "start";
-    const dx = isF ? 0 : it.side < 0 ? -11 : 11, dy = isF ? -20 : 4;
+    const r = isF ? 16 : 8;
+    const dx = isF ? 0 : it.side < 0 ? -12 : 12, dy = isF ? -23 : 4;
     nh += `<g class="node${isF ? " focus" : ""}${it.id === prev ? " prev" : ""}" data-id="${esc(it.id)}" transform="translate(${p.x},${p.y})">`
-      + `<circle r="${isF ? 13 : 7}" fill="${color(n)}"><title>${esc(label(n))}\n${esc(subtitle(n))}</title></circle>`
+      + `<circle class="dot" r="${r}"><title>${esc(label(n))}\n${esc(subtitle(n))}</title></circle>`
+      + `<g class="icon" transform="translate(${-r * 0.65},${-r * 0.65}) scale(${r * 1.3 / 24})">${icon(kindOf(n))}</g>`
       + `<text x="${dx}" y="${dy}" text-anchor="${anchor}"${isF ? ' style="font-weight:600;font-size:13px"' : ""}>${txt}</text></g>`;
   }
   document.getElementById("edges").innerHTML = eh;
@@ -410,7 +383,7 @@ function neighbourList(list, out) {
   for (const [k, items] of groups) {
     h += `<h3>${k} (${items.length})</h3><div class="list">` + items.map(it => {
       const n = N.get(it.id);
-      return `<a class="go" data-id="${esc(it.id)}"><span class="badge" style="--c:${color(n)}">${esc(KINDLABEL[n.kind])}</span> ${esc(label(n))}`
+      return `<a class="go" data-id="${esc(it.id)}">${badge(kindOf(n), esc(KINDLABEL[n.kind]))} ${esc(label(n))}`
         + (it.e.labels.length ? ` <small>${esc(short(it.e.labels.join(", "), 60))}</small>` : "") + `</a>`;
     }).join("") + `</div>`;
   }
@@ -431,7 +404,7 @@ function showPanel(id, row) {
   const n = N.get(id);
   const right = (OUT.get(id) || []).map(e => ({ id: e.t, e }));
   const left = (IN.get(id) || []).map(e => ({ id: e.s, e }));
-  let h = `<span class="badge" style="--c:${color(n)}">${esc(KINDLABEL[n.kind])}${n.sub ? " · " + esc(n.sub.replace(/_/g, " ")) : ""}</span>`
+  let h = `${badge(kindOf(n), esc(KINDLABEL[n.kind]) + (n.sub ? " · " + esc(n.sub.replace(/_/g, " ")) : ""))}`
     + `<h2>${esc(n.label)}</h2><div class="src">${esc(subtitle(n)) || "&nbsp;"}</div>`;
   if (id === "home") {
     h += `<p>Each point is something the specifications define, and each line a relation between two of them that the data model records. Click a point to fly to it: what it contains or links to is on its right, and what contains it or links to it is on its left.</p>`
@@ -506,7 +479,7 @@ search.oninput = () => {
     .map(x => ({ x, s: (x.acro === q ? -3 : 0) + (x.hay.startsWith(q) ? -2 : 0) + (x.kind === "field" ? 1 : 0) + x.hay.length / 200 }))
     .sort((a, b) => a.s - b.s).slice(0, 40).map(h => h.x);
   sel = 0;
-  results.innerHTML = hits.map((x, i) => `<div data-i="${i}" class="${i === 0 ? "sel" : ""}"><span class="badge" style="--c:${x.kind === "field" ? "var(--dim)" : color(N.get(x.id))}">${x.kind === "field" ? "Field" : esc(KINDLABEL[x.kind])}</span>${esc(short(x.text, 60))}<small>${esc(short(x.owner || subtitle(N.get(x.id)), 50))}</small></div>`).join("") || `<div>Nothing found</div>`;
+  results.innerHTML = hits.map((x, i) => `<div data-i="${i}" class="${i === 0 ? "sel" : ""}">${x.kind === "field" ? badge("acronym", "Field") : badge(kindOf(N.get(x.id)), esc(KINDLABEL[x.kind]))}${esc(short(x.text, 60))}<small>${esc(short(x.owner || subtitle(N.get(x.id)), 50))}</small></div>`).join("") || `<div>Nothing found</div>`;
   results.style.display = "block";
 };
 function pick(i) { const x = hits[i]; if (!x) return; results.style.display = "none"; search.blur(); go(x.id, x.row); }
@@ -535,7 +508,6 @@ fetch("map/graph.json").then(r => r.json()).then(graph => {
   first = [...docs].sort((a, b) => b[1] - a[1])[0]?.[0] || "";
   indexed();
   document.getElementById("loading").remove();
-  tuned();
   const start = decodeURIComponent(location.hash.slice(1));
   go(N.has(start) ? start : "home");
 });

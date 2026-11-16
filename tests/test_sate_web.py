@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: LGPL-2.1-only
 
 import html
+import json
 import re
 from pathlib import Path
 
@@ -488,3 +489,25 @@ def test_a_citation_of_a_figure_the_map_lacks_gets_no_link():
         web.mapped(answer, {"Foo 1.0:7": "st:Foo 1.0:7"})
         == answer + " [map](map#st%3AFoo%201.0%3A7)"
     )
+
+
+def test_the_map_colours_only_by_the_tokens_of_the_theme():
+    """The map takes each colour from the theme, as the question page does,
+    so it holds no colour of its own"""
+
+    own = (Path(web.__file__).parent / "map.html").read_text()
+    assert not re.findall(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|lch)\(", own)
+    tokens = set(re.findall(r"var\(--([a-z]+)\)", own))
+    assert tokens - {"k"} <= set(web.TOKENS) | {"c"}
+
+
+def test_the_map_draws_each_kind_by_the_icon_of_the_question_page(client):
+    """The icons of the kinds, the tags and an answer look alike on both
+    pages, since both include the same CSS and the map takes its icons from
+    MARKS"""
+
+    page = client.get("/map").text
+    assert web.SHARED_STYLE in page and web.SHARED_STYLE in client.get("/").text
+    assert f"const MARKS = {json.dumps(web.MARKS)};" in page
+    for kind in ("start", "document", "command set", "group"):
+        assert web.mark(kind)
