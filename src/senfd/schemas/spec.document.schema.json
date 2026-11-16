@@ -578,6 +578,14 @@
                     "title": "Status Values",
                     "type": "array"
                 },
+                "status_codes": {
+                    "description": "The status values whose \"Commands Affected\" names the command, as\n00h, Completion Queue Invalid, of Base 2.4 Figure 104 for Create I/O\nSubmission Queue",
+                    "items": {
+                        "$ref": "#/$defs/ValueLink"
+                    },
+                    "title": "Status Codes",
+                    "type": "array"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"
@@ -670,7 +678,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 4,
+                    "default": 5,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
