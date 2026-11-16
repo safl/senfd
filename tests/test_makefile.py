@@ -76,3 +76,24 @@ def test_make_benchmark_refuses_a_directory_for_the_records_that_does_not_exist(
 
     assert done.returncode != 0
     assert "for the records" in done.stdout + done.stderr
+
+
+def test_the_screenshots_of_the_map_show_the_cns_values_of_identify():
+    """docs/src/index.rst shows web-map-light.png and web-map-dark.png beside
+    the screenshots of the question page"""
+
+    import runpy
+
+    import senfd.query
+    from senfd.documents.spec import SpecDocument
+
+    tool = runpy.run_path(str(ROOT / "toolbox" / "web_screenshots.py"))
+    out = Path("docs/_static/web")
+    assert [p.name for p in tool["names"](out, "map")] == [
+        "web-map-light.png",
+        "web-map-dark.png",
+    ]
+    assert [p.name for p in tool["names"](out)] == ["web-light.png", "web-dark.png"]
+    spec = senfd.query.load(ROOT / "example" / "output" / "merged.spec.document.json")
+    assert tool["focus"](spec) == "val:example:26"
+    assert tool["focus"](SpecDocument()) == "home"

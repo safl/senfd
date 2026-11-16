@@ -6,7 +6,9 @@
 
 """
 Take the screenshots of sate-web that the front page of the documentation
-shows, one in the light mode and one in the dark, of the theme Gruvbox
+shows, one in the light mode and one in the dark, of the theme Gruvbox:
+of the question page answering a question, and of the map with the CNS
+values of Identify in focus
 
 sate-web answers a question from the data model, and a headless browser
 takes each screenshot. It needs playwright, of the extra 'dev', and its
@@ -20,12 +22,14 @@ import argparse
 import threading
 from pathlib import Path
 from typing import List, Optional
-from urllib.parse import quote_plus
+from urllib.parse import quote, quote_plus
 
 import uvicorn
 from playwright.sync_api import sync_playwright
 
 import senfd.query
+from senfd.documents.spec import SpecDocument
+from senfd.graph import graph_of
 from senfd.sate import web
 from senfd.sate.wizard import PORT, free_port
 
@@ -33,12 +37,28 @@ QUESTION = "cdw12 of write"
 THEME = "gruvbox"
 MODES = ("light", "dark")
 WIDTH, HEIGHT = 1100, 720
+# The map needs the width of the graph beside the panel
+MAP_WIDTH, MAP_HEIGHT = 1500, 820
 
 
-def names(out: Path) -> List[Path]:
-    """The screenshots of 'out', a path without suffix, one for each mode"""
+def names(out: Path, view: str = "") -> List[Path]:
+    """The screenshots of 'out', a path without suffix, one for each mode,
+    of the question page, or of 'view' as "map" """
 
-    return [out.with_name(f"{out.name}-{mode}.png") for mode in MODES]
+    named = f"{out.name}-{view}" if view else out.name
+    return [out.with_name(f"{named}-{mode}.png") for mode in MODES]
+
+
+def focus(spec: SpecDocument) -> str:
+    """The node of the map that the screenshot shows: the CNS values of
+    Identify, which select structures of each command set"""
+
+    cns = [
+        node
+        for node in graph_of(spec)["nodes"]
+        if node.get("sub") == "cns_values" and node["label"] == "Identify"
+    ]
+    return cns[0]["id"] if cns else "home"
 
 
 def main(argv: Optional[List[str]] = None) -> int:
@@ -46,12 +66,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--spec", type=Path, default=None, help="The data model")
     parser.add_argument("out", type=Path, help="Where to write, without suffix")
     args = parser.parse_args(argv)
+    spec = senfd.query.load(args.spec)
 
     host = "127.0.0.1"
     port = free_port(host, PORT)
     server = uvicorn.Server(
         uvicorn.Config(
-            web.app(senfd.query.load(args.spec)),
+            web.app(spec),
             host=host,
             port=port,
             log_level="warning",
@@ -71,6 +92,19 @@ def main(argv: Optional[List[str]] = None) -> int:
                 [THEME, mode],
             )
             page.goto(f"{url}?q={quote_plus(QUESTION)}")
+            page.screenshot(path=str(path))
+            print(path)
+        page.set_viewport_size({"width": MAP_WIDTH, "height": MAP_HEIGHT})
+        for mode, path in zip(MODES, names(args.out, "map")):
+            page.goto(url)
+            page.evaluate(
+                "([theme, mode]) => { localStorage.setItem('theme', theme);"
+                " localStorage.setItem('mode', mode); }",
+                [THEME, mode],
+            )
+            # ?static draws the map at once, without the flight to the focus
+            page.goto(f"{url}map?static#{quote(focus(spec))}")
+            page.wait_for_selector("#loading", state="detached")
             page.screenshot(path=str(path))
             print(path)
         browser.close()
