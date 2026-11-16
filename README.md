@@ -38,8 +38,7 @@ and asks before it makes the data model, because only members of NVM
 Express may make and use the data model. The wizard then opens sate's web
 page in the browser, which answers questions and shows the data model as
 a map. The data model stays in `~/.cache/senfd`, so the next run opens the
-page at once. With pipx instead of uvx, run
-`pipx run --no-cache --spec senfd sate-preview-wizard`.
+page at once.
 
 ![The .pdf and .docx documents go through senfd's stages, read, normalise, define and merge, into one data model](https://raw.githubusercontent.com/safl/senfd/main/docs/_static/senfd.svg)
 
