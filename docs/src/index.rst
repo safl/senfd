@@ -33,12 +33,17 @@ specification on nvmexpress.org, so that you can check the answer:
        <button role="tab" aria-selected="true" data-cast="session">Interactive (TUI)</button>
        <button role="tab" aria-selected="false" data-cast="intro">Scripted (CLI)</button>
        <button role="tab" aria-selected="false" data-cast="web">Interactive (Web UI)</button>
+       <button role="tab" aria-selected="false" data-cast="map">Map (Web UI)</button>
      </div>
      <div class="cast-pane" id="cast-session"></div>
      <div class="cast-pane" id="cast-intro" hidden></div>
      <div class="cast-pane" id="cast-web" data-still hidden>
        <img class="only-light" src="_static/web-light.png" alt="sate's web page answering cdw12 of write, with the fields of the dword and the figures they are from">
        <img class="only-dark" src="_static/web-dark.png" alt="sate's web page answering cdw12 of write, with the fields of the dword and the figures they are from">
+     </div>
+     <div class="cast-pane" id="cast-map" data-still hidden>
+       <img class="only-light" src="_static/web-map-light.png" alt="The map of sate's web page, with the CNS values of Identify in focus and the structure each value selects in each command set">
+       <img class="only-dark" src="_static/web-map-dark.png" alt="The map of sate's web page, with the CNS values of Identify in focus and the structure each value selects in each command set">
      </div>
    </div>
 

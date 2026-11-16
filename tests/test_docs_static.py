@@ -15,6 +15,7 @@ def test_each_static_file_the_documentation_shows_exists():
     shown = {name for page in pages for name in STATIC.findall(page.read_text())}
 
     assert "_static/web-light.png" in shown
+    assert "_static/web-map-light.png" in shown
     assert [name for name in sorted(shown) if not (Path("docs") / name).is_file()] == []
 
 
