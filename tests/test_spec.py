@@ -2595,3 +2595,63 @@ def test_a_command_has_each_status_value_whose_commands_affected_name_it():
     del commands["kv"]
     link_selections(document)
     assert commands["nvm"].commands["read"].status_codes == linked
+
+
+def test_a_case_selected_by_a_field_of_another_figure_links_that_figure():
+    """DPTR of Base 2.4 Figure 93 has cases by "CDW0.PSDT", and CDW0 of
+    Figure 93 is laid out by Figure 92, which has PSDT"""
+
+    from senfd.documents.spec import (
+        Bits,
+        Case,
+        Selected,
+        Source,
+        Structure,
+        link_selectors,
+    )
+
+    def bits(acronym, unit="bits", **more):
+        return Bits(
+            unit=unit,
+            upper=1,
+            lower=0,
+            range="1:0",
+            acronym=acronym,
+            name=acronym,
+            role="field",
+            kind="span",
+            width=2,
+            **more,
+        )
+
+    def structure(figure_nr, fields):
+        return Structure(
+            name=f"Figure {figure_nr}",
+            kind="data_structure",
+            unit="bytes",
+            source=Source(document="Base", figure_nr=figure_nr),
+            fields=fields,
+        )
+
+    cdw0 = structure(92, [bits("PSDT"), bits("OPC")])
+    by = [Case(selector="PSDT", when=[Selected(name="00b", value=0)])]
+    own = [Case(selector="OPC", when=[Selected(name="00b", value=0)])]
+    unlinked = [Case(selector="PSDT", when=[Selected(name="00b", value=0)])]
+    common = structure(
+        93,
+        [
+            bits("CDW0", unit="bytes", structure=cdw0.source),
+            bits("OPC"),
+            bits("DPTR", description="If CDW0.PSDT is cleared to 00b", cases=by),
+            bits("MPTR", description="If OPC is 00b", cases=own),
+            bits("CDW2", description="If CDW3.PSDT is 00b", cases=unlinked),
+        ],
+    )
+    document = SpecDocument()
+    document.structures = [cdw0, common]
+    link_selectors(document)
+
+    assert by[0].selector_in == cdw0.source
+    # OPC is a field of the case's own figure, and CDW3 is none
+    assert own[0].selector_in is None
+    assert unlinked[0].selector_in is None

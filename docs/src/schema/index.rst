@@ -145,7 +145,11 @@ figure writes it and its ``value`` as a number. ``otherwise`` is true for
 the case of all other values. A case also has the ``name``, ``acronym``,
 ``role`` and ``description`` of the field in that case, and the ``values``
 and ``fields`` of the field in that case. The ``values`` of the field
-itself apply whatever the value of the controlling field.
+itself apply whatever the value of the controlling field. Where the
+controlling field is a field of another figure, the case has
+``selector_in``, the ``source`` of that figure: DPTR of the Common Command
+Format has cases by "CDW0.PSDT", and CDW0 of that figure is laid out by
+Command Dword 0, which has PSDT.
 
 A figure can draw a structure as a diagram instead of a table of ranges,
 with the bits 7 to 0 as columns, one row for each byte, and each field

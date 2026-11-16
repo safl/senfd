@@ -525,6 +525,18 @@
                     },
                     "title": "Fields",
                     "type": "array"
+                },
+                "selector_in": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The figure of the controlling field where it is a field of another\nfigure, as Base 2.4 Figure 92, Command Dword 0, for PSDT of DPTR, whose\ndescription names it \"CDW0.PSDT\": the structure that the field of the\ncase's figure named before the dot links to"
                 }
             },
             "required": [

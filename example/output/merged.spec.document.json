@@ -2,12 +2,12 @@
   "meta": {
     "format": 5,
     "version": "0.21.0",
-    "senfd_sha256": "f78882e437506cdcf90d498ceb12ddff44881469ad03a032a4434d7441c181a2",
+    "senfd_sha256": "b481d2eb9f3d6dfed4341fc5b22b7b5460c603fdc9bafa8690ef85309fd9349a",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "e9353cc8f1579059e35b7894da9d783652833c80df2e9f9978b9fb626367a481"
+    "combined_sha256": "db8b88a1893dadaf47a6854f9df5160e68e98c4496b29ad8f065a32b5022cafb"
   },
   "command_sets": {
     "foobar": {
@@ -1105,7 +1105,8 @@
                         }
                       ],
                       "role": "field",
-                      "fields": []
+                      "fields": [],
+                      "selector_in": null
                     },
                     {
                       "selector": "QA",
@@ -1116,7 +1117,8 @@
                       "description": "",
                       "values": [],
                       "role": "reserved",
-                      "fields": []
+                      "fields": [],
+                      "selector_in": null
                     }
                   ],
                   "array": null,
@@ -2551,7 +2553,8 @@
                   }
                 ],
                 "role": "field",
-                "fields": []
+                "fields": [],
+                "selector_in": null
               },
               {
                 "selector": "QA",
@@ -2562,7 +2565,8 @@
                 "description": "",
                 "values": [],
                 "role": "reserved",
-                "fields": []
+                "fields": [],
+                "selector_in": null
               }
             ],
             "array": null,
@@ -9443,7 +9447,7 @@
     "example": {
       "format": 5,
       "version": "0.21.0",
-      "senfd_sha256": "f78882e437506cdcf90d498ceb12ddff44881469ad03a032a4434d7441c181a2",
+      "senfd_sha256": "b481d2eb9f3d6dfed4341fc5b22b7b5460c603fdc9bafa8690ef85309fd9349a",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -9453,7 +9457,7 @@
     "invalid": {
       "format": 5,
       "version": "0.21.0",
-      "senfd_sha256": "f78882e437506cdcf90d498ceb12ddff44881469ad03a032a4434d7441c181a2",
+      "senfd_sha256": "b481d2eb9f3d6dfed4341fc5b22b7b5460c603fdc9bafa8690ef85309fd9349a",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
