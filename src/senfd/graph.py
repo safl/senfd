@@ -112,6 +112,8 @@ def rows_of(fields: List[Bits], depth: int = 0, case: str = "") -> List[Dict[str
         rows += rows_of(field.fields, depth + 1)
         for c in field.cases:
             when = ", ".join(w.name for w in c.when) or "all other values"
+            if c.selector_in:
+                row.setdefault("selectors", []).append((c.selector_in, c.selector))
             rows += rows_of(c.fields, depth + 1, f"{c.selector} = {when}")
             if c.values:
                 rows.append(
@@ -195,6 +197,8 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
         if values.kind != "example":
             g.edge(group(values.source.document, kind), nid, "", "contains")
 
+    # The commands of each status value, by its figure and value
+    affects: Dict[Tuple[str, str], List[str]] = {}
     for key, command_set in spec.command_sets.items():
         cid = f"cs:{key}"
         g.node(cid, "cmdset", command_set.name)
@@ -223,6 +227,11 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
                 g.figures.setdefault(figure_key(dw.source), mid)
             for table in command.status_values:
                 g.edge(mid, f"val:{figure_key(table)}", "status values")
+            for code in command.status_codes:
+                g.edge(mid, f"val:{figure_key(code.source)}", f"status {code.value}")
+                affects.setdefault((figure_key(code.source), code.value), []).append(
+                    mid
+                )
             for op in command.operations:
                 for st in spec.structures:
                     if st.name in op.structures:
@@ -273,6 +282,12 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
                     g.edge(
                         node["id"], t, f"{row.get('acronym') or ''} values", "refers"
                     )
+            # The figure of the field whose value selects a case of the row
+            for s, selector in row.pop("selectors", []):
+                t = g.of(s)
+                if t:
+                    row.setdefault("selected_by", {})[selector] = t
+                    g.edge(node["id"], t, f"{selector}, case of {row.get('acronym')}")
 
     # What a CNS value selects, by the Command Set Identifier where it is of
     # another document; and the documents the Command Set Identifiers name
@@ -285,6 +300,9 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
     for values in spec.values:
         vid = f"val:{figure_key(values.source)}"
         for entry, shown in zip(values.entries, g.nodes[vid]["entries"]):
+            commands = affects.get((figure_key(values.source), entry.value))
+            if commands:
+                shown["commands"] = commands
             if entry.document:
                 shown["document"] = f"doc:{document_name(entry.document)}"
                 g.edge(vid, shown["document"], entry.value, "csi")

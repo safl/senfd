@@ -353,13 +353,20 @@ function valuesHtml(vals) {
     + (v.desc && !v.name ? ` <span class="desc">${esc(short(v.desc, 140))}</span>` : "") + `</div>`).join("")
     + (vals.length > 80 ? `<div class="desc">and ${vals.length - 80} more</div>` : "") + `</div>`;
 }
+// The case of a row, its controlling field a link where another figure has it
+function caseOf(r, rows) {
+  const [selector, ...rest] = r.case.split(" = ");
+  const by = rows.find(o => o.selected_by && o.selected_by[selector]);
+  const target = by ? by.selected_by[selector] : null;
+  return (target ? link(target, selector) : esc(selector)) + (rest.length ? " = " + esc(rest.join(" = ")) : "");
+}
 function rowsHtml(rows) {
   let h = "<table>";
   rows.forEach((r, i) => {
     if (r.header) { h += `<tr class="hdr"><td colspan="3">${esc(r.name)} <span class="desc">${esc(r.desc)}</span></td></tr>`; return; }
     const tg = (r.targets || []).map(t => " &rarr; " + link(t)).join("");
     h += `<tr id="row-${i}"><td class="r">${esc(r.range)}</td><td class="a">${"&nbsp;&nbsp;".repeat(r.depth || 0)}${esc(r.acronym || "")}</td>`
-      + `<td>${r.case ? `<span class="case">[${esc(r.case)}]</span> ` : ""}${esc(r.name || "")}${tg}`
+      + `<td>${r.case ? `<span class="case">[${caseOf(r, rows)}]</span> ` : ""}${esc(r.name || "")}${tg}`
       + (r.desc ? `<details><summary>description</summary><div class="desc">${esc(r.desc)}</div></details>` : "")
       + valuesHtml(r.values) + `</td></tr>`;
   });
@@ -370,10 +377,13 @@ function entriesHtml(n) {
   for (const e of n.entries) {
     const sel = (e.selects || []).map(([t, l]) => `<div>${esc(l)} &rarr; ${link(t)}</div>`).join("");
     const doc = e.document ? ` &rarr; ${link(e.document)}` : "";
-    const cols = Object.entries(e.columns || {}).map(([k, v]) => `${k}: ${v}`).join(", ");
+    const cols = Object.entries(e.columns || {})
+      .filter(([k]) => !(e.commands && k === "commands_affected"))
+      .map(([k, v]) => `${k}: ${v}`).join(", ");
+    const affected = e.commands ? `<div>Commands affected: ${e.commands.map(c => link(c)).join(", ")}</div>` : "";
     h += `<tr><td class="a">${esc(e.value)}</td><td>${esc(e.name || "")}${doc}`
       + (e.desc && e.desc !== e.name ? `<div class="desc">${esc(short(e.desc, 220))}</div>` : "")
-      + (cols ? `<div class="desc">${esc(cols)}</div>` : "") + sel + `</td></tr>`;
+      + (cols ? `<div class="desc">${esc(cols)}</div>` : "") + affected + sel + `</td></tr>`;
   }
   return h + "</table>";
 }
