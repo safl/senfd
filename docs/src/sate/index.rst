@@ -221,6 +221,17 @@ URL, such as ``/?q=cdw12+of+write``, so an answer can be bookmarked. The
 page has five colour themes, each with a light and a dark mode. The mode
 follows the operating system's setting unless you choose one.
 
+The map at ``/map`` shows the data model as a graph: the documents, the
+command sets, the commands, the features, the log pages, the structures
+and the tables of values, joined by the relations the data model records.
+The item in focus is at the centre, what it contains or links to is on its
+right, and what contains it or links to it is on its left. A click on a
+neighbour moves the focus to it. The panel beside the map lists the fields
+or entries of the item in focus, and asks ``sate`` about it. Each citation
+in an answer links the item of its figure in the map, and the item is in
+the URL, such as ``/map#cmd:admin:identify``. The map has the themes of the
+question page, and keeps the theme and the mode you chose there.
+
 To try the page without installing senfd, run ``sate-preview-wizard``
 with uvx:
 
