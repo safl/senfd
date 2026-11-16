@@ -354,6 +354,10 @@ def page(
         modes=json.dumps(list(MODES)),
         theme=next(iter(THEMES)),
         marks=json.dumps({kind: mark(kind) for kind in MARKS}),
+        header_style=HEADER_STYLE,
+        header=header("ask"),
+        theme_preload=theme_preload(),
+        theme_script=theme_script(),
     )
 
 
@@ -513,14 +517,88 @@ LOGO = (
     '<circle cx="16" cy="16" r="3.25" fill="#282828"/></svg>'
 )
 
-PAGE = """<!doctype html>
-<html lang="en" data-theme="{theme}">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>sate</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{favicon}">
-<script>
+# The header of the pages of sate-web: the CSS, and the markup with a link
+# to the other view, the questions or the map. Both pages share the theme
+# and the mode the reader chose, by the same keys in localStorage.
+HEADER_STYLE = """/* The header spans the window with a muted background, so it reads as a
+   navigation bar and draws less attention than the input field */
+header {
+  display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+  padding: 0.5rem 1.5rem; background: var(--chosen);
+  border-bottom: 1px solid var(--line);
+}
+header h1 {
+  margin: 0; font-size: 1.1rem; flex: 1;
+  display: flex; gap: 0.6rem; align-items: center;
+}
+header h1 a { color: inherit; text-decoration: none; }
+/* The title button looks the same in every theme and mode: the logo's
+   dark variant, mustard on Gruvbox's dark background */
+header h1 a.home {
+  display: inline-flex; gap: 0.5rem; align-items: center;
+  padding: 0.2rem 0.65rem 0.2rem 0.4rem; border: 1px solid #7a706a;
+  border-radius: 6px; background: #282828;
+}
+header h1 a.home:hover, header h1 a.home:focus-visible { border-color: #fabd2f; }
+header h1 .logo { width: 1.6rem; height: 1.6rem; }
+header h1 .logo g { stroke: none; }
+header h1 .logo circle { fill: #ebdbb2; }
+/* As tall as the logo. The letters have no descenders, so they sit low in
+   their line; lifting them centres them on the logo */
+header h1 .name {
+  color: #D79921; font-size: 1.75rem; line-height: 1; letter-spacing: 0.01em;
+  position: relative; top: -0.09em;
+}
+header h1 .version { color: var(--dim); font-size: 0.75rem; font-weight: normal; }
+header nav { display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; }
+header nav a, header nav label, header nav button {
+  display: inline-flex; gap: 0.4rem; align-items: center;
+  padding: 0.2rem 0.65rem; border: 1px solid var(--line); border-radius: 6px;
+  font: inherit; color: var(--fg); background: var(--bg);
+  text-decoration: none; cursor: pointer;
+}
+header nav a:hover, header nav label:hover, header nav button:hover,
+header nav a:focus-visible, header nav button:focus-visible,
+header nav label:focus-within { border-color: var(--accent); }
+header nav select {
+  font: inherit; color: var(--fg); background: var(--bg);
+  border: none; padding: 0; cursor: pointer;
+}
+header nav svg {
+  color: var(--accent); width: 1rem; height: 1rem; fill: none; stroke: currentColor;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+"""
+
+HEADER = """<header>
+<h1><a class="home" href=".">{logo}<span class="name">sate</span></a><span class="version">v{version}</span></h1>
+<nav>
+{views}<a href="https://safl.dk/senfd/" target="_blank" rel="noopener"
+ title="The documentation of senfd and sate"><svg viewBox="0 0 24 24"
+ aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path
+ d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg>Documentation</a>
+<a href="https://github.com/safl/senfd" target="_blank" rel="noopener"
+ title="The source of senfd and sate, on GitHub"><svg viewBox="0 0 24 24"
+ aria-hidden="true"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg>Source</a>
+<label id="theme" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path
+ d="M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.5 0-.9-.7-1.2-.7-2 0-.8.6-1.5
+ 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle
+ cx="10.5" cy="7" r="1"/><circle cx="15" cy="8" r="1"/></svg><select
+ aria-label="Theme" title="The theme">
+{chooser}
+</select></label>
+<button id="mode" type="button" hidden><svg viewBox="0 0 24 24"
+ aria-hidden="true"><circle cx="12" cy="12" r="9"/><path
+ d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg><span>Auto</span></button>
+</nav>
+</header>
+"""
+
+VIEWS = {
+    "ask": (".", "Ask", "Ask sate a question", QUESTION),
+}
+
+THEME_PRELOAD = """<script>
 // Apply the stored theme and mode before the page is drawn, so the page
 // does not flash in the first theme's colours
 try {{
@@ -530,7 +608,87 @@ try {{
   if ({modes}.includes(mode)) document.documentElement.dataset.mode = mode;
 }} catch (error) {{}}
 </script>
-<style>
+"""
+
+THEME_SCRIPT = """const root = document.documentElement;
+const chooser = document.getElementById("theme");
+const choice = chooser.querySelector("select");
+const toggle = document.getElementById("mode");
+// The theme and the mode (auto, light or dark), stored in localStorage
+function remember(key, value) {{
+  try {{
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  }} catch (error) {{}}
+}}
+
+choice.value = root.dataset.theme;
+choice.addEventListener("change", () => {{
+  root.dataset.theme = choice.value;
+  remember("theme", choice.value);
+}});
+
+function mode() {{ return root.dataset.mode || "auto"; }}
+
+function labelled() {{
+  const now = mode();
+  toggle.querySelector("span").textContent = now[0].toUpperCase() + now.slice(1);
+  toggle.title = `Mode: ${{now}}; click for the next`;
+}}
+
+toggle.addEventListener("click", () => {{
+  const modes = ["auto", ...{modes}];
+  const next = modes[(modes.indexOf(mode()) + 1) % modes.length];
+  if (next === "auto") delete root.dataset.mode;
+  else root.dataset.mode = next;
+  remember("mode", next === "auto" ? null : next);
+  labelled();
+}});
+labelled();
+chooser.hidden = toggle.hidden = false;  // They stay hidden without JavaScript
+"""
+
+
+def header(view: str) -> str:
+    """The header of the page of 'view', "ask" or "map", linking the other"""
+
+    views = "".join(
+        f'<a href="{href}" title="{title}"><svg viewBox="0 0 24 24" '
+        f'aria-hidden="true">{icon}</svg>{text}</a>\n'
+        for name, (href, text, title, icon) in VIEWS.items()
+        if name != view
+    )
+    return HEADER.format(
+        logo=LOGO,
+        version=html.escape(senfd.__version__),
+        chooser=chooser(),
+        views=views,
+    )
+
+
+def theme_preload() -> str:
+    """The script that applies the stored theme and mode before the page is
+    drawn"""
+
+    return THEME_PRELOAD.format(
+        known=json.dumps(list(THEMES)), modes=json.dumps(list(MODES))
+    )
+
+
+def theme_script() -> str:
+    """The script of the theme selector and the mode button"""
+
+    return THEME_SCRIPT.format(modes=json.dumps(list(MODES)))
+
+
+PAGE = """<!doctype html>
+<html lang="en" data-theme="{theme}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sate</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{favicon}">
+{theme_preload}<style>
 {themes}
 [hidden] {{ display: none !important; }}
 * {{ box-sizing: border-box; }}
@@ -551,54 +709,7 @@ body {{
 :where(.page > *, form.ask > *) {{ max-width: 87rem; }}
 /* Limit a note to 75 characters per line; tables use the full width */
 .note {{ max-width: 75ch; }}
-/* The header spans the window with a muted background, so it reads as a
-   navigation bar and draws less attention than the input field */
-header {{
-  display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
-  padding: 0.5rem 1.5rem; background: var(--chosen);
-  border-bottom: 1px solid var(--line);
-}}
-header h1 {{
-  margin: 0; font-size: 1.1rem; flex: 1;
-  display: flex; gap: 0.6rem; align-items: center;
-}}
-header h1 a {{ color: inherit; text-decoration: none; }}
-/* The title button looks the same in every theme and mode: the logo's
-   dark variant, mustard on Gruvbox's dark background */
-header h1 a.home {{
-  display: inline-flex; gap: 0.5rem; align-items: center;
-  padding: 0.2rem 0.65rem 0.2rem 0.4rem; border: 1px solid #7a706a;
-  border-radius: 6px; background: #282828;
-}}
-header h1 a.home:hover, header h1 a.home:focus-visible {{ border-color: #fabd2f; }}
-header h1 .logo {{ width: 1.6rem; height: 1.6rem; }}
-header h1 .logo g {{ stroke: none; }}
-header h1 .logo circle {{ fill: #ebdbb2; }}
-/* As tall as the logo. The letters have no descenders, so they sit low in
-   their line; lifting them centres them on the logo */
-header h1 .name {{
-  color: #D79921; font-size: 1.75rem; line-height: 1; letter-spacing: 0.01em;
-  position: relative; top: -0.09em;
-}}
-header h1 .version {{ color: var(--dim); font-size: 0.75rem; font-weight: normal; }}
-header nav {{ display: flex; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem; }}
-header nav a, header nav label, header nav button {{
-  display: inline-flex; gap: 0.4rem; align-items: center;
-  padding: 0.2rem 0.65rem; border: 1px solid var(--line); border-radius: 6px;
-  font: inherit; color: var(--fg); background: var(--bg);
-  text-decoration: none; cursor: pointer;
-}}
-header nav a:hover, header nav label:hover, header nav button:hover,
-header nav a:focus-visible, header nav button:focus-visible,
-header nav label:focus-within {{ border-color: var(--accent); }}
-header nav select {{
-  font: inherit; color: var(--fg); background: var(--bg);
-  border: none; padding: 0; cursor: pointer;
-}}
-header nav svg {{
-  color: var(--accent); width: 1rem; height: 1rem; fill: none; stroke: currentColor;
-  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}}
+{header_style}
 .holds {{ color: var(--dim); font-size: 0.95rem; }}
 /* The status of an answer: small tags in the secondary text colour */
 .status {{
@@ -706,28 +817,7 @@ footer p {{ margin: 0; }}
 </style>
 </head>
 <body>
-<header>
-<h1><a class="home" href=".">{logo}<span class="name">sate</span></a><span class="version">v{version}</span></h1>
-<nav>
-<a href="https://safl.dk/senfd/" target="_blank" rel="noopener"
- title="The documentation of senfd and sate"><svg viewBox="0 0 24 24"
- aria-hidden="true"><path d="M2 5h6a4 4 0 0 1 4 4v11a3 3 0 0 0-3-3H2z"/><path
- d="M22 5h-6a4 4 0 0 0-4 4v11a3 3 0 0 1 3-3h7z"/></svg>Documentation</a>
-<a href="https://github.com/safl/senfd" target="_blank" rel="noopener"
- title="The source of senfd and sate, on GitHub"><svg viewBox="0 0 24 24"
- aria-hidden="true"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg>Source</a>
-<label id="theme" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path
- d="M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.5 0-.9-.7-1.2-.7-2 0-.8.6-1.5
- 1.5-1.5H17a4 4 0 0 0 4-4c0-5-4-9-9-9z"/><circle cx="7.5" cy="11" r="1"/><circle
- cx="10.5" cy="7" r="1"/><circle cx="15" cy="8" r="1"/></svg><select
- aria-label="Theme" title="The theme">
-{chooser}
-</select></label>
-<button id="mode" type="button" hidden><svg viewBox="0 0 24 24"
- aria-hidden="true"><circle cx="12" cy="12" r="9"/><path
- d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg><span>Auto</span></button>
-</nav>
-</header>
+{header}
 <div class="page">
 <p class="holds">Ask about any of {holds}, {across}</p>
 <form class="ask" method="get" action="." autocomplete="off">
@@ -765,10 +855,6 @@ const input = document.getElementById("q");
 const menu = document.getElementById("menu");
 const forms = document.getElementById("forms");
 const MARKS = {marks};
-const root = document.documentElement;
-const chooser = document.getElementById("theme");
-const choice = chooser.querySelector("select");
-const toggle = document.getElementById("mode");
 let offers = [], chosen = -1, asked = 0, pointer = "";
 
 function typed() {{ return input.value.slice(0, input.selectionStart); }}
@@ -854,39 +940,7 @@ menu.addEventListener("mouseleave", () => {{
 
 function close() {{ offers = []; chosen = -1; show(); }}
 
-// The theme and the mode (auto, light or dark), stored in localStorage
-function remember(key, value) {{
-  try {{
-    if (value === null) localStorage.removeItem(key);
-    else localStorage.setItem(key, value);
-  }} catch (error) {{}}
-}}
-
-choice.value = root.dataset.theme;
-choice.addEventListener("change", () => {{
-  root.dataset.theme = choice.value;
-  remember("theme", choice.value);
-}});
-
-function mode() {{ return root.dataset.mode || "auto"; }}
-
-function labelled() {{
-  const now = mode();
-  toggle.querySelector("span").textContent = now[0].toUpperCase() + now.slice(1);
-  toggle.title = `Mode: ${{now}}; click for the next`;
-}}
-
-toggle.addEventListener("click", () => {{
-  const modes = ["auto", ...{modes}];
-  const next = modes[(modes.indexOf(mode()) + 1) % modes.length];
-  if (next === "auto") delete root.dataset.mode;
-  else root.dataset.mode = next;
-  remember("mode", next === "auto" ? null : next);
-  labelled();
-}});
-labelled();
-chooser.hidden = toggle.hidden = false;  // They stay hidden without JavaScript
-
+{theme_script}
 // Open 'dialog', or close it if it is open
 function shown(dialog) {{
   if (dialog.open) dialog.close();
