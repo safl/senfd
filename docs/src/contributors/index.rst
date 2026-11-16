@@ -44,6 +44,13 @@ senfd makes of each document against ``tests/public/documents.toml``. A
 change that alters what senfd makes of a document, such as reading one
 more figure, updates the counts in that file in the same commit.
 
+The tests of the map of ``sate-web`` click through the page in a headless
+browser, and are skipped without it. Install the browser once:
+
+.. code-block:: console
+
+   $ playwright install chromium-headless-shell
+
 The specifications are not ours
 -------------------------------
 
