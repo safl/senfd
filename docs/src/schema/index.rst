@@ -35,8 +35,13 @@ has these parts:
   in it.
 * ``command_sets``: each command set by its name, with its commands. A
   command has its ``opcode``, its submission queue entry dwords ``sqe``,
-  its completion queue entry dwords ``cqe``, its ``operations``, and its
-  ``status_values``, the tables of the status values specific to it. An
+  its completion queue entry dwords ``cqe``, its ``operations``, its
+  ``status_values``, the tables of the status values specific to it, and
+  its ``status_codes``, each status value whose "Commands Affected" names
+  it, by the ``source`` of its table, the ``field`` and the ``value``. A
+  name matches a command of the table's own document first, and otherwise
+  the one command of that name in another document, as Read of the Zoned
+  Namespace table, a command of the NVM Command Set. An
   operation is what the command does for one value of a selecting field,
   as for each directive operation.
 * ``features`` and ``log_pages``: features and log pages by identifier. A

@@ -2508,3 +2508,90 @@ def test_a_command_has_the_tables_of_status_values_its_name_captions():
     assert [s.figure_nr for s in commands["get_log_page"].status_values] == [331]
     assert commands["identify"].status_values == []
     assert [s.figure_nr for s in commands["foo_zoning_lookup"].status_values] == [604]
+
+
+def test_a_command_has_each_status_value_whose_commands_affected_name_it():
+    """Base 2.4 Figure 104 gives 00h, Completion Queue Invalid, for Create
+    I/O Submission Queue; ZNS 1.5 Figure 11 names Read, a command of NVM
+    1.3 alone, with the footnote marker of "Read1" """
+
+    from senfd.documents.spec import (
+        Command,
+        CommandSet,
+        Entry,
+        Source,
+        ValueLink,
+        Values,
+        link_selections,
+    )
+
+    def command(name, document):
+        return Command(
+            name=name, opcode=1, source=Source(document=document, figure_nr=1)
+        )
+
+    document = SpecDocument()
+    document.command_sets = {
+        "admin": CommandSet(
+            name="Admin",
+            commands={"create": command("Create I/O Submission Queue", "Base")},
+        ),
+        "nvm": CommandSet(
+            name="NVM",
+            commands={"read": command("Read", "NVM"), "write": command("Write", "NVM")},
+        ),
+        "kv": CommandSet(name="KV", commands={"read": command("Read", "KV")}),
+    }
+    base = Source(document="Base", figure_nr=104)
+    zns = Source(document="ZNS", figure_nr=11)
+    document.values = [
+        Values(
+            kind="status_values",
+            name="Status Code",
+            source=base,
+            entries=[
+                Entry(
+                    value="00h",
+                    name="Completion Queue Invalid",
+                    columns={"commands_affected": "Create I/O Submission Queue"},
+                ),
+                Entry(value="01h", columns={"commands_affected": "NOTE 1"}),
+            ],
+        ),
+        Values(
+            kind="status_values",
+            name="Status Code",
+            source=zns,
+            entries=[
+                Entry(value="B8h", columns={"commands_affected": "Read1, Write"}),
+            ],
+        ),
+    ]
+    link_selections(document)
+    commands = document.command_sets
+
+    assert commands["admin"].commands["create"].status_codes == [
+        ValueLink(source=base, field="Status Code", value="00h")
+    ]
+    linked = [ValueLink(source=zns, field="Status Code", value="B8h")]
+    assert commands["nvm"].commands["write"].status_codes == linked
+    # Read is a command of NVM and of KV, so the ZNS table links neither,
+    # and an NVM table links the Read of NVM
+    assert commands["nvm"].commands["read"].status_codes == []
+    nvm = Source(document="NVM", figure_nr=19)
+    document.values.append(
+        Values(
+            kind="status_values",
+            name="Status Code",
+            source=nvm,
+            entries=[Entry(value="80h", columns={"commands_affected": "Read"})],
+        )
+    )
+    link_selections(document)
+    own = [ValueLink(source=nvm, field="Status Code", value="80h")]
+    assert commands["nvm"].commands["read"].status_codes == own
+    assert commands["kv"].commands["read"].status_codes == []
+    document.values.pop()
+    del commands["kv"]
+    link_selections(document)
+    assert commands["nvm"].commands["read"].status_codes == linked

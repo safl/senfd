@@ -386,6 +386,24 @@ class Operation(Model):
     """The figure listing the operation"""
 
 
+class ValueLink(Model):
+    """
+    A value of a field of another figure that an entry's description names.
+    For example, Reporting Options 1h of Zone Management Receive, "List the
+    zones in the ZSE:Empty state.", names the zone state ZSE:Empty, which is
+    value 1h of the field ZS of the Zone Descriptor, ZNS 1.5 Figure 38.
+    """
+
+    source: Source
+    """The figure of the field"""
+    field: str
+    """The field by its acronym, or by its name where it has none, as 'ZS'"""
+    value: str
+    """The value as the figure writes it, as '1h'"""
+    acronym: Optional[str] = None
+    """The acronym the description gives the value, as 'ZSE'"""
+
+
 class Command(Model):
     """A command, by its opcode, with its dwords and its operations"""
 
@@ -402,6 +420,10 @@ class Command(Model):
     status_values: List[Source] = Field(default_factory=list)
     """The tables of the status values specific to the command, as Base 2.4
     Figure 331 of Get Log Page"""
+    status_codes: List[ValueLink] = Field(default_factory=list)
+    """The status values whose "Commands Affected" names the command, as
+    00h, Completion Queue Invalid, of Base 2.4 Figure 104 for Create I/O
+    Submission Queue"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
     source: Source
@@ -499,24 +521,6 @@ class Typed(Model):
     """Of a reference, the specification referred to"""
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked on the value"""
-
-
-class ValueLink(Model):
-    """
-    A value of a field of another figure that an entry's description names.
-    For example, Reporting Options 1h of Zone Management Receive, "List the
-    zones in the ZSE:Empty state.", names the zone state ZSE:Empty, which is
-    value 1h of the field ZS of the Zone Descriptor, ZNS 1.5 Figure 38.
-    """
-
-    source: Source
-    """The figure of the field"""
-    field: str
-    """The field by its acronym, or by its name where it has none, as 'ZS'"""
-    value: str
-    """The value as the figure writes it, as '1h'"""
-    acronym: Optional[str] = None
-    """The acronym the description gives the value, as 'ZSE'"""
 
 
 class Entry(Model):
@@ -2421,8 +2425,9 @@ def subject_of(document: str) -> str:
 def link_selections(document: SpecDocument) -> None:
     """
     Set 'selects' on each entry of a table of CNS values, 'document' on each
-    entry that names the subject of a document, and 'status_values' on each
-    command whose name a table of status values has. An entry the CSI
+    entry that names the subject of a document, 'status_values' on each
+    command whose name a table of status values has, and 'status_codes' on
+    each command that the "Commands Affected" of a status value names. An entry the CSI
     selects, "Y" in its CSI column, that selects nothing of its own document
     selects what the same value selects in the document of each command set
     that the entries of the Command Set Identifiers name.
@@ -2497,6 +2502,38 @@ def link_selections(document: SpecDocument) -> None:
             name = re.sub(r"\s*\([A-Z0-9]+\)$", "", values.name).casefold()
             for command in commands.get(name, []):
                 command.status_values.append(values.source)
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            command.status_codes = []
+    for values in document.values:
+        if values.kind != "status_values":
+            continue
+        for entry in values.entries:
+            for named in affected(entry.columns.get("commands_affected", "")):
+                found = commands.get(named.casefold(), [])
+                # A command of the table's own document goes first, as Read of
+                # an NVM table. Where the document has none, the one command of
+                # the name in another, as Read of the ZNS 1.5 table, a command
+                # of NVM 1.3; where several documents have one, none of them
+                own = [c for c in found if c.source.document == values.source.document]
+                for command in own or (found if len(found) == 1 else []):
+                    link = ValueLink(
+                        source=values.source,
+                        field=values.name or "",
+                        value=entry.value,
+                    )
+                    if link not in command.status_codes:
+                        command.status_codes.append(link)
+
+
+def affected(text: str) -> List[str]:
+    """The command names of a "Commands Affected" cell, as "Dataset
+    Management, Read, Write", without the footnote marker that may end a
+    name, as the 1 of "Compare1" """
+
+    names = re.split(r",\s*|\s+and\s+|\s+or\s+", text)
+    return [re.sub(r"(?<=[a-z])\d+$", "", n.strip()) for n in names if n.strip()]
 
 
 def resolve(document: SpecDocument) -> SpecDocument:

@@ -107,6 +107,7 @@
   "cqe": [],
   "operations": [],
   "status_values": [],
+  "status_codes": [],
   "columns": {
     "function": "0000 10b",
     "data_transfer": "00b",
