@@ -1531,7 +1531,14 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         )
         return
 
-    fields, errata, unnamed = checked(fields_of(figure.layout), None, source)
+    read = fields_of(figure.layout)
+    # A register of one row of no name, as "31:00 RO 0h Shall be cleared to
+    # zero" of CCPTR of PCIe 1.4 Figure 23, is that row: it is named as the
+    # register, so that the register has its width
+    if subject.kind == "register" and len(read) == 1 and not read[0].name:
+        acronym, _, name = (subject.name or "").partition(" - ")
+        read[0].name, read[0].acronym = (name, acronym) if name else (acronym, None)
+    fields, errata, unnamed = checked(read, None, source)
     maxima_of(fields, figure.mentions)
     kind = subject.kind
     # A table whose rows name the structure or the CNS value each field is of,
