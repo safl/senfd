@@ -241,6 +241,24 @@ class ReadBits(BitsCommon):
     another field"""
 
 
+class Part(Model):
+    """
+    The value that a field holds part of, where a figure splits a value
+    over two fields, as NUMDL and NUMDU of Get Log Page, "Number of Dwords
+    Lower" and "Upper", or "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4
+    """
+
+    name: str
+    """The name of the value, as 'Number of Dwords'"""
+    acronym: Optional[str] = None
+    """The acronym of the value, as 'NUMD', where the parts' acronyms are
+    it and a letter for the part"""
+    shift: int
+    """Where in the value the field starts, in the unit of the field's
+    range: 0 of the lower part, the width of the lower part of the upper
+    one, 64 of "KV Key[127:64]" """
+
+
 class Array(Model):
     """
     The array that a field belongs to. A figure lists the entries of an array
@@ -335,6 +353,9 @@ class Bits(BitsCommon):
     array: Optional[Array] = None
     """The array that the field belongs to, where the figure lists numbered
     entries and leaves out the rows between them"""
+    part: Optional[Part] = None
+    """The value the field holds part of, where a figure splits a value over
+    two fields"""
     group: Optional[Array] = None
     """The array of groups of fields that the field's group is an entry of,
     where a column names each group, as "Source Range 0" to "Source Range
@@ -2974,6 +2995,70 @@ def link_encodings(document: SpecDocument) -> None:
                 field.byte_order = orders.pop()
 
 
+REGEX_PART = re.compile(
+    r"^(?P<before>.*?)\s*\b(?P<part>Lower|Low|Upper|High)\b\s*(?P<after>.*)$"
+)
+REGEX_BITS_PART = re.compile(r"^(?P<name>.+?)\s*\[(?P<upper>\d+):(?P<lower>\d+)\]$")
+
+
+def link_parts(document: SpecDocument) -> None:
+    """
+    Set 'part' on the fields of a value split over two of them: of a
+    command's dwords, of a feature's, of an operation's, or of a structure,
+    a field "X Lower" and one "X Upper", or "X Low" and "X High", as NUMDL
+    and NUMDU of Get Log Page; and fields "X[63:00]" and "X[127:64]", as
+    the Key of KV 1.4, by the bits of the value their names give.
+    """
+
+    def parts(fields: List[Bits]) -> None:
+        within = list(fields_within(fields))
+        named = {f.name: f for f in within if f.name}
+        for field in within:
+            match = REGEX_PART.match(field.name or "")
+            if not match or match["part"] not in ("Lower", "Low"):
+                continue
+            other = "Upper" if match["part"] == "Lower" else "High"
+            upper = named.get(
+                " ".join(p for p in (match["before"], other, match["after"]) if p)
+            )
+            if upper is None or not field.width:
+                continue
+            name = " ".join(p for p in (match["before"], match["after"]) if p)
+            acronym = None
+            low, high = field.acronym or "", upper.acronym or ""
+            if low[:-1] and low[:-1] == high[:-1] and low[-1] == "L":
+                acronym = low[:-1]
+            field.part = Part(name=name, acronym=acronym, shift=0)
+            upper.part = Part(name=name, acronym=acronym, shift=field.width)
+        by_bits: Dict[str, List[Tuple[Bits, int]]] = {}
+        for field in within:
+            match = REGEX_BITS_PART.match(field.name or "")
+            if match:
+                by_bits.setdefault(match["name"], []).append(
+                    (field, int(match["lower"]))
+                )
+        for name, found in by_bits.items():
+            if len(found) > 1 and any(shift == 0 for _, shift in found):
+                for field, shift in found:
+                    field.part = Part(name=name, shift=shift)
+
+    def of(dwords: List[Dwords]) -> List[Bits]:
+        return [f for d in dwords for f in d.fields]
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            parts(of(command.sqe))
+            parts(of(command.cqe))
+            for operation in command.operations:
+                parts(of(operation.sqe))
+                parts(of(operation.cqe))
+    for feature in document.features.values():
+        parts(of(feature.sqe))
+        parts(of(feature.cqe))
+    for structure in document.structures:
+        parts(structure.fields)
+
+
 def link_runs(document: SpecDocument) -> None:
     """
     Link each entry of a run, fields named alike but for a last index, as
@@ -3450,6 +3535,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_titled_operations(document, used)
     link_structures(document)
     link_runs(document)
+    link_parts(document)
     link_extended(document)
     link_encodings(document)
     link_log_pages(document)

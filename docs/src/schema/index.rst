@@ -75,7 +75,9 @@ has these parts:
   "SMBus/I2C Frequency (Configuration Identifier 01h)" below Configuration
   Get, or captioned by a field of a command, as "Command Dword 11 - CNS
   Specific Identifier" in "NVM Set List (CNS 04h)", are an operation of
-  that command, with the code in ``selectors``.
+  that command, with the code in ``selectors``. The two fields of a value split over
+  them, as NUMDL and NUMDU, "Number of Dwords Lower" and "Upper", have
+  ``part``, the name and acronym of the value and where in it each starts.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

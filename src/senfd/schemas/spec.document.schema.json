@@ -438,6 +438,18 @@
                     "default": null,
                     "description": "The array that the field belongs to, where the figure lists numbered\nentries and leaves out the rows between them"
                 },
+                "part": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Part"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The value the field holds part of, where a figure splits a value over\ntwo fields"
+                },
                 "group": {
                     "anyOf": [
                         {
@@ -1196,6 +1208,40 @@
                 "source"
             ],
             "title": "Operation",
+            "type": "object"
+        },
+        "Part": {
+            "description": "The value that a field holds part of, where a figure splits a value\nover two fields, as NUMDL and NUMDU of Get Log Page, \"Number of Dwords\nLower\" and \"Upper\", or \"KV Key[63:00]\" and \"KV Key[127:64]\" of KV 1.4",
+            "properties": {
+                "name": {
+                    "description": "The name of the value, as 'Number of Dwords'",
+                    "title": "Name",
+                    "type": "string"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the value, as 'NUMD', where the parts' acronyms are\nit and a letter for the part",
+                    "title": "Acronym"
+                },
+                "shift": {
+                    "description": "Where in the value the field starts, in the unit of the field's\nrange: 0 of the lower part, the width of the lower part of the upper\none, 64 of \"KV Key[127:64]\" ",
+                    "title": "Shift",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "name",
+                "shift"
+            ],
+            "title": "Part",
             "type": "object"
         },
         "Placement": {

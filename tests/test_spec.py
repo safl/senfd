@@ -3349,3 +3349,53 @@ def test_dwords_in_a_section_titled_with_a_code_are_an_operation_selected_by_it(
         ],
     }
     assert spec.unassigned == {}
+
+
+def test_the_parts_of_a_value_split_over_two_fields_are_parts_of_it():
+    """NUMDL and NUMDU of Get Log Page, "Number of Dwords Lower" and
+    "Upper", in two dwords; "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4"""
+
+    from senfd.documents.spec import Part
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Opcodes for Admin Commands",
+            OPCODES,
+            ("00b", "10b", "02h", "Foo Get", "5.1"),
+        ),
+        figure_of(
+            2,
+            "Foo Get - Command Dword 10",
+            ("Bits", "Description"),
+            ("31:16", "Number of Foos Lower (NUMFL): The lower bits."),
+            ("15:00", "Foo Identifier (FID): The foo."),
+        ),
+        figure_of(
+            3,
+            "Foo Get - Command Dword 11",
+            ("Bits", "Description"),
+            ("31:16", "Reserved"),
+            ("15:00", "Number of Foos Upper (NUMFU): The upper bits."),
+        ),
+        figure_of(
+            4,
+            "Foo Data Structure",
+            ("Bytes", "Description"),
+            ("07:00", "Foo Key[63:00]: The key."),
+            ("15:08", "Foo Key[127:64]: The key."),
+        ),
+    )
+    fields = {
+        f.acronym or f.name: f.part
+        for d in spec.command_sets["admin"].commands["foo_get"].sqe
+        for f in d.fields
+    }
+    assert fields["NUMFL"] == Part(name="Number of Foos", acronym="NUMF", shift=0)
+    assert fields["NUMFU"] == Part(name="Number of Foos", acronym="NUMF", shift=16)
+    assert fields["FID"] is None
+    (key,) = spec.structures
+    assert [f.part for f in key.fields] == [
+        Part(name="Foo Key", shift=0),
+        Part(name="Foo Key", shift=64),
+    ]
