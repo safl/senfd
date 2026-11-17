@@ -3707,6 +3707,75 @@ def test_short_definitions_beside_names_acronyms_and_asides_are_tidied():
     assert case.values[0].name == "List all foos"
 
 
+def test_entries_the_data_gives_by_text_after_one_or_alternating_are_arrays():
+    """Media Unit Status Descriptor 0 and 1 of Base 2.4 Figure 263 are at
+    "NOTE 1"; Entry 0 and Entry N of Figure 322 are an array; Zone Descriptor
+    and Zone Descriptor Extension of ZNS 1.4 Figure 37 alternate, two
+    arrays; CDW14 and CDW15 at "n/a" of MI 2.2 Figure 49 are no array, nor
+    are ED and PAD; Exported NVM Subsystem Descriptor 1 and 2 of Base 2.4
+    Figure 384 are 520 and 22 bytes where Descriptor N's formula gives 260,
+    an array of that stride, and candidate errata"""
+
+    def arrays(*rows):
+        figure = figure_of(1, "Foo List", ("Bytes", "Description"), *rows)
+        document = document_of(figure)
+        (structure,) = document.structures
+        fields = [
+            (f.name, f.array and (f.array.name, f.array.index, f.array.stride))
+            for f in structure.fields
+        ]
+        return fields, [e.message for e in document.errata if e.code == "range"]
+
+    assert arrays(
+        ("NOTE 1", "Foo Descriptor 0: The first."),
+        ("NOTE 1", "Foo Descriptor 1: The second."),
+        ("NOTE 1", "Foo Descriptor NFD-1: The last."),
+    )[0] == [
+        ("Foo Descriptor 0", ("Foo Descriptor", 0, None)),
+        ("Foo Descriptor 1", ("Foo Descriptor", 1, None)),
+        ("Foo Descriptor NFD-1", ("Foo Descriptor", None, None)),
+    ]
+    assert arrays(
+        ("07:00", "Foo Count (FC): The count."),
+        ("(TEL - 1) + 1024: 1024", "Entry 0: The first."),
+        ("TFL - 1: TFL - TEL", "Entry N: The last."),
+    )[0][1:] == [("Entry 0", ("Entry", 0, None)), ("Entry N", ("Entry", None, None))]
+    assert arrays(
+        ("07:00", "Number of Foos (NF): The count."),
+        ("63:08", "Foo Descriptor 0: The first."),
+        ("(FDES+63):64", "Foo Descriptor Extension 0: The first."),
+        ("(FDES+127):(FDES+64)", "Foo Descriptor 1: The second."),
+        ("((2*FDES)+127):(FDES+128)", "Foo Descriptor Extension 1: The second."),
+    )[0][1:] == [
+        ("Foo Descriptor 0", ("Foo Descriptor", 0, None)),
+        ("Foo Descriptor Extension 0", ("Foo Descriptor Extension", 0, None)),
+        ("Foo Descriptor 1", ("Foo Descriptor", 1, None)),
+        ("Foo Descriptor Extension 1", ("Foo Descriptor Extension", 1, None)),
+    ]
+    assert arrays(
+        ("n/a", "Foo Dword 14 (FDW14): The first."),
+        ("n/a", "Foo Dword 15 (FDW15): The second."),
+    )[0] == [("Foo Dword 14", None), ("Foo Dword 15", None)]
+    assert arrays(
+        ("15:00", "Foo Header (FH): The header."),
+        ("FL-1+16:16", "Eye Data (ED): The data."),
+        ("(DS-1):FL+16", "Padding (PAD): The rest."),
+    )[0][1:] == [("Eye Data", None), ("Padding", None)]
+    fields, errata = arrays(
+        ("3:0", "Foo Count (FC): The count."),
+        ("523:4", "Foo Descriptor 1: The first."),
+        ("285:264", "Foo Descriptor 2: The second."),
+        ("…", "…"),
+        ("((N * 260) + 3): ((N-1) * 260) + 4", "Foo Descriptor N: The last."),
+    )
+    assert [a and a[2] for _, a in fields] == [None, 260, 260, 260]
+    assert errata == [
+        f"Field {r} Foo Descriptor {i}: {w} bytes where the formula of the last "
+        "field numbered so gives 260"
+        for r, i, w in (("523:4", 1, 520), ("285:264", 2, 22))
+    ]
+
+
 def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidied():
     """AET 000b of Base 2.4 refers to Figure 153, not to a section, and is
     named "Error status"; CNS 09h, whose section NVM 1.3 titles as that of

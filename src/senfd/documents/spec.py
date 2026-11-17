@@ -1446,6 +1446,19 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
         spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
         first, lowest = min(spans, key=lambda span: span[0])
         stride = lowest.width or 0
+        # A last entry whose formula gives the width gives the stride, where
+        # the entries lie at it, as Base 2.4 Figure 384 whose Descriptors 1
+        # and 2 are 520 and 22 bytes at the offsets of 260; misnumbered()
+        # reports them
+        if (
+            last.kind == "formula"
+            and last.width
+            and all(
+                f.lower == (lowest.lower or 0) + (i - first) * last.width
+                for i, f in spans
+            )
+        ):
+            return start, indexes, before, after
         # One entry of another width at its place, as the 33 bytes of Host
         # Fabric Interface Descriptor 2 of Boot 1.4 Figure 11, is still an
         # entry; misnumbered() reports it as a candidate erratum
@@ -1498,7 +1511,10 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
                 index=index,
                 first=first,
                 count=max(i for i, _ in spans) - first + 1 if whole else None,
-                stride=lowest.width or 0,
+                stride=next(
+                    (f.width for f in run if f.kind == "formula" and f.width),
+                    lowest.width or 0,
+                ),
                 lower=lowest.lower or 0,
             )
     listed_arrays(fields, pairs)
@@ -1507,66 +1523,90 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
     return disagreeing
 
 
+REGEX_LAST_INDEX = re.compile(r"[A-Za-z][\w+-]*")
+
+
+def given_run(
+    fields: List[Bits], at: int, step: int, of: str
+) -> Tuple[List[int], List[Optional[int]], str, str]:
+    """
+    The entries from 'at', every 'step' fields, whose 'of' differs only by
+    the next index, and whose ranges the data gives, except the first's: the
+    positions, the indexes, and the text before and after the index. A last
+    entry numbered by a name, as "Entry NUMREC-1", has the index None.
+    """
+
+    best: Tuple[List[int], List[Optional[int]], str, str] = ([at], [], "", "")
+    for before, number, after in numbered(getattr(fields[at], of)):
+        # An acronym read as a hexadecimal index alone, as ED, names nothing
+        if not re.search(r"[A-Za-z]", before + after):
+            continue
+        positions: List[int] = [at]
+        indexes: List[Optional[int]] = [number]
+        while positions[-1] + step < len(fields):
+            other = fields[positions[-1] + step]
+            found = [
+                n
+                for b, n, a in numbered(getattr(other, of))
+                if (b, a) == (before, after)
+            ]
+            if not found or found[0] != number + len(indexes) or other.kind == "span":
+                break
+            positions.append(positions[-1] + step)
+            indexes.append(found[0])
+        if positions[-1] + step < len(fields):
+            last = fields[positions[-1] + step]
+            text = getattr(last, of) or ""
+            middle = text[len(before) : len(text) - len(after)]
+            if (
+                last.kind != "span"
+                and text.startswith(before)
+                and text.endswith(after)
+                and REGEX_LAST_INDEX.fullmatch(middle)
+            ):
+                positions.append(positions[-1] + step)
+                indexes.append(None)
+        if len(positions) > len(best[0]):
+            best = (positions, indexes, before, after)
+    return best
+
+
 def variable_arrays(fields: List[Bits]) -> None:
     """
     Set 'array' on the fields of each run of two or more numbered by the next
-    index whose ranges the data gives, as ANA Group Descriptor 0 at "n:16"
-    and ANA Group Descriptor 1 at "m:n+1" of Base 2.4 Figure 230: an array
-    without a count, and without a stride unless the entries are of one
-    width. A last entry numbered by a name, as "ANA
-    Group Descriptor N" after them, is an entry too, without an index.
+    index whose ranges the data gives, by a formula or a text, as ANA Group
+    Descriptor 0 at "n:16" and ANA Group Descriptor 1 at "m:n+1" of Base 2.4
+    Figure 230, and Media Unit Status Descriptor 0 and 1 at "NOTE 1" of
+    Figure 263: an array without a count, and without a stride unless the
+    entries are of one width. A last entry numbered by a name, as "ANA Group
+    Descriptor N" after them, or "Entry N" after "Entry 0" of Figure 322, is
+    an entry too, without an index. Two such runs whose entries alternate,
+    as Zone Descriptor 0 and Zone Descriptor Extension 0 of ZNS 1.4 Figure
+    37, are two arrays, without a stride. A range "n/a" is none the data
+    gives, as of CDW14 and CDW15 of MI 2.2 Figure 49.
     """
 
-    at = 0
-    while at < len(fields):
-        end, indexes, _ = run_at(fields, at)
-        run = fields[at:end]
-        if (
-            len(run) < 2
-            or any(f.array or f.kind != "formula" for f in run)
-            or indexes != list(range(indexes[0], indexes[0] + len(run)))
-        ):
-            at = max(end, at + 1) if len(run) > 1 else at + 1
-            continue
+    def usable(run: List[Bits]) -> bool:
+        return not any(
+            f.array or (f.kind == "open" and f.range.strip().casefold() == "n/a")
+            for f in run
+        ) and any(f.kind != "span" for f in run)
+
+    def assign(positions, indexes, before, after, of, stride) -> None:
+        run = [fields[i] for i in positions]
         first = run[0]
-        of = "acronym" if all(f.acronym for f in run) else "name"
-        before, _, after = next(
-            (b, n, a)
-            for b, n, a in reversed(numbered(getattr(first, of)))
-            if n == indexes[0]
-        )
-        last = fields[end] if end < len(fields) else None
-        text = (getattr(last, of) or "") if last else ""
-        if (
-            last
-            and not last.array
-            and last.kind == "formula"
-            and text.startswith(before)
-            and text.endswith(after)
-            and re.fullmatch(
-                r"[A-Za-z][\w+-]*", text[len(before) : len(text) - len(after)]
-            )
-        ):
-            run, indexes = [*run, last], [*indexes, None]  # type: ignore[list-item]
-            end += 1
         name = (
             before + after
             if of == "name"
-            else (
-                next(
-                    (
-                        b + a
-                        for b, n, a in reversed(numbered(first.name))
-                        if n == indexes[0]
-                    ),
-                    first.name or "",
-                )
+            else next(
+                (
+                    b + a
+                    for b, n, a in reversed(numbered(first.name))
+                    if n == indexes[0]
+                ),
+                first.name or "",
             )
         )
-        # Entries of one width at offsets the data gives, as the two bytes of
-        # each Channel Identifier of Figure 264 from CIO, have that stride
-        widths = {f.width for f in run}
-        stride = widths.pop() if len(widths) == 1 else None
         for index, field in zip(indexes, run):
             field.array = Array(
                 name=" ".join(name.split()),
@@ -1576,7 +1616,39 @@ def variable_arrays(fields: List[Bits]) -> None:
                 stride=stride,
                 lower=first.lower,
             )
-        at = end
+
+    at = 0
+    while at < len(fields):
+        of = "acronym" if fields[at].acronym else "name"
+        positions, indexes, before, after = given_run(fields, at, 1, of)
+        if of == "acronym" and not all(fields[i].acronym for i in positions):
+            of = "name"
+            positions, indexes, before, after = given_run(fields, at, 1, of)
+        run = [fields[i] for i in positions]
+        if len(run) >= 2 and usable(run):
+            # Entries of one width at offsets the data gives, as the two bytes
+            # of each Channel Identifier of Figure 264 from CIO, have that
+            # stride
+            widths = {f.width for f in run}
+            stride = widths.pop() if len(widths) == 1 else None
+            assign(positions, indexes, before, after, of, stride)
+            at = positions[-1] + 1
+            continue
+        if at + 1 < len(fields):
+            one = given_run(fields, at, 2, "name")
+            two = given_run(fields, at + 1, 2, "name")
+            if (
+                len(one[0]) >= 2
+                and one[1] == two[1]
+                and two[0] == [i + 1 for i in one[0]]
+                and one[2:] != two[2:]
+                and usable([fields[i] for i in one[0] + two[0]])
+            ):
+                assign(*one, "name", None)
+                assign(*two, "name", None)
+                at = two[0][-1] + 1
+                continue
+        at += 1
 
 
 def grouped_arrays(fields: List[Bits]) -> None:
@@ -1802,7 +1874,15 @@ def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     for run in runs.values():
         widths = [f.width for f in run]
         common = max(set(widths), key=widths.count)
-        if len(run) < 3 or widths.count(common) * 2 <= len(run):
+        # The last entry's formula gives the width of every entry, as 260
+        # bytes of "Exported NVM Subsystem Descriptor N" of Base 2.4 Figure
+        # 384, whose Descriptors 1 and 2 are 520 and 22
+        given = {f.width for f in run if f.kind == "formula"}
+        others = "the other fields numbered so are"
+        if len(given) == 1 and len(run) >= 3:
+            common = given.pop()
+            others = "the formula of the last field numbered so gives"
+        elif len(run) < 3 or widths.count(common) * 2 <= len(run):
             continue
         for field in run:
             if field.width != common:
@@ -1810,7 +1890,7 @@ def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
                     Erratum(
                         code="range",
                         message=f"Field {field.range} {field.name}: {field.width} "
-                        f"{unit} where the other fields numbered so are {common}",
+                        f"{unit} where {others} {common}",
                         found=field.range,
                         source=source,
                     )
