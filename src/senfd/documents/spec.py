@@ -179,6 +179,15 @@ class BitsCommon(Model):
     "uuid" for "a 128-bit Universally Unique Identifier (UUID)"; or what
     the field it has the value of encodes, as FR of NVM 1.3 Figure 189, "the
     value of the FR field in the Identify Controller data structure" """
+    encoding_from: Optional[Source] = None
+    """Where 'encoding' is not stated for the field but taken from another
+    field, the figure of that field: AVENQN of Base 2.4 Figure 328, an NQN,
+    takes "utf-8" from SUBNQN of Figure 338. None where it is stated"""
+    byte_order_from: Optional[Source] = None
+    """Where 'byte_order' is not stated for the field but taken from a field
+    of the same name, acronym and width in another document, the figure of
+    that field: NGUID of KV 1.4 Figure 42 from NVM 1.3 Figure 123. None
+    where it is stated"""
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked on the name, at the end of the
     description, and on the other columns"""
@@ -952,7 +961,7 @@ ENCODINGS: List[Tuple[Literal["ascii", "utf-8", "uuid"], re.Pattern]] = [
         "ascii",
         re.compile(
             r"\bASCII (?:encoded )?(?:null-terminated )?string\b|"
-            r"\bASCII characters\b"
+            r"\bASCII characters?\b"
         ),
     ),
     ("utf-8", re.compile(r"\bUTF-8 (?:null-terminated )?string\b")),
@@ -1011,7 +1020,15 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         section=field.section,
         elided=field.elided,
         columns=columns,
-        byte_order=byte_order_of(columns, " ".join(description.split())),
+        # A field of one byte has no byte order, whatever the description
+        # says of the bytes around it
+        byte_order=(
+            None
+            if unit == "bytes"
+            and field.range.upper is not None
+            and field.range.upper == field.range.lower
+            else byte_order_of(columns, " ".join(description.split()))
+        ),
         encoding=encoding_of(description),
         placements=[
             Placement(
@@ -1948,6 +1965,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         )
     )
     made = document.structures[-1]
+    encoded_by_mentions(made.fields, figure.mentions)
     found = extended_by_text(made, figure.mentions, document.structures[:-1])
     if found:
         made.extends, made.extends_field = found
@@ -3041,6 +3059,45 @@ def all_fields(fields: List[Bits]) -> Iterator[Bits]:
         yield from all_fields(field.fields)
 
 
+REGEX_MENTIONED_ENCODING = re.compile(
+    r"\bThe (?P<term>[a-z][\w ]*?) is (?:indicated|reported|encoded) as an? "
+    r"(?P<encoding>ASCII|UTF-8) (?:null-terminated )?string\b"
+)
+
+
+def encoded_by_mentions(fields: List[Bits], mentions: List[str]) -> None:
+    """
+    Set the encoding of the fields without one whose name begins with a term
+    that a paragraph referring to their figure says is a string: "The
+    firmware revision is indicated as an ASCII string", of Base 2.4 Figure
+    215, makes FRS1 to FRS7, "Firmware Revision for Slot 1" and on, "ascii"
+    """
+
+    for mention in mentions:
+        for match in REGEX_MENTIONED_ENCODING.finditer(" ".join(mention.split())):
+            term = match["term"].casefold()
+            encoding: Literal["ascii", "utf-8"] = (
+                "ascii" if match["encoding"] == "ASCII" else "utf-8"
+            )
+            for field in all_fields(fields):
+                if not field.encoding and (field.name or "").casefold().startswith(
+                    term
+                ):
+                    field.encoding = encoding
+
+
+def is_nqn(field: Bits) -> bool:
+    """Whether 'field' holds an NVMe Qualified Name: an acronym ending in NQN
+    and at least 64 bytes, as SUBNQN and AVENQN"""
+
+    return bool(
+        field.acronym
+        and field.acronym.endswith("NQN")
+        and field.unit == "bytes"
+        and (field.width or 0) >= 64
+    )
+
+
 def link_encodings(document: SpecDocument) -> None:
     """
     Set the encoding and the byte order of a field that has none, and whose
@@ -3048,7 +3105,13 @@ def link_encodings(document: SpecDocument) -> None:
     field: FR of NVM 1.3 Figure 189, "the value of the FR field in the
     Identify Controller data structure", is "ascii", as FR of Base 2.4
     Figure 338 is. A field named so in more than one structure of that name
-    gives its encoding where they all give the same.
+    gives its encoding where they all give the same. A field holding an NQN
+    takes the encoding of the NQN fields that state one, as SUBNQN of Base
+    2.4 Figure 338 does. A field takes the byte order or the encoding of
+    the fields of the same name, acronym and width in other documents that
+    state it, where they agree: NGUID and EUI64 of KV 1.4 Figure 42, which
+    refer to the Base specification, are big-endian as in NVM 1.3 Figure
+    123. Each taken encoding and byte order says the figure it is from.
     """
 
     for structure in document.structures:
@@ -3061,18 +3124,67 @@ def link_encodings(document: SpecDocument) -> None:
             named = alias(match["structure"])
             wanted = {match["field"], match["acronym"]} - {None}
             others = [
-                other
+                (other, of.source)
                 for of in document.structures
                 if alias(of.name).endswith(named)
                 for other in all_fields(of.fields)
                 if other is not field and wanted & {other.name, other.acronym}
             ]
-            encodings = {o.encoding for o in others if o.encoding}
-            orders = {o.byte_order for o in others if o.byte_order}
+            encodings = {o.encoding for o, _ in others if o.encoding}
+            orders = {o.byte_order for o, _ in others if o.byte_order}
             if not field.encoding and len(encodings) == 1:
                 field.encoding = encodings.pop()
+                field.encoding_from = next(s for o, s in others if o.encoding)
             if not field.byte_order and len(orders) == 1:
                 field.byte_order = orders.pop()
+                field.byte_order_from = next(s for o, s in others if o.byte_order)
+
+    # A field holding an NQN is encoded as the NQN fields stating it are
+    stated = [
+        (field, structure.source)
+        for structure in document.structures
+        for field in all_fields(structure.fields)
+        if is_nqn(field) and field.encoding and not field.encoding_from
+    ]
+    if len({f.encoding for f, _ in stated}) == 1:
+        (stating, source), *_ = stated
+        for structure in document.structures:
+            for field in all_fields(structure.fields):
+                if is_nqn(field) and not field.encoding:
+                    field.encoding, field.encoding_from = stating.encoding, source
+
+    # A field of the same name, acronym and width as a field of another
+    # document stating its byte order or encoding takes it, where all such
+    # fields agree
+    alike: Dict[Tuple, List[Tuple[Bits, Source]]] = {}
+    for structure in document.structures:
+        for field in all_fields(structure.fields):
+            if field.acronym and field.name and field.width:
+                key = (field.name, field.acronym, field.width, field.unit)
+                alike.setdefault(key, []).append((field, structure.source))
+    for same in alike.values():
+        for field, source in same:
+            if field.unit != "bytes" or (field.width or 0) < 2:
+                continue
+            others = [(o, s) for o, s in same if s.document != source.document]
+            orders = {
+                o.byte_order
+                for o, _ in others
+                if o.byte_order and not o.byte_order_from
+            }
+            if not field.byte_order and len(orders) == 1:
+                field.byte_order = orders.pop()
+                field.byte_order_from = next(
+                    s for o, s in others if o.byte_order and not o.byte_order_from
+                )
+            encodings = {
+                o.encoding for o, _ in others if o.encoding and not o.encoding_from
+            }
+            if not field.encoding and len(encodings) == 1:
+                field.encoding = encodings.pop()
+                field.encoding_from = next(
+                    s for o, s in others if o.encoding and not o.encoding_from
+                )
 
 
 REGEX_PART = re.compile(
