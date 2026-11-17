@@ -646,6 +646,9 @@ class Entry(Model):
     """The key of the column holding the value"""
     name: Optional[str] = None
     """The name the row gives the value"""
+    acronym: Optional[str] = None
+    """The acronym the row writes before the name, as "CAP" of "CAP:
+    Controller Capabilities" in Base 2.4 Figure 33"""
     description: str = ""
     """The text of the row's description"""
     columns: Dict[str, str] = Field(default_factory=dict)
@@ -2686,19 +2689,35 @@ def gaps(command: Command) -> List[Erratum]:
     return errata
 
 
+# Text that lists codes, as "10h and 11h" of LBARS in NVM 1.3 Figure 140,
+# refers to other values and names none
+REGEX_CODES = re.compile(r"^[0-9A-F]+[hb](?:(?:,|,? and|,? or| to) [0-9A-F]+[hb])*$")
+
+
 def value_names(entry: "Entry") -> List[str]:
     """The name a value of a field goes by, as a list of none or one: its name,
-    else the text of the first column naming it, as "management_operation"
-    does; the heading the value is under is no name of it"""
+    else the text of the first column naming it, as "power_scope" does for
+    CPS of Base 2.4 Figure 36; the heading the value is under is no name of
+    it, nor a column listing other codes"""
 
     if entry.name:
         return [entry.name]
     skip = {"reference", "om", "description", "refer_to_section", "section"}
-    return [
-        text
-        for column, text in entry.columns.items()
-        if column not in skip and text and not typed_of(text)
-    ][:1]
+    listing = False
+    for column, text in entry.columns.items():
+        if column in skip or not text or typed_of(text):
+            continue
+        if REGEX_CODES.match(text.strip()):
+            listing = True
+            continue
+        # After a column listing codes, a cell holding a name and its
+        # definition gives the name, as "Address" of "Address: The Address
+        # field specifies ..." of SGLDST 0h in Base 2.4 Figure 118
+        head, colon, _ = text.partition(": ")
+        if listing:
+            return [head] if colon and len(head.split()) <= 6 else []
+        return [text]
+    return []
 
 
 def names_operation(caption: str, name: str) -> bool:
@@ -3901,7 +3920,7 @@ def code_value(code: str) -> int:
     return int(code)
 
 
-def name_lists_of_names(document: SpecDocument) -> None:
+def name_lists_of_names(document: SpecDocument, after_sections: bool = False) -> None:
     """
     An entry whose description is a name of more than four words, as
     "Invalid Number of Controller Resources" of Base 2.4 Figure 104, takes it
@@ -3910,7 +3929,10 @@ def name_lists_of_names(document: SpecDocument) -> None:
     have none, counting single codes only. In a list where no entry has both,
     a description of one line, of at most six words, with neither colon nor
     full stop, as "Error status" of AET or "Write Locked Until Power Cycle"
-    of BP0WPS, is a name too. A range of values is left as it is.
+    of BP0WPS, is a name too, unless the entry refers to a section, whose
+    title names it; with 'after_sections', once the titles have named what
+    they name, it is a name of the entries referring to a section too. A
+    range of values is left as it is.
     """
 
     lists = [values.entries for values in document.values]
@@ -3923,12 +3945,91 @@ def name_lists_of_names(document: SpecDocument) -> None:
             continue
         for entry in unnamed:
             text = normalize_text(entry.description)
-            # A code with a reference takes the title of the section cited
-            short = is_short_name(entry.description) and not entry.columns.get(
-                "reference"
+            # A code referring to a section takes the title of the section
+            # cited, where that title names it; name_by_sections() runs next
+            reference = entry.columns.get("reference", "").strip()
+            short = is_short_name(entry.description) and (
+                after_sections or not re.match(r"^[A-Z]?\d+(?:\.\d+)*$", reference)
             )
             if is_long_name(text) and len(named) >= len(unnamed) or short:
                 entry.name, entry.description = text, ""
+
+
+# The columns whose text is the name of the value of their row, as "Delete"
+# of SEL 01h of Base 2.4 Figure 397, "Idle" of SANS 0h of Figure 312, and
+# "Configuration Get" of the Command Messages of MI 2.2
+NAME_COLUMNS = (
+    "operation",
+    "management_operation",
+    "command_message",
+    "nvm_command_set",
+    "status_code",
+    "state",
+    "granularity",
+)
+REGEX_NAME_ACRONYM = re.compile(r"^(?P<acronym>[A-Z][A-Z0-9]+): (?P<name>[A-Z].*)$")
+REGEX_NAME_ASIDE = re.compile(r"\s*\((?P<aside>(?:refer to|i\.e\.,) [^()]*)\)\s*")
+REGEX_NAME_SENTENCE = re.compile(
+    r"^(?P<name>[A-Z][\w/-]*(?: [\w/-]+){0,2})\. (?P<rest>.+)$"
+)
+
+
+def tidy_value_names(document: SpecDocument) -> None:
+    """
+    Make the name of each value a name alone. "CAP: Controller Capabilities"
+    of Base 2.4 Figure 33 is the name "Controller Capabilities" of acronym
+    "CAP"; "(refer to ...)" and "(i.e., ...)" in a name, as "HMAC SHA-256
+    (refer to RFC 6234)", go to the description; the text before a colon,
+    as "Transport Specific" of Figure 33, is the name and the text after
+    it the description. A value without a name takes the text of a column
+    naming it, as "Delete" of SEL 01h of Figure 397, and else a first
+    sentence of at most three words, as "Low" of "Low. Smallest possible
+    latency." of NVM 1.3 Figure 48, where no other value of the list has
+    that name.
+    """
+
+    def described(entry: Entry, text: str) -> None:
+        text = text.strip()
+        if text:
+            if text.startswith("refer to"):
+                text = text[0].upper() + text[1:]
+            entry.description = f"{entry.description} {text}".strip()
+
+    lists = [values.entries for values in document.values]
+    lists += [field.values for field, _ in fields_with_sources(document)]
+    for entries in lists:
+        for entry in entries:
+            if not entry.name and REGEX_NAMED_CODE.match(entry.value):
+                for column in NAME_COLUMNS:
+                    text = " ".join(entry.columns.get(column, "").split())
+                    if text:
+                        entry.name = text.split(": ")[0]
+                        break
+            if not entry.name or "\n" in entry.name:
+                continue
+            match = REGEX_NAME_ACRONYM.match(entry.name)
+            if match:
+                entry.acronym, entry.name = match["acronym"], match["name"]
+            for aside in REGEX_NAME_ASIDE.finditer(entry.name):
+                described(entry, aside["aside"])
+            entry.name = REGEX_NAME_ASIDE.sub(" ", entry.name).strip()
+            head, colon, rest = entry.name.partition(": ")
+            if colon and len(head.split()) <= 6 and not re.search(r"\d", head):
+                entry.name = head
+                described(entry, rest)
+        sentences = {}
+        for entry in entries:
+            text = " ".join(entry.description.split())
+            match = REGEX_NAME_SENTENCE.match(text)
+            if not entry.name and REGEX_NAMED_CODE.match(entry.value) and match:
+                sentences[id(entry)] = (match["name"], match["rest"])
+        taken = [e.name.casefold() for e in entries if e.name]
+        taken += [name.casefold() for name, _ in sentences.values()]
+        for entry in entries:
+            if id(entry) in sentences:
+                name, rest = sentences[id(entry)]
+                if taken.count(name.casefold()) == 1:
+                    entry.name, entry.description = name, rest
 
 
 def is_short_name(description: str) -> bool:
@@ -4113,11 +4214,40 @@ def name_by_documents(document: SpecDocument) -> None:
                     names.append(titles[0])
             for name in names:
                 same = [n for n in names if n.casefold() == name.casefold()]
-                if len(same) * 2 > len(names) and not named_already(
-                    values, name, entry.value
-                ):
-                    entry.name = name
+                if len(same) * 2 <= len(names):
+                    continue
+                chosen: Optional[str] = name
+                if named_already(values, name, entry.value):
+                    chosen = qualified_by_definition(values, entry, name)
+                if chosen:
+                    entry.name = chosen
                     break
+
+
+REGEX_SPECIFIED = re.compile(
+    r"\bfor the specified (?P<term>[A-Z][\w]*(?: [A-Z][\w]*)*)"
+)
+
+
+def qualified_by_definition(values: Values, entry: Entry, name: str) -> Optional[str]:
+    """'name', which another code of 'values' has, qualified by what the
+    definition of 'entry' is for where the definition of no other code of
+    that name says so: CNS 09h of Base 2.4 Figure 336, "Identify Namespace
+    data structure for the specified Format Index", is "NVM Command Set
+    Identify Namespace Data Structure for the specified Format Index", as
+    NVM 1.3 titles CNS 00h and 09h alike. None where nothing qualifies it"""
+
+    match = REGEX_SPECIFIED.search(" ".join(entry.description.split()))
+    if not match:
+        return None
+    others = [
+        e
+        for e in values.entries
+        if e is not entry and (e.name or "").casefold() == name.casefold()
+    ]
+    if any(match["term"] in e.description for e in others):
+        return None
+    return f"{name} for the specified {match['term']}"
 
 
 def named_already(values: Values, name: str, code: str) -> bool:
@@ -4302,6 +4432,8 @@ class FromNormalizedDocument(Converter):
         document.sections[document.meta.stem] = dict(normalized.sections)
         name_lists_of_names(document)
         name_by_sections(document, normalized.sections)
+        name_lists_of_names(document, after_sections=True)
+        tidy_value_names(document)
         document.errata += noted_errata(normalized, document.meta.stem)
         document = resolve(document)
         link_named_values(document)

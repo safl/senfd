@@ -126,7 +126,7 @@ class Vocabulary:
             if entry.name and len(entry.name.split()) > 1
         }
         returned = [
-            spaced(entry.description or "")
+            spaced(f"{entry.name or ''} {entry.description}")
             for table in spec.values
             if table.kind == "cns_values"
             for entry in table.entries

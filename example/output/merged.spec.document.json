@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "36f127c8f37833d0a3049fc901e3942de25205fe0839ea65355ec776e30ef13e",
+    "senfd_sha256": "f7e51013c3b5af5ab3d150038b6cf6184c907fa3b20aacc4da5b2aecd7455f73",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "8b95e1363b16a02bd56f2fce56bc982ab50cd60f4364475360935bb1e572cc0b"
+    "combined_sha256": "42d41fc6ebd189eb6a11d1ed6c15379e399d816c5ab01213ddc9c1c81486b3b3"
   },
   "command_sets": {
     "foobar": {
@@ -826,7 +826,8 @@
                     {
                       "value": "0h",
                       "value_column": "value",
-                      "name": null,
+                      "name": "Foo Pause",
+                      "acronym": null,
                       "description": "",
                       "columns": {
                         "om": "M",
@@ -855,7 +856,8 @@
                     {
                       "value": "1h",
                       "value_column": "value",
-                      "name": null,
+                      "name": "Foo Go",
+                      "acronym": null,
                       "description": "",
                       "columns": {
                         "om": "O",
@@ -884,7 +886,8 @@
                     {
                       "value": "2h",
                       "value_column": "value",
-                      "name": null,
+                      "name": "Ding",
+                      "acronym": null,
                       "description": "",
                       "columns": {
                         "om": "O",
@@ -997,6 +1000,7 @@
                       "value": "000b",
                       "value_column": "value",
                       "name": "Current",
+                      "acronym": null,
                       "description": "",
                       "columns": {},
                       "typed": {
@@ -1021,6 +1025,7 @@
                       "value": "001b",
                       "value_column": "value",
                       "name": "Default",
+                      "acronym": null,
                       "description": "",
                       "columns": {},
                       "typed": {
@@ -1045,6 +1050,7 @@
                       "value": "010b to 111b",
                       "value_column": "value",
                       "name": "Reserved",
+                      "acronym": null,
                       "description": "",
                       "columns": {},
                       "typed": {
@@ -1177,6 +1183,7 @@
                           "value": "0h",
                           "value_column": "value",
                           "name": null,
+                          "acronym": null,
                           "description": "List all quxes.",
                           "columns": {},
                           "typed": {
@@ -1201,6 +1208,7 @@
                           "value": "1h",
                           "value_column": "value",
                           "name": null,
+                          "acronym": null,
                           "description": "List the idle quxes.",
                           "columns": {},
                           "typed": {
@@ -1225,6 +1233,7 @@
                           "value": "2h to FFh",
                           "value_column": "value",
                           "name": "Reserved",
+                          "acronym": null,
                           "description": "",
                           "columns": {},
                           "typed": {
@@ -1291,6 +1300,7 @@
                       "value": "00h",
                       "value_column": "value",
                       "name": "Sweep",
+                      "acronym": null,
                       "description": "Sweeps.",
                       "columns": {},
                       "typed": {
@@ -1315,6 +1325,7 @@
                       "value": "01h",
                       "value_column": "value",
                       "name": "Deep Sweep",
+                      "acronym": null,
                       "description": "Sweeps deeply.",
                       "columns": {},
                       "typed": {
@@ -1339,6 +1350,7 @@
                       "value": "02h to FFh",
                       "value_column": "value",
                       "name": "Reserved",
+                      "acronym": null,
                       "description": "",
                       "columns": {},
                       "typed": {
@@ -2445,7 +2457,8 @@
               {
                 "value": "0h",
                 "value_column": "value",
-                "name": null,
+                "name": "Foo Pause",
+                "acronym": null,
                 "description": "",
                 "columns": {
                   "om": "M",
@@ -2474,7 +2487,8 @@
               {
                 "value": "1h",
                 "value_column": "value",
-                "name": null,
+                "name": "Foo Go",
+                "acronym": null,
                 "description": "",
                 "columns": {
                   "om": "O",
@@ -2503,7 +2517,8 @@
               {
                 "value": "2h",
                 "value_column": "value",
-                "name": null,
+                "name": "Ding",
+                "acronym": null,
                 "description": "",
                 "columns": {
                   "om": "O",
@@ -2616,6 +2631,7 @@
                 "value": "000b",
                 "value_column": "value",
                 "name": "Current",
+                "acronym": null,
                 "description": "",
                 "columns": {},
                 "typed": {
@@ -2640,6 +2656,7 @@
                 "value": "001b",
                 "value_column": "value",
                 "name": "Default",
+                "acronym": null,
                 "description": "",
                 "columns": {},
                 "typed": {
@@ -2664,6 +2681,7 @@
                 "value": "010b to 111b",
                 "value_column": "value",
                 "name": "Reserved",
+                "acronym": null,
                 "description": "",
                 "columns": {},
                 "typed": {
@@ -2796,6 +2814,7 @@
                     "value": "0h",
                     "value_column": "value",
                     "name": null,
+                    "acronym": null,
                     "description": "List all quxes.",
                     "columns": {},
                     "typed": {
@@ -2820,6 +2839,7 @@
                     "value": "1h",
                     "value_column": "value",
                     "name": null,
+                    "acronym": null,
                     "description": "List the idle quxes.",
                     "columns": {},
                     "typed": {
@@ -2844,6 +2864,7 @@
                     "value": "2h to FFh",
                     "value_column": "value",
                     "name": "Reserved",
+                    "acronym": null,
                     "description": "",
                     "columns": {},
                     "typed": {
@@ -2910,6 +2931,7 @@
                 "value": "00h",
                 "value_column": "value",
                 "name": "Sweep",
+                "acronym": null,
                 "description": "Sweeps.",
                 "columns": {},
                 "typed": {
@@ -2934,6 +2956,7 @@
                 "value": "01h",
                 "value_column": "value",
                 "name": "Deep Sweep",
+                "acronym": null,
                 "description": "Sweeps deeply.",
                 "columns": {},
                 "typed": {
@@ -2958,6 +2981,7 @@
                 "value": "02h to FFh",
                 "value_column": "value",
                 "name": "Reserved",
+                "acronym": null,
                 "description": "",
                 "columns": {},
                 "typed": {
@@ -8511,6 +8535,7 @@
           "value": "80h",
           "value_column": "value",
           "name": "Foo Busy",
+          "acronym": null,
           "description": "Foo is busy.",
           "columns": {},
           "typed": {},
@@ -8524,6 +8549,7 @@
           "value": "81h",
           "value_column": "value",
           "name": "Foo Gone",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -8557,6 +8583,7 @@
           "value": "C0h",
           "value_column": "value",
           "name": "Foo Invalid",
+          "acronym": null,
           "description": "Foo is not valid.",
           "columns": {},
           "typed": {},
@@ -8594,6 +8621,7 @@
           "value": "C2h",
           "value_column": "opcode",
           "name": "Foo Get",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "M",
@@ -8663,6 +8691,7 @@
           "value": "Ding",
           "value_column": "command",
           "name": null,
+          "acronym": null,
           "description": "",
           "columns": {
             "command_support_requirements": "M"
@@ -8689,6 +8718,7 @@
           "value": "Dong",
           "value_column": "command",
           "name": null,
+          "acronym": null,
           "description": "",
           "columns": {
             "command_support_requirements": "O"
@@ -8739,8 +8769,9 @@
         {
           "value": "1Ch",
           "value_column": "cns_value",
-          "name": null,
-          "description": "Foo namespace data",
+          "name": "Foo namespace data",
+          "acronym": null,
+          "description": "",
           "columns": {
             "om": "O",
             "nsid": "Y",
@@ -8830,6 +8861,7 @@
           "value": "C0h",
           "value_column": "identifier",
           "name": "Foo Statistics",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {
@@ -8854,6 +8886,7 @@
           "value": "C1h",
           "value_column": "identifier",
           "name": "Foo Events",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {
@@ -8878,6 +8911,7 @@
           "value": "C2h",
           "value_column": "identifier",
           "name": "Foo Statistics (Namespace scope)",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {
@@ -8925,6 +8959,7 @@
           "value": "C0h",
           "value_column": "identifier",
           "name": "Foo Config",
+          "acronym": null,
           "description": "",
           "columns": {
             "persistent_across_power_cycle_and_reset": "No",
@@ -8996,6 +9031,7 @@
           "value": "C0h",
           "value_column": "identifier",
           "name": "Foo Config",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "O",
@@ -9054,6 +9090,7 @@
           "value": "C1h to C3h",
           "value_column": "identifier",
           "name": "Foo Mode",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "M 2",
@@ -9114,6 +9151,7 @@
           "value": "C4h-C7h",
           "value_column": "identifier",
           "name": "Foo Spare",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "Reserved",
@@ -9172,6 +9210,7 @@
           "value": "C8h",
           "value_column": "identifier",
           "name": "Foo Odd",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "Maybe",
@@ -9242,6 +9281,7 @@
           "value": "1.0",
           "value_column": "specification_versions",
           "name": null,
+          "acronym": null,
           "description": "",
           "columns": {
             "mjr_field": "1h",
@@ -9259,6 +9299,7 @@
           "value": "1.1",
           "value_column": "specification_versions",
           "name": null,
+          "acronym": null,
           "description": "",
           "columns": {
             "mjr_field": "1h",
@@ -9296,6 +9337,7 @@
           "value": "0h",
           "value_column": "value",
           "name": "Foo Element",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9309,6 +9351,7 @@
           "value": "1h",
           "value_column": "value",
           "name": "Bar Element",
+          "acronym": null,
           "description": "Not foo.",
           "columns": {},
           "typed": {},
@@ -9342,6 +9385,7 @@
           "value": "FOO",
           "value_column": "name",
           "name": "FOO",
+          "acronym": null,
           "description": "Foo Over Ober",
           "columns": {},
           "typed": {},
@@ -9375,6 +9419,7 @@
           "value": "00h",
           "value_column": "value",
           "name": "Foo Ready",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9408,6 +9453,7 @@
           "value": "0h",
           "value_column": "value",
           "name": "Generic Command Status",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9421,6 +9467,7 @@
           "value": "7h",
           "value_column": "value",
           "name": "Vendor Specific",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9454,6 +9501,7 @@
           "value": "C0h",
           "value_column": "value",
           "name": "Foo Clash",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9487,6 +9535,7 @@
           "value": "01h",
           "value_column": "value",
           "name": "Foo Error",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -9524,6 +9573,7 @@
           "value": "00h",
           "value_column": "offset_ofst",
           "name": "Foo Capabilities",
+          "acronym": null,
           "description": "",
           "columns": {
             "size_in_bytes": "8",
@@ -9566,6 +9616,7 @@
           "value": "1234h",
           "value_column": "value",
           "name": "Foo Key",
+          "acronym": null,
           "description": "",
           "columns": {
             "command": "Foo Set",
@@ -9604,6 +9655,7 @@
           "value": "Idle",
           "value_column": "starting",
           "name": null,
+          "acronym": null,
           "description": "",
           "columns": {
             "ending": "Busy",
@@ -9642,6 +9694,7 @@
           "value": "05h",
           "value_column": "opcode",
           "name": "Ding Dong",
+          "acronym": null,
           "description": "",
           "columns": {
             "command_1": "Ding",
@@ -9678,6 +9731,7 @@
           "value": "82h",
           "value_column": "value",
           "name": "Foo Lost",
+          "acronym": null,
           "description": "Foo is lost.",
           "columns": {
             "section": "Foo Errors"
@@ -9693,6 +9747,7 @@
           "value": "83h",
           "value_column": "value",
           "name": "Foo Late",
+          "acronym": null,
           "description": "",
           "columns": {
             "section": "Foo Errors"
@@ -9729,6 +9784,7 @@
           "value": "00h",
           "value_column": "directive_type_value",
           "name": "Foo",
+          "acronym": null,
           "description": "",
           "columns": {
             "reference": "6.1"
@@ -9744,6 +9800,7 @@
           "value": "01h",
           "value_column": "directive_type_value",
           "name": "Bar",
+          "acronym": null,
           "description": "",
           "columns": {
             "reference": "6.2"
@@ -9781,6 +9838,7 @@
           "value": "01h",
           "value_column": "directive_operation_value",
           "name": "Bar Report",
+          "acronym": null,
           "description": "",
           "columns": {
             "directive_command": "Foo Directive Receive",
@@ -9797,6 +9855,7 @@
           "value": "All other values",
           "value_column": "directive_operation_value",
           "name": "Reserved",
+          "acronym": null,
           "description": "",
           "columns": {
             "directive_command": "Foo Directive Receive",
@@ -9813,6 +9872,7 @@
           "value": "01h",
           "value_column": "directive_operation_value",
           "name": "Bar Reset",
+          "acronym": null,
           "description": "",
           "columns": {
             "directive_command": "Foo Directive Send",
@@ -9851,6 +9911,7 @@
           "value": "C2h",
           "value_column": "opcode",
           "name": "Foo Get",
+          "acronym": null,
           "description": "",
           "columns": {
             "io": "M",
@@ -9908,6 +9969,7 @@
           "value": "Foo",
           "value_column": "name",
           "name": "Foo",
+          "acronym": null,
           "description": "",
           "columns": {
             "purpose": "Bar"
@@ -9943,6 +10005,7 @@
           "value": "00h",
           "value_column": "value",
           "name": "Ding Qux",
+          "acronym": null,
           "description": "A qux that dings.",
           "columns": {},
           "typed": {},
@@ -9956,6 +10019,7 @@
           "value": "01h",
           "value_column": "value",
           "name": "Ring Qux",
+          "acronym": null,
           "description": "A qux that rings.",
           "columns": {},
           "typed": {},
@@ -9969,6 +10033,7 @@
           "value": "02h to FFh",
           "value_column": "value",
           "name": "Reserved",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -10002,6 +10067,7 @@
           "value": "00h",
           "value_column": "value",
           "name": "Plain",
+          "acronym": null,
           "description": "A qux of no kind.",
           "columns": {},
           "typed": {},
@@ -10015,6 +10081,7 @@
           "value": "01h",
           "value_column": "value",
           "name": "Fancy",
+          "acronym": null,
           "description": "A qux of a kind.",
           "columns": {},
           "typed": {},
@@ -10028,6 +10095,7 @@
           "value": "02h to FFh",
           "value_column": "value",
           "name": "Reserved",
+          "acronym": null,
           "description": "",
           "columns": {},
           "typed": {},
@@ -10797,7 +10865,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "36f127c8f37833d0a3049fc901e3942de25205fe0839ea65355ec776e30ef13e",
+      "senfd_sha256": "f7e51013c3b5af5ab3d150038b6cf6184c907fa3b20aacc4da5b2aecd7455f73",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -10807,7 +10875,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "36f127c8f37833d0a3049fc901e3942de25205fe0839ea65355ec776e30ef13e",
+      "senfd_sha256": "f7e51013c3b5af5ab3d150038b6cf6184c907fa3b20aacc4da5b2aecd7455f73",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

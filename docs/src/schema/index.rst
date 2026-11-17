@@ -102,7 +102,13 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   value, beside the text in ``condition``.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
-  limits them to.
+  limits them to. Each entry has a ``name``: the one its row gives, a
+  short definition, the text of a column naming it, as the Management
+  Operation of SEL, a first sentence of at most three words, as "Low" of
+  AL in NVM 1.3, or the title of the section it refers to. An aside in
+  the name, as "(refer to RFC 6234)", and the text after a colon go to the
+  ``description``, and an acronym before a colon, as "CAP" of "CAP:
+  Controller Capabilities", is the entry's ``acronym``.
 * ``dwords``: the dwords of every figure, by the name its caption gives, as
   read. ``unassigned`` holds the dwords that no command, feature or
   operation claims.
