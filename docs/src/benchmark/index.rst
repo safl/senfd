@@ -21,7 +21,7 @@ models on a CPU, and Claude Opus 5.5 and Claude Haiku 5.5 through Claude
 Code. Claude is asked in three conditions: from memory, with sate-mcp, and
 with the PDFs.
 
-.. list-table:: 2026-11-16, senfd 0.22.0, 86 questions; a Claude lane is the mean of three sessions
+.. list-table:: 2026-11-17, senfd 0.23.0, 86 questions; a Claude lane is the mean of three sessions
    :header-rows: 1
    :widths: 40 9 9 9 15 18
 
@@ -41,13 +41,13 @@ with the PDFs.
      - 72
      - 0
      - 14
-     - 2.8
+     - 2.7
      - none
    * - ``sate --llm``, Qwen 2.5 1.5B (Q4_K_M), CPU only
      - 57
      - 0
      - 29
-     - 1.4
+     - 1.2
      - none
    * - **Opus 5.5**
      -
@@ -56,23 +56,23 @@ with the PDFs.
      -
      -
    * - From memory
-     - 60
-     - 0.3
-     - 25.7
-     - 1.8
-     - 0.50
+     - 58.7
+     - 0
+     - 27.3
+     - 2.0
+     - 0.52
    * - With sate-mcp
      - 86
      - 0
      - 0
-     - 2.8
-     - 2.00
+     - 2.7
+     - 1.59
    * - With the PDFs
      - 86
      - 0
      - 0
-     - 5.1
-     - 3.13
+     - 4.3
+     - 3.20
    * - **Haiku 5.5**
      -
      -
@@ -80,23 +80,23 @@ with the PDFs.
      -
      -
    * - From memory
-     - 32.3
-     - 5.7
-     - 48
-     - 2.0
+     - 37.7
+     - 4
+     - 44.3
+     - 1.6
      - 0.02
    * - With sate-mcp
-     - 85.3
-     - 0.7
-     - 0
-     - 3.0
+     - 84.7
+     - 1
+     - 0.3
+     - 2.3
      - 0.10
    * - With the PDFs
      - 84
-     - 1
-     - 1
-     - 6.6
-     - 0.39
+     - 2
+     - 0
+     - 5.5
+     - 0.37
 
 Each Claude session is told: "If you do not know, or are guessing, answer
 "unknown" rather than a guess; a wrong answer counts against you more than
@@ -119,34 +119,34 @@ record the opening turn and the tool calls:
      -
      -
    * - With sate-mcp
-     - 2.0
-     - 70,986
-     - 3.4 s, USD 0.018
-     - 8.3 (8.3)
+     - 1.8
+     - 52,603
+     - 2.7 s, USD 0.012
+     - 25 (25)
    * - With the PDFs
-     - 2.1
-     - 104,334
-     - 28.6 s, USD 0.11
-     - 12.7 (12.7)
+     - 2.2
+     - 106,539
+     - 30.2 s, USD 0.13
+     - 7 (7)
    * - **Haiku 5.5**
      -
      -
      -
      -
    * - With sate-mcp
-     - 2.0
-     - 88,563
-     - 4.5 s, USD 0.0003
-     - 14.3 (14.3)
+     - 1.9
+     - 92,069
+     - 4.1 s, USD 0.0003
+     - 15.7 (15.3)
    * - With the PDFs
-     - 2.5
-     - 164,105
-     - 24.2 s, USD 0.003
-     - 9 (9)
+     - 2.7
+     - 172,630
+     - 19.7 s, USD 0.003
+     - 7.7 (7.7)
 
 Tokens in count the input tokens, the cache reads and the cache writes.
 
-`The report <../_static/benchmark/report-2026-11-16-v0.22.0.html>`_ has
+`The report <../_static/benchmark/report-2026-11-17-v0.23.0.html>`_ has
 every question, the right answer with the PDF and figure that holds it, and
 the answer of every lane and session. For ``sate``, the report shows what
 ``sate`` understood each question as. For Claude, the report shows the tool
@@ -158,19 +158,19 @@ What the run recorded
 With a source, Opus and Haiku answered almost every question right. Opus
 answered all 86 questions right in each of its three sessions with
 sate-mcp and in each of its three sessions with the PDFs. From memory, Opus
-answered 60 right and 25.7 "unknown". Haiku answered 85.3 questions right
-with sate-mcp, 84 with the PDFs, and 32.3 from memory.
+answered 58.7 right and 27.3 "unknown". Haiku answered 84.7 questions right
+with sate-mcp, 84 with the PDFs, and 37.7 from memory.
 
-A source costs more than memory. An Opus session cost USD 0.50 from
-memory, USD 2.00 with sate-mcp and USD 3.13 with the PDFs. A Haiku session
-cost USD 0.02, USD 0.10 and USD 0.39. With sate-mcp, an Opus session cost
-36% less than with the PDFs, and a Haiku session 75% less. Haiku with
-sate-mcp answered 85.3 questions right at USD 0.10 a session. Opus with the
-PDFs answered 86 right at USD 3.13 a session, 32 times as much.
+A source costs more than memory. An Opus session cost USD 0.52 from
+memory, USD 1.59 with sate-mcp and USD 3.20 with the PDFs. A Haiku session
+cost USD 0.02, USD 0.10 and USD 0.37. With sate-mcp, an Opus session cost
+50% less than with the PDFs, and a Haiku session 73% less. Haiku with
+sate-mcp answered 84.7 questions right at USD 0.10 a session. Opus with the
+PDFs answered 86 right at USD 3.20 a session, 32 times as much.
 
-The opening turn of a session with the PDFs took Opus 28.6 seconds and USD
-0.11, and Haiku 24.2 seconds. In that turn, each of the six sessions with
-the PDFs ran ``pdftotext`` on the PDFs. 18 of the 33 ``pdftotext`` calls of
+The opening turn of a session with the PDFs took Opus 30.2 seconds and USD
+0.13, and Haiku 19.7 seconds. In that turn, each of the six sessions with
+the PDFs ran ``pdftotext`` on the PDFs. 19 of the 33 ``pdftotext`` calls of
 the six opening turns returned errors. In two of Haiku's three sessions,
 every ``pdftotext`` call of the opening turn returned an error. The cost
 with the PDFs is that of the PDFs as NVM Express publishes them, prepared
@@ -182,23 +182,27 @@ milliseconds a question, at no cost a question. ``sate --llm`` answered no
 question wrongly: 72 right with Qwen 2.5 7B and 57 with Qwen 2.5 1.5B.
 
 Haiku with sate-mcp gave the Sanitize Namespace command the opcode 84h in
-two sessions; the figure gives 8Ch. With the PDFs, Haiku gave the Memory
-Copy command of the Subsystem Local Memory Command Set the opcode 05h in two
-sessions, and answered "unknown" in the third; the figure gives 01h. With
-the PDFs, Haiku gave the Sanitize Namespace opcode 84h in one session, and
-answered "unknown" in one session each for the byte of Namespace Multi-path
-I/O and Namespace Sharing Capabilities (NMIC) of the I/O Command Set
-Independent Identify Namespace data structure and for the Log Page
-Identifier of Host Addressable Namespaces. From memory, Haiku answered 17
-questions wrongly over its three sessions, among them CNS 05h for the I/O
-Command Set Independent Identify Namespace data structure and the Sanitize
-Namespace opcode 84h, each in all three. Opus from memory answered one
-question wrongly in its first session: bytes 23:20 for Namespace ID (NSID)
-of the NBFT Subsystem Namespace (SSNS) Descriptor, where the figure gives
-27:24.
+two sessions; the figure gives 8Ch. In its third session with sate-mcp,
+Haiku gave bit 4 of Command Dword 10 of Sanitize for Purge Required (PREQ);
+the figure gives bit 11. In one session with sate-mcp, Haiku answered
+"unknown" for the descriptor type designator of the HFI Descriptor of the
+NVMe Boot Firmware Table (NBFT).
 
-Over the six sessions with the PDFs, Claude Code refused 25 tool calls, 15
-of Haiku's and 10 of Opus's. Two other tool calls ran and failed.
+With the PDFs, Haiku gave byte 30 for Namespace Multi-path I/O and
+Namespace Sharing Capabilities (NMIC) of the I/O Command Set Independent
+Identify Namespace data structure in all three sessions; the figure gives
+byte 1. Haiku with the PDFs also gave the Memory Copy command of the
+Subsystem Local Memory Command Set the opcode 05h in two sessions, where the
+figure gives 01h, and the Sanitize Namespace opcode 84h in one session.
+
+From memory, Haiku answered 12 questions wrongly over its three sessions.
+Haiku gave byte 30 for NMIC and CNS 05h for the I/O Command Set Independent
+Identify Namespace data structure in all three sessions, and the Sanitize
+Namespace opcode 84h in two. Opus answered no question wrongly in any of
+its nine sessions.
+
+Over the six sessions with the PDFs, Claude Code refused 29 tool calls, 19
+of Haiku's and 10 of Opus's. One other tool call ran and failed.
 
 Method
 ------
@@ -222,8 +226,8 @@ The ``sate --llm`` lanes ran ``llama-server``, llama.cpp version 9905
 (6fed91c10), on an AMD EPYC 7532 with 16 threads, a context of 8,192
 tokens, ``--device none`` and no GPU visible. The language models are the
 published Q4_K_M files, checked by their SHA-256. ``sate`` ran from a
-virtual environment of senfd 0.22.0, against the data model that senfd
-0.22.0 made of the eleven PDFs, which were checked by their SHA-256 too.
+virtual environment of senfd 0.23.0, against the data model that senfd
+0.23.0 made of the eleven PDFs, which were checked by their SHA-256 too.
 
 An answer of ``sate`` is right when a line about the field, command,
 feature or log page asked of gives the right value. An answer of Claude is
@@ -231,8 +235,9 @@ right when the value it writes is the right value and no other, so "1Fh
 (Namespace Admin Label)" is right and "82h or 83h" is wrong. The grader
 has its tests in ``benchmark/tests``.
 
-The runs of 2026-11-12 at senfd 0.19.0 and 0.18.0 asked the same questions
-in the same way; their reports, of
+The run of 2026-11-16 at senfd 0.22.0 and the runs of 2026-11-12 at senfd
+0.19.0 and 0.18.0 asked the same questions in the same way; their reports,
+of `0.22.0 <../_static/benchmark/report-2026-11-16-v0.22.0.html>`__,
 `0.19.0 <../_static/benchmark/report-2026-11-12-v0.19.0.html>`__ and
 `0.18.0 <../_static/benchmark/report-2026-11-12-v0.18.0.html>`__, are kept.
 The run of 2026-11-12 at senfd 0.17.0 asked the 86 questions, and asked
@@ -275,5 +280,5 @@ repository, and the documentation publishes the report of each run.
 
 The workflow records what it ran on and with, makes a virtual environment of
 the pinned senfd, makes the data model of the documents, runs every lane,
-and writes the report. The run of 2026-11-16 with senfd 0.22.0 took 37
-minutes, 27 of them in the Claude sessions.
+and writes the report. The run of 2026-11-17 with senfd 0.23.0 took 34
+minutes, 24 of them in the Claude sessions.
