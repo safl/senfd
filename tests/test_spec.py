@@ -3399,3 +3399,25 @@ def test_the_parts_of_a_value_split_over_two_fields_are_parts_of_it():
         Part(name="Foo Key", shift=0),
         Part(name="Foo Key", shift=64),
     ]
+
+
+@pytest.mark.parametrize(
+    "condition, expected",
+    [
+        ("CETYPE is cleared to 0h", ("CETYPE", "==", 0)),
+        ("CETYPE is non-zero", ("CETYPE", "!=", 0)),
+        ("FMOD is set to 10b", ("FMOD", "==", 2)),
+        ("Foo Mode is set", None),
+        (None, None),
+    ],
+)
+def test_the_condition_of_dwords_is_a_comparison_where_it_states_one(
+    condition, expected
+):
+    """NVM 1.3 lays out dwords of Copy where "CETYPE is cleared to 0h" and
+    where "CETYPE is non-zero" """
+
+    from senfd.documents.spec import comparison_of
+
+    found = comparison_of(condition)
+    assert (found and (found.field, found.comparison, found.value)) == expected

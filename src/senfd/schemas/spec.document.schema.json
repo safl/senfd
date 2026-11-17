@@ -695,6 +695,37 @@
             "title": "CommandSet",
             "type": "object"
         },
+        "Comparison": {
+            "description": "A condition on the value of a field, as \"CETYPE is non-zero\" ",
+            "properties": {
+                "field": {
+                    "description": "The acronym of the field, as 'CETYPE'",
+                    "title": "Field",
+                    "type": "string"
+                },
+                "comparison": {
+                    "description": "How the field's value compares with 'value'",
+                    "enum": [
+                        "==",
+                        "!="
+                    ],
+                    "title": "Comparison",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "The value compared with",
+                    "title": "Value",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "field",
+                "comparison",
+                "value"
+            ],
+            "title": "Comparison",
+            "type": "object"
+        },
         "Diagnostic": {
             "description": "Something about a figure that senfd normalised, or could not make sense of\n\nA 'note' is a variant senfd normalised; nothing is lost. A 'warning' is\nsomething left out of the output, as a row whose range is not a range.",
             "properties": {
@@ -845,6 +876,18 @@
                     "default": null,
                     "description": "Where the figure lays the dwords out only under a condition, the\ncondition, as 'CETYPE is cleared to 0h'",
                     "title": "Condition"
+                },
+                "selected_when": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Comparison"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The condition as a comparison of a field with a value, where it is of\nthe form \"X is cleared to 0h\", \"X is set to 1h\" or \"X is non-zero\" "
                 },
                 "qualifier": {
                     "anyOf": [

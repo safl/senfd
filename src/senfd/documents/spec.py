@@ -386,6 +386,37 @@ class Bits(BitsCommon):
         return self
 
 
+class Comparison(Model):
+    """A condition on the value of a field, as "CETYPE is non-zero" """
+
+    field: str
+    """The acronym of the field, as 'CETYPE'"""
+    comparison: Literal["==", "!="]
+    """How the field's value compares with 'value'"""
+    value: int
+    """The value compared with"""
+
+
+REGEX_COMPARISON = re.compile(
+    r"^(?P<field>[A-Z][A-Z0-9]*) is (?:(?:cleared|set) to (?P<value>[0-9A-F]+h|[01]+b|\d+)"
+    r"|(?P<nonzero>non-zero))$"
+)
+
+
+def comparison_of(condition: Optional[str]) -> Optional[Comparison]:
+    """The comparison 'condition' states, as CETYPE == 0 of "CETYPE is
+    cleared to 0h", or None of a condition of another form"""
+
+    match = REGEX_COMPARISON.match(condition or "")
+    if not match:
+        return None
+    if match["nonzero"]:
+        return Comparison(field=match["field"], comparison="!=", value=0)
+    return Comparison(
+        field=match["field"], comparison="==", value=code_value(match["value"])
+    )
+
+
 class Dwords(Model):
     """The dwords 'lower' to 'upper' of a command, and their fields"""
 
@@ -396,6 +427,9 @@ class Dwords(Model):
     condition: Optional[str] = None
     """Where the figure lays the dwords out only under a condition, the
     condition, as 'CETYPE is cleared to 0h'"""
+    selected_when: Optional[Comparison] = None
+    """The condition as a comparison of a field with a value, where it is of
+    the form "X is cleared to 0h", "X is set to 1h" or "X is non-zero" """
     qualifier: Optional[str] = None
     """What the caption says the dwords are of, as 'NVM Command Set Specific
     Fields'"""
@@ -1826,6 +1860,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                 lower=dwords[0],
                 upper=dwords[1],
                 condition=subject.condition,
+                selected_when=comparison_of(subject.condition),
                 qualifier=subject.qualifier,
                 fields=fields,
                 source=source,

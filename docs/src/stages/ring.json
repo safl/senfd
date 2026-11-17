@@ -6,6 +6,7 @@
       "lower": 14,
       "upper": 15,
       "condition": null,
+      "selected_when": null,
       "qualifier": null,
       "fields": [],
       "source": {
@@ -21,6 +22,7 @@
       "lower": 11,
       "upper": 11,
       "condition": null,
+      "selected_when": null,
       "qualifier": null,
       "fields": [
         {
@@ -67,6 +69,7 @@
       "lower": 10,
       "upper": 10,
       "condition": null,
+      "selected_when": null,
       "qualifier": null,
       "fields": [
         {
