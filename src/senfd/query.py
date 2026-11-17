@@ -350,7 +350,7 @@ def by_identifier_or_name(items: dict, key: str) -> list:
     found = [items[k] for k in find(items, key)]
     if found:
         return found
-    # A log page by another name its tables give it
+    # A log page by another name that its tables give it
     wanted = alias(key)
     return [
         item

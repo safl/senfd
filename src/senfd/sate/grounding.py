@@ -125,8 +125,9 @@ def elsewhere(
             return named[1]
         head, _, rest = name.partition(" - ")
         names = {alias(name), alias(head), alias(rest)}
-        # A log page by another name its tables give it, as "24h Manufacturer
-        # Default Configuration (also Manufacturer Default Configuration Status)"
+        # A log page by another name that its tables give it, for example "24h
+        # Manufacturer Default Configuration (also Manufacturer Default Configuration
+        # Status)"
         also = re.search(r" \(also (.+)\)$", name)
         if also:
             names |= {alias(name[: also.start()])}

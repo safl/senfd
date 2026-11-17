@@ -215,7 +215,9 @@ def assembled(figure: Figure, pieces: List[Tuple[int, Table]]) -> None:
 
 
 def caption_of(row: Row) -> str:
-    """The caption a row of one text is, as "Figure 74: ...", or "" """
+    """
+    The caption that a row of one text is, for example "Figure 74: ...", or ""
+    """
 
     texts = {c.text.strip() for c in row.cells if c.text.strip()}
     caption = words(next(iter(texts))) if len(texts) == 1 else ""
@@ -228,10 +230,11 @@ def figure_number(caption: str) -> Optional[int]:
 
 
 def split_at_captions(found: List[Row]) -> List[List[Row]]:
-    """The rows of a table, split before each row that is the caption of
-    another figure: the PDF of MI 2.2 tags Figure 74 as rows of the table of
-    Figure 73, caption and all. A caption repeated after a page break is the
-    figure's own."""
+    """
+    The rows of a table, split before each row that is the caption of another figure.
+    The PDF of MI 2.2 tags Figure 74, including its caption, as rows of the table of
+    Figure 73. A caption repeated after a page break belongs to the figure itself.
+    """
 
     parts: List[List[Row]] = [[]]
     for row in found:

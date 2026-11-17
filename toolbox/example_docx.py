@@ -922,8 +922,8 @@ FIGURES = [
             ),
         ),
     ),
-    # A table mapping the bytes of one message to another, as MI 2.2 Figure
-    # 49, which lays out no structure of its own
+    # A table that maps the bytes of one message to another, for example MI 2.2 Figure
+    # 49, lays out no structure of its own
     (
         "Foo Message to Admin Command SQE Mapping Table",
         {

@@ -66,8 +66,10 @@ def test_a_command_name_is_without_its_footnote_marker(tmp_path):
 
 
 def test_the_io_commands_of_every_io_command_set_are_named_common_io():
-    """Base 2.4 Figure 645, "Opcodes for I/O Commands", lists the I/O
-    commands of every I/O command set, as Flush; it is no command set "I/O" """
+    """
+    Base 2.4 Figure 645, "Opcodes for I/O Commands", lists the I/O commands of every I/O
+    command set, for example Flush. These commands are not a command set "I/O".
+    """
 
     from senfd.documents.spec import command_set_name
 
@@ -76,9 +78,11 @@ def test_the_io_commands_of_every_io_command_set_are_named_common_io():
     assert command_set_name("Admin") == "Admin"
 
 
-def test_io_is_one_word_of_a_key():
-    """A key takes "I/O" as one word, as xNVMe's identifiers do: the key of
-    "Common I/O" is "common_io", and so for a command and a column"""
+def test_a_key_treats_io_as_one_word():
+    """
+    A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
+    I/O" is "common_io", and the keys of commands and columns follow the same rule.
+    """
 
     from senfd.documents.spec import alias
     from senfd.normalize import slug
@@ -91,11 +95,13 @@ def test_io_is_one_word_of_a_key():
 
 
 def test_a_command_set_has_its_kind_and_the_csi_of_an_io_command_set():
-    """The Common I/O commands of Base 2.4 Figure 645 are no command set and
-    have no CSI; Base 2.4 Figure 337 gives 03h to the Subsystem Local Memory
-    Command Set specification, whose command set is "SLM"; the set of MI 2.2
-    Figure 151 is "PCIe Commands", without the mechanism it is used over,
-    so that its key is not that of the PCIe transport"""
+    """
+    The Common I/O commands of Base 2.4 Figure 645 are not a command set and have no
+    CSI. Base 2.4 Figure 337 gives 03h to the Subsystem Local Memory Command Set
+    specification, whose command set is "SLM". The command set of MI 2.2 Figure 151 is
+    "PCIe Commands", without the mechanism it is used over, so that its key differs from
+    the key of the PCIe transport.
+    """
 
     from senfd.documents.spec import (
         Command,
@@ -665,9 +671,11 @@ def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
 
 
 def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
-    """As "(NUMENT-1)*32+63)" of Base 2.4, Figure 361, closing a parenthesis
-    it never opened, which is read without it, and "4*(N+1)+3: 4 * (N+4)" of
-    Figure 404, whose upper bound is below its lower whatever N is"""
+    """
+    Examples are "(NUMENT-1)*32+63)" of Base 2.4 Figure 361, which closes a parenthesis
+    that it never opened and is read without it, and "4*(N+1)+3: 4 * (N+4)" of Figure
+    404, whose upper bound is below its lower bound for every N.
+    """
 
     from senfd.documents.spec import ReadBits as Bits, Source, checked
 
@@ -1914,10 +1922,12 @@ def test_a_field_has_the_footnotes_marked_at_the_end_of_its_description():
 
 
 def test_a_marker_read_as_superscript_is_a_footnote_of_the_name_value_or_column():
-    """The readers give a footnote marker as superscript digits, as "List
-    Exported Controllers1" of Base 2.4 Figure 375, "000b1" of Figure 542 and
-    "Number of Placement Handles 2" of NVM 1.3 Figure 134; the marker is no
-    part of the text, and digits of the text and an exponent are kept"""
+    """
+    The readers return a footnote marker as superscript digits, for example on "List
+    Exported Controllers1" of Base 2.4 Figure 375, "000b1" of Figure 542 and "Number of
+    Placement Handles 2" of NVM 1.3 Figure 134. The marker is not part of the text.
+    Digits of the text and an exponent are kept.
+    """
 
     from senfd.documents.spec import entry_of, typed_of
 
@@ -1965,9 +1975,11 @@ def test_a_marker_read_as_superscript_is_a_footnote_of_the_name_value_or_column(
 
 
 def test_a_marker_on_a_lone_0_or_1_or_within_a_value_is_a_footnote():
-    """NVM 1.3 Figure 165 marks the bit size "0" as "0\u00b9", and Base 2.4
-    Figure 769 marks commands within the one cell listing them, twice with
-    the same footnotes; "10\u00b3" of MI 2.2 Figure 14 is an exponent"""
+    """
+    NVM 1.3 Figure 165 marks the bit size "0" as "0¹". Base 2.4 Figure 769 marks
+    commands inside the one cell that lists them, twice with the same footnotes. "10³"
+    of MI 2.2 Figure 14 is an exponent.
+    """
 
     from senfd.documents.spec import entry_of
 
@@ -2057,13 +2069,15 @@ def test_an_entry_naming_a_value_of_another_field_links_to_it():
 
 
 def test_a_code_is_named_by_the_section_of_the_document_its_reference_names():
-    """CNS 00h and 09h of Base 2.4 cite "NVM Express NVM Command Set
-    Specification", whose sections titled "(CNS 00h)" and "(CNS 09h, CSI
-    00h)" describe them; ZNS 1.5 cites it without "NVM Express". CNS 0Ah
-    cites "I/O Command Set Specification", and two of the three command
-    sets title its section alike. Neither code that one title of two names,
-    nor one of a document without its section, nor one of no document, is
-    named, nor 09h, whose title, but for the code, names 00h already."""
+    """
+    CNS 00h and 09h of Base 2.4 cite "NVM Express NVM Command Set Specification", whose
+    sections titled "(CNS 00h)" and "(CNS 09h, CSI 00h)" describe them. ZNS 1.5 cites
+    that document without "NVM Express". CNS 0Ah cites "I/O Command Set Specification",
+    and two of the three command sets give its section the same title. No name is given
+    to a code that one of two titles names, to a code of a document without its section,
+    or to a code of no document. Nor is 09h named, because its title, except for the
+    code, already names 00h.
+    """
 
     from senfd.documents.spec import name_by_documents
 
@@ -2885,12 +2899,14 @@ def test_a_case_selected_by_a_field_of_another_figure_links_that_figure():
 
 
 def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
-    """Base 2.4 Figure 209 names log page 24h "Manufacturer Default
-    Configuration" and Figure 31 "... Status"; Figure 31 also lists 02h once
-    by scope. A log page is one by identifier, named by Figure 209, with the
-    other name and the columns of Figure 31 added. Its structure is the
-    figure its row's reference section holds that is named as the log page,
-    as the one of 12h, whose figure is named otherwise."""
+    """
+    Base 2.4 Figure 209 names log page 24h "Manufacturer Default Configuration", and
+    Figure 31 names it "... Status". Figure 31 also lists 02h once for each scope. There
+    is one log page for each identifier, named by Figure 209, with the other name and
+    the columns of Figure 31 added. Its structure is the figure in the section that its
+    row cites whose name is the name of the log page. The structure of 12h is the figure
+    there, although that figure has another name.
+    """
 
     requirements = figure_of(
         31,
@@ -2932,11 +2948,13 @@ def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
     assert pages[0x12].structure.name == "Baz Effects"
 
 
-def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
-    """Base 2.4 Figures 216 and 217 are the log page and the data structure
-    "Commands Supported and Effects"; NVM 1.3 Figure 190 has the caption of
-    Figure 189 and is the layout of RENSCS; Base 2.4 Figures 479 and 480 are
-    the Timestamp data structures of Set Features and Get Features"""
+def test_two_structures_of_one_name_are_named_by_kind_or_linking_field():
+    """
+    Base 2.4 Figures 216 and 217 are the log page and the data structure "Commands
+    Supported and Effects". NVM 1.3 Figure 190 has the caption of Figure 189 and is the
+    layout of RENSCS. Base 2.4 Figures 479 and 480 are the Timestamp data structures of
+    Set Features and Get Features.
+    """
 
     spec = document_of(
         figure_of(
@@ -2995,9 +3013,11 @@ def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
 
 
 def test_a_numbered_field_of_another_width_and_a_size_past_a_power_of_two_are_errata():
-    """Boot 1.4 Figure 11 gives Host Fabric Interface Descriptor 2 the
-    bytes 64:32, 33 bytes, between descriptors of 32; NVM 1.3 Figure 134
-    ends in "4096:768 Reserved", 4097 bytes"""
+    """
+    Boot 1.4 Figure 11 gives Host Fabric Interface Descriptor 2 the bytes 64:32, 33
+    bytes, between descriptors of 32 bytes. NVM 1.3 Figure 134 ends in "4096:768
+    Reserved" and is 4097 bytes.
+    """
 
     spec = document_of(
         figure_of(
@@ -3023,9 +3043,11 @@ def test_a_numbered_field_of_another_width_and_a_size_past_a_power_of_two_are_er
 
 
 def test_a_layout_of_another_kind_from_byte_0_has_its_gaps_reported():
-    """SLM 1.3 Figure 13 lays out source range entries; its second entry has
-    no row for bytes 53:52. A table whose rows name the structure of each
-    field, as NVM 1.3 Figure 188, cites fields of others, and has none."""
+    """
+    SLM 1.3 Figure 13 lays out source range entries, and its second entry has no row for
+    bytes 53:52. A table whose rows name the structure of each field, for example NVM
+    1.3 Figure 188, cites fields of other structures and has no gaps reported.
+    """
 
     spec = document_of(
         figure_of(
@@ -3049,9 +3071,11 @@ def test_a_layout_of_another_kind_from_byte_0_has_its_gaps_reported():
     assert kinds == {13: "other", 188: "cited_fields"}
 
 
-def test_the_one_row_of_no_name_of_a_register_is_the_register():
-    """CCPTR of PCIe 1.4 Figure 23 has one row, "31:00 RO 0h Shall be
-    cleared to zero for NVM Express use", and no field otherwise"""
+def test_a_register_with_one_row_without_a_name_is_that_row():
+    """
+    CCPTR of PCIe 1.4 Figure 23 has one row, "31:00 RO 0h Shall be cleared to zero for
+    NVM Express use", and no other field
+    """
 
     spec = document_of(
         figure_of(
@@ -3068,10 +3092,12 @@ def test_the_one_row_of_no_name_of_a_register_is_the_register():
 
 
 def test_fields_numbered_in_hexadecimal_with_rows_left_out_are_an_array():
-    """NVM 1.3 Figure 104 lists Performance Attribute C1h, C2h, "..." and FFh
-    Identifier; Base 2.4 Figure 516 lists Vendor Specific Protocol FF, F1,
-    "..." and F0, the acronyms VSPFF to VSPF0 in SPS and VSP15 to VSP0 in
-    SSP, and gives AHATSDPS to two fields"""
+    """
+    NVM 1.3 Figure 104 lists Performance Attribute C1h, C2h, "..." and FFh Identifier.
+    Base 2.4 Figure 516 lists Vendor Specific Protocol FF, F1, "..." and F0, with the
+    acronyms VSPFF to VSPF0 in SPS and VSP15 to VSP0 in SSP, and gives the acronym
+    AHATSDPS to two fields.
+    """
 
     from senfd.documents.spec import Array
 
@@ -3136,10 +3162,12 @@ def test_fields_numbered_in_hexadecimal_with_rows_left_out_are_an_array():
 
 
 def test_a_layout_of_bytes_of_another_structure_extends_it():
-    """NVM 1.3 Figure 126 lays out AWUN, AWUPF and ACWU, bytes 527:526 to
-    533:532 of Identify Controller, Base 2.4 Figure 338, which has them
-    too; MI 2.2 Figure 41 lays out bytes 07:06, which the text calls "the
-    CPSR field in the Control Primitive Success Response", of Figure 40"""
+    """
+    NVM 1.3 Figure 126 lays out AWUN, AWUPF and ACWU, bytes 527:526 to 533:532 of
+    Identify Controller, Base 2.4 Figure 338, which has these fields too. MI 2.2 Figure
+    41 lays out bytes 07:06 of Figure 40, which the text calls "the CPSR field in the
+    Control Primitive Success Response".
+    """
 
     from senfd.documents.spec import resolve
 
@@ -3195,11 +3223,12 @@ def test_a_layout_of_bytes_of_another_structure_extends_it():
     }
 
 
-def test_the_encoding_and_byte_order_a_description_states_are_the_fields():
-    """FR of Identify Controller, Base 2.4 Figure 338, is "the currently
-    active firmware revision, as an ASCII string", and FGUID "is big
-    endian"; FR of NVM 1.3 Figure 189 has "the value of the FR field in the
-    Identify Controller data structure" """
+def test_a_field_has_the_encoding_and_byte_order_its_description_states():
+    """
+    FR of Identify Controller, Base 2.4 Figure 338, is "the currently active firmware
+    revision, as an ASCII string", and FGUID "is big endian". FR of NVM 1.3 Figure 189
+    has "the value of the FR field in the Identify Controller data structure".
+    """
 
     spec = document_of(
         figure_of(
@@ -3246,9 +3275,11 @@ def test_the_encoding_and_byte_order_a_description_states_are_the_fields():
 
 
 def test_a_short_definition_names_its_value_and_a_title_names_one_code_only():
-    """AET of Base 2.4 lists 000b "Error status" beside 010b "Notice", and
-    NVM 1.3 titles the sections of CNS 00h and CNS 09h alike, "NVM Command
-    Set Identify Namespace Data Structure" """
+    """
+    AET of Base 2.4 lists 000b "Error status" beside 010b "Notice". NVM 1.3 gives the
+    sections of CNS 00h and CNS 09h the same title, "NVM Command Set Identify Namespace
+    Data Structure".
+    """
 
     from senfd.documents.spec import name_by_sections, name_lists_of_names
     from senfd.tables import Cell, Row, Table
@@ -3299,9 +3330,11 @@ def test_a_short_definition_names_its_value_and_a_title_names_one_code_only():
 
 
 def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
-    """TSEN1 to TSEN8 of the SMART / Health Information log page are listed
-    one by one; NVM 1.3 Figure 40 names its groups of rows "Source Range 0"
-    to "Source Range 127" in a column of their own"""
+    """
+    TSEN1 to TSEN8 of the SMART / Health Information log page are listed one by one. NVM
+    1.3 Figure 40 names its groups of rows "Source Range 0" to "Source Range 127" in a
+    column of their own.
+    """
 
     from senfd.documents.spec import Array
 
@@ -3343,9 +3376,11 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
 
 
 def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
-    """SC Entry 0 of Base 2.4 Figure 361 is "defined in Figure 362" and SC
-    Entry 1 cites nothing; Subsystem Namespace Descriptor n of Boot 1.4
-    Figure 16 cites Figure 9 for the field that counts the descriptors"""
+    """
+    SC Entry 0 of Base 2.4 Figure 361 is "defined in Figure 362", and SC Entry 1 cites
+    nothing. Subsystem Namespace Descriptor n of Boot 1.4 Figure 16 cites Figure 9 for
+    the field that counts the descriptors.
+    """
 
     spec = document_of(
         figure_of(
@@ -3377,11 +3412,13 @@ def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
 
 
 def test_dwords_in_a_section_titled_with_a_code_are_an_operation_selected_by_it():
-    """MI 2.2 lays out the Management Dword 0 of Configuration Get for each
-    configuration in a section titled "SMBus/I2C Frequency (Configuration
-    Identifier 01h)"; Base 2.4 Figure 343, "Command Dword 11 - CNS Specific
-    Identifier" in "NVM Set List (CNS 04h)", names a field of Identify, and
-    Figure 352 is in "Endurance Group List (19h)" """
+    """
+    MI 2.2 lays out the Management Dword 0 of Configuration Get for each configuration
+    in a section of its own, for example "SMBus/I2C Frequency (Configuration Identifier
+    01h)". Base 2.4 Figure 343, "Command Dword 11 - CNS Specific Identifier" in "NVM Set
+    List (CNS 04h)", names a field of Identify. Figure 352 is in "Endurance Group List
+    (19h)".
+    """
 
     def placed(figure, section, title):
         figure.section, figure.section_title = section, title
@@ -3468,8 +3505,10 @@ def test_dwords_in_a_section_titled_with_a_code_are_an_operation_selected_by_it(
 
 
 def test_the_parts_of_a_value_split_over_two_fields_are_parts_of_it():
-    """NUMDL and NUMDU of Get Log Page, "Number of Dwords Lower" and
-    "Upper", in two dwords; "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4"""
+    """
+    NUMDL and NUMDU of Get Log Page, "Number of Dwords Lower" and "Upper", are in two
+    dwords. "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4 are the two parts of the key.
+    """
 
     from senfd.documents.spec import Part
 
@@ -3539,9 +3578,11 @@ def test_the_condition_of_dwords_is_a_comparison_where_it_states_one(
     assert (found and (found.field, found.comparison, found.value)) == expected
 
 
-def test_a_field_is_not_linked_to_a_structure_of_only_itself():
-    """ESUBNQN of Base 2.4 Figure 385 cites Figure 381, whose only field is
-    ESUBNQN, at the same bytes"""
+def test_a_field_is_not_linked_to_a_structure_whose_only_field_it_is():
+    """
+    ESUBNQN of Base 2.4 Figure 385 cites Figure 381, whose only field is ESUBNQN at the
+    same bytes
+    """
 
     spec = document_of(
         figure_of(
@@ -3563,9 +3604,11 @@ def test_a_field_is_not_linked_to_a_structure_of_only_itself():
 
 
 def test_the_dwords_of_an_operation_within_one_field_refine_that_field():
-    """FDPET, bit 08 of the FDP Events of Base 2.4 Figure 301, lies within LSP,
-    14:08 of Get Log Page Command Dword 10; dwords laying out fields of two
-    fields, or the whole dword, refine none"""
+    """
+    FDPET, bit 08 of the FDP Events of Base 2.4 Figure 301, lies within LSP, bits 14:08
+    of Get Log Page Command Dword 10. Dwords that lay out fields within two fields, or
+    the whole dword, refine no field.
+    """
 
     from senfd.documents.spec import Bits, Dwords, Source, refined_by
 
@@ -3596,11 +3639,13 @@ def test_the_dwords_of_an_operation_within_one_field_refine_that_field():
 
 
 def test_short_definitions_beside_names_acronyms_and_asides_are_tidied():
-    """MO 00h "No action" of Base 2.4 Figure 651 is a name beside "Reclaim
-    Unit Handle Status"; SHST 00b keeps "no shutdown has been requested" as
-    its description, "(Controller scope)" stays in the name; ORI 1 "Get
-    Active ZoneGroup (GAZ) operation" has the acronym GAZ; PIT 001b of CP
-    1.2 Figure 27 has PUID from its Acronym column"""
+    """
+    MO 00h "No action" of Base 2.4 Figure 651 is a name, because "Reclaim Unit Handle
+    Status" names another value of the list. SHST 00b keeps "no shutdown has been
+    requested" as its description, and "(Controller scope)" stays in the name. ORI 1
+    "Get Active ZoneGroup (GAZ) operation" has the acronym GAZ. PIT 001b of CP 1.2
+    Figure 27 has the acronym PUID from its Acronym column.
+    """
 
     from senfd.documents.spec import Entry, Source, Values, tidy_value_names
 
@@ -3650,13 +3695,13 @@ def test_short_definitions_beside_names_acronyms_and_asides_are_tidied():
         ("GAF", "Get Active FooGroup operation", ""),
         ("FUID", "Foo Unique Identifier", ""),
     ]
-    # Without a named value beside them, definitions stay descriptions
+    # Without a named value in the list, definitions stay descriptions.
     assert [e.name for e in document.values[2].entries] == [None, None]
 
-    # A named range of reserved values is a named value beside them, as of
-    # PRS of Base 2.4 Figure 641; the initials of a name may skip words, as
-    # AAZ of ORI 2 of Figure 330; the values of a case are tidied too, as
-    # ZRAS 0h of ZNS 1.4 Figure 35
+    # A named range of reserved values counts as a named value, for example in PRS of
+    # Base 2.4 Figure 641. The initials of a name may skip words, for example AAZ of ORI
+    # 2 of Figure 330. The values of a case are tidied too, for example ZRAS 0h of ZNS
+    # 1.4 Figure 35.
     from senfd.documents.spec import Bits, Case, Structure
 
     case = Case(
@@ -3707,14 +3752,16 @@ def test_short_definitions_beside_names_acronyms_and_asides_are_tidied():
     assert case.values[0].name == "List all foos"
 
 
-def test_entries_the_data_gives_by_text_after_one_or_alternating_are_arrays():
-    """Media Unit Status Descriptor 0 and 1 of Base 2.4 Figure 263 are at
-    "NOTE 1"; Entry 0 and Entry N of Figure 322 are an array; Zone Descriptor
-    and Zone Descriptor Extension of ZNS 1.4 Figure 37 alternate, two
-    arrays; CDW14 and CDW15 at "n/a" of MI 2.2 Figure 49 are no array, nor
-    are ED and PAD; Exported NVM Subsystem Descriptor 1 and 2 of Base 2.4
-    Figure 384 are 520 and 22 bytes where Descriptor N's formula gives 260,
-    an array of that stride, and candidate errata"""
+def test_entries_at_a_text_alternating_or_before_a_named_last_are_arrays():
+    """
+    Media Unit Status Descriptor 0 and 1 of Base 2.4 Figure 263 are at "NOTE 1". Entry 0
+    and Entry N of Figure 322 are an array. Zone Descriptor and Zone Descriptor
+    Extension of ZNS 1.4 Figure 37 alternate and are two arrays. CDW14 and CDW15 at
+    "n/a" of MI 2.2 Figure 49 are not an array, and neither are ED and PAD. Exported NVM
+    Subsystem Descriptor 1 and 2 of Base 2.4 Figure 384 are 520 and 22 bytes, where the
+    formula of Descriptor N gives 260. The descriptors are an array with that stride,
+    and the two are candidate errata.
+    """
 
     def arrays(*rows):
         figure = figure_of(1, "Foo List", ("Bytes", "Description"), *rows)
@@ -3777,8 +3824,10 @@ def test_entries_the_data_gives_by_text_after_one_or_alternating_are_arrays():
 
 
 def test_bytes_of_a_field_are_encoded_as_that_field():
-    """NQNID of Base 2.4 Figure 698 holds bytes 223:4 of SUBNQN of Figure 338,
-    and is UTF-8 as it is"""
+    """
+    NQNID of Base 2.4 Figure 698 holds bytes 223:4 of SUBNQN of Figure 338, and is UTF-8
+    as SUBNQN is
+    """
 
     document = document_of(
         figure_of(
@@ -3803,11 +3852,13 @@ def test_bytes_of_a_field_are_encoded_as_that_field():
 
 
 def test_an_encoding_and_a_byte_order_are_taken_where_the_text_states_them():
-    """The paragraph referring to Base 2.4 Figure 215 says "The firmware
-    revision is indicated as an ASCII string"; every NQN is UTF-8 as SUBNQN
-    of Figure 338 says; NGUID of KV 1.4 Figure 42 refers to another
-    document, whose NGUID is big-endian; a one-byte field has no byte order,
-    whatever the description says of its dword"""
+    """
+    The paragraph that refers to Base 2.4 Figure 215 says "The firmware revision is
+    indicated as an ASCII string". Every NQN is UTF-8, as SUBNQN of Figure 338 says.
+    NGUID of KV 1.4 Figure 42 refers to another document, whose NGUID is big-endian. A
+    field of one byte has no byte order, even where the description states one for its
+    dword.
+    """
 
     from senfd.documents.spec import merge
 
@@ -3863,12 +3914,13 @@ def test_an_encoding_and_a_byte_order_are_taken_where_the_text_states_them():
 
 
 def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidied():
-    """AET 000b of Base 2.4 refers to Figure 153, not to a section, and is
-    named "Error status"; CNS 09h, whose section NVM 1.3 titles as that of
-    00h, is named for what its definition is for; "CAP: Controller
-    Capabilities" has an acronym; an aside and the text after a colon go to
-    the description; SEL 01h is named by its Management Operation column and
-    AL 11b by its first sentence"""
+    """
+    AET 000b of Base 2.4 refers to Figure 153, not to a section, and is named "Error
+    status". CNS 09h, whose section NVM 1.3 titles as the section of 00h, is named for
+    what its definition is for. "CAP: Controller Capabilities" has an acronym. An aside
+    and the text after a colon move to the description. SEL 01h is named by its
+    Management Operation column, and AL 11b by its first sentence.
+    """
 
     from senfd.documents.spec import (
         Entry,
@@ -3935,23 +3987,23 @@ def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidi
     assert [e.name for e in entries] == ["Delete", None, "Low", None, None]
     assert entries[2].description == "Smallest possible latency."
     assert value_names(entries[1]) == ["Controller"]
-    # A column listing other codes names none, as LBARS 000b of NVM 1.3
-    # Figure 140 and SGLDST 0h of Base 2.4 Figure 118
+    # A column that lists other codes names no value, for example LBARS 000b of NVM 1.3
+    # Figure 140 and SGLDST 0h of Base 2.4 Figure 118.
     listing = Entry(value="000b", columns={"used_with": "10h and 11h"})
     assert value_names(listing) == []
     listing.columns["sub_type"] = "Address: The Address field specifies it."
     assert value_names(listing) == ["Address"]
-    # After a code, or "All other values", a sentence names nothing
+    # After a code, or "All other values", a sentence names no value.
     for codes in ("1h", "All other values"):
         sentence = Entry(
             value="0h",
             columns={"types": codes, "sub_type": "For Type 1h, it is cleared."},
         )
         assert value_names(sentence) == []
-    # A cell is tidied as a name is, as CPS 10b and 11b of Base 2.4 Figure
-    # 36, ACODE 00b of Figure 647, CTemp of MI 2.2 Figure 199 and NVMe/TCP
-    # of Boot 1.4 Figure 8; a sentence, as of CTRLID 02h of MI 2.2 Figure
-    # 112, names nothing
+    # A cell is tidied as a name is, for example CPS 10b and 11b of Base 2.4 Figure 36,
+    # ACODE 00b of Figure 647, CTemp of MI 2.2 Figure 199 and NVMe/TCP of Boot 1.4
+    # Figure 8. A sentence, for example of CTRLID 02h of MI 2.2 Figure 112, names no
+    # value.
     cells = [
         "Domain scope (i.e., it supports domains (refer to section 3.2.5).",
         "NVM subsystem scope.",
@@ -4025,12 +4077,13 @@ def test_a_field_is_linked_to_the_layout_of_its_bits_in_the_section_it_cites():
 
 
 def test_an_operation_is_of_a_feature_or_selected_by_a_column_and_named_by_its_csi():
-    """Base 2.4 lays out the dwords of the Lockdown Persistence Personality,
-    "(Personality Identifier 02h)", below Configurable Device Personality,
-    whose PERID selects it; "(Management Operation 05h)" is selected by SEL,
-    whose values a Management Operation column names; the Identify operation
-    for CSI 01h is of the Key Value command set; Figure 618 calls the
-    command whose dwords it lays out a data structure"""
+    """
+    Base 2.4 lays out the dwords of the Lockdown Persistence Personality, "(Personality
+    Identifier 02h)", below Configurable Device Personality, whose PERID selects it.
+    "(Management Operation 05h)" is selected by SEL, whose values a Management Operation
+    column names. The Identify operation for CSI 01h is of the Key Value command set.
+    Figure 618 calls the command whose dwords it lays out a data structure.
+    """
 
     from senfd.documents.spec import (
         Bits,
@@ -4177,12 +4230,14 @@ def test_an_operation_is_of_a_feature_or_selected_by_a_column_and_named_by_its_c
 
 
 def test_runs_of_two_of_another_width_and_at_offsets_the_data_gives_are_arrays():
-    """TMT1TC and TMT2TC of Base 2.4 Figure 213 are an array of 2, but not
-    where a row of the figure is left out, as the reversed last entry of
-    Figure 404; SC Entry NUMENT-1 of Figure 361 closes a parenthesis it never
-    opened, and NUMENT says "up to 127 entries"; Host Fabric Interface
-    Descriptor 2 of Boot 1.4 Figure 11 is 33 bytes beside entries of 32; the
-    ANA Group Descriptors of Figure 230 lie where the data says"""
+    """
+    TMT1TC and TMT2TC of Base 2.4 Figure 213 are an array of 2. A run of two is not an
+    array where the figure leaves out a row, for example the reversed last entry of
+    Figure 404. SC Entry NUMENT-1 of Figure 361 closes a parenthesis that it never
+    opened, and NUMENT says "up to 127 entries". Host Fabric Interface Descriptor 2 of
+    Boot 1.4 Figure 11 is 33 bytes beside entries of 32 bytes. The ANA Group Descriptors
+    of Figure 230 lie where the data says.
+    """
 
     def arrays(*rows, mentions=()):
         figure = figure_of(1, "Foo List", ("Bytes", "Description"), *rows)

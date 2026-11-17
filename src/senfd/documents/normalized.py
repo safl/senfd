@@ -595,11 +595,11 @@ def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
     bounds = [c for c in grid if c.endswith("_value")]
     bounded = bounds and all(c.startswith(("minimum_", "maximum_")) for c in bounds)
     if (into.values or bounded) and idx is not None and not is_value_column(grid[0]):
-        # A second table whose first column is no value, as the usage
-        # requirements by mechanism and MEB value of MEB of MI 2.2 Figure 20,
-        # says something of the values; its rows are none of them. Nor are
-        # the rows of a table of the bounds of the field, as the minimum and
-        # maximum STS by protection information format of NVM 1.3 Figure 128
+        # A second table in the cell whose first column is not a value gives none of the
+        # values of the field, for example the table of usage requirements by mechanism
+        # and MEB value of MEB in MI 2.2 Figure 20. A table of the minimum and maximum
+        # of the field gives none either, for example the table of the minimum and
+        # maximum STS by protection information format in NVM 1.3 Figure 128.
         diagnostics.append(
             warning(
                 "nested-table",
@@ -613,7 +613,9 @@ def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
 
 
 def is_value_column(column: str) -> bool:
-    """Whether a column holds the values of a field, as "value" or "pit_value" """
+    """
+    Whether a column holds the values of a field, for example "value" or "pit_value"
+    """
 
     return column in ("value", "code") or column.endswith("_value")
 
@@ -854,10 +856,10 @@ REGEX_BIT_LABEL = re.compile(r"^(?:\d+|[a-z](?:\s?[+-]\s?\d+)?)$")
 
 def parse_bit_diagram(rows: List[Row]) -> Optional[Layout]:
     """
-    The layout of a diagram of one row of bit numbers, the upper and the
-    lower bit of each field, over one row of the fields' names, as the PRP
-    Entry Layout of Base 2.4 Figure 110: "63", "n+1", "n", "0" over "Page
-    Base Address" and "Offset". None when the rows are not such a diagram.
+    The layout of a diagram that has one row of bit numbers, the upper and the lower bit
+    of each field, over one row of the names of the fields. Base 2.4 Figure 110, the PRP
+    Entry Layout, is such a diagram: "63", "n+1", "n" and "0" over "Page Base Address"
+    and "Offset". Returns None when the rows are not such a diagram.
     """
 
     texts = [
@@ -885,14 +887,14 @@ def parse_bit_diagram(rows: List[Row]) -> Optional[Layout]:
 
 def parse_dword_diagram(rows: List[Row], mentions: List[str]) -> Optional[Layout]:
     """
-    The layout of a diagram with one row for each dword, "DW0", "DW1" and
-    on, under a row of bit numbers, as the Common Completion Queue Entry
-    Layout of Base 2.4 Figure 97: a field of bytes for each dword, named
-    "Dword 0" and on, described by the names in its row, as "SQ Identifier,
-    SQ Head Pointer", and by the figure the text says defines it, as
-    "Dword 2 is defined in Figure 98". The bits of a name are not read, as
-    the row of bit numbers does not give each column's. None when the rows
-    are not such a diagram.
+    The layout of a diagram that has one row for each dword, "DW0", "DW1" and so on,
+    under a row of bit numbers. Base 2.4 Figure 97, the Common Completion Queue Entry
+    Layout, is such a diagram. Each dword is a field of bytes named "Dword 0", "Dword 1"
+    and so on. The description of the field is the names in its row, for example "SQ
+    Identifier, SQ Head Pointer", and the figure that the text says defines the dword,
+    for example "Dword 2 is defined in Figure 98". The bits of each name are not read,
+    because the row of bit numbers does not give the bits of each column. Returns None
+    when the rows are not such a diagram.
     """
 
     texts = [

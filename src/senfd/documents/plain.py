@@ -292,7 +292,8 @@ def text_of_paragraph(element) -> str:
             continue
         if node.tag == f"{W}t":
             text = node.text or ""
-            # A footnote marker, given as superscript digits; see 'superscript'
+            # The readers return a footnote marker as superscript digits; see
+            # superscript().
             parts.append(superscript(text) if is_superscript(node) else text)
         elif node.tag in (f"{W}tab", f"{W}ptab"):
             parts.append("\t")

@@ -36,10 +36,12 @@ GROUPS = {
 }
 
 
-# What each kind of command set is, as the map says it
+# The description that the map gives each kind of command set
 COMMAND_SET_KINDS = {
     "io": "I/O command set",
-    "common_io": "I/O commands for use in all I/O command sets, no command set",
+    "common_io": (
+        "I/O commands for use in all I/O command sets, which are not a command set"
+    ),
     "admin": "Admin command set",
     "management_interface": "Management Interface command set",
     "other": "command set",

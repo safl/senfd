@@ -991,9 +991,10 @@ def test_a_nested_table_of_bits_with_another_header_for_its_text_is_a_layout():
 
 
 def test_an_entry_of_a_list_is_a_data_structure_named_with_entry():
-    """Base 2.4 Figure 328, "Get Log Page - AVE Discovery Log Page Entry",
-    is an entry of the log page of Figure 327, and Figure 283 ends in " -
-    Log Page" """
+    """
+    Base 2.4 Figure 328, "Get Log Page - AVE Discovery Log Page Entry", is an entry of
+    the log page of Figure 327, and the caption of Figure 283 ends in " - Log Page"
+    """
 
     from senfd.normalize import parse_caption
 
@@ -1010,9 +1011,11 @@ def test_an_entry_of_a_list_is_a_data_structure_named_with_entry():
     assert mapping.kind == "mapping"
 
 
-def test_a_second_table_in_a_cell_whose_first_column_is_no_value_is_no_values():
-    """MEB of MI 2.2 Figure 20 has its values, 0b and 1b, and then a table
-    of the usage requirements by mechanism and MEB value"""
+def test_a_second_table_whose_first_column_is_not_a_value_gives_no_values():
+    """
+    MEB of MI 2.2 Figure 20 has its values, 0b and 1b, followed by a table of the usage
+    requirements by mechanism and MEB value
+    """
 
     from senfd.documents.normalized import LayoutField, read_nested
     from senfd.normalize import Range
@@ -1050,9 +1053,11 @@ def test_a_second_table_in_a_cell_whose_first_column_is_no_value_is_no_values():
     assert [d.code for d in diagnostics] == ["nested-table"]
 
 
-def test_a_table_of_the_bounds_of_a_field_is_no_values():
-    """STS of NVM 1.3 Figure 128 has a table of its minimum and maximum by
-    protection information format, and no values"""
+def test_a_table_of_the_bounds_of_a_field_gives_no_values():
+    """
+    STS of NVM 1.3 Figure 128 has a table of its minimum and maximum for each protection
+    information format, and has no values
+    """
 
     from senfd.documents.normalized import LayoutField, read_nested
     from senfd.normalize import Range
@@ -1080,9 +1085,11 @@ def test_a_table_of_the_bounds_of_a_field_is_no_values():
     assert [d.code for d in diagnostics] == ["nested-table"]
 
 
-def test_a_lead_in_to_a_list_names_nothing():
-    """LBARS 000b of NVM 1.3 Figure 140: "Each logical block may:" and a
-    list of what it may do"""
+def test_a_lead_in_to_a_list_names_no_value():
+    """
+    LBARS 000b of NVM 1.3 Figure 140 is "Each logical block may:" followed by a list of
+    what a logical block may do
+    """
 
     text = "Each logical block may:\n• report an error; or\n• be read"
     assert parse_field_description(text) == (None, None, text)
@@ -1096,10 +1103,11 @@ def table_of(*rows):
 
 
 def test_a_diagram_of_dwords_and_one_of_bits_are_read_as_layouts():
-    """Base 2.4 Figure 97 draws the completion queue entry as rows DW0 to
-    DW3 under bit numbers, and the text says "Dword 2 is defined in Figure
-    98"; Figure 110 draws the PRP entry as "63", "n+1", "n", "0" over "Page
-    Base Address" and "Offset" """
+    """
+    Base 2.4 Figure 97 draws the completion queue entry as rows DW0 to DW3 under bit
+    numbers, and the text says "Dword 2 is defined in Figure 98". Figure 110 draws the
+    PRP entry as "63", "n+1", "n" and "0" over "Page Base Address" and "Offset".
+    """
 
     from senfd.documents.normalized import normalize_figure
     from senfd.documents.plain import Figure
