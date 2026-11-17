@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "24151e42b04d3f246dee4c2e7aa2ab973f6cbca8d3de16428129eae512ad59db",
+    "senfd_sha256": "6c1ee479e08fe029dd5fc062a6eeadada212237799cc6178583b5fa02b087bc1",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "b7962518b6c096ae91a4ea4f4435cac5c56a3b74e1246a546cf0d9ea322bb18c"
+    "combined_sha256": "faec5018c3c9c82fa3cd9281efe5010eee4cf70fc618613361b35eef4e658594"
   },
   "command_sets": {
     "foobar": {
@@ -25,6 +25,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -102,6 +103,7 @@
               "condition": "Foo Mode is set",
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -179,6 +181,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Foo Address",
@@ -226,6 +229,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Bar Address",
@@ -273,6 +277,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Data Pointer",
@@ -320,6 +325,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Metadata Pointer",
@@ -369,6 +375,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Foo Result",
@@ -448,6 +455,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -525,6 +533,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Data Pointer",
@@ -596,6 +605,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [],
               "source": {
                 "document": "example",
@@ -612,6 +622,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Ring Mode",
@@ -659,6 +670,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Ring Count",
@@ -730,6 +742,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -895,6 +908,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -1045,6 +1059,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": null,
+              "refines": null,
               "fields": [
                 {
                   "name": "Reserved",
@@ -1341,6 +1356,7 @@
                   "condition": null,
                   "selected_when": null,
                   "qualifier": null,
+                  "refines": null,
                   "fields": [
                     {
                       "name": "Foo Pause Time",
@@ -1406,6 +1422,7 @@
                   "condition": null,
                   "selected_when": null,
                   "qualifier": null,
+                  "refines": null,
                   "fields": [
                     {
                       "name": "Foo Go Speed",
@@ -1527,6 +1544,7 @@
               "condition": null,
               "selected_when": null,
               "qualifier": "Foobar Command Set Specific Fields",
+              "refines": null,
               "fields": [
                 {
                   "name": "Foo Value",
@@ -1608,6 +1626,7 @@
                   "condition": null,
                   "selected_when": null,
                   "qualifier": null,
+                  "refines": null,
                   "fields": [
                     {
                       "name": "Reserved",
@@ -1766,6 +1785,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -1843,6 +1863,7 @@
         "condition": "Foo Mode is set",
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -1920,6 +1941,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Address",
@@ -1967,6 +1989,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Bar Address",
@@ -2014,6 +2037,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Data Pointer",
@@ -2061,6 +2085,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Metadata Pointer",
@@ -2110,6 +2135,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Result",
@@ -2159,6 +2185,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -2236,6 +2263,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Data Pointer",
@@ -2285,6 +2313,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -2450,6 +2479,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -2600,6 +2630,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -2889,6 +2920,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Pause Time",
@@ -2938,6 +2970,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Go Speed",
@@ -2987,6 +3020,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [],
         "source": {
           "document": "example",
@@ -3003,6 +3037,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Ring Mode",
@@ -3050,6 +3085,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Ring Count",
@@ -3099,6 +3135,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Zap Count",
@@ -3148,6 +3185,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": "CNS Specific Identifier",
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -3227,6 +3265,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -3306,6 +3345,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Selector",
@@ -3355,6 +3395,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Length",
@@ -3404,6 +3445,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": "Foobar Command Set Specific Fields",
+        "refines": null,
         "fields": [
           {
             "name": "Foo Value",
@@ -3453,6 +3495,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -3532,6 +3575,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Host Buffer Size",
@@ -9681,6 +9725,7 @@
           "condition": null,
           "selected_when": null,
           "qualifier": null,
+          "refines": null,
           "fields": [
             {
               "name": "Reserved",
@@ -9940,6 +9985,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Zap Count",
@@ -9989,6 +10035,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": "CNS Specific Identifier",
+        "refines": null,
         "fields": [
           {
             "name": "Reserved",
@@ -10068,6 +10115,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Selector",
@@ -10117,6 +10165,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Foo Length",
@@ -10166,6 +10215,7 @@
         "condition": null,
         "selected_when": null,
         "qualifier": null,
+        "refines": null,
         "fields": [
           {
             "name": "Host Buffer Size",
@@ -10387,7 +10437,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "24151e42b04d3f246dee4c2e7aa2ab973f6cbca8d3de16428129eae512ad59db",
+      "senfd_sha256": "6c1ee479e08fe029dd5fc062a6eeadada212237799cc6178583b5fa02b087bc1",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -10397,7 +10447,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "24151e42b04d3f246dee4c2e7aa2ab973f6cbca8d3de16428129eae512ad59db",
+      "senfd_sha256": "6c1ee479e08fe029dd5fc062a6eeadada212237799cc6178583b5fa02b087bc1",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

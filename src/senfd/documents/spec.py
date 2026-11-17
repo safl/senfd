@@ -433,6 +433,11 @@ class Dwords(Model):
     qualifier: Optional[str] = None
     """What the caption says the dwords are of, as 'NVM Command Set Specific
     Fields'"""
+    refines: Optional[str] = None
+    """The acronym of the field of the command's own dwords that these dwords
+    lay out the bits of, where all their fields lie within that one field:
+    LSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4
+    Figure 301, and CNSSID of Identify Command Dword 11"""
     fields: List[Bits] = Field(default_factory=list)
     """The fields of the dwords, the bits counted across them"""
     source: Source
@@ -3456,6 +3461,44 @@ def subject_of(document: str) -> str:
     return title.strip()
 
 
+def refined_by(command: List[Dwords], dwords: Dwords) -> Optional[str]:
+    """The acronym of the one field of 'command', the dwords of a command,
+    whose bits hold all the fields of 'dwords', those of an operation of it;
+    None where no one field holds them all"""
+
+    def bits(fields: List[Bits]) -> List[Tuple[int, int, Optional[str]]]:
+        return [
+            (f.lower, f.upper, f.acronym)
+            for f in fields
+            if f.upper is not None and f.lower is not None
+        ]
+
+    laid = bits(dwords.fields)
+    if not laid:
+        return None
+    holding = {
+        acronym
+        for own in command
+        if (own.lower, own.upper) == (dwords.lower, dwords.upper)
+        for lower, upper, acronym in bits(own.fields)
+        if acronym and all(lower <= low and high <= upper for low, high, _ in laid)
+    }
+    return holding.pop() if len(holding) == 1 else None
+
+
+def link_refined(document: SpecDocument) -> None:
+    """Set 'refines' of the dwords of each operation that lay out the bits of
+    one field of the command's own dwords"""
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            for operation in command.operations:
+                for dwords in operation.sqe:
+                    dwords.refines = refined_by(command.sqe, dwords)
+                for dwords in operation.cqe:
+                    dwords.refines = refined_by(command.cqe, dwords)
+
+
 def link_identifiers(document: SpecDocument) -> None:
     """
     Set 'identifier' of each I/O command set to the Command Set Identifier
@@ -3683,6 +3726,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_operations(document, used)
     link_features(document, used)
     link_titled_operations(document, used)
+    link_refined(document)
     link_structures(document)
     link_runs(document)
     unlink_itself(document)
