@@ -10,6 +10,104 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.23.0
+
+The data model now gives a generator of code what xNVMe's generators of
+its specification headers asked for. The format of the data model is 6.
+
+The readers of the PDF and of the `.docx` return a footnote marker as
+superscript digits. senfd moves the markers out of names, values and cells
+into `footnotes` and `marked`. A raised number after another digit is an
+exponent and stays in the text, except after a lone 0 or 1.
+
+A command set has a `kind`, and an I/O command set has its Command Set
+Identifier in `identifier`, for example 00h for NVM. Base 2.4 defines some
+I/O commands, such as Flush, for use in all I/O command sets. senfd listed
+these commands as a command set "I/O", which no document defines, and now
+lists them as "Common I/O", of the kind `common_io`. The commands of MI
+2.2 Figure 151 are named "PCIe Commands", so that their key differs from
+the key of the PCIe transport. A key treats "I/O" as one word, so the key
+of Create I/O Completion Queue is `create_io_completion_queue` instead of
+`create_i_o_completion_queue`. A consumer of 0.22.0 has to adapt to these
+keys.
+
+A log page is one entry for each identifier. The first table of log page
+identifiers that lists the identifier gives the name, and the other tables
+give `aliases`. The structure of a log page is the figure in the section
+that its row cites. Two structures with one name in a document now have
+different names, by their kind, by the field that links them, or by their
+qualifiers, for example "Timestamp (Set Features)". The PDF reader reads a
+figure that the PDF tags inside the table of the figure before as a figure
+of its own.
+
+More runs of fields are arrays. A run numbered in hexadecimal is an array,
+for example Performance Attribute C1h to FFh Identifier. A run of two or
+more fields listed in full is an array, for example TSEN1 to TSEN8. A run
+with one entry of another width is an array, and the entry is a candidate
+erratum. A list whose ranges a formula or a text such as "NOTE 1" gives is
+an array without a count, and so is one entry followed by a last entry
+numbered by a name, such as Entry 0 and Entry N of the Discovery log page.
+Zone Descriptor and Zone Descriptor Extension of ZNS 1.4, whose entries
+alternate, are two arrays. A field of a group of rows that a column names
+by index, such as "Source Range 0" to "Source Range 127", has `group`.
+
+`Array.stride` and `Array.lower` are null where the data gives the
+offsets, and a consumer of 0.22.0 has to allow for that. An array takes
+its `maximum` from the field that counts its entries, for example NUMENT
+of the Secondary Controller List. The Exported NVM Subsystem Descriptors
+of Base 2.4 Figure 384 are an array with the stride of 260 bytes that the
+formula of the last entry gives. Every entry of a run links the structure
+that one of its entries links.
+
+A layout of some bytes of another structure, such as NVM 1.3 Figure 126 of
+Identify Controller, has `extends`. A field has `encoding` and
+`byte_order` where its description, or a paragraph that refers to its
+figure, states them. A field also takes them from a field whose value or
+bytes it holds, from the NQN fields that state an encoding, and from a
+field of the same name, acronym and width in another document.
+`encoding_from` and `byte_order_from` name the figure that a taken
+encoding or byte order comes from. The two fields of a value split over
+two fields, such as NUMDL and NUMDU, have `part`.
+
+STATUS of Base 2.4 Figure 99 is linked to the Status Field of Figure 101.
+Base 2.4 draws the Common Completion Queue Entry Layout and the PRP Entry
+Layout as diagrams, and senfd reads both as layouts. The first is named
+"Completion Queue Entry". The single unnamed row of a register is a field
+named after the register. A field is no longer linked to a structure whose
+only field it is.
+
+A feature now has `operations`. Dwords in a section titled with a code,
+such as the configurations of MI 2.2 Configuration Get, and dwords whose
+caption names a field, such as the CNS Specific Identifier dwords of
+Identify, are operations of their command or feature. An operation
+selected by a Command Set Identifier has the command set in its name, for
+example "(Key Value)". The dwords of an operation that lay out the bits of
+one field of the dwords of the command name that field in `refines`, for
+example LSP of Get Log Page. A condition of dwords of the form "CETYPE is
+non-zero" is also given as `selected_when`.
+
+More values have names. A value takes its name from a short definition,
+from a column that names it, such as the Management Operation column of
+SEL, or from a first sentence of at most three words. In a list where
+another value or a range of reserved values has a name, a definition of
+one sentence of at most six words is a name, for example "No action" of MO
+00h. A lead-in to a list gives no name. senfd moves asides, such as
+"(refer to RFC 6234)", from a name to the description, and puts an acronym
+in the new `acronym` of the entry, for example CAP of "CAP: Controller
+Capabilities". A table of the minimum and maximum values of a field, and a
+second table in the cell of a field, give no values of the field.
+
+`value_names()` tidies the text of a column that names a value the same
+way, for example "Domain scope" of CPS 10b and "NVMe/TCP" of TRTYPE 3h in
+Boot 1.4. A sentence that describes a field gives no name. After a column
+that lists codes, only a cell that holds a name and its definition gives a
+name, for example "Address" of SGLDST 0h.
+
+senfd lint reports more candidate errata: a numbered field of another
+width than the others, a layout one byte larger than a power of two, gaps
+in more kinds of layout, one acronym for two fields of a structure, and
+acronyms that number a run differently from its names.
+
 ## 0.22.0
 
 The data model now links a command to the status values that affect it,
