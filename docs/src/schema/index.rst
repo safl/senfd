@@ -67,7 +67,11 @@ has these parts:
   out. A field has ``encoding``, "ascii", "utf-8" or "uuid", where its
   description states it, as "as an ASCII string", or where it has the
   value of a field that has one, and ``byte_order`` where its description
-  states that, as "This field is big endian".
+  states that, as "This field is big endian". A run of three or more fields
+  listed in full, as TSEN1 to TSEN8, is an ``array`` as a run with rows
+  left out is, and a field of a group of rows that a column names by an
+  index, as "Source Range 0" to "Source Range 127", has ``group``, the
+  array of those groups.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

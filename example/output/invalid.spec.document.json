@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "f6dbc7cb90e88685cfb177e2c002d18a3093d64732a04e6069bea196121fc70c",
+    "senfd_sha256": "8fed79c75cee36c2df57a55b45b4ea00e6e6aa35ba2dbf3919f16872a33c3981",
     "stem": "invalid",
     "file": "invalid.docx",
     "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
@@ -44,6 +44,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "group": null,
             "structure": null
           }
         ],
@@ -92,6 +93,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "group": null,
           "structure": null
         },
         {
@@ -120,6 +122,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "group": null,
           "structure": null
         },
         {
@@ -148,6 +151,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "group": null,
           "structure": null
         },
         {
@@ -199,6 +203,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "group": null,
               "structure": null
             },
             {
@@ -227,12 +232,14 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "group": null,
               "structure": null
             }
           ],
           "values_in": null,
           "cases": [],
           "array": null,
+          "group": null,
           "structure": null
         }
       ],
@@ -286,6 +293,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "group": null,
             "structure": null
           }
         ],
@@ -324,7 +332,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "f6dbc7cb90e88685cfb177e2c002d18a3093d64732a04e6069bea196121fc70c",
+      "senfd_sha256": "8fed79c75cee36c2df57a55b45b4ea00e6e6aa35ba2dbf3919f16872a33c3981",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
