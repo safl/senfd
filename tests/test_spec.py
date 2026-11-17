@@ -1964,7 +1964,7 @@ def test_a_code_is_named_by_the_section_of_the_document_its_reference_names():
     cites "I/O Command Set Specification", and two of the three command
     sets title its section alike. Neither code that one title of two names,
     nor one of a document without its section, nor one of no document, is
-    named."""
+    named, nor 09h, whose title, but for the code, names 00h already."""
 
     from senfd.documents.spec import name_by_documents
 
@@ -2008,7 +2008,7 @@ def test_a_code_is_named_by_the_section_of_the_document_its_reference_names():
     assert [e.name for e in merged.values[0].entries] == [
         "Identify Controller Data Structure",
         "Foo Identify Namespace Data Structure",
-        "Foo Identify Namespace Data Structure",
+        None,
         "Foo Specific Namespace",
         None,
         None,
@@ -3128,4 +3128,57 @@ def test_the_encoding_and_byte_order_a_description_states_are_the_fields():
             ("FCNT", None, None),
         ],
         [("FR", "ascii", None), ("FGUID", None, "big-endian")],
+    ]
+
+
+def test_a_short_definition_names_its_value_and_a_title_names_one_code_only():
+    """AET of Base 2.4 lists 000b "Error status" beside 010b "Notice", and
+    NVM 1.3 titles the sections of CNS 00h and CNS 09h alike, "NVM Command
+    Set Identify Namespace Data Structure" """
+
+    from senfd.documents.spec import name_by_sections, name_lists_of_names
+    from senfd.tables import Cell, Row, Table
+
+    values = Table(
+        rows=[
+            Row(cells=[Cell(text=t) for t in row])
+            for row in (
+                ("Value", "Definition"),
+                ("000b", "Error status"),
+                ("001b", "Notice"),
+                ("010b", "One or more of the logical blocks are allocated."),
+                ("011b to 111b", "Reserved"),
+            )
+        ]
+    )
+    described = Cell(text="Foo Event Type (FET): The type.", tables=[values])
+    document = SpecDocument()
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.spec import add_figure
+
+    figure = figure_of(
+        1, "Foo Data Structure", ("Bits", "Description"), ("02:00", described)
+    )
+    add_figure(document, normalize_figure(figure, []), "example")
+    name_lists_of_names(document)
+    (field,) = document.structures[0].fields
+    assert [(v.value, v.name) for v in field.values] == [
+        ("000b", "Error status"),
+        ("001b", "Notice"),
+        ("010b", None),
+        ("011b to 111b", "Reserved"),
+    ]
+
+    document = SpecDocument()
+    document.values.append(cns_values([("00h", "5.1", False), ("09h", "5.2", False)]))
+    name_by_sections(
+        document,
+        {
+            "5.1": "Foo Identify Namespace Data Structure (CNS 00h)",
+            "5.2": "Foo Identify Namespace Data Structure (CNS 09h, CSI 00h)",
+        },
+    )
+    assert [e.name for e in document.values[0].entries] == [
+        "Foo Identify Namespace Data Structure",
+        None,
     ]

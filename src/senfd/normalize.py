@@ -294,8 +294,21 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
         return None, None, "\n".join(p for p in [first, more] if p)
 
     rest = (match["rest"] or "").strip()
+    if (
+        match["rest"] is not None
+        and not rest
+        and not match["acronym"]
+        and not is_title(name)
+        and more.startswith(BULLETS)
+    ):
+        # A lead-in to a list, as "Each logical block may:" of LBARS of NVM
+        # 1.3 Figure 140, names nothing
+        return None, None, "\n".join(p for p in [first, more] if p)
     description = "\n".join(p for p in [rest, more] if p)
     return name, match["acronym"], description
+
+
+BULLETS = ("\u2022", "-", "*", "a)", "1)")
 
 
 def is_long_name(text: str) -> bool:

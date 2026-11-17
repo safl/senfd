@@ -1041,3 +1041,12 @@ def test_a_second_table_in_a_cell_whose_first_column_is_no_value_is_no_values():
 
     assert [v["value"] for v in field.values] == ["0b", "1b"]
     assert [d.code for d in diagnostics] == ["nested-table"]
+
+
+def test_a_lead_in_to_a_list_names_nothing():
+    """LBARS 000b of NVM 1.3 Figure 140: "Each logical block may:" and a
+    list of what it may do"""
+
+    text = "Each logical block may:\n• report an error; or\n• be read"
+    assert parse_field_description(text) == (None, None, text)
+    assert parse_field_description("Notice: An event.")[0] == "Notice"

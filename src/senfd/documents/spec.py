@@ -3182,8 +3182,10 @@ def name_lists_of_names(document: SpecDocument) -> None:
     "Invalid Number of Controller Resources" of Base 2.4 Figure 104, takes it
     as its name, where the list the entry is in is of names: no entry of it
     has both a name and a description, and as many entries have a name as
-    have none, counting single codes only. A range of values is left as it
-    is.
+    have none, counting single codes only. In a list where no entry has both,
+    a description of one line, of at most six words, with neither colon nor
+    full stop, as "Error status" of AET or "Write Locked Until Power Cycle"
+    of BP0WPS, is a name too. A range of values is left as it is.
     """
 
     lists = [values.entries for values in document.values]
@@ -3192,12 +3194,31 @@ def name_lists_of_names(document: SpecDocument) -> None:
         codes = [e for e in entries if REGEX_NAMED_CODE.match(e.value)]
         named = [e for e in codes if e.name]
         unnamed = [e for e in codes if not e.name]
-        if any(e.description for e in named) or len(named) < len(unnamed):
+        if any(e.description for e in named):
             continue
         for entry in unnamed:
             text = normalize_text(entry.description)
-            if is_long_name(text):
+            # A code with a reference takes the title of the section cited
+            short = is_short_name(entry.description) and not entry.columns.get(
+                "reference"
+            )
+            if is_long_name(text) and len(named) >= len(unnamed) or short:
                 entry.name, entry.description = text, ""
+
+
+def is_short_name(description: str) -> bool:
+    """Whether 'description' is a name in a list of names: one line of at
+    most six words, beginning with a capital, with neither colon nor full
+    stop, as "Error status" or "No notification and no effect" """
+
+    text = description.strip()
+    return (
+        bool(text)
+        and "\n" not in text
+        and text[0].isupper()
+        and len(text.split()) <= 6
+        and not re.search(r"[:.;]", text)
+    )
 
 
 def label_of(values: Values, sections: Dict[str, str]) -> Optional[str]:
@@ -3294,7 +3315,9 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
                     )
                     title = None
             title = title or by_code.get(code_value(entry.value))
-            if title:
+            if title and not named_already(
+                values, REGEX_TITLE_CODE.sub("", title), entry.value
+            ):
                 entry.name = REGEX_TITLE_CODE.sub("", title)
 
 
@@ -3311,7 +3334,7 @@ def name_by_documents(document: SpecDocument) -> None:
     every document of a command set, and the code takes the title that more
     than half of those with a section titled for it give, letter case aside.
     A code that no such title names, or several titles of one document, is
-    left unnamed.
+    left unnamed, as is one whose title another code of the table has.
     """
 
     def titled(name: str) -> str:
@@ -3365,9 +3388,24 @@ def name_by_documents(document: SpecDocument) -> None:
                     names.append(titles[0])
             for name in names:
                 same = [n for n in names if n.casefold() == name.casefold()]
-                if len(same) * 2 > len(names):
+                if len(same) * 2 > len(names) and not named_already(
+                    values, name, entry.value
+                ):
                     entry.name = name
                     break
+
+
+def named_already(values: Values, name: str, code: str) -> bool:
+    """Whether a code of 'values' other than 'code' has 'name': two sections
+    titled alike, as "NVM Command Set Identify Namespace Data Structure" of
+    CNS 00h and of CNS 09h in NVM 1.3, name the first code only"""
+
+    return any(
+        (e.name or "").casefold() == name.casefold()
+        and REGEX_NAMED_CODE.match(e.value)
+        and code_value(e.value) != code_value(code)
+        for e in values.entries
+    )
 
 
 # A value of another field named in a description by its acronym and its
