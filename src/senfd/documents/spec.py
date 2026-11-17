@@ -791,8 +791,10 @@ def dwords_named(key: str, dwords: "Dwords") -> str:
     "dwords 0:0 of the completion of Abort" of 'cqe:abort_command'"""
 
     completion = key.startswith("cqe:")
-    name = key.removeprefix("cqe:").replace("_", " ")
-    name = re.sub(r" command$", "", name)
+    name = key.removeprefix("cqe:")
+    if name.startswith(QUALIFIED):
+        name = "the field " + name.removeprefix(QUALIFIED)
+    name = re.sub(r" command$", "", name.replace("_", " "))
     of = f"the completion of {name}" if completion else name
     return f"dwords {dwords.lower}:{dwords.upper} of {of}"
 
@@ -1786,10 +1788,14 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
     elif subject.kind in POINTERS:
         dwords = POINTERS[subject.kind]
 
-    if dwords and subject.name:
-        # A caption can give the acronym of the command after its name
-        name = re.sub(r"\s*\([A-Z0-9]+\)$", "", subject.name)
-        key = ("cqe:" if subject.kind == "completion_dword" else "") + alias(name)
+    if dwords and (subject.name or subject.qualifier):
+        # A caption can give the acronym of the command after its name; one
+        # naming a field and no command, as "Command Dword 11 - CNS Specific
+        # Identifier", is keyed by the field, for link_titled_operations()
+        name = re.sub(r"\s*\([A-Z0-9]+\)$", "", subject.name or "")
+        key = ("cqe:" if subject.kind == "completion_dword" else "") + (
+            alias(name) if name else QUALIFIED + alias(subject.qualifier or "")
+        )
         fields, errata, unnamed = checked(
             fields_of(figure.layout), 32 * (dwords[1] - dwords[0] + 1), source
         )
@@ -2682,6 +2688,129 @@ def link_operations(document: SpecDocument, used: set) -> None:
         used.add(key)
 
 
+QUALIFIED = "field:"
+
+
+def names_the_field(named: str, field: Bits) -> bool:
+    """Whether 'named', a caption's key of a field, as "cns_specific_identifiers",
+    names 'field', CNS Specific Identifier: by its name, in the plural too, or,
+    ending in "field", by the start of its name, as "log_specific_field" of
+    Base 2.4 Figure 301 names Log Specific Parameter"""
+
+    own = alias(field.name or "")
+    stem = re.sub(r"_fields?$", "", named)
+    return bool(own) and (
+        own in (named, named.removesuffix("s"))
+        or (stem != named and own.startswith(stem + "_"))
+    )
+
+
+REGEX_TITLE_CODES = re.compile(
+    r"\((?:(?P<label>[A-Za-z][\w /-]*?) )?(?P<code>[0-9A-F]+h)(?P<more>(?:, [^)]*)?)\)$"
+)
+
+
+def link_titled_operations(document: SpecDocument, used: set) -> None:
+    """
+    The operations of a command whose dwords have a field that the title of
+    a section names with a code, as the Configuration Identifier of the
+    Configuration Get command of MI 2.2 and "SMBus/I2C Frequency
+    (Configuration Identifier 01h)": the dwords of no command in a section
+    below the command's, titled so, are those of the operation of that
+    name, selected by that code. A section below those of several commands
+    goes to the nearest.
+
+    Dwords whose caption names a field of a command rather than the command,
+    as "Command Dword 11 - CNS Specific Identifier" of Base 2.4 Figure 343
+    in "NVM Set List (CNS 04h)", are those of the operation of the command
+    with that field, CNSSID of Identify, in any document; a title giving
+    more codes, as "(CNS 0Ah, CSI 01h)", selects by each, and one giving a
+    code alone, as "Endurance Group List (19h)", by the field the other
+    titles of those dwords name.
+    """
+
+    def by(fields: List[Bits], label: str) -> Optional[Bits]:
+        for field in fields:
+            if alias(label) in (alias(field.name or ""), alias(field.acronym or "")):
+                return field
+        return None
+
+    commands = [
+        command
+        for command_set in document.command_sets.values()
+        for command in command_set.commands.values()
+        if command.sqe
+    ]
+    for key, listed in document.dwords.items():
+        if key in used:
+            continue
+        qualified = key.removeprefix("cqe:").startswith(QUALIFIED)
+        named = alias(key.removeprefix("cqe:").removeprefix(QUALIFIED))
+        titles = [
+            REGEX_TITLE_CODES.search(d.source.section_title or "") for d in listed
+        ]
+        labels = [m["label"] for m in titles if m and m["label"]]
+        common = max(set(labels), key=labels.count) if labels else None
+        taken = 0
+        for described, match in zip(listed, titles):
+            label = match and (match["label"] or (common if qualified else None))
+            if not match or not label or label == "Feature Identifier":
+                continue
+            section = described.source.section or ""
+            found = []
+            for command in commands:
+                fields = [f for d in command.sqe for f in d.fields]
+                own = command.sqe[0].source
+                if qualified:
+                    if not any(names_the_field(named, f) for f in fields):
+                        continue
+                elif (
+                    own.document != described.source.document
+                    or not section.startswith(f"{own.section}.")
+                ):
+                    continue
+                selecting = by(fields, label)
+                if selecting:
+                    found.append((len(own.section or ""), command, selecting))
+            if not qualified and found:
+                nearest = max(f[0] for f in found)
+                found = [f for f in found if f[0] == nearest]
+            if len({id(f[1]) for f in found}) != 1:
+                continue
+            _, command, selecting = found[0]
+            selectors = {
+                selecting.acronym or selecting.name or "": code_value(match["code"])
+            }
+            fields = [f for d in command.sqe for f in d.fields]
+            for more in re.findall(
+                r", ([A-Za-z][\w /-]*?) ([0-9A-F]+h)", match["more"]
+            ):
+                other = by(fields, more[0])
+                if other:
+                    selectors[other.acronym or other.name or ""] = code_value(more[1])
+            name = REGEX_TITLE_CODES.sub("", described.source.section_title or "")
+            name = name.strip()
+            operation = next(
+                (
+                    o
+                    for o in command.operations
+                    if o.name == name and o.selectors == selectors
+                ),
+                None,
+            )
+            if operation is None:
+                operation = Operation(
+                    name=name, selectors=selectors, source=described.source
+                )
+                command.operations.append(operation)
+            add_dwords(
+                operation.cqe if key.startswith("cqe:") else operation.sqe, described
+            )
+            taken += 1
+        if taken == len(listed):
+            used.add(key)
+
+
 def laid_out(document: SpecDocument) -> Iterator[Tuple[Source, List[Bits]]]:
     """The source and the fields of every figure of 'document' that lays out
     fields: the dwords of the commands, and the structures"""
@@ -3300,7 +3429,10 @@ def resolve(document: SpecDocument) -> SpecDocument:
     # Metadata, and goes to the feature below
     for key, described in document.dwords.items():
         cqe = key.startswith("cqe:")
-        commands = by_name.get(key.removeprefix("cqe:"), [])
+        # A caption may call the command so, as "Abort Command - Completion
+        # Queue Entry Dword 0" of Base 2.4 Figure 148
+        name = key.removeprefix("cqe:")
+        commands = by_name.get(name) or by_name.get(name.removesuffix("_command"), [])
         taken = [d for d in described if not feature_identifiers(d)]
         for command in commands:
             for dwords in taken:
@@ -3315,6 +3447,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_directives(document, used)
     link_operations(document, used)
     link_features(document, used)
+    link_titled_operations(document, used)
     link_structures(document)
     link_runs(document)
     link_extended(document)

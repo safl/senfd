@@ -3258,3 +3258,94 @@ def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
     )
     (listing,) = [s for s in spec.structures if s.source.figure_nr == 361]
     assert [f.structure and f.structure.figure_nr for f in listing.fields] == [362] * 3
+
+
+def test_dwords_in_a_section_titled_with_a_code_are_an_operation_selected_by_it():
+    """MI 2.2 lays out the Management Dword 0 of Configuration Get for each
+    configuration in a section titled "SMBus/I2C Frequency (Configuration
+    Identifier 01h)"; Base 2.4 Figure 343, "Command Dword 11 - CNS Specific
+    Identifier" in "NVM Set List (CNS 04h)", names a field of Identify, and
+    Figure 352 is in "Endurance Group List (19h)" """
+
+    def placed(figure, section, title):
+        figure.section, figure.section_title = section, title
+        return figure
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Opcodes for Admin Commands",
+            OPCODES,
+            ("00b", "00b", "10h", "Foo Get", "5.1"),
+            ("00b", "10b", "11h", "Foo Identify", "5.2"),
+        ),
+        placed(
+            figure_of(
+                2,
+                "Foo Get - Command Dword 10",
+                ("Bits", "Description"),
+                ("31:08", "Reserved"),
+                ("07:00", "Configuration Identifier (CID): The configuration."),
+            ),
+            "5.1",
+            "Foo Get command",
+        ),
+        placed(
+            figure_of(
+                3,
+                "Foo Frequency - Command Dword 11",
+                ("Bits", "Description"),
+                ("31:00", "Frequency (FREQ): The frequency."),
+            ),
+            "5.1.1",
+            "Foo Frequency (Configuration Identifier 01h)",
+        ),
+        placed(
+            figure_of(
+                4,
+                "Foo Identify - Command Dword 11",
+                ("Bits", "Description"),
+                ("31:24", "Command Set Identifier (CSI): The set."),
+                ("23:08", "CNS Specific Identifier (CNSSID): The identifier."),
+                ("07:00", "Controller or Namespace Structure (CNS): The structure."),
+            ),
+            "5.2",
+            "Foo Identify command",
+        ),
+        placed(
+            figure_of(
+                5,
+                "Command Dword 11 - CNS Specific Identifier",
+                ("Bits", "Description"),
+                ("15:00", "Set Identifier (SETID): The set."),
+            ),
+            "5.2.1",
+            "Foo Set List (CNS 04h, CSI 02h)",
+        ),
+        placed(
+            figure_of(
+                6,
+                "Command Dword 11 - CNS Specific Identifier",
+                ("Bits", "Description"),
+                ("15:00", "Group Identifier (GID): The group."),
+            ),
+            "5.2.2",
+            "Foo Group List (19h)",
+        ),
+    )
+    commands = spec.command_sets["admin"].commands
+    operations = {
+        name: [
+            (o.name, o.selectors, [d.source.figure_nr for d in o.sqe])
+            for o in commands[name].operations
+        ]
+        for name in ("foo_get", "foo_identify")
+    }
+    assert operations == {
+        "foo_get": [("Foo Frequency", {"CID": 1}, [3])],
+        "foo_identify": [
+            ("Foo Set List", {"CNS": 4, "CSI": 2}, [5]),
+            ("Foo Group List", {"CNS": 0x19}, [6]),
+        ],
+    }
+    assert spec.unassigned == {}
