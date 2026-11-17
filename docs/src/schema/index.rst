@@ -19,10 +19,10 @@ under ``src/senfd/schemas``, and are shown in full below.
 The data model
 --------------
 
-The ``SpecDocument`` is the data model. ``merged.spec.document.json``
-merges the data models of all the documents given. A key of the data model
-is made from a name or a column header in lower case, with its words
-joined by underscores and "I/O" as one word: Create I/O Completion Queue
+The ``SpecDocument`` is the data model. ``merged.spec.document.json`` merges
+the data models of all the documents given. senfd makes a key of the data
+model from a name or a column header: its words in lower case, joined by
+underscores, with "I/O" as one word. The key of Create I/O Completion Queue
 is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
 
 * ``meta``: the format of the data model; the version of senfd that made
@@ -36,113 +36,23 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   with its file and SHA-256, so the merged data model lists every document
   in it.
 * ``command_sets``: each command set by its name, with its ``kind`` and its
-  commands. The ``kind`` is ``io`` for an I/O command set, which an I/O
-  Command Set specification defines and which has its Command Set
-  Identifier in ``identifier``, as Base 2.4 Figure 337 gives it: 00h for
-  NVM. The I/O commands that Base 2.4 defines for use in all I/O command
-  sets, as Flush, are no command set and have no Command Set Identifier;
-  they are listed as "Common I/O", of the kind ``common_io``. The other
-  kinds are ``admin`` and ``management_interface``, the command sets of
-  the Management Interface specification. A command has its ``opcode``, its submission queue entry dwords ``sqe``,
-  its completion queue entry dwords ``cqe``, its ``operations``, its
-  ``status_values``, the tables of the status values specific to it, and
+  commands. A command has its ``opcode``, its submission queue entry dwords
+  ``sqe``, its completion queue entry dwords ``cqe``, its ``operations``,
+  its ``status_values``, the tables of the status values specific to it, and
   its ``status_codes``, each status value whose "Commands Affected" names
   it, by the ``source`` of its table, the ``field`` and the ``value``. A
   name matches a command of the table's own document first, and otherwise
   the one command of that name in another document, as Read of the Zoned
-  Namespace table, a command of the NVM Command Set. An
-  operation is what the command does for one value of a selecting field,
-  as for each directive operation. Dwords of an operation that lay out the
-  bits of one field of the command's own dwords give that field's acronym
-  in ``refines``: LSP of Get Log Page for the FDP Events log page, and
-  CNSSID of Identify for the CNS values that use it. An operation selected
-  by a Command Set Identifier is named with that command set where its
-  name does not say it, as "I/O Command Set specific Identify Namespace
-  Data Structure (Key Value)".
+  Namespace table, a command of the NVM Command Set.
 * ``features`` and ``log_pages``: features and log pages by identifier. A
   feature has the dwords of the commands that set and get it, and its
-  ``operations``, as the Lockdown Persistence Personality of Configurable
-  Device Personality, selected by PERID 02h. A log page
-  is one by identifier, named as the table of log page identifiers names
-  it, with the ``aliases`` other tables give it, and has the ``structure``
-  that lays it out: the figure in the section its row cites, as Base 2.4
-  Figure 270 for 12h.
+  ``operations``. A log page has the ``structure`` that lays it out, and
+  ``aliases``, the other names that tables give it.
 * ``structures``: every layout that is not the dwords of a command: data
-  structures, the layouts of log pages, and registers. Two structures of a
-  document have two names: of a log page and a data structure named alike,
-  as Base 2.4 Figures 216 and 217, the data structure is named with "Data
-  Structure", and a figure with the caption of another takes the name of
-  the field it lays out, which is a candidate erratum. An entry of a list,
-  as "AVE Discovery Log Page Entry", is a data structure named with
-  "Entry". The layout that all command sets share, Base 2.4 Figure 97,
-  is named "Completion Queue Entry" with the qualifier "Admin and All I/O
-  Command Sets". A field whose description cites a section is linked by
-  ``structure`` to the layout there of the same bits, as STATUS of Figure
-  99 to the Status Field of Figure 101. A table whose rows name the
-  structure each field is of, as
-  NVM 1.3 Figure 188, has the kind ``cited_fields``, and a table mapping
-  the bytes of one message to another, as MI 2.2 Figure 49, the kind
-  ``mapping``; neither lays out a structure of its own. A structure that lays out
-  some bytes of another, as NVM 1.3 Figure 126 lays out AWUN, AWUPF and
-  ACWU of Identify Controller, has ``extends``, the figure of that
-  structure, and ``extends_field`` where its text names the field it lays
-  out. A field has ``encoding``, "ascii", "utf-8" or "uuid", where its
-  description states it, as "as an ASCII string", or where it has the
-  value of a field that has one or holds bytes of it, as NQNID of Base 2.4
-  Figure 698 holds bytes of SUBNQN, and ``byte_order`` where its description
-  states that, as "This field is big endian". A paragraph referring to the
-  figure states an encoding too, as "The firmware revision is indicated as
-  an ASCII string" of the Firmware Slot Information log page. Every NQN
-  field takes the encoding of the NQN fields that state one, and a field
-  takes the byte order or encoding of the fields of the same name, acronym
-  and width in other documents that state it, as NGUID of KV 1.4 does from
-  NVM 1.3. A taken encoding or byte order gives the figure it is from in
-  ``encoding_from`` or ``byte_order_from``; a field of one byte has no byte
-  order. A run of two or more fields
-  listed in full, as TSEN1 to TSEN8 or TMT1TC and TMT2TC, is an ``array``
-  as a run with rows left out is, but a run of two only where the figure
-  leaves out no row it cannot read. One entry of another width at its
-  place, as Host Fabric Interface Descriptor 2 of Boot 1.4, is still an
-  entry. A run whose ranges the data gives, as the ANA Group Descriptors
-  at "n:16" and "m:n+1" or the Media Unit Status Descriptors at "NOTE 1",
-  is an array without a count, and without ``stride`` and ``lower`` where
-  the entries' widths or offsets are of the data; so is one entry before
-  a last one numbered by a name, as Entry 0 and Entry N of the Discovery
-  log page. Two such runs whose entries alternate, as Zone Descriptor and
-  Zone Descriptor Extension of ZNS 1.4, are two arrays without a stride.
-  A range "n/a" is none that the data gives. Where the formula of a run's
-  last entry gives a width, the entries of another width are candidate
-  errata and the array has that stride, as 260 bytes of the Exported NVM
-  Subsystem Descriptors of Base 2.4 Figure 384. An array without a count takes its ``maximum`` from the field
-  counting its entries, as "up to 127 entries" of NUMENT. A field of a group of rows that a column names by an
-  index, as "Source Range 0" to "Source Range 127", has ``group``, the
-  array of those groups. Dwords in a section titled with a code, as
-  "SMBus/I2C Frequency (Configuration Identifier 01h)" below Configuration
-  Get, or captioned by a field of a command, as "Command Dword 11 - CNS
-  Specific Identifier" in "NVM Set List (CNS 04h)", are an operation of
-  that command, with the code in ``selectors``. The two fields of a value split over
-  them, as NUMDL and NUMDU, "Number of Dwords Lower" and "Upper", have
-  ``part``, the name and acronym of the value and where in it each starts. Dwords laid out under a condition of the form "CETYPE is
-  non-zero" have ``selected_when``, the field, the comparison and the
-  value, beside the text in ``condition``.
-* ``values``: the tables of values, such as status codes or identifiers,
-  by the ``kind`` of their caption, with the ``scope`` that the caption
-  limits them to. Each entry has a ``name``: the one its row gives, a
-  short definition, the text of a column naming it, as the Management
-  Operation of SEL, a first sentence of at most three words, as "Low" of
-  AL in NVM 1.3, or the title of the section it refers to. Beside named
-  values, a named range of reserved values among them, a definition of
-  one sentence of at most six words is a name, as "No action" of MO 00h,
-  and so is a name with its initials, as "Add or Replace Active ZoneGroup
-  (AAZ) operation" of ORI 2; the values of a case are named so too. An aside in the name, as "(refer to RFC 6234)"
-  or "(no shutdown has been requested)" of SHST 00b, and the text after a
-  colon go to the ``description``; a qualifier, as "(Controller scope)",
-  stays. An acronym before a colon, as "CAP" of "CAP: Controller
-  Capabilities", the initials after the name, as "GAZ" of "Get Active
-  ZoneGroup (GAZ) operation", or the Acronym column, as "PUID" of PIT 001b
-  of CP 1.2, is the entry's ``acronym``. A table of a field's bounds, as
-  the minimum and maximum STS by protection information format of NVM
-  1.3, holds none of its values.
+  structures, the layouts of log pages, and registers.
+* ``values``: the tables of values, such as status codes or identifiers, by
+  the ``kind`` of their caption, with the ``scope`` that the caption limits
+  them to. Each entry has a ``name``, and can have an ``acronym``.
 * ``dwords``: the dwords of every figure, by the name its caption gives, as
   read. ``unassigned`` holds the dwords that no command, feature or
   operation claims.
@@ -169,6 +79,47 @@ model, so two data models with the same combined hash are the same. When
 two answers differ, the input hash shows whether the documents differ, and
 the senfd hash shows whether the reading differs.
 
+.. _sec-schema-parts:
+
+Commands, structures and values
+-------------------------------
+
+The ``kind`` of a command set is ``io``, ``common_io``, ``admin`` or
+``management_interface``. An I/O Command Set specification defines an I/O
+command set, which has the Command Set Identifier that Base 2.4 Figure 337
+gives it in ``identifier``, for example 00h for NVM. Base 2.4 defines some
+I/O commands, such as Flush, for use in all I/O command sets. These commands
+belong to no command set and have no Command Set Identifier. senfd lists
+them as the command set "Common I/O", of the kind ``common_io``. The kind
+``management_interface`` is for the command sets of the Management Interface
+specification.
+
+An operation is what a command or a feature does for one value of a
+selecting field, for example each directive operation. Dwords are an
+operation of a command when they are in a section below the section of the
+command, and the title of their section gives a code of a field of the
+command, for example "SMBus/I2C Frequency (Configuration Identifier 01h)"
+below Configuration Get. Dwords whose caption names a field of a command are
+an operation of that command too, for example "Command Dword 11 - CNS
+Specific Identifier" in "NVM Set List (CNS 04h)". The code is in
+``selectors``. The Lockdown Persistence Personality is an operation of the
+feature Configurable Device Personality, selected by PERID 02h.
+
+Where every field of the dwords of an operation lies within one field of the
+dwords of the command, the operation has ``refines``, the acronym of that
+field: LSP of Get Log Page for the FDP Events log page, and CNSSID of
+Identify for the CNS values that use it. An operation selected by a Command
+Set Identifier has the command set in its name where the name does not
+already say it, for example "I/O Command Set specific Identify Namespace
+Data Structure (Key Value)". Dwords laid out under a condition of the form
+"CETYPE is non-zero" have ``selected_when``: the acronym of the field, the
+comparison and the value. The text of the condition stays in ``condition``.
+
+A log page is one entry for each identifier. The first table of log page
+identifiers that lists the identifier gives the name, and the names in other
+tables go to ``aliases``. The ``structure`` of a log page is the figure in
+the section that its row cites, for example Base 2.4 Figure 270 for 12h.
+
 In every part of the data model, a ``Dwords`` is the dwords from ``lower``
 to ``upper`` with their ``fields``, possibly under a ``condition``. A field,
 ``Bits``, is a ``range`` of bits or bytes, as given by ``unit``. A field
@@ -182,15 +133,17 @@ values, for example "Refer to Figure 336" for CNS of the Identify command,
 the field has ``values_in``. ``values_in`` is the ``source`` of that table,
 and the table is the entry of ``values`` with the same ``source``.
 
-A footnote marker, the superscript number after a name, a value or a
-cell, is no part of the text. A field lists the numbers marked on its name,
-its description and its other columns in ``footnotes``. An entry of a table
-of values lists them in ``footnotes`` too, and by the key of the column in
+A footnote marker is a number printed raised after a name, a value or a
+cell, and is not part of the text. The readers of the PDF and of the
+``.docx`` return a marker as superscript digits, and senfd moves the markers
+out of the text. A field lists the numbers marked on its name, its
+description and its other columns in ``footnotes``. An entry of a table of
+values lists them in ``footnotes`` too, and by the key of the column in
 ``marked``. A command, a feature and a log page have ``footnotes``, the
 numbers marked on the name and the other columns of its row, by the key of
-the column. The readers of the PDF and of the ``.docx`` give a marker as
-superscript digits, as "Controllers¹". Superscript digits after a digit, as
-"2¹⁶", are an exponent and are kept.
+the column. A raised number after another digit is an exponent and stays in
+the text, for example the 16 of 2 to the power of 16, except after a lone 0
+or 1, where it is a marker.
 
 A figure lists the entries of an array as fields numbered by their index,
 with a "..." row in place of the entries between them, for example LBAF0,
@@ -203,6 +156,33 @@ entry starts. A generator writes the array at the entry whose ``index`` is
 ``first``, and skips the other entries. Where the figure gives the range of
 the last entry as a formula, ``count`` is null, and so is the ``index`` of
 that entry.
+
+senfd also makes an array of a run of two or more fields that the figure
+lists in full, such as TSEN1 to TSEN8, or TMT1TC and TMT2TC. A run of two is
+an array only where the figure leaves out no row that senfd cannot read. A
+run numbered in hexadecimal, such as Performance Attribute C1h to FFh
+Identifier, is an array too. An entry of another width at its place in a
+run, such as Host Fabric Interface Descriptor 2 of Boot 1.4, is an entry of
+the array and a candidate erratum.
+
+Some figures give the ranges of the entries by the data, for example the ANA
+Group Descriptors at "n:16" and "m:n+1", or by a text, for example the Media
+Unit Status Descriptors at "NOTE 1". Such a run is an array without a count.
+Its ``stride`` and ``lower`` are null where the widths or the offsets of the
+entries depend on the data. One entry followed by a last entry numbered by a
+name, such as Entry 0 and Entry N of the Discovery log page, is such an
+array too. Where the entries of two runs alternate, such as Zone Descriptor
+and Zone Descriptor Extension of ZNS 1.4, each run is an array without a
+stride. A range "n/a" is not a range that the data gives.
+
+Where the formula of the last entry of a run gives a width, the array has
+that stride, and the entries of another width are candidate errata. For
+example, the formula of Exported NVM Subsystem Descriptor N of Base 2.4
+Figure 384 gives 260 bytes, and Descriptors 1 and 2 are 520 and 22 bytes. An
+array without a count takes its ``maximum`` from the field that counts its
+entries, for example "up to 127 entries" of NUMENT. A field of a group of
+rows that a column names by an index, such as "Source Range 0" to "Source
+Range 127", has ``group``, the array of those groups.
 
 A field has ``structure`` where another figure lays out the field.
 ``structure`` is the ``source`` of that figure, and the structure is the
@@ -220,6 +200,55 @@ with that name, as "PRP Entry - Page Base Address and Offset". The ``kind``
 of a structure that lays out the entries of an array is
 ``data_structure``, whatever its caption says.
 
+A field whose description cites a section is also linked to the structure in
+that section whose fields cover exactly the bits of the field, for example
+STATUS of Base 2.4 Figure 99 to the Status Field of Figure 101. senfd does
+not link a field to a structure whose only field has the acronym and the
+range of the field.
+
+Two structures of a document have two names. Where a log page and a data
+structure have the same name, as Base 2.4 Figures 216 and 217 do, the name
+of the data structure ends in "Data Structure". An entry of a list, such as
+"AVE Discovery Log Page Entry", is a data structure whose name ends in
+"Entry". A figure whose caption repeats the caption of another figure takes
+the name of the field it lays out, and the caption is a candidate erratum.
+Two structures with the same name and different qualifiers have their
+qualifiers in their names, for example "Timestamp (Set Features)". Base 2.4
+Figure 97, the layout of a completion queue entry that all command sets
+share, is named "Completion Queue Entry", with the qualifier "Admin and All
+I/O Command Sets".
+
+A table whose rows name the structure of each field, such as NVM 1.3 Figure
+188, has the kind ``cited_fields``. A table that maps the bytes of one
+message to another, such as MI 2.2 Figure 49, has the kind ``mapping``.
+Neither kind lays out a structure of its own. A structure that lays out some
+bytes of another structure has ``extends``, the ``source`` of the other
+structure. For example, NVM 1.3 Figure 126 lays out AWUN, AWUPF and ACWU of
+Identify Controller. Where the text names the field that the figure lays
+out, ``extends_field`` is the acronym of that field.
+
+A field has ``encoding``, which is "ascii", "utf-8" or "uuid", and
+``byte_order``, where a document states them. The description of the field
+can state them, for example "as an ASCII string" or "This field is big
+endian". A paragraph that refers to the figure can state an encoding for a
+term at the start of the name of the field, for example "The firmware
+revision is indicated as an ASCII string" for the Firmware Slot Information
+log page.
+
+senfd also takes an encoding or a byte order from another field. A field
+that has the value of another field, or holds bytes of it, takes the
+encoding of that field, as NQNID of Base 2.4 Figure 698 takes the encoding
+of SUBNQN. An NQN field takes the encoding of the NQN fields that state one.
+A field takes the byte order or the encoding of the fields of the same name,
+acronym and width in other documents, as NGUID of KV 1.4 takes the byte
+order of NGUID in NVM 1.3. ``encoding_from`` and ``byte_order_from`` give
+the ``source`` of the figure that a taken encoding or byte order comes from.
+A field of one byte has no byte order.
+
+The two fields of a value split over two fields, such as NUMDL and NUMDU,
+"Number of Dwords Lower" and "Upper", have ``part``: the name and the
+acronym of the value, and the bit of the value where each field starts.
+
 An entry of a table of CNS values has ``selects``, the ``source`` of each
 structure the value selects. For CNS 01h of the Base specification, these
 are the Identify Controller data structure and the structures nested in it,
@@ -233,6 +262,26 @@ Value, Zoned Namespace, Subsystem Local Memory and Computational Programs
 command sets. The command sets are those whose documents the entries of
 the Command Set Identifiers name, and such an entry has ``document``, the
 name of the document whose subject it names.
+
+An entry of a table of values has the ``name`` that its row gives. Otherwise
+senfd takes the name from a short definition, from a column that names the
+value, such as the Management Operation column of SEL, from a first sentence
+of at most three words, such as "Low" of AL in NVM 1.3, or from the title of
+the section that the entry refers to. In a list where another value or a
+range of reserved values has a name, a definition of one sentence of at most
+six words is a name, for example "No action" of MO 00h. A name followed by
+its initials is a name too, for example "Add or Replace Active ZoneGroup
+(AAZ) operation" of ORI 2. The values of a case are named the same way.
+
+senfd moves an aside in a name to the ``description``, for example "(refer
+to RFC 6234)", or "(no shutdown has been requested)" of SHST 00b. senfd
+moves the text after a colon there too. A qualifier, such as "(Controller
+scope)", stays in the name. The ``acronym`` of an entry comes from an
+acronym before a colon, such as CAP of "CAP: Controller Capabilities", from
+the initials after the name, such as GAZ of "Get Active ZoneGroup (GAZ)
+operation", or from the Acronym column, such as PUID of PIT 001b in CP 1.2.
+A table of the minimum and maximum values of a field, such as STS of NVM
+1.3, gives none of the values of the field.
 
 The meaning of a field can depend on the value of another field of its
 figure. Bits 15:08 of Command Dword 13 of Zone Management Receive, ZRAS, are
