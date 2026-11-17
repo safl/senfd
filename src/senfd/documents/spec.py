@@ -782,9 +782,14 @@ def without_footnote(name: str) -> str:
 
 def command_set_name(name: str) -> str:
     """The name of a command set, as its opcode table's caption gives it, without
-    "Command Set" and "I/O" after it: "NVM Command Set" is "NVM" """
+    "Command Set" and "I/O" after it: "NVM Command Set" is "NVM". The I/O
+    commands of the Base specification, of a table captioned "Opcodes for I/O
+    Commands", are no command set but those of every I/O command set, which
+    Base 2.4 Figure 30 names "Common I/O"."""
 
     stripped = re.sub(r"(?:\s+Command Set)?(?:\s+I/O)?$", "", name.strip())
+    if name.strip() == "I/O":
+        return "Common I/O"
     return stripped or name.strip()
 
 
