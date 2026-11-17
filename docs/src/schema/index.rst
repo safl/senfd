@@ -51,7 +51,13 @@ has these parts:
   that lays it out: the figure in the section its row cites, as Base 2.4
   Figure 270 for 12h.
 * ``structures``: every layout that is not the dwords of a command: data
-  structures, the layouts of log pages, and registers.
+  structures, the layouts of log pages, and registers. Two structures of a
+  document have two names: of a log page and a data structure named alike,
+  as Base 2.4 Figures 216 and 217, the data structure is named with "Data
+  Structure", and a figure with the caption of another takes the name of
+  the field it lays out, which is a candidate erratum. An entry of a list,
+  as "AVE Discovery Log Page Entry", is a data structure named with
+  "Entry".
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

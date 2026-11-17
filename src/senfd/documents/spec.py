@@ -644,6 +644,7 @@ ErratumCode = Literal[
     "gap",
     "layout-gap",
     "reference",
+    "caption",
 ]
 
 
@@ -658,8 +659,8 @@ class Erratum(Model):
     code: ErratumCode
     """What kind it is: "value", "acronym", "range" (text that is no range),
     "range-outside", "range-reversed", "opcode", "gap" (of a command's
-    dwords), 'layout-gap' (of a structure) or "reference" (to the section of
-    another value)"""
+    dwords), 'layout-gap' (of a structure), "reference" (to the section of
+    another value) or "caption" (of another figure)"""
     message: str
     """What is wrong, said for a person"""
     found: str = ""
@@ -2774,6 +2775,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_values(document)
     link_selections(document)
     link_selectors(document)
+    distinct_names(document)
 
     # A gap where a field was left out as an erratum is that erratum again
     document.errata = [e for e in document.errata if e.code != "gap"]
@@ -3023,6 +3025,70 @@ def name_by_documents(document: SpecDocument) -> None:
 REGEX_NAMED_VALUE = re.compile(
     r"\b(?P<acronym>[A-Z][A-Z0-9]+):(?P<name>[A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*)*)"
 )
+
+
+# The words a caption names a kind of structure by, which tell two figures of
+# one name apart
+STRUCTURE_WORDS = {
+    "data_structure": "Data Structure",
+    "data_buffer": "Data Buffer",
+    "log_page": "Log Page",
+}
+
+
+def distinct_names(document: SpecDocument) -> None:
+    """
+    Two structures of a document named alike are told apart by name, so that
+    a generator has a name for each. Of two of different kinds, as the log
+    page and the data structure "Commands Supported and Effects" of Base 2.4
+    Figures 216 and 217, the log page, else the first, keeps the name, and
+    the other is named with its kind, "Commands Supported and Effects Data
+    Structure". Of two of one kind and no qualifier, the later figure takes
+    the name of the one field linking it, where that names it otherwise:
+    NVM 1.3 Figure 190 has the caption of Figure 189, "Reference Exported
+    Controller Configuration State", and is the layout of RENSCS, Reference
+    Exported Namespace Configuration State. The caption is a candidate
+    erratum.
+    """
+
+    groups: Dict[Tuple[str, str], List[Structure]] = {}
+    for structure in document.structures:
+        key = (structure.source.document, structure.name)
+        groups.setdefault(key, []).append(structure)
+    linking: Dict[Tuple[str, Optional[int]], set] = {}
+    for field, _ in fields_with_sources(document):
+        if field.structure is not None and field.name:
+            at = (field.structure.document, field.structure.figure_nr)
+            linking.setdefault(at, set()).add(field.name)
+    for (_, name), same in groups.items():
+        if len(same) < 2:
+            continue
+        kinds = [s.kind for s in same]
+        if len(set(kinds)) == len(same):
+            keep = next((s for s in same if s.kind == "log_page"), same[0])
+            for structure in same:
+                if structure is not keep and structure.kind in STRUCTURE_WORDS:
+                    structure.name = f"{name} {STRUCTURE_WORDS[structure.kind]}"
+            continue
+        if len(set(kinds)) > 1 or any(s.qualifier for s in same):
+            continue
+        for structure in same[1:]:
+            source = structure.source
+            names = linking.get((source.document, source.figure_nr), set())
+            other = next(iter(names)) if len(names) == 1 else name
+            if other == name:
+                continue
+            document.errata.append(
+                Erratum(
+                    code="caption",
+                    message=f"Figure {source.figure_nr} has the caption of "
+                    f"Figure {same[0].source.figure_nr}, '{name}', and is "
+                    f"the layout of the field {other}",
+                    found=name,
+                    source=source,
+                )
+            )
+            structure.name = other
 
 
 def fields_with_sources(

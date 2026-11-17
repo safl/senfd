@@ -981,3 +981,21 @@ def test_a_nested_table_of_bits_with_another_header_for_its_text_is_a_layout():
         )
         is None
     )
+
+
+def test_an_entry_of_a_list_is_a_data_structure_named_with_entry():
+    """Base 2.4 Figure 328, "Get Log Page - AVE Discovery Log Page Entry",
+    is an entry of the log page of Figure 327, and Figure 283 ends in " -
+    Log Page" """
+
+    from senfd.normalize import parse_caption
+
+    entry = parse_caption("Get Log Page - AVE Discovery Log Page Entry")
+    assert (entry.kind, entry.name) == (
+        "data_structure",
+        "Get Log Page - AVE Discovery Entry",
+    )
+    entry = parse_caption("Autonomous Power State Transition Data Structure Entry")
+    assert entry.name == "Autonomous Power State Transition Entry"
+    page = parse_caption("Management Address List - Log Page")
+    assert (page.kind, page.name) == ("log_page", "Management Address List")
