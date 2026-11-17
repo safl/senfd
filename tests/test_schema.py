@@ -157,7 +157,7 @@ def test_what_a_schema_cannot_say_loading_the_data_model_refuses(values):
 
 
 # The format of the data model, and the SHA-256 of the shape its schemas give
-FORMAT_SHAPE = (6, "95468ba925c574e2714cb88bddec9b4269edbeba6bb6109e052c22ce4babc388")
+FORMAT_SHAPE = (6, "8635f7227035d6b7fffed8fa30d6c539f92532c3401a73c8f4a4037b9889f544")
 
 
 def shape(node: typing.Any) -> typing.Any:

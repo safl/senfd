@@ -77,7 +77,9 @@ has these parts:
   Specific Identifier" in "NVM Set List (CNS 04h)", are an operation of
   that command, with the code in ``selectors``. The two fields of a value split over
   them, as NUMDL and NUMDU, "Number of Dwords Lower" and "Upper", have
-  ``part``, the name and acronym of the value and where in it each starts.
+  ``part``, the name and acronym of the value and where in it each starts. Dwords laid out under a condition of the form "CETYPE is
+  non-zero" have ``selected_when``, the field, the comparison and the
+  value, beside the text in ``condition``.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

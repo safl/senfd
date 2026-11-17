@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "7d3ef59c88f3f6a724e418185430cc3ce5c7231a53f2cd1a9cf41e1288d56045",
+    "senfd_sha256": "599345eb4b8cb9db32c04d4191b2ddf6ca68b1b17d7a7f89edf42e4a065ece34",
     "stem": "example",
     "file": "example.docx",
     "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -21,6 +21,7 @@
               "lower": 10,
               "upper": 10,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -97,6 +98,7 @@
               "lower": 11,
               "upper": 11,
               "condition": "Foo Mode is set",
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -173,6 +175,7 @@
               "lower": 2,
               "upper": 3,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -219,6 +222,7 @@
               "lower": 14,
               "upper": 15,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -265,6 +269,7 @@
               "lower": 6,
               "upper": 9,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -311,6 +316,7 @@
               "lower": 4,
               "upper": 5,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -359,6 +365,7 @@
               "lower": 0,
               "upper": 0,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -437,6 +444,7 @@
               "lower": 10,
               "upper": 10,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -513,6 +521,7 @@
               "lower": 6,
               "upper": 9,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -583,6 +592,7 @@
               "lower": 14,
               "upper": 15,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [],
               "source": {
@@ -598,6 +608,7 @@
               "lower": 11,
               "upper": 11,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -644,6 +655,7 @@
               "lower": 10,
               "upper": 10,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -714,6 +726,7 @@
               "lower": 10,
               "upper": 10,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -878,6 +891,7 @@
               "lower": 12,
               "upper": 12,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -1027,6 +1041,7 @@
               "lower": 13,
               "upper": 13,
               "condition": null,
+              "selected_when": null,
               "qualifier": null,
               "fields": [
                 {
@@ -1322,6 +1337,7 @@
                   "lower": 11,
                   "upper": 11,
                   "condition": null,
+                  "selected_when": null,
                   "qualifier": null,
                   "fields": [
                     {
@@ -1386,6 +1402,7 @@
                   "lower": 11,
                   "upper": 11,
                   "condition": null,
+                  "selected_when": null,
                   "qualifier": null,
                   "fields": [
                     {
@@ -1504,6 +1521,7 @@
               "lower": 10,
               "upper": 10,
               "condition": null,
+              "selected_when": null,
               "qualifier": "Foobar Command Set Specific Fields",
               "fields": [
                 {
@@ -1584,6 +1602,7 @@
                   "lower": 12,
                   "upper": 12,
                   "condition": null,
+                  "selected_when": null,
                   "qualifier": null,
                   "fields": [
                     {
@@ -1741,6 +1760,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -1817,6 +1837,7 @@
         "lower": 11,
         "upper": 11,
         "condition": "Foo Mode is set",
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -1893,6 +1914,7 @@
         "lower": 2,
         "upper": 3,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -1939,6 +1961,7 @@
         "lower": 14,
         "upper": 15,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -1985,6 +2008,7 @@
         "lower": 6,
         "upper": 9,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2031,6 +2055,7 @@
         "lower": 4,
         "upper": 5,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2079,6 +2104,7 @@
         "lower": 0,
         "upper": 0,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2127,6 +2153,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2203,6 +2230,7 @@
         "lower": 6,
         "upper": 9,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2251,6 +2279,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2415,6 +2444,7 @@
         "lower": 12,
         "upper": 12,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2564,6 +2594,7 @@
         "lower": 13,
         "upper": 13,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2852,6 +2883,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2900,6 +2932,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -2948,6 +2981,7 @@
         "lower": 14,
         "upper": 15,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [],
         "source": {
@@ -2963,6 +2997,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3009,6 +3044,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3057,6 +3093,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3105,6 +3142,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": "CNS Specific Identifier",
         "fields": [
           {
@@ -3183,6 +3221,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3261,6 +3300,7 @@
         "lower": 0,
         "upper": 0,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3309,6 +3349,7 @@
         "lower": 1,
         "upper": 1,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -3357,6 +3398,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": "Foobar Command Set Specific Fields",
         "fields": [
           {
@@ -3405,6 +3447,7 @@
         "lower": 12,
         "upper": 12,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -9382,6 +9425,7 @@
           "lower": 11,
           "upper": 11,
           "condition": null,
+          "selected_when": null,
           "qualifier": null,
           "fields": [
             {
@@ -9640,6 +9684,7 @@
         "lower": 10,
         "upper": 10,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -9688,6 +9733,7 @@
         "lower": 11,
         "upper": 11,
         "condition": null,
+        "selected_when": null,
         "qualifier": "CNS Specific Identifier",
         "fields": [
           {
@@ -9766,6 +9812,7 @@
         "lower": 0,
         "upper": 0,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -9814,6 +9861,7 @@
         "lower": 1,
         "upper": 1,
         "condition": null,
+        "selected_when": null,
         "qualifier": null,
         "fields": [
           {
@@ -9979,7 +10027,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "7d3ef59c88f3f6a724e418185430cc3ce5c7231a53f2cd1a9cf41e1288d56045",
+      "senfd_sha256": "599345eb4b8cb9db32c04d4191b2ddf6ca68b1b17d7a7f89edf42e4a065ece34",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
