@@ -438,6 +438,18 @@
                     "default": null,
                     "description": "The array that the field belongs to, where the figure lists numbered\nentries and leaves out the rows between them"
                 },
+                "group": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Array"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The array of groups of fields that the field's group is an entry of,\nwhere a column names each group, as \"Source Range 0\" to \"Source Range\n127\" of NVM 1.3 Figure 40: its name, the index of the field's group,\nand the size and offset of a group"
+                },
                 "structure": {
                     "anyOf": [
                         {

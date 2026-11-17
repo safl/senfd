@@ -3182,3 +3182,79 @@ def test_a_short_definition_names_its_value_and_a_title_names_one_code_only():
         "Foo Identify Namespace Data Structure",
         None,
     ]
+
+
+def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
+    """TSEN1 to TSEN8 of the SMART / Health Information log page are listed
+    one by one; NVM 1.3 Figure 40 names its groups of rows "Source Range 0"
+    to "Source Range 127" in a column of their own"""
+
+    from senfd.documents.spec import Array
+
+    spec = document_of(
+        figure_of(
+            213,
+            "Foo Health Data Structure",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Sensor 1 (FSEN1): The first."),
+            ("03:02", "Foo Sensor 2 (FSEN2): The second."),
+            ("05:04", "Foo Sensor 3 (FSEN3): The third."),
+            ("07:06", "Bar Mode 1 (BM1): One."),
+            ("09:08", "Bar Mode 2 (BM2): Two."),
+        ),
+        figure_of(
+            40,
+            "Foo Range Entries",
+            ("Range", "Bytes", "Description"),
+            ("Foo Range 0", "07:00", "Foo Start (FST): The start."),
+            ("", "15:08", "Foo Length (FLEN): The length."),
+            ("Foo Range 1", "23:16", "Foo Start (FST): The start."),
+            ("Foo Range 1", "31:24", "Foo Length (FLEN): The length."),
+            ("...", "", ""),
+            ("Foo Range 3", "55:48", "Foo Start (FST): The start."),
+            ("Foo Range 3", "63:56", "Foo Length (FLEN): The length."),
+        ),
+    )
+    health, ranges = spec.structures
+    assert health.fields[2].array == Array(
+        name="Foo Sensor", acronym="FSEN", index=3, first=1, count=3, stride=2, lower=0
+    )
+    assert health.fields[3].array is None
+    assert [f.group.index for f in ranges.fields] == [0, 0, 1, 1, 3, 3]
+    assert ranges.fields[0].group == Array(
+        name="Foo Range", index=0, first=0, count=4, stride=16, lower=0
+    )
+
+
+def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
+    """SC Entry 0 of Base 2.4 Figure 361 is "defined in Figure 362" and SC
+    Entry 1 cites nothing; Subsystem Namespace Descriptor n of Boot 1.4
+    Figure 16 cites Figure 9 for the field that counts the descriptors"""
+
+    spec = document_of(
+        figure_of(
+            9,
+            "Foo Table",
+            ("Bytes", "Description"),
+            ("63:00", "Number of Foo Entries (NFE): The count."),
+        ),
+        figure_of(
+            361,
+            "Foo List",
+            ("Bytes", "Description"),
+            ("63:00", "Foo Entry 0: The first, defined in Figure 362."),
+            ("127:64", "Foo Entry 1: The second, if present."),
+            (
+                "(n*64)-1:(n-1)*64",
+                "Foo Entry n: The last, n is NFE (refer to Figure 9).",
+            ),
+        ),
+        figure_of(
+            362,
+            "Foo Entry",
+            ("Bytes", "Description"),
+            ("63:00", "Foo Value (FV): The value."),
+        ),
+    )
+    (listing,) = [s for s in spec.structures if s.source.figure_nr == 361]
+    assert [f.structure and f.structure.figure_nr for f in listing.fields] == [362] * 3

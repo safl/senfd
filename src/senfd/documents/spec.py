@@ -335,6 +335,11 @@ class Bits(BitsCommon):
     array: Optional[Array] = None
     """The array that the field belongs to, where the figure lists numbered
     entries and leaves out the rows between them"""
+    group: Optional[Array] = None
+    """The array of groups of fields that the field's group is an entry of,
+    where a column names each group, as "Source Range 0" to "Source Range
+    127" of NVM 1.3 Figure 40: its name, the index of the field's group,
+    and the size and offset of a group"""
     structure: Optional[Source] = None
     """The source of the structure that lays out the field. The description of
     the field refers to the figure, for example "defined in Figure 125", or,
@@ -1214,9 +1219,10 @@ def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
         (name[: match.start()], int(match[0]), name[match.end() :])
         for match in re.finditer(r"\d+", name)
     ]
-    # A hexadecimal index after the decimal ones, so that "10" is ten: one
-    # ending in "h", as "C1h" of "Performance Attribute C1h Identifier", or
-    # of two digits, one a letter, as "FF" of "Vendor Specific Protocol FF"
+    # A hexadecimal index after the decimal ones, so that "10" is ten, and so
+    # that the last split of "Format 2h Enable" leaves no "h": one ending in
+    # "h", as "C1h" of "Performance Attribute C1h Identifier", or of two
+    # digits, one a letter, as "FF" of "Vendor Specific Protocol FF"
     hexadecimal = [
         (name[: match.start()], int(match[1] or match[2], 16), name[match.end() :])
         for match in re.finditer(
@@ -1326,7 +1332,8 @@ def arrays_of(fields: List[Bits]) -> List[str]:
         spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
         first, lowest = min(spans, key=lambda span: span[0])
         name = next(
-            (b + a for b, n, a in numbered(lowest.name) if n == first), lowest.name
+            (b + a for b, n, a in reversed(numbered(lowest.name)) if n == first),
+            lowest.name,
         )
         whole = len(spans) == len(run)
         acronym = before + after if of == "acronym" else hexadecimal_acronym(spans)
@@ -1340,7 +1347,137 @@ def arrays_of(fields: List[Bits]) -> List[str]:
                 stride=lowest.width or 0,
                 lower=lowest.lower or 0,
             )
+    listed_arrays(fields)
+    grouped_arrays(fields)
     return disagreeing
+
+
+def grouped_arrays(fields: List[Bits]) -> None:
+    """
+    Set 'group' on the fields of a layout whose rows a column groups by a
+    name and an index, "Source Range 0", "Source Range 1" and "Source Range
+    127" of NVM 1.3 Figure 40, a blank cell going on with the group above:
+    where the groups lie each at the offset that its index gives, by the
+    size of the first, they are entries of an array of as many as the last
+    index says.
+    """
+
+    for column in {c for f in fields for c in f.columns}:
+        labels: List[Optional[Tuple[str, int]]] = []
+        for field in fields:
+            match = re.fullmatch(r"(.+?) (\d+)", field.columns.get(column, ""))
+            if match:
+                labels.append((match[1], int(match[2])))
+            elif field.columns.get(column, "").strip() or not labels:
+                labels.append(None)
+            else:
+                labels.append(labels[-1])
+        if None in labels or len({label[0] for label in labels}) != 1:  # type: ignore
+            continue
+        starts: Dict[int, int] = {}
+        for (_, index), field in zip(labels, fields):  # type: ignore
+            if field.kind == "span" and field.lower is not None:
+                starts[index] = min(starts.get(index, field.lower), field.lower)
+        indexes = sorted(starts)
+        if len(indexes) < 2:
+            continue
+        first, second = indexes[0], indexes[1]
+        stride = (starts[second] - starts[first]) // (second - first)
+        if stride <= 0 or any(
+            starts[i] != starts[first] + (i - first) * stride for i in indexes
+        ):
+            continue
+        name = labels[0][0]  # type: ignore
+        for (_, index), field in zip(labels, fields):  # type: ignore
+            field.group = Array(
+                name=name,
+                index=index,
+                first=first,
+                count=indexes[-1] - first + 1,
+                stride=stride,
+                lower=starts[first],
+            )
+        return
+
+
+def run_at(fields: List[Bits], at: int) -> Tuple[int, List[int], str]:
+    """The run of fields from 'at' whose acronyms, or else names, differ only
+    by an index and that are as wide as the first, as TSEN1 to TSEN8: the
+    index after the run, the indexes, and the acronym or name without them"""
+
+    first = fields[at]
+    longest: Tuple[int, List[int], str] = (at + 1, [], "")
+    for of in ("acronym", "name"):
+        for before, number, after in numbered(getattr(first, of)):
+            end, indexes = at + 1, [number]
+            while end < len(fields):
+                other = fields[end]
+                found = [
+                    n
+                    for b, n, a in numbered(getattr(other, of))
+                    if (b, a) == (before, after)
+                ]
+                if not found or other.width != first.width or other.kind != first.kind:
+                    break
+                indexes.append(found[0])
+                end += 1
+            if len(indexes) > len(longest[1]):
+                longest = (end, indexes, before + after)
+        if len(longest[1]) > 1:
+            break
+    return longest
+
+
+def listed_arrays(fields: List[Bits]) -> None:
+    """
+    Set 'array' on the fields of each run of three or more that a figure
+    lists in full, each numbered by the next index, as wide as the others
+    and at the offset its index gives: TSEN1 to TSEN8 of the SMART / Health
+    Information log page, an array of 8. A run of two, as SC Entry 0 and SC
+    Entry 1, may be two fields as well as an array, and is left as it is.
+    """
+
+    at = 0
+    while at < len(fields):
+        end, indexes, _ = run_at(fields, at)
+        run = fields[at:end]
+        if (
+            len(run) < 3
+            or any(f.array or f.kind != "span" or f.lower is None for f in run)
+            or sorted(indexes) != list(range(min(indexes), max(indexes) + 1))
+        ):
+            at = max(end, at + 1) if len(run) > 1 else at + 1
+            continue
+        first = min(indexes)
+        lowest = run[indexes.index(first)]
+        stride = lowest.width or 0
+        lower = lowest.lower or 0
+        if stride and all(
+            f.lower == lower + (i - first) * stride for i, f in zip(indexes, run)
+        ):
+            of = "acronym" if all(f.acronym for f in run) else "name"
+            stems = {
+                (b + a)
+                for i, f in zip(indexes, run)
+                for b, n, a in numbered(getattr(f, of))
+                if n == i
+            }
+            name = next(
+                (b + a for b, n, a in reversed(numbered(lowest.name)) if n == first),
+                lowest.name or "",
+            )
+            acronym = stems.pop() if of == "acronym" and len(stems) == 1 else None
+            for index, field in zip(indexes, run):
+                field.array = Array(
+                    name=" ".join(name.split()),
+                    acronym=acronym,
+                    index=index,
+                    first=first,
+                    count=len(run),
+                    stride=stride,
+                    lower=lower,
+                )
+        at = end
 
 
 def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
@@ -2708,6 +2845,65 @@ def link_encodings(document: SpecDocument) -> None:
                 field.byte_order = orders.pop()
 
 
+def link_runs(document: SpecDocument) -> None:
+    """
+    Link each entry of a run, fields named alike but for a last index, as
+    "SC Entry 0" and "SC Entry 1", "Descriptor 1", "Descriptor 2" and
+    "Descriptor n", to the one structure that the entries as wide link: SC Entry 1
+    of Base 2.4 Figure 361 to the Secondary Controller Entry of Figure 362,
+    as SC Entry 0 is, "defined in Figure 362". Where the entries link
+    several, they are linked to the one named as the run: Subsystem
+    Namespace Descriptor n of Boot 1.4 Figure 16, whose description cites
+    Figure 9 for the field NUMSSNS, to Subsystem Namespace (SSNS)
+    Descriptor of Figure 17, as Descriptor 1 is.
+    """
+
+    def siblings(fields: List[Bits]) -> Iterator[List[Bits]]:
+        yield fields
+        for field in fields:
+            yield from siblings(field.fields)
+
+    def stem(field: Bits) -> Optional[str]:
+        match = re.fullmatch(r"(.+?) (?:\d+|[nN]|[0-9A-F]+h)", field.name or "")
+        return match[1] if match else None
+
+    names = {
+        (s.source.document, s.source.figure_nr): alias(
+            re.sub(r"\s*\([^)]*\)", "", s.name)
+        )
+        for s in document.structures
+    }
+    lists = [s.fields for s in document.structures]
+    lists += [d.fields for described in document.dwords.values() for d in described]
+    for fields in (f for top in lists for f in siblings(top)):
+        at = 0
+        while at < len(fields):
+            named = stem(fields[at])
+            end = at + 1
+            while named and end < len(fields) and stem(fields[end]) == named:
+                end += 1
+            run, at = fields[at:end], end
+            linked = {
+                (f.structure.document, f.structure.figure_nr): f.structure
+                for f in run
+                if f.structure
+            }
+            if len(run) < 2 or not linked:
+                continue
+            if len(linked) > 1:
+                linked = {
+                    k: v
+                    for k, v in linked.items()
+                    if names.get(k) == alias(named or "")
+                }
+            if len(linked) == 1:
+                (structure,) = linked.values()
+                widths = {f.width for f in run if f.structure == structure}
+                for field in run:
+                    if field.width in widths:
+                        field.structure = structure
+
+
 def link_extended(document: SpecDocument) -> None:
     """
     Set 'extends' on each structure laying out bytes from other than byte 0
@@ -3120,6 +3316,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_operations(document, used)
     link_features(document, used)
     link_structures(document)
+    link_runs(document)
     link_extended(document)
     link_encodings(document)
     link_log_pages(document)
