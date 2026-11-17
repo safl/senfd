@@ -38,8 +38,9 @@ def unmarked(text: str, within: bool = False) -> Tuple[str, List[int]]:
     'text' without the footnote markers at its end, and the numbers of those
     footnotes; with 'within', also without the markers after a word within
     it, as of "Entered by host request³ or by ITPT idle timer⁴". Superscript
-    digits after a digit, or after a lower-case letter standing alone, are an
-    exponent, as of "2¹⁶" and "x⁶⁴", and are kept.
+    digits after a number other than 0 or 1, or after a lower-case letter
+    standing alone, are an exponent, as of "2¹⁶" and "x⁶⁴", and are kept; after
+    a lone 0 or 1 they are a marker, as of the bit size "0¹".
     """
 
     numbers: List[int] = []
@@ -50,7 +51,7 @@ def unmarked(text: str, within: bool = False) -> Tuple[str, List[int]]:
         last = text[match.end() :].strip() == ""
         # A marker may stand apart from its word, as "n/a ³"; an exponent not
         exponent = not match[0][0].isspace() and re.search(
-            r"(?:[0-9]|(?:^|[\s(+*-])[a-z])$", before
+            r"(?:(?<![0-9])[2-9]|[0-9]{2}|(?:^|[\s(+*-])[a-z])$", before
         )
         after_word = re.search(r"(?:[A-Za-z]|[.)])$", before)
         followed = re.match(r"[\s,.;:)/]|$", text[match.end() :])
@@ -60,4 +61,5 @@ def unmarked(text: str, within: bool = False) -> Tuple[str, List[int]]:
         end = match.end()
         numbers += [int(n.translate(PLAIN)) for n in re.findall(MARK, match[0])]
     kept.append(text[end:])
+    numbers = list(dict.fromkeys(numbers))
     return "".join(kept).rstrip() if numbers else text, numbers
