@@ -65,7 +65,7 @@ def test_a_command_name_is_without_its_footnote_marker(tmp_path):
     assert 10 in [d.lower for d in ring.sqe]
 
 
-def test_the_i_o_commands_of_every_i_o_command_set_are_named_common_i_o():
+def test_the_io_commands_of_every_io_command_set_are_named_common_io():
     """Base 2.4 Figure 645, "Opcodes for I/O Commands", lists the I/O
     commands of every I/O command set, as Flush; it is no command set "I/O" """
 
@@ -76,7 +76,21 @@ def test_the_i_o_commands_of_every_i_o_command_set_are_named_common_i_o():
     assert command_set_name("Admin") == "Admin"
 
 
-def test_a_command_set_has_its_kind_and_the_csi_of_an_i_o_command_set():
+def test_io_is_one_word_of_a_key():
+    """A key takes "I/O" as one word, as xNVMe's identifiers do: the key of
+    "Common I/O" is "common_io", and so for a command and a column"""
+
+    from senfd.documents.spec import alias
+    from senfd.normalize import slug
+
+    assert alias("Common I/O") == "common_io"
+    assert alias("Create I/O Completion Queue") == "create_io_completion_queue"
+    assert alias("I/O Management Receive") == "io_management_receive"
+    assert slug("I/O") == "io"
+    assert alias("Read/Write Ratio") == "read_write_ratio"
+
+
+def test_a_command_set_has_its_kind_and_the_csi_of_an_io_command_set():
     """The Common I/O commands of Base 2.4 Figure 645 are no command set and
     have no CSI; Base 2.4 Figure 337 gives 03h to the Subsystem Local Memory
     Command Set specification, whose command set is "SLM"; MI 2.2 names the
@@ -115,7 +129,7 @@ def test_a_command_set_has_its_kind_and_the_csi_of_an_i_o_command_set():
 
     document = SpecDocument()
     document.command_sets = {
-        "common_i_o": listed("Common I/O", "common_io", base),
+        "common_io": listed("Common I/O", "common_io", base),
         "slm": listed("SLM", "io", slm),
     }
     document.values = [
@@ -308,7 +322,7 @@ def test_the_values_of_a_table_are_typed(tmp_path):
         0xC1,
         0xC3,
     )
-    assert (mode.typed["i_o"].level, mode.typed["i_o"].footnotes) == ("M", [2])
+    assert (mode.typed["io"].level, mode.typed["io"].footnotes) == ("M", [2])
     assert mode.typed["admin"].note == 3
     assert mode.typed["discovery"].reference == "Bar Specification"
     spare = by_name["Foo Spare"]
@@ -316,7 +330,7 @@ def test_the_values_of_a_table_are_typed(tmp_path):
         0xC4,
         0xC7,
     )
-    assert [spare.typed[c].kind for c in ("i_o", "admin")] == [
+    assert [spare.typed[c].kind for c in ("io", "admin")] == [
         "reserved",
         "vendor_specific",
     ]
@@ -326,7 +340,7 @@ def test_the_values_of_a_table_are_typed(tmp_path):
 
     # A value of no form its column holds is an erratum, and is not typed
     assert ("value", "Maybe") in {(e.code, e.found) for e in spec.errata}
-    assert "i_o" not in by_name["Foo Odd"].typed
+    assert "io" not in by_name["Foo Odd"].typed
 
 
 def test_fields_sharing_bytes_are_the_alternatives_of_a_union(tmp_path):
@@ -2911,7 +2925,7 @@ def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
     pages = {page.identifier: page for page in spec.log_pages.values()}
     assert len(spec.log_pages) == 3
     assert pages[0x02].name == "Foo Information"
-    assert pages[0x02].columns["i_o"] == "M"
+    assert pages[0x02].columns["io"] == "M"
     assert pages[0x24].name == "Bar Default Configuration"
     assert pages[0x24].aliases == ["Bar Default Configuration Status"]
     assert pages[0x24].structure.source.figure_nr == 303

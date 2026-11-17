@@ -20,8 +20,10 @@ The data model
 --------------
 
 The ``SpecDocument`` is the data model. ``merged.spec.document.json``
-merges the data models of all the documents given. The ``SpecDocument``
-has these parts:
+merges the data models of all the documents given. A key of the data model
+is made from a name or a column header in lower case, with its words
+joined by underscores and "I/O" as one word: Create I/O Completion Queue
+is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
 
 * ``meta``: the format of the data model; the version of senfd that made
   the data model and the SHA-256 of that senfd's source; the name of the

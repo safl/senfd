@@ -101,13 +101,13 @@ def test_a_command_set_says_its_kind_and_its_csi():
 
     document = SpecDocument()
     document.command_sets = {
-        "common_i_o": CommandSet(name="Common I/O", kind="common_io"),
+        "common_io": CommandSet(name="Common I/O", kind="common_io"),
         "nvm": CommandSet(name="NVM", kind="io", identifier=0),
     }
     nodes = {n["id"]: n for n in graph_of(document)["nodes"]}
-    assert "no command set" in nodes["cs:common_i_o"]["about"]
-    assert nodes["cs:common_i_o"]["badge"] == "I/O commands"
-    assert nodes["cs:common_i_o"]["csi"] is None
+    assert "no command set" in nodes["cs:common_io"]["about"]
+    assert nodes["cs:common_io"]["badge"] == "I/O commands"
+    assert nodes["cs:common_io"]["csi"] is None
     assert (nodes["cs:nvm"]["about"], nodes["cs:nvm"]["csi"]) == ("I/O command set", 0)
 
 

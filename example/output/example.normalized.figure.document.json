@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
+    "senfd_sha256": "781a3052bc9c49ea84a35740f1ce2cd252f39dacdcd972c2411f63c2880a3fbc",
     "stem": "example",
     "file": "example.docx",
     "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -1448,7 +1448,7 @@
       "columns": [
         "command",
         "opcode",
-        "i_o",
+        "io",
         "admin",
         "discovery",
         "reference"
@@ -1458,7 +1458,7 @@
         {
           "command": "Foo Get",
           "opcode": "C2h",
-          "i_o": "M",
+          "io": "M",
           "admin": "O",
           "discovery": "P",
           "reference": "4.1"
@@ -1937,7 +1937,7 @@
       "columns": [
         "feature_name",
         "identifier",
-        "i_o",
+        "io",
         "admin",
         "discovery"
       ],
@@ -1946,28 +1946,28 @@
         {
           "feature_name": "Foo Config",
           "identifier": "C0h",
-          "i_o": "O",
+          "io": "O",
           "admin": "M",
           "discovery": "NR"
         },
         {
           "feature_name": "Foo Mode",
           "identifier": "C1h to C3h",
-          "i_o": "M 2",
+          "io": "M 2",
           "admin": "NOTE 3",
           "discovery": "Refer to the Bar Specification"
         },
         {
           "feature_name": "Foo Spare",
           "identifier": "C4h-C7h",
-          "i_o": "Reserved",
+          "io": "Reserved",
           "admin": "Vendor Specific",
           "discovery": "O"
         },
         {
           "feature_name": "Foo Odd",
           "identifier": "C8h",
-          "i_o": "Maybe",
+          "io": "Maybe",
           "admin": "O",
           "discovery": "O"
         }
@@ -3259,7 +3259,7 @@
       "columns": [
         "offset_ofst",
         "size_in_bytes",
-        "i_o_controller",
+        "io_controller",
         "administrative_controller",
         "discovery_controller",
         "name"
@@ -3269,7 +3269,7 @@
         {
           "offset_ofst": "00h",
           "size_in_bytes": "8",
-          "i_o_controller": "M",
+          "io_controller": "M",
           "administrative_controller": "M",
           "discovery_controller": "M",
           "name": "Foo Capabilities",
@@ -4606,7 +4606,7 @@
       "columns": [
         "command",
         "opcode",
-        "i_o",
+        "io",
         "admin"
       ],
       "layout": null,
@@ -4614,7 +4614,7 @@
         {
           "command": "Foo Get",
           "opcode": "C2h",
-          "i_o": "M",
+          "io": "M",
           "admin": "O"
         }
       ],
