@@ -2831,3 +2831,50 @@ def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
     assert pages[0x24].aliases == ["Bar Default Configuration Status"]
     assert pages[0x24].structure.source.figure_nr == 303
     assert pages[0x12].structure.name == "Baz Effects"
+
+
+def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
+    """Base 2.4 Figures 216 and 217 are the log page and the data structure
+    "Commands Supported and Effects"; NVM 1.3 Figure 190 has the caption of
+    Figure 189 and is the layout of RENSCS"""
+
+    spec = document_of(
+        figure_of(
+            216,
+            "Foo Effects Log Page",
+            ("Bytes", "Description"),
+            ("00", "Foo (FOO): The foo."),
+        ),
+        figure_of(
+            217,
+            "Foo Effects Data Structure",
+            ("Bits", "Description"),
+            ("0", "Bar (BAR): The bar."),
+        ),
+        figure_of(
+            183,
+            "Reference State",
+            ("Bytes", "Description"),
+            ("03:00", "Reference Controller State (RCS): Refer to Figure 189."),
+            ("07:04", "Reference Namespace State (RNS): Refer to Figure 190."),
+        ),
+        figure_of(
+            189,
+            "Reference Controller State",
+            ("Bytes", "Description"),
+            ("03:00", "Ding (DING): A ding."),
+        ),
+        figure_of(
+            190,
+            "Reference Controller State",
+            ("Bytes", "Description"),
+            ("03:00", "Ring (RING): A ring."),
+        ),
+    )
+    names = {s.source.figure_nr: s.name for s in spec.structures}
+    assert names[216] == "Foo Effects"
+    assert names[217] == "Foo Effects Data Structure"
+    assert names[189] == "Reference Controller State"
+    assert names[190] == "Reference Namespace State"
+    (erratum,) = [e for e in spec.errata if e.code == "caption"]
+    assert erratum.source.figure_nr == 190

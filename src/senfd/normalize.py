@@ -469,13 +469,19 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
             r"^" + NAME + r" Requirements$",
         ],
     ),
-    ("log_page", [r"^" + NAME + r" Log Page(?: Entry| for (?P<qualifier>.+))?$"]),
+    # An entry of a list is a data structure, named with "Entry", as "AVE
+    # Discovery Log Page Entry" of Base 2.4 Figure 328 beside its log page
+    (
+        "data_structure",
+        [r"^" + NAME + r"(?: -)? (?:Log Page|(?:Data )?Structure) (?P<entry>Entry)$"],
+    ),
+    ("log_page", [r"^" + NAME + r"(?: -)? Log Page(?: for (?P<qualifier>.+))?$"]),
     (
         "data_structure",
         [
             r"^"
             + NAME
-            + r"(?: -)? (?:Data )?Structure(?: Entry| for (?P<qualifier>.+)|, (?P<qualifier2>.+))?$"
+            + r"(?: -)? (?:Data )?Structure(?: for (?P<qualifier>.+)|, (?P<qualifier2>.+))?$"
         ],
     ),
 ]
@@ -494,6 +500,8 @@ def parse_caption(caption: str) -> Subject:
             }
             if "qualifier2" in groups:
                 groups["qualifier"] = groups.pop("qualifier2")
+            if groups.pop("entry", None):
+                groups["name"] = f"{groups['name']} Entry"
             for bound in ("lower", "upper"):
                 if bound in groups:
                     groups[bound] = int(groups[bound])

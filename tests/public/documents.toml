@@ -82,7 +82,7 @@ commands = 8
 features = 6
 log_pages = 8
 structures = 63
-errata = 0
+errata = 1
 document_errors = 0
 not_modelled = 4
 
