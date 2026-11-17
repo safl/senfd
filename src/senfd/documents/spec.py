@@ -876,28 +876,27 @@ def without_footnote(name: str) -> str:
     return re.sub(r"(?<=[A-Za-z)])\s*\d+(?:,\s*\d+)*$", "", name)
 
 
-REGEX_COMMAND_SET_TITLE = re.compile(r"^(?P<name>.+?) Command Set(?: \([^)]*\))?$")
+REGEX_MECHANISM = re.compile(r"\s+(?:using|over)\s+an?\s+[\w-]+\s+Mechanism$")
 
 
-def command_set_name(name: str, section_title: str = "") -> str:
+def command_set_name(name: str) -> str:
     """
-    The name of a command set: the one its section's title gives, as "PCIe"
-    of "PCIe Command Set (Optional)" in MI 2.2, whose opcode table is
-    captioned "Opcodes for PCIe Commands using an Out-of-Band Mechanism";
-    else the one its opcode table's caption gives, without "Command Set" and
-    "I/O" after it: "NVM Command Set" is "NVM". The I/O commands of the Base
-    specification, of a table captioned "Opcodes for I/O Commands", are no
-    command set but the commands of every I/O command set, which Base 2.4
-    calls common I/O commands; their name is "Common I/O".
+    The name of a command set, as its opcode table's caption gives it, without
+    "Command Set" and "I/O" after it and without the mechanism it is used
+    over: "NVM Command Set" is "NVM", and "PCIe Commands using an
+    Out-of-Band Mechanism" of MI 2.2 Figure 151 is "PCIe Commands", the term
+    of MI 2.2 section 7, whose key differs from that of the PCIe transport.
+    The I/O commands of the Base specification, of a table captioned
+    "Opcodes for I/O Commands", are no command set but the commands of
+    every I/O command set, which Base 2.4 calls common I/O commands; their
+    name is "Common I/O".
     """
 
-    titled = REGEX_COMMAND_SET_TITLE.match(section_title.strip())
-    if titled:
-        return titled["name"]
-    stripped = re.sub(r"(?:\s+Command Set)?(?:\s+I/O)?$", "", name.strip())
-    if name.strip() == "I/O":
+    name = REGEX_MECHANISM.sub("", name.strip())
+    stripped = re.sub(r"(?:\s+Command Set)?(?:\s+I/O)?$", "", name)
+    if name == "I/O":
         return "Common I/O"
-    return stripped or name.strip()
+    return stripped or name
 
 
 def command_set_kind(name: str, document: str) -> CommandSetKind:
@@ -1801,7 +1800,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             subject = titled
 
     if figure.shape == "opcode" and subject.kind == "opcodes" and subject.name:
-        set_name = command_set_name(subject.name, figure.section_title or "")
+        set_name = command_set_name(subject.name)
         command_set = document.command_sets.setdefault(
             alias(set_name),
             CommandSet(name=set_name, kind=command_set_kind(set_name, source.document)),
