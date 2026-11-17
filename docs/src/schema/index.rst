@@ -69,7 +69,12 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   Structure", and a figure with the caption of another takes the name of
   the field it lays out, which is a candidate erratum. An entry of a list,
   as "AVE Discovery Log Page Entry", is a data structure named with
-  "Entry". A table whose rows name the structure each field is of, as
+  "Entry". The layout that all command sets share, Base 2.4 Figure 97,
+  is named "Completion Queue Entry" with the qualifier "Admin and All I/O
+  Command Sets". A field whose description cites a section is linked by
+  ``structure`` to the layout there of the same bits, as STATUS of Figure
+  99 to the Status Field of Figure 101. A table whose rows name the
+  structure each field is of, as
   NVM 1.3 Figure 188, has the kind ``cited_fields``, and a table mapping
   the bytes of one message to another, as MI 2.2 Figure 49, the kind
   ``mapping``; neither lays out a structure of its own. A structure that lays out

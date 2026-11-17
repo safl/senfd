@@ -104,6 +104,13 @@ def test_a_caption_is_parsed_for_its_subject():
     register = parse_caption("Offset 10h: FOOCAP - Foo Capabilities")
     assert (register.kind, register.offset) == ("register", "10h")
     assert parse_caption("Foo Overview").kind == "other"
+    common = parse_caption("Common Foo Entry Layout - Admin and All Foo Sets")
+    assert (common.kind, common.name, common.qualifier) == (
+        "other",
+        "Foo Entry",
+        "Admin and All Foo Sets",
+    )
+    assert parse_caption("Foo Entry Layout").name == "Foo Entry Layout"
 
 
 def test_every_shape_and_caption_kind_has_a_figure_in_the_example(normalized):

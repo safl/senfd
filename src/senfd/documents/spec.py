@@ -3474,6 +3474,22 @@ def link_structures(document: SpecDocument) -> None:
         }
         return [k for k in keys if all(bounds[k] <= bounds[o] for o in keys if o != k)]
 
+    def spanning(field: Bits, source: Source) -> List[Tuple[str, int]]:
+        # A layout of bits at the positions they have in the dword, as the
+        # Status Field of Base 2.4 Figure 101 at bits 31:17 as STATUS
+        return [
+            key
+            for key, structure in structures.items()
+            if key[0] == source.document
+            and key[1] != source.figure_nr
+            and field.unit == "bits"
+            and structure.unit == "bits"
+            and structure.fields
+            and min(f.lower or 0 for f in structure.fields) == field.lower
+            and max(f.upper or 0 for f in structure.fields) == field.upper
+            and widths[key] != (field.width or 0)
+        ]
+
     def laying_out(field: Bits, source: Source) -> Optional[Source]:
         size = field.array.stride if field.array else field.width
         bits = (size or 0) * (8 if field.unit == "bytes" else 1)
@@ -3493,7 +3509,7 @@ def link_structures(document: SpecDocument) -> None:
             sections = set(REGEX_SECTION.findall(field.description))
             found = [
                 key
-                for key in others
+                for key in [*others, *spanning(field, source)]
                 if structures[key].source.section in sections
                 and [f.acronym for f in structures[key].fields] != [field.acronym]
             ]

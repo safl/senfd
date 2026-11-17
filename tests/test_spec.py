@@ -3754,3 +3754,28 @@ def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidi
         "Foo Identify Namespace Data Structure",
         "Foo Identify Namespace Data Structure for the specified Format Index",
     ]
+
+
+def test_a_field_is_linked_to_the_layout_of_its_bits_in_the_section_it_cites():
+    """STATUS of Base 2.4 Figure 99, bits 31:17, refers to section 4.2.3,
+    whose Figure 101 lays out the Status Field at bits 31:17 of the dword"""
+
+    dword = figure_of(
+        99,
+        "Foo Entry: DW 3",
+        ("Bits", "Description"),
+        ("31:17", "Status (STATUS): The status. Refer to section 4.2.3."),
+        ("16:00", "Foo Identifier (FID): The identifier."),
+    )
+    status = figure_of(
+        101,
+        "Foo Entry: Status Field",
+        ("Bits", "Description"),
+        ("31", "Do Not Retry (DNR): Do not."),
+        ("30:17", "Status Code (SC): The code."),
+    )
+    dword.section, status.section = "4.2.1", "4.2.3"
+    spec = document_of(dword, status)
+    fields = {f.acronym: f for s in spec.structures for f in s.fields}
+    assert fields["STATUS"].structure.figure_nr == 101
+    assert fields["FID"].structure is None
