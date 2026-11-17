@@ -1001,3 +1001,43 @@ def test_an_entry_of_a_list_is_a_data_structure_named_with_entry():
     assert (page.kind, page.name) == ("log_page", "Management Address List")
     mapping = parse_caption("Foo Request Message to Admin Command SQE Mapping Table")
     assert mapping.kind == "mapping"
+
+
+def test_a_second_table_in_a_cell_whose_first_column_is_no_value_is_no_values():
+    """MEB of MI 2.2 Figure 20 has its values, 0b and 1b, and then a table
+    of the usage requirements by mechanism and MEB value"""
+
+    from senfd.documents.normalized import LayoutField, read_nested
+    from senfd.normalize import Range
+    from senfd.tables import Cell, Row, Table
+
+    def table(*rows):
+        return Table(rows=[Row(cells=[Cell(text=t) for t in row]) for row in rows])
+
+    field = LayoutField(
+        range=Range(unit="bits", text="0", upper=0, lower=0),
+        name="Foo Buffer",
+        acronym="FB",
+        description="",
+    )
+    diagnostics = []
+    read_nested(
+        table(
+            ("Value", "Description"),
+            ("0b", "In the message."),
+            ("1b", "In the buffer."),
+        ),
+        field,
+        diagnostics,
+    )
+    read_nested(
+        table(
+            ("Mechanism", "FB Value", "Usage Requirement"),
+            ("Out-of-band", "0", "Permitted."),
+        ),
+        field,
+        diagnostics,
+    )
+
+    assert [v["value"] for v in field.values] == ["0b", "1b"]
+    assert [d.code for d in diagnostics] == ["nested-table"]

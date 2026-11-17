@@ -590,8 +590,28 @@ def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
     layout = parse_nested(table, diagnostics)
     if layout:
         into.layouts.append(layout)
-    else:
-        into.values += parse_nested_values(table, diagnostics)
+        return
+    idx, headers, grid, _ = find_header(table.rows)
+    if into.values and idx is not None and not is_value_column(grid[0]):
+        # A second table whose first column is no value, as the usage
+        # requirements by mechanism and MEB value of MEB of MI 2.2 Figure 20,
+        # says something of the values; its rows are none of them
+        diagnostics.append(
+            warning(
+                "nested-table",
+                f"Field {getattr(into, 'name', None) or ''}: a second table, "
+                f"of {', '.join(dict.fromkeys(normalize_text(h) for h in headers))}, "
+                "is not of its values; not modelled",
+            )
+        )
+        return
+    into.values += parse_nested_values(table, diagnostics)
+
+
+def is_value_column(column: str) -> bool:
+    """Whether a column holds the values of a field, as "value" or "pit_value" """
+
+    return column in ("value", "code") or column.endswith("_value")
 
 
 REGEX_OTHERWISE = re.compile(r"^all other(?:s| values)?$", flags=re.IGNORECASE)
