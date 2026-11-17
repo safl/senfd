@@ -3590,3 +3590,63 @@ def test_the_dwords_of_an_operation_within_one_field_refine_that_field():
     assert refined_by(command, dwords(bits("14:09"), bits("08", "FDPET"))) == "LSP"
     assert refined_by(command, dwords(bits("15:08", "FOO"))) is None
     assert refined_by(command, dwords(bits("31:00", "BAR"))) is None
+
+
+def test_an_encoding_and_a_byte_order_are_taken_where_the_text_states_them():
+    """The paragraph referring to Base 2.4 Figure 215 says "The firmware
+    revision is indicated as an ASCII string"; every NQN is UTF-8 as SUBNQN
+    of Figure 338 says; NGUID of KV 1.4 Figure 42 refers to another
+    document, whose NGUID is big-endian; a one-byte field has no byte order,
+    whatever the description says of its dword"""
+
+    from senfd.documents.spec import merge
+
+    slots = figure_of(
+        215,
+        "Foo Slot Information Log Page",
+        ("Bytes", "Description"),
+        ("07:00", "Foo Revision for Slot 1 (FRS1): The revision in slot 1."),
+    )
+    slots.mentions = ["The foo revision is indicated as an ASCII string."]
+    base = document_of(
+        slots,
+        figure_of(
+            338,
+            "Foo Controller Data Structure",
+            ("Bytes", "Description"),
+            ("255:00", "Foo NQN (FOONQN): The NQN as a UTF-8 null-terminated string."),
+            ("271:256", "Foo GUID (FGUID): The GUID. This field is big endian."),
+            (
+                "272",
+                "Foo Opcode (FOPC): The byte ordering of the dword is little endian.",
+            ),
+        ),
+        figure_of(
+            328,
+            "Bar Entry Data Structure",
+            ("Bytes", "Description"),
+            ("255:00", "Bar NQN (BARNQN): The NQN, a null-terminated string."),
+        ),
+        stem="Base",
+    )
+    kv = document_of(
+        figure_of(
+            42,
+            "Bar Namespace Data Structure",
+            ("Bytes", "Description"),
+            ("15:00", "Foo GUID (FGUID): Refer to the Base specification."),
+        ),
+        stem="KV",
+    )
+    spec = merge([base, kv])
+    fields = {
+        (s.source.document, f.acronym): f for s in spec.structures for f in s.fields
+    }
+    assert fields[("Base", "FRS1")].encoding == "ascii"
+    nqn = fields[("Base", "BARNQN")]
+    assert (nqn.encoding, nqn.encoding_from.figure_nr) == ("utf-8", 338)
+    assert fields[("Base", "FOONQN")].encoding_from is None
+    guid = fields[("KV", "FGUID")]
+    assert (guid.byte_order, guid.byte_order_from.document) == ("big-endian", "Base")
+    assert fields[("Base", "FGUID")].byte_order_from is None
+    assert fields[("Base", "FOPC")].byte_order is None

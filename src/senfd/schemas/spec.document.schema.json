@@ -325,6 +325,30 @@
                     "description": "What the field's bytes encode where its description says: \"ascii\"\nfor \"as an ASCII string\", \"utf-8\" for \"a UTF-8 null-terminated string\",\n\"uuid\" for \"a 128-bit Universally Unique Identifier (UUID)\"; or what\nthe field it has the value of encodes, as FR of NVM 1.3 Figure 189, \"the\nvalue of the FR field in the Identify Controller data structure\" ",
                     "title": "Encoding"
                 },
+                "encoding_from": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Where 'encoding' is not stated for the field but taken from another\nfield, the figure of that field: AVENQN of Base 2.4 Figure 328, an NQN,\ntakes \"utf-8\" from SUBNQN of Figure 338. None where it is stated"
+                },
+                "byte_order_from": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Where 'byte_order' is not stated for the field but taken from a field\nof the same name, acronym and width in another document, the figure of\nthat field: NGUID of KV 1.4 Figure 42 from NVM 1.3 Figure 123. None\nwhere it is stated"
+                },
                 "footnotes": {
                     "description": "The numbers of the footnotes marked on the name, at the end of the\ndescription, and on the other columns",
                     "items": {

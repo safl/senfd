@@ -79,7 +79,15 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   out. A field has ``encoding``, "ascii", "utf-8" or "uuid", where its
   description states it, as "as an ASCII string", or where it has the
   value of a field that has one, and ``byte_order`` where its description
-  states that, as "This field is big endian". A run of three or more fields
+  states that, as "This field is big endian". A paragraph referring to the
+  figure states an encoding too, as "The firmware revision is indicated as
+  an ASCII string" of the Firmware Slot Information log page. Every NQN
+  field takes the encoding of the NQN fields that state one, and a field
+  takes the byte order or encoding of the fields of the same name, acronym
+  and width in other documents that state it, as NGUID of KV 1.4 does from
+  NVM 1.3. A taken encoding or byte order gives the figure it is from in
+  ``encoding_from`` or ``byte_order_from``; a field of one byte has no byte
+  order. A run of three or more fields
   listed in full, as TSEN1 to TSEN8, is an ``array`` as a run with rows
   left out is, and a field of a group of rows that a column names by an
   index, as "Source Range 0" to "Source Range 127", has ``group``, the
