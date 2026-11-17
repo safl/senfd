@@ -4050,7 +4050,9 @@ def distinct_names(document: SpecDocument) -> None:
     NVM 1.3 Figure 190 has the caption of Figure 189, "Reference Exported
     Controller Configuration State", and is the layout of RENSCS, Reference
     Exported Namespace Configuration State. The caption is a candidate
-    erratum.
+    erratum. Of two whose qualifiers differ, each is named with its
+    qualifier: Base 2.4 Figures 479 and 480 are "Timestamp (Set Features)"
+    and "Timestamp (Get Features)".
     """
 
     groups: Dict[Tuple[str, str], List[Structure]] = {}
@@ -4072,7 +4074,14 @@ def distinct_names(document: SpecDocument) -> None:
                 if structure is not keep and structure.kind in STRUCTURE_WORDS:
                     structure.name = f"{name} {STRUCTURE_WORDS[structure.kind]}"
             continue
-        if len(set(kinds)) > 1 or any(s.qualifier for s in same):
+        qualifiers = [s.qualifier for s in same]
+        if any(qualifiers):
+            if len(set(qualifiers)) == len(same):
+                for structure in same:
+                    if structure.qualifier:
+                        structure.name = f"{name} ({structure.qualifier})"
+            continue
+        if len(set(kinds)) > 1:
             continue
         for structure in same[1:]:
             source = structure.source
