@@ -3019,3 +3019,63 @@ def test_fields_numbered_in_hexadecimal_with_rows_left_out_are_an_array():
         (516, "acronym", "BPS"),
         (517, "acronym", ""),
     ]
+
+
+def test_a_layout_of_bytes_of_another_structure_extends_it():
+    """NVM 1.3 Figure 126 lays out AWUN, AWUPF and ACWU, bytes 527:526 to
+    533:532 of Identify Controller, Base 2.4 Figure 338, which has them
+    too; MI 2.2 Figure 41 lays out bytes 07:06, which the text calls "the
+    CPSR field in the Control Primitive Success Response", of Figure 40"""
+
+    from senfd.documents.spec import resolve
+
+    base = document_of(
+        figure_of(
+            338,
+            "Foo Controller Data Structure",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Identifier (FID)"),
+            ("03:02", "Foo Write Unit (FWU)"),
+            ("07:04", "Foo Atomic Unit (FAU)"),
+        ),
+        stem="base",
+    )
+    figure = figure_of(
+        41,
+        "Pause Foo Response Fields",
+        ("Bytes", "Description"),
+        ("07:06", "Pause Flags (PFL)"),
+    )
+    figure.mentions = [
+        "The format of the FSR field in the Foo Response is shown in Figure 41."
+    ]
+    command_set = document_of(
+        figure_of(
+            126,
+            "Foo Controller Data Structure",
+            ("Bytes", "Description"),
+            ("03:02", "Foo Write Unit (FWU): For this command set."),
+            ("07:04", "Foo Atomic Unit (FAU): For this command set."),
+        ),
+        figure_of(
+            40,
+            "Foo Response Fields",
+            ("Bytes", "Description"),
+            ("05:00", "Reserved"),
+            ("07:06", "Foo Specific Response (FSR)"),
+        ),
+        figure,
+        stem="nvm",
+    )
+    command_set.structures += base.structures
+    resolved = resolve(command_set)
+    extends = {
+        s.source.figure_nr: (s.extends and s.extends.figure_nr, s.extends_field)
+        for s in resolved.structures
+    }
+    assert extends == {
+        126: (338, None),
+        40: (None, None),
+        41: (40, "FSR"),
+        338: (None, None),
+    }

@@ -473,6 +473,13 @@ class Structure(Model):
     """The notes of the figure"""
     source: Source
     """The figure laying it out"""
+    extends: Optional[Source] = None
+    """Of a layout of some of the bytes of another structure, the figure of
+    that structure: NVM 1.3 Figure 126, AWUN, AWUPF and ACWU, extends
+    Identify Controller, Base 2.4 Figure 338"""
+    extends_field: Optional[str] = None
+    """The acronym of the field of that structure this one lays out, where
+    the text names it: CPSR, of MI 2.2 Figure 40, for Figure 41"""
 
 
 TypedKind = Literal[
@@ -1654,6 +1661,57 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             source=source,
         )
     )
+    made = document.structures[-1]
+    found = extended_by_text(made, figure.mentions, document.structures[:-1])
+    if found:
+        made.extends, made.extends_field = found
+
+
+def first_byte(structure: Structure) -> Optional[int]:
+    """The lowest byte a field of 'structure' lays out, None for bits"""
+
+    if structure.unit != "bytes":
+        return None
+    lowers = [f.lower for f in structure.fields if f.kind == "span"]
+    return min((low for low in lowers if low is not None), default=None)
+
+
+def extended_by_text(
+    structure: Structure, mentions: List[str], before: List[Structure]
+) -> Optional[Tuple[Source, Optional[str]]]:
+    """
+    The structure among 'before', of the same document, that 'structure', a
+    layout of bytes from other than byte 0, extends, as its text says, and
+    the field it lays out: "The format of the CPSR field in the Control
+    Primitive Success Response is shown in Figure 41", for the one field
+    CPSR of a structure from byte 0 holding Figure 41's bytes.
+    """
+
+    lowest = first_byte(structure)
+    if not lowest:
+        return None
+    upper = max(f.upper or 0 for f in structure.fields if f.kind == "span")
+    number = structure.source.figure_nr
+    whole = [s for s in before if first_byte(s) == 0]
+    for mention in mentions:
+        match = re.search(
+            r"format of the (?P<acronym>[A-Z][A-Z0-9]+) field\b.* is shown in "
+            rf"Figure {number}\b",
+            mention,
+        )
+        if match:
+            holding = [
+                s
+                for s in whole
+                for f in s.fields
+                if f.acronym == match["acronym"]
+                and f.kind == "span"
+                and (f.lower or 0) <= lowest
+                and (f.upper or 0) >= upper
+            ]
+            if len(holding) == 1:
+                return holding[0].source, match["acronym"]
+    return None
 
 
 FOOTNOTES = r"(?P<footnotes>(?:\s*\d+(?:,\s*\d+)*)?)"
@@ -2559,6 +2617,45 @@ def bits_wide(structure: Structure) -> Optional[int]:
     return (upper + 1) * (8 if structure.unit == "bytes" else 1)
 
 
+def link_extended(document: SpecDocument) -> None:
+    """
+    Set 'extends' on each structure laying out bytes from other than byte 0
+    that its text gave none, to the structure from byte 0 with the most
+    fields of the same acronym and bytes, preferring one of another
+    document: NVM 1.3 Figure 126, AWUN at 527:526, AWUPF and ACWU, extends
+    Identify Controller of Base 2.4 Figure 338, which has them too. Where
+    two structures have as many, it extends neither.
+    """
+
+    whole = [s for s in document.structures if first_byte(s) == 0]
+    keyed = [
+        (s, {(f.acronym, f.lower, f.upper) for f in s.fields if f.acronym})
+        for s in whole
+    ]
+    for structure in document.structures:
+        if structure.extends or not first_byte(structure):
+            continue
+        own = {
+            (f.acronym, f.lower, f.upper)
+            for f in structure.fields
+            if f.acronym and f.kind == "span"
+        }
+        scored = sorted(
+            (
+                (
+                    len(own & fields),
+                    other.source.document != structure.source.document,
+                ),
+                at,
+            )
+            for at, (other, fields) in enumerate(keyed)
+            if own & fields
+        )
+        if not scored or len(scored) > 1 and scored[-1][0] == scored[-2][0]:
+            continue
+        structure.extends = keyed[scored[-1][1]][0].source
+
+
 def link_structures(document: SpecDocument) -> None:
     """
     Set 'structure' on each field that has no subfields and whose description
@@ -2932,6 +3029,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_operations(document, used)
     link_features(document, used)
     link_structures(document)
+    link_extended(document)
     link_log_pages(document)
     link_values(document)
     link_selections(document)

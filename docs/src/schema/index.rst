@@ -60,7 +60,11 @@ has these parts:
   "Entry". A table whose rows name the structure each field is of, as
   NVM 1.3 Figure 188, has the kind ``cited_fields``, and a table mapping
   the bytes of one message to another, as MI 2.2 Figure 49, the kind
-  ``mapping``; neither lays out a structure of its own.
+  ``mapping``; neither lays out a structure of its own. A structure that lays out
+  some bytes of another, as NVM 1.3 Figure 126 lays out AWUN, AWUPF and
+  ACWU of Identify Controller, has ``extends``, the figure of that
+  structure, and ``extends_field`` where its text names the field it lays
+  out.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

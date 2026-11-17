@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "0203b13dc000ded902b877f0b3512b2f557ffbbe5045f22f4d593f6c527325af",
+    "senfd_sha256": "8bb48554002d8e365f33cea2102126b673e085adb3a10946d755c8f0b1ff736d",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "9aa5dab14ec76160e76ea118ab13af3d2e711c4d0e1d60ac3ad2a86fe6e4d0df"
+    "combined_sha256": "a9765ea158c3da70f97174d6880bed389fb3ec23a18a94fc4a83b5ab6da106d6"
   },
   "command_sets": {
     "foobar": {
@@ -3319,7 +3319,9 @@
         "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Dong - Data",
@@ -3364,7 +3366,9 @@
         "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Command Dword 11 - CNS Specific Identifier",
@@ -3436,7 +3440,9 @@
         "pdf_page": null,
         "section": "2",
         "section_title": "Admin Commands"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Command Dword 0",
@@ -3481,7 +3487,9 @@
         "pdf_page": null,
         "section": "2",
         "section_title": "Admin Commands"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Get - Log Specific Identifier",
@@ -3526,7 +3534,9 @@
         "pdf_page": null,
         "section": "2",
         "section_title": "Admin Commands"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Statistics Data Structure",
@@ -3680,7 +3690,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Identify - Foo Namespace",
@@ -3725,7 +3737,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "FB Format",
@@ -3770,7 +3784,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Statistics",
@@ -3815,7 +3831,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Example Foo Element returned by Foo Statistics Log Page",
@@ -3860,7 +3878,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo - Create Queue Specific",
@@ -3932,7 +3952,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "PRP Entry - Foo Layout",
@@ -4004,7 +4026,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo - Management Operation Specific",
@@ -4049,7 +4073,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Report Data for Foo Zones",
@@ -4094,7 +4120,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Management - Host Software Specified Fields",
@@ -4139,7 +4167,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "FOOCAP - Foo Capabilities",
@@ -4217,7 +4247,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Get - Foo Specific Fields",
@@ -4262,7 +4294,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Submission Queue Entry",
@@ -4307,7 +4341,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Descriptor",
@@ -4352,7 +4388,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Completion Queue Entry Layout - Foo",
@@ -4397,7 +4435,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Event Data Format (Event Type 02h)",
@@ -4442,7 +4482,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Response",
@@ -4487,7 +4529,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Attributes Entry",
@@ -4532,7 +4576,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Additional Hardware Error Information - Foo",
@@ -4577,7 +4623,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Request Fields",
@@ -4622,7 +4670,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Request PDU (FooReq)",
@@ -4669,7 +4719,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo to Bar",
@@ -4716,7 +4768,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Bar",
@@ -4968,7 +5022,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Completion Queue Entry Dword 0 when Foo is set to 1b",
@@ -5013,7 +5069,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "BARCTL - Bar Control",
@@ -5091,7 +5149,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Bar Directive - Bar Report",
@@ -5136,7 +5196,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Numbered Layout",
@@ -5181,7 +5243,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Indented Layout",
@@ -5226,7 +5290,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Wrapped Layout",
@@ -5271,7 +5337,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Joined Layout",
@@ -5316,7 +5384,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Joining Layout",
@@ -5361,7 +5431,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Address",
@@ -5514,7 +5586,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Size Fields",
@@ -5590,7 +5664,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Table",
@@ -5743,7 +5819,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Entry",
@@ -5897,7 +5975,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo List",
@@ -6064,7 +6144,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Results",
@@ -6244,7 +6326,9 @@
         "pdf_page": null,
         "section": "4",
         "section_title": "Data Structures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "FOOVER - Foo Version",
@@ -6316,7 +6400,9 @@
         "pdf_page": null,
         "section": "4.1",
         "section_title": "Offset 18h: FOOVER – Foo Version"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Baz Capabilities",
@@ -6579,7 +6665,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Qux",
@@ -6665,7 +6753,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Qux List",
@@ -6968,7 +7058,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Qux Format",
@@ -7040,7 +7132,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Qux Vector",
@@ -7112,7 +7206,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Qux Guard Format",
@@ -7190,7 +7286,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "Foo Message to Admin Command SQE",
@@ -7262,7 +7360,9 @@
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     },
     {
       "name": "A byte-table with an embedded bit-table",
@@ -7443,7 +7543,9 @@
         "pdf_page": null,
         "section": "1.1",
         "section_title": "FIgures"
-      }
+      },
+      "extends": null,
+      "extends_field": null
     }
   ],
   "values": [
@@ -9161,7 +9263,9 @@
           "pdf_page": null,
           "section": "4",
           "section_title": "Data Structures"
-        }
+        },
+        "extends": null,
+        "extends_field": null
       },
       "source": {
         "document": "example",
@@ -9237,7 +9341,9 @@
           "pdf_page": null,
           "section": "4",
           "section_title": "Data Structures"
-        }
+        },
+        "extends": null,
+        "extends_field": null
       },
       "source": {
         "document": "example",
@@ -9603,7 +9709,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "0203b13dc000ded902b877f0b3512b2f557ffbbe5045f22f4d593f6c527325af",
+      "senfd_sha256": "8bb48554002d8e365f33cea2102126b673e085adb3a10946d755c8f0b1ff736d",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -9613,7 +9719,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "0203b13dc000ded902b877f0b3512b2f557ffbbe5045f22f4d593f6c527325af",
+      "senfd_sha256": "8bb48554002d8e365f33cea2102126b673e085adb3a10946d755c8f0b1ff736d",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",
