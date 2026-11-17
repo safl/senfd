@@ -110,18 +110,18 @@ figure that defines it.
 What senfd finds
 ----------------
 
-Each finding is a candidate. A person decides whether the figure or senfd
-is wrong. A figure of a shape that senfd does not know is a gap for senfd
-to close. The eleven documents ratified in 2026, as NVM Express publishes
-them as PDF, give these findings: 12 candidate errata and 9 document
-errors for the authors, and 14 rows that name no field, 19 figures that
-senfd does not model, 16 worked examples and 19 unassigned dwords. Six of
-the candidate errata are formulas in Base 2.4, Figure 432. In five of
-them, the upper bound of a range, "... + 59", is below its lower bound,
-"... + 60". Three of the document errors are the tracked changes with
-which the PDFs of Base 2.4, Boot 1.4 and Management Interface 2.2 are
-printed. On a draft, the same run takes minutes and checks every figure
-in the same way.
+Each finding is a candidate. A person decides whether the figure or senfd is
+wrong. A figure of a shape that senfd does not know is a gap for senfd to
+close. The eleven documents ratified in 2026, as NVM Express publishes them
+as PDF, give these findings with senfd 0.23.0: 27 candidate errata and 12
+document errors for the authors, and 13 rows that name no field, 17 figures
+that senfd does not model, 16 worked examples, and one figure of dwords that
+no command claims. Six of the candidate errata are formulas in Base 2.4,
+Figure 432. In five of them, the upper bound of a range, "... + 59", is
+below its lower bound, "... + 60". Three of the document errors are the
+tracked changes with which the PDFs of Base 2.4, Boot 1.4 and Management
+Interface 2.2 are printed. On a draft, the same run takes minutes and checks
+every figure in the same way.
 
 .. raw:: html
 
