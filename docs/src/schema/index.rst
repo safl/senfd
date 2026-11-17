@@ -57,7 +57,10 @@ has these parts:
   Structure", and a figure with the caption of another takes the name of
   the field it lays out, which is a candidate erratum. An entry of a list,
   as "AVE Discovery Log Page Entry", is a data structure named with
-  "Entry".
+  "Entry". A table whose rows name the structure each field is of, as
+  NVM 1.3 Figure 188, has the kind ``cited_fields``, and a table mapping
+  the bytes of one message to another, as MI 2.2 Figure 49, the kind
+  ``mapping``; neither lays out a structure of its own.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

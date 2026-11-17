@@ -999,3 +999,5 @@ def test_an_entry_of_a_list_is_a_data_structure_named_with_entry():
     assert entry.name == "Autonomous Power State Transition Entry"
     page = parse_caption("Management Address List - Log Page")
     assert (page.kind, page.name) == ("log_page", "Management Address List")
+    mapping = parse_caption("Foo Request Message to Admin Command SQE Mapping Table")
+    assert mapping.kind == "mapping"

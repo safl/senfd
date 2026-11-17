@@ -13,7 +13,7 @@ th { background-color: #f2f2f2; }
 
 
 <h1>example</h1>
-<p>100 figures, 0 skipped, 1 not tables, 9 diagnostics</p>
+<p>101 figures, 0 skipped, 1 not tables, 9 diagnostics</p>
 
 
 <h3>Figure 1: Opcodes for Foobar Command Set Commands</h3>
@@ -1288,7 +1288,7 @@ th { background-color: #f2f2f2; }
 
 
 <h3>Figure 67: Foo to Bar Mapping Table</h3>
-<p>Subject: other, name: Foo to Bar Mapping Table. Shape: layout.</p>
+<p>Subject: mapping, name: Foo to Bar. Shape: layout.</p>
 
 <table>
 <tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
@@ -2352,6 +2352,35 @@ th { background-color: #f2f2f2; }
   <td>Qux Action</td>
   <td>QA</td>
   <td>
+  </td>
+  <td></td>
+</tr>
+
+</table>
+
+
+
+
+<h3>Figure 102: Foo Message to Admin Command SQE Mapping Table</h3>
+<p>Subject: mapping, name: Foo Message to Admin Command SQE. Shape: layout.</p>
+
+<table>
+<tr><th>bytes</th><th>Name</th><th>Acronym</th><th>Description</th><th>Columns</th></tr>
+
+<tr>
+  <td>03:00</td>
+  <td>Foo Opcode</td>
+  <td>FOPC</td>
+  <td>Is the opcode of the command.
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>07:04</td>
+  <td>Foo Flags</td>
+  <td>FFLG</td>
+  <td>Are the flags of the command.
   </td>
   <td></td>
 </tr>

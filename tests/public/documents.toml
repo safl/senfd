@@ -30,7 +30,7 @@ commands = 0
 features = 0
 log_pages = 0
 structures = 19
-errata = 0
+errata = 1
 document_errors = 1
 not_modelled = 2
 
@@ -82,7 +82,7 @@ commands = 8
 features = 6
 log_pages = 8
 structures = 63
-errata = 1
+errata = 2
 document_errors = 0
 not_modelled = 4
 
@@ -134,7 +134,7 @@ commands = 4
 features = 0
 log_pages = 3
 structures = 6
-errata = 0
+errata = 2
 document_errors = 0
 not_modelled = 0
 

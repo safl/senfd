@@ -556,6 +556,8 @@
                         "requirements",
                         "log_page",
                         "data_structure",
+                        "mapping",
+                        "cited_fields",
                         "other"
                     ],
                     "title": "Kind",

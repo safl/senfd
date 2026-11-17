@@ -2,10 +2,10 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "c81992bf50385bbdc4b355ba030131219aa5032905d83a6bc0fe1c4f641f6acb",
+    "senfd_sha256": "3cf1c2eeeef00f0aaade82d23a516a3c37acb1c52a325f46b1ccda1faa3b688c",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
+    "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -9053,6 +9053,77 @@
                     ]
                   }
                 ],
+                "merged": null
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "figure_nr": 102,
+      "caption": "Figure 102: Foo Message to Admin Command SQE Mapping Table",
+      "description": "Foo Message to Admin Command SQE Mapping Table",
+      "page_nr": 102,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "mentions": [],
+      "table": {
+        "table_nr": 100,
+        "rows": [
+          {
+            "cells": [
+              {
+                "text": "Figure 102: Foo Message to Admin Command SQE Mapping Table",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Figure 102: Foo Message to Admin Command SQE Mapping Table",
+                "tables": [],
+                "merged": "left"
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "Bytes",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Description",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "03:00",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Foo Opcode (FOPC): Is the opcode of the command.",
+                "tables": [],
+                "merged": null
+              }
+            ]
+          },
+          {
+            "cells": [
+              {
+                "text": "07:04",
+                "tables": [],
+                "merged": null
+              },
+              {
+                "text": "Foo Flags (FFLG): Are the flags of the command.",
+                "tables": [],
                 "merged": null
               }
             ]

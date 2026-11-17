@@ -922,6 +922,18 @@ FIGURES = [
             ),
         ),
     ),
+    # A table mapping the bytes of one message to another, as MI 2.2 Figure
+    # 49, which lays out no structure of its own
+    (
+        "Foo Message to Admin Command SQE Mapping Table",
+        {
+            "header": ("Bytes", "Description"),
+            "rows": [
+                ("03:00", "Foo Opcode (FOPC): Is the opcode of the command."),
+                ("07:04", "Foo Flags (FFLG): Are the flags of the command."),
+            ],
+        },
+    ),
 ]
 
 
