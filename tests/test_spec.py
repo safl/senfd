@@ -2934,7 +2934,8 @@ def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
 def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
     """Base 2.4 Figures 216 and 217 are the log page and the data structure
     "Commands Supported and Effects"; NVM 1.3 Figure 190 has the caption of
-    Figure 189 and is the layout of RENSCS"""
+    Figure 189 and is the layout of RENSCS; Base 2.4 Figures 479 and 480 are
+    the Timestamp data structures of Set Features and Get Features"""
 
     spec = document_of(
         figure_of(
@@ -2968,8 +2969,22 @@ def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
             ("Bytes", "Description"),
             ("03:00", "Ring (RING): A ring."),
         ),
+        figure_of(
+            479,
+            "Foo Stamp - Data Structure for Set Features",
+            ("Bytes", "Description"),
+            ("05:00", "Foo Stamp (FSTAMP): The stamp."),
+        ),
+        figure_of(
+            480,
+            "Foo Stamp - Data Structure for Get Features",
+            ("Bytes", "Description"),
+            ("05:00", "Foo Stamp (FSTAMP): The stamp."),
+        ),
     )
     names = {s.source.figure_nr: s.name for s in spec.structures}
+    assert names[479] == "Foo Stamp (Set Features)"
+    assert names[480] == "Foo Stamp (Get Features)"
     assert names[216] == "Foo Effects"
     assert names[217] == "Foo Effects Data Structure"
     assert names[189] == "Reference Controller State"
