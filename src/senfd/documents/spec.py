@@ -14,7 +14,7 @@ model leaves out is a diagnostic.
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import ClassVar, Dict, Iterator, List, Literal, Optional, Tuple
+from typing import ClassVar, Dict, Iterator, List, Literal, Optional, Tuple, Union
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.config import JsonDict
@@ -714,6 +714,10 @@ class Feature(Model):
     """The submission queue entry dwords described for it"""
     cqe: List[Dwords] = Field(default_factory=list)
     """The completion queue entry dwords described for it"""
+    operations: List["Operation"] = Field(default_factory=list)
+    """What the feature does for the values of a field of its dwords, as the
+    Lockdown Persistence Personality of Configurable Device Personality,
+    selected by PERID 02h"""
     source: Source
     """The feature identifier table listing it"""
 
@@ -2850,8 +2854,11 @@ REGEX_TITLE_CODES = re.compile(
 
 def link_titled_operations(document: SpecDocument, used: set) -> None:
     """
-    The operations of a command whose dwords have a field that the title of
-    a section names with a code, as the Configuration Identifier of the
+    The operations of a command, or a feature, whose dwords have a field
+    that the title of a section names with a code, as PERID of Configurable
+    Device Personality and "Lockdown Persistence Personality (Personality
+    Identifier 02h)", or whose values a column names so, as SEL and
+    "(Management Operation 05h)", as the Configuration Identifier of the
     Configuration Get command of MI 2.2 and "SMBus/I2C Frequency
     (Configuration Identifier 01h)": the dwords of no command in a section
     below the command's, titled so, are those of the operation of that
@@ -2871,14 +2878,20 @@ def link_titled_operations(document: SpecDocument, used: set) -> None:
         for field in fields:
             if alias(label) in (alias(field.name or ""), alias(field.acronym or "")):
                 return field
+        # A field whose values a column names by the label, as SEL of Manage
+        # Exported NVM Subsystem Receive by "Management Operation"
+        for field in fields:
+            if any(alias(label) in value.columns for value in field.values):
+                return field
         return None
 
-    commands = [
+    commands: List[Union[Command, Feature]] = [
         command
         for command_set in document.command_sets.values()
         for command in command_set.commands.values()
         if command.sqe
     ]
+    commands += [feature for feature in document.features.values() if feature.sqe]
     for key, listed in document.dwords.items():
         if key in used:
             continue
@@ -3266,6 +3279,9 @@ def link_parts(document: SpecDocument) -> None:
     for feature in document.features.values():
         parts(of(feature.sqe))
         parts(of(feature.cqe))
+        for operation in feature.operations:
+            parts(of(operation.sqe))
+            parts(of(operation.cqe))
     for structure in document.structures:
         parts(structure.fields)
 
@@ -3644,6 +3660,31 @@ def link_refined(document: SpecDocument) -> None:
                     dwords.refines = refined_by(command.sqe, dwords)
                 for dwords in operation.cqe:
                     dwords.refines = refined_by(command.cqe, dwords)
+    for feature in document.features.values():
+        for operation in feature.operations:
+            for dwords in operation.sqe:
+                dwords.refines = refined_by(feature.sqe, dwords)
+            for dwords in operation.cqe:
+                dwords.refines = refined_by(feature.cqe, dwords)
+
+
+def name_by_identifiers(document: SpecDocument) -> None:
+    """Name each operation selected by a Command Set Identifier with the
+    command set it identifies, where the name does not say it: the operation
+    of Identify for CNS 0Ah and CSI 01h, "I/O Command Set specific Identify
+    Namespace Data Structure" in KV 1.4, is that "(Key Value)" """
+
+    sets = {
+        command_set.identifier: command_set.name
+        for command_set in document.command_sets.values()
+        if command_set.kind == "io" and command_set.identifier is not None
+    }
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            for operation in command.operations:
+                named = sets.get(operation.selectors.get("CSI", -1))
+                if named and named.casefold() not in operation.name.casefold():
+                    operation.name = f"{operation.name} ({named})"
 
 
 def link_identifiers(document: SpecDocument) -> None:
@@ -3858,6 +3899,25 @@ def resolve(document: SpecDocument) -> SpecDocument:
         # Queue Entry Dword 0" of Base 2.4 Figure 148
         name = key.removeprefix("cqe:")
         commands = by_name.get(name) or by_name.get(name.removesuffix("_command"), [])
+        # A caption may call the command a data structure, as "Manage Exported
+        # Port Data Structure - Command Dword 10" of Base 2.4 Figure 618
+        if not commands and by_name.get(name.removesuffix("_data_structure")):
+            commands = by_name[name.removesuffix("_data_structure")]
+            for dwords in described:
+                if not any(
+                    e.code == "caption" and e.source == dwords.source
+                    for e in document.errata
+                ):
+                    document.errata.append(
+                        Erratum(
+                            code="caption",
+                            message=f"Figure {dwords.source.figure_nr} lays out "
+                            "dwords of a command and is captioned as a data "
+                            "structure",
+                            found=f"{commands[0].name} Data Structure",
+                            source=dwords.source,
+                        )
+                    )
         taken = [d for d in described if not feature_identifiers(d)]
         for command in commands:
             for dwords in taken:
@@ -3885,6 +3945,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_values(document)
     link_selections(document)
     link_identifiers(document)
+    name_by_identifiers(document)
     link_selectors(document)
     distinct_names(document)
 

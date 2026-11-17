@@ -55,9 +55,14 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   as for each directive operation. Dwords of an operation that lay out the
   bits of one field of the command's own dwords give that field's acronym
   in ``refines``: LSP of Get Log Page for the FDP Events log page, and
-  CNSSID of Identify for the CNS values that use it.
+  CNSSID of Identify for the CNS values that use it. An operation selected
+  by a Command Set Identifier is named with that command set where its
+  name does not say it, as "I/O Command Set specific Identify Namespace
+  Data Structure (Key Value)".
 * ``features`` and ``log_pages``: features and log pages by identifier. A
-  feature has the dwords of the commands that set and get it. A log page
+  feature has the dwords of the commands that set and get it, and its
+  ``operations``, as the Lockdown Persistence Personality of Configurable
+  Device Personality, selected by PERID 02h. A log page
   is one by identifier, named as the table of log page identifiers names
   it, with the ``aliases`` other tables give it, and has the ``structure``
   that lays it out: the figure in the section its row cites, as Base 2.4

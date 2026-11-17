@@ -1199,6 +1199,14 @@
                     "title": "Cqe",
                     "type": "array"
                 },
+                "operations": {
+                    "description": "What the feature does for the values of a field of its dwords, as the\nLockdown Persistence Personality of Configurable Device Personality,\nselected by PERID 02h",
+                    "items": {
+                        "$ref": "#/$defs/Operation"
+                    },
+                    "title": "Operations",
+                    "type": "array"
+                },
                 "source": {
                     "$ref": "#/$defs/Source",
                     "description": "The feature identifier table listing it"

@@ -3779,3 +3779,155 @@ def test_a_field_is_linked_to_the_layout_of_its_bits_in_the_section_it_cites():
     fields = {f.acronym: f for s in spec.structures for f in s.fields}
     assert fields["STATUS"].structure.figure_nr == 101
     assert fields["FID"].structure is None
+
+
+def test_an_operation_is_of_a_feature_or_selected_by_a_column_and_named_by_its_csi():
+    """Base 2.4 lays out the dwords of the Lockdown Persistence Personality,
+    "(Personality Identifier 02h)", below Configurable Device Personality,
+    whose PERID selects it; "(Management Operation 05h)" is selected by SEL,
+    whose values a Management Operation column names; the Identify operation
+    for CSI 01h is of the Key Value command set; Figure 618 calls the
+    command whose dwords it lays out a data structure"""
+
+    from senfd.documents.spec import (
+        Bits,
+        Command,
+        CommandSet,
+        Dwords,
+        Entry,
+        Feature,
+        Operation,
+        Source,
+        link_titled_operations,
+        name_by_identifiers,
+        resolve,
+    )
+
+    def dwords(lower, section, title, *fields, figure_nr=1):
+        return Dwords(
+            lower=lower,
+            upper=lower,
+            fields=[
+                Bits(
+                    name=name,
+                    acronym=acronym,
+                    range="07:00",
+                    lower=0,
+                    upper=7,
+                    width=8,
+                    unit="bits",
+                    role="field",
+                    kind="span",
+                    values=values,
+                )
+                for name, acronym, values in fields
+            ],
+            source=Source(
+                document="Base",
+                figure_nr=figure_nr,
+                section=section,
+                section_title=title,
+            ),
+        )
+
+    document = SpecDocument()
+    document.features["foo"] = Feature(
+        identifier=0x22,
+        name="Foo Personality",
+        sqe=[
+            dwords(
+                13, "5.1", "Foo Personality", ("Personality Identifier", "PERID", [])
+            )
+        ],
+        source=Source(document="Base", figure_nr=2),
+    )
+    selecting = [Entry(value="05h", columns={"management_operation": "Get Foo"})]
+    document.command_sets["admin"] = CommandSet(
+        name="Admin",
+        kind="admin",
+        commands={
+            "bar": Command(
+                name="Bar",
+                opcode=0x42,
+                sqe=[dwords(10, "5.2", "Bar command", ("Select", "SEL", selecting))],
+                source=Source(document="Base", figure_nr=3),
+            )
+        },
+    )
+    document.dwords = {
+        "lockdown": [
+            dwords(
+                11,
+                "5.1.4",
+                "Lockdown (Personality Identifier 02h)",
+                ("Lock", "LCK", []),
+            )
+        ],
+        "cqe:get_foo_state": [
+            dwords(
+                0,
+                "5.2.1.6",
+                "Get Foo State (Management Operation 05h)",
+                ("Index", "IDX", []),
+            )
+        ],
+    }
+    link_titled_operations(document, set())
+    (lockdown,) = document.features["foo"].operations
+    assert (lockdown.name, lockdown.selectors) == ("Lockdown", {"PERID": 2})
+    (getting,) = document.command_sets["admin"].commands["bar"].operations
+    assert (getting.name, getting.selectors, getting.cqe[0].lower) == (
+        "Get Foo State",
+        {"SEL": 5},
+        0,
+    )
+
+    document.command_sets["key_value"] = CommandSet(
+        name="Key Value", kind="io", identifier=1
+    )
+    document.command_sets["admin"].commands["bar"].operations = [
+        Operation(
+            name="Foo Namespace",
+            selectors={"CNS": 10, "CSI": 1},
+            source=Source(document="KV", figure_nr=4),
+        ),
+        Operation(
+            name="Key Value Foo",
+            selectors={"CNS": 11, "CSI": 1},
+            source=Source(document="KV", figure_nr=5),
+        ),
+    ]
+    name_by_identifiers(document)
+    assert [
+        o.name for o in document.command_sets["admin"].commands["bar"].operations
+    ] == [
+        "Foo Namespace (Key Value)",
+        "Key Value Foo",
+    ]
+
+    document = SpecDocument()
+    document.command_sets["admin"] = CommandSet(
+        name="Admin",
+        commands={
+            "manage_baz": Command(
+                name="Manage Baz",
+                opcode=0x53,
+                source=Source(document="Base", figure_nr=6),
+            )
+        },
+    )
+    document.dwords = {
+        "manage_baz_data_structure": [
+            dwords(
+                10, "5.4.6", "Manage Baz command", ("Select", "SEL", []), figure_nr=618
+            )
+        ]
+    }
+    document = resolve(document)
+    command = document.command_sets["admin"].commands["manage_baz"]
+    assert [d.lower for d in command.sqe] == [10]
+    (erratum,) = [e for e in document.errata if e.code == "caption"]
+    assert (erratum.source.figure_nr, erratum.found) == (
+        618,
+        "Manage Baz Data Structure",
+    )
