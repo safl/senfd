@@ -248,8 +248,9 @@ class Array(Model):
     acronym: Optional[str] = None
     """The acronym of the entries without the index, for example 'LBAF'"""
     index: Optional[int] = None
-    """The index of this entry, for example 63 for LBAF63; None for a last
-    entry whose range the figure gives as a formula"""
+    """The index of this entry, for example 63 for LBAF63, or 255 for
+    "Performance Attribute FFh Identifier"; None for a last entry whose range
+    the figure gives as a formula"""
     first: int
     """The index of the first entry, 0 or 1 depending on the figure"""
     count: Optional[int] = None
@@ -1114,7 +1115,8 @@ def checked(
     for field_made in kept:
         for case_made in field_made.cases:
             decide(case_made, kept)
-    arrays_of(kept)
+    for disagreeing in arrays_of(kept):
+        errata.append(Erratum(code="acronym", message=disagreeing, source=source))
     return kept, errata, unnamed
 
 
@@ -1159,20 +1161,48 @@ def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
     for "LBAF0" """
 
     name = text or ""
-    return [
+    decimal = [
         (name[: match.start()], int(match[0]), name[match.end() :])
         for match in re.finditer(r"\d+", name)
     ]
+    # A hexadecimal index after the decimal ones, so that "10" is ten: one
+    # ending in "h", as "C1h" of "Performance Attribute C1h Identifier", or
+    # of two digits, one a letter, as "FF" of "Vendor Specific Protocol FF"
+    hexadecimal = [
+        (name[: match.start()], int(match[1] or match[2], 16), name[match.end() :])
+        for match in re.finditer(
+            r"\b(?:([0-9A-F]+)h|((?=[0-9]?[A-F])[0-9A-F]{2}))\b", name
+        )
+    ]
+    return decimal + hexadecimal
 
 
-def arrays_of(fields: List[Bits]) -> None:
+def hexadecimal_acronym(spans: List[Tuple[int, Bits]]) -> Optional[str]:
+    """The acronym of entries numbered by name, where each acronym holds its
+    index in two hexadecimal digits in the same place, as VSPF0 and VSPFF;
+    otherwise None, as for PAC1HI and PACFFHI, entries C1h and FFh"""
+
+    parts = set()
+    for index, field in spans:
+        acronym, digits = field.acronym or "", f"{index:02X}"
+        if acronym.count(digits) != 1:
+            return None
+        before, _, after = acronym.partition(digits)
+        parts.add((before, after))
+    return "".join(parts.pop()) if len(parts) == 1 else None
+
+
+def arrays_of(fields: List[Bits]) -> List[str]:
     """
     Set 'array' on each of 'fields' that is an entry of an array. The entries
-    are adjacent fields whose acronyms, or names where they have no acronym,
-    differ only by a number, with rows left out between two of them. Each
+    are adjacent fields whose acronyms, or names, differ only by an index,
+    decimal or hexadecimal, with rows left out between two of them. Each
     entry must have the same width and lie at the offset that its index
     gives. The last entry may be given by a formula, for example "Entry
-    NUMENT-1"; the array then has no count.
+    NUMENT-1"; the array then has no count. Where the acronyms give other
+    indexes than the names, as VSP15, VSP1 and VSP0 of "Vendor Specific
+    Protocol FF", "F1" and "F0" of Base 2.4 Figure 516, the names give them,
+    and the result says so, for each such run, for a candidate erratum.
     """
 
     def entry(field: Bits, of: str, before: str, after: str) -> Optional[int]:
@@ -1184,13 +1214,11 @@ def arrays_of(fields: List[Bits]) -> None:
                 return number
         return None
 
-    for at, last in enumerate(fields):
-        if not last.elided or at == 0 or last.array or fields[at - 1].array:
-            continue
-        above = fields[at - 1]
-        if above.kind != "span":
-            continue
-        of = "acronym" if above.acronym else "name"
+    def run_of(at: int, of: str):
+        """The run of entries around the elided field at 'at', by 'of', as
+        (start, indexes, before, after), or None"""
+
+        last, above = fields[at], fields[at - 1]
         text = getattr(last, of) or ""
         for before, _, after in numbered(getattr(above, of)):
             closes = last.kind == "formula" and text.startswith(before)
@@ -1199,7 +1227,7 @@ def arrays_of(fields: List[Bits]) -> None:
             ):
                 break
         else:
-            continue
+            return None
 
         start, end = at - 1, at
         while start and entry(fields[start - 1], of, before, after) is not None:
@@ -1219,21 +1247,51 @@ def arrays_of(fields: List[Bits]) -> None:
             f.width != stride or f.lower != (lowest.lower or 0) + (i - first) * stride
             for i, f in spans
         ):
+            return None
+        return start, indexes, before, after
+
+    disagreeing: List[str] = []
+    for at, last in enumerate(fields):
+        if not last.elided or at == 0 or last.array or fields[at - 1].array:
             continue
-        whole = len(spans) == len(run)
+        if fields[at - 1].kind != "span":
+            continue
+        by_acronym = run_of(at, "acronym") if fields[at - 1].acronym else None
+        by_name = run_of(at, "name")
+        found, of = by_acronym, "acronym"
+        if by_name and (not by_acronym or by_acronym[:2] != by_name[:2]):
+            if by_acronym:
+                start, indexes = by_acronym[:2]
+                listed = fields[start : start + len(indexes)]
+                disagreeing.append(
+                    "The acronyms "
+                    + ", ".join(f.acronym or "" for f in listed)
+                    + " give other indexes than the names "
+                    + ", ".join(f'"{f.name}"' for f in listed)
+                )
+            found, of = by_name, "name"
+        if not found:
+            continue
+        start, indexes, before, after = found
+        run = fields[start : start + len(indexes)]
+        spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
+        first, lowest = min(spans, key=lambda span: span[0])
         name = next(
             (b + a for b, n, a in numbered(lowest.name) if n == first), lowest.name
         )
+        whole = len(spans) == len(run)
+        acronym = before + after if of == "acronym" else hexadecimal_acronym(spans)
         for index, field in zip(indexes, run):
             field.array = Array(
                 name=" ".join(name.split()),
-                acronym=before + after if of == "acronym" else None,
+                acronym=acronym,
                 index=index,
                 first=first,
                 count=max(i for i, _ in spans) - first + 1 if whole else None,
-                stride=stride,
+                stride=lowest.width or 0,
                 lower=lowest.lower or 0,
             )
+    return disagreeing
 
 
 def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
@@ -1322,6 +1380,37 @@ def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
             )
         )
     return errata
+
+
+def shared_acronyms(fields: List[Bits], source: Source) -> List[Erratum]:
+    """The errata of a structure where one acronym names two fields of other
+    names, at any depth, as AHATSDPS, both "... Protocol Status" and "...
+    Protocol Support" of Base 2.4 Figure 516"""
+
+    names: Dict[str, List[str]] = {}
+
+    def walk(fields: List[Bits]) -> None:
+        for field in fields:
+            if field.acronym and field.role == "field":
+                named = names.setdefault(field.acronym, [])
+                if field.name not in named:
+                    named.append(field.name)
+            walk(field.fields)
+            for case in field.cases:
+                walk(case.fields)
+
+    walk(fields)
+    return [
+        Erratum(
+            code="acronym",
+            message=f"{acronym} is the acronym of "
+            + " and ".join(f'"{name}"' for name in named),
+            found=acronym,
+            source=source,
+        )
+        for acronym, named in names.items()
+        if len(named) > 1
+    ]
 
 
 def starts_at_zero(fields: List[Bits]) -> bool:
@@ -1551,6 +1640,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
     if whole and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
         errata += misnumbered(fields, figure.layout.unit, source)
+    errata += shared_acronyms(fields, source)
     took(document, errata, unnamed, source)
     document.structures.append(
         Structure(
