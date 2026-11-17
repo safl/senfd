@@ -3094,6 +3094,28 @@ def link_parts(document: SpecDocument) -> None:
         parts(structure.fields)
 
 
+def unlink_itself(document: SpecDocument) -> None:
+    """
+    Clear 'structure' of a field linked to a structure of one field, of the
+    same acronym and range, which is the field itself: ESUBNQN of Base 2.4
+    Figure 385 cites Figure 381, the data buffer of Create Exported NVM
+    Subsystem, whose only field is ESUBNQN, 255:00.
+    """
+
+    alone = {
+        (s.source.document, s.source.figure_nr): s.fields[0]
+        for s in document.structures
+        if len(s.fields) == 1
+    }
+    for _, fields in laid_out(document):
+        for field in fields_within(fields):
+            if not field.structure:
+                continue
+            only = alone.get((field.structure.document, field.structure.figure_nr))
+            if only and (only.acronym, only.range) == (field.acronym, field.range):
+                field.structure = None
+
+
 def link_runs(document: SpecDocument) -> None:
     """
     Link each entry of a run, fields named alike but for a last index, as
@@ -3570,6 +3592,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_titled_operations(document, used)
     link_structures(document)
     link_runs(document)
+    unlink_itself(document)
     link_parts(document)
     link_extended(document)
     link_encodings(document)

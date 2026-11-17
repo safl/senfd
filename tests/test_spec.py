@@ -3421,3 +3421,26 @@ def test_the_condition_of_dwords_is_a_comparison_where_it_states_one(
 
     found = comparison_of(condition)
     assert (found and (found.field, found.comparison, found.value)) == expected
+
+
+def test_a_field_is_not_linked_to_a_structure_of_only_itself():
+    """ESUBNQN of Base 2.4 Figure 385 cites Figure 381, whose only field is
+    ESUBNQN, at the same bytes"""
+
+    spec = document_of(
+        figure_of(
+            381,
+            "Foo Name Data Structure",
+            ("Bytes", "Description"),
+            ("255:00", "Foo Name (FNAME): The name."),
+        ),
+        figure_of(
+            385,
+            "Foo Descriptor Data Structure",
+            ("Bytes", "Description"),
+            ("255:00", "Foo Name (FNAME): The name (refer to Figure 381)."),
+            ("257:256", "Reserved"),
+        ),
+    )
+    descriptor = [s for s in spec.structures if s.source.figure_nr == 385][0]
+    assert descriptor.fields[0].structure is None
