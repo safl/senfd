@@ -171,7 +171,14 @@ class BitsCommon(Model):
     most significant bit (MSB) and that of its least (LSB), as the
     protection information formats of the NVM Command Set do: "big-endian"
     where the MSB is in the lowest byte. None where the figure does not mark
-    them, or the field is one byte"""
+    them, or the field is one byte; else the order the description states,
+    as "This field is big endian" of FGUID of Identify Controller"""
+    encoding: Optional[Literal["ascii", "utf-8", "uuid"]] = None
+    """What the field's bytes encode where its description says: "ascii"
+    for "as an ASCII string", "utf-8" for "a UTF-8 null-terminated string",
+    "uuid" for "a 128-bit Universally Unique Identifier (UUID)"; or what
+    the field it has the value of encodes, as FR of NVM 1.3 Figure 189, "the
+    value of the FR field in the Identify Controller data structure" """
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked on the name, at the end of the
     description, and on the other columns"""
@@ -816,15 +823,48 @@ REGEX_HEX = re.compile(r"^(?P<hex>[0-9A-Fa-f]+)h$")
 
 
 def byte_order_of(
-    columns: Dict[str, str],
+    columns: Dict[str, str], description: str = ""
 ) -> Optional[Literal["big-endian", "little-endian"]]:
     """The byte order the columns "msb_byte" and "lsb_byte" of a byte diagram
-    give a field, or None where they are not both numbers or are the same"""
+    give a field, else the one 'description' states, as "This field is big
+    endian"; None where neither gives one"""
 
     msb, lsb = columns.get("msb_byte", ""), columns.get("lsb_byte", "")
-    if not (msb.isdigit() and lsb.isdigit()) or int(msb) == int(lsb):
-        return None
-    return "big-endian" if int(msb) < int(lsb) else "little-endian"
+    if msb.isdigit() and lsb.isdigit() and int(msb) != int(lsb):
+        return "big-endian" if int(msb) < int(lsb) else "little-endian"
+    match = REGEX_BYTE_ORDER.search(description)
+    if match:
+        return "big-endian" if match[1].lower() == "big" else "little-endian"
+    return None
+
+
+REGEX_BYTE_ORDER = re.compile(
+    r"\b(?:is|stored in|defined in) (big|little)[ -]endian\b", flags=re.IGNORECASE
+)
+ENCODINGS: List[Tuple[Literal["ascii", "utf-8", "uuid"], re.Pattern]] = [
+    (
+        "ascii",
+        re.compile(
+            r"\bASCII (?:encoded )?(?:null-terminated )?string\b|"
+            r"\bASCII characters\b"
+        ),
+    ),
+    ("utf-8", re.compile(r"\bUTF-8 (?:null-terminated )?string\b")),
+    (
+        "uuid",
+        re.compile(r"\b128-bit (?:Universally Unique Identifier \(UUID\)|UUID\b)"),
+    ),
+]
+
+
+def encoding_of(description: str) -> Optional[Literal["ascii", "utf-8", "uuid"]]:
+    """The encoding 'description' says a field's bytes are in, or None"""
+
+    text = " ".join(description.split())
+    for encoding, pattern in ENCODINGS:
+        if pattern.search(text):
+            return encoding
+    return None
 
 
 # A footnote marker printed in superscript after the last sentence, which the
@@ -865,7 +905,8 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         section=field.section,
         elided=field.elided,
         columns=columns,
-        byte_order=byte_order_of(columns),
+        byte_order=byte_order_of(columns, " ".join(description.split())),
+        encoding=encoding_of(description),
         placements=[
             Placement(
                 condition=p.condition,
@@ -1113,6 +1154,7 @@ def checked(
                 alternative=field.alternative,
                 placements=field.placements,
                 byte_order=field.byte_order,
+                encoding=field.encoding,
                 footnotes=field.footnotes,
                 values=field.values,
                 cases=cases,
@@ -2617,6 +2659,55 @@ def bits_wide(structure: Structure) -> Optional[int]:
     return (upper + 1) * (8 if structure.unit == "bytes" else 1)
 
 
+REGEX_VALUE_OF = re.compile(
+    r"value (?:as reported in|of) the (?P<field>[A-Za-z0-9 -]+?)"
+    r"(?: \((?P<acronym>[A-Z0-9]+)\))? field (?:of|in) the "
+    r"(?P<structure>[A-Za-z0-9 /-]+?) data structure"
+)
+
+
+def all_fields(fields: List[Bits]) -> Iterator[Bits]:
+    """Each of 'fields' and, depth first, the fields within each"""
+
+    for field in fields:
+        yield field
+        yield from all_fields(field.fields)
+
+
+def link_encodings(document: SpecDocument) -> None:
+    """
+    Set the encoding and the byte order of a field that has none, and whose
+    description says it has the value of another field, to those of that
+    field: FR of NVM 1.3 Figure 189, "the value of the FR field in the
+    Identify Controller data structure", is "ascii", as FR of Base 2.4
+    Figure 338 is. A field named so in more than one structure of that name
+    gives its encoding where they all give the same.
+    """
+
+    for structure in document.structures:
+        for field in all_fields(structure.fields):
+            if field.encoding and field.byte_order:
+                continue
+            match = REGEX_VALUE_OF.search(" ".join(field.description.split()))
+            if not match:
+                continue
+            named = alias(match["structure"])
+            wanted = {match["field"], match["acronym"]} - {None}
+            others = [
+                other
+                for of in document.structures
+                if alias(of.name).endswith(named)
+                for other in all_fields(of.fields)
+                if other is not field and wanted & {other.name, other.acronym}
+            ]
+            encodings = {o.encoding for o in others if o.encoding}
+            orders = {o.byte_order for o in others if o.byte_order}
+            if not field.encoding and len(encodings) == 1:
+                field.encoding = encodings.pop()
+            if not field.byte_order and len(orders) == 1:
+                field.byte_order = orders.pop()
+
+
 def link_extended(document: SpecDocument) -> None:
     """
     Set 'extends' on each structure laying out bytes from other than byte 0
@@ -3030,6 +3121,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_features(document, used)
     link_structures(document)
     link_extended(document)
+    link_encodings(document)
     link_log_pages(document)
     link_values(document)
     link_selections(document)

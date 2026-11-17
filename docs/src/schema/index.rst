@@ -64,7 +64,10 @@ has these parts:
   some bytes of another, as NVM 1.3 Figure 126 lays out AWUN, AWUPF and
   ACWU of Identify Controller, has ``extends``, the figure of that
   structure, and ``extends_field`` where its text names the field it lays
-  out.
+  out. A field has ``encoding``, "ascii", "utf-8" or "uuid", where its
+  description states it, as "as an ASCII string", or where it has the
+  value of a field that has one, and ``byte_order`` where its description
+  states that, as "This field is big endian".
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.

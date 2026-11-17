@@ -3079,3 +3079,53 @@ def test_a_layout_of_bytes_of_another_structure_extends_it():
         41: (40, "FSR"),
         338: (None, None),
     }
+
+
+def test_the_encoding_and_byte_order_a_description_states_are_the_fields():
+    """FR of Identify Controller, Base 2.4 Figure 338, is "the currently
+    active firmware revision, as an ASCII string", and FGUID "is big
+    endian"; FR of NVM 1.3 Figure 189 has "the value of the FR field in the
+    Identify Controller data structure" """
+
+    spec = document_of(
+        figure_of(
+            338,
+            "Identify Foo Controller Data Structure",
+            ("Bytes", "Description"),
+            ("07:00", "Foo Revision (FR): The revision, as an ASCII string."),
+            ("23:08", "Foo Unique Identifier (FGUID): This field is big endian."),
+            ("39:24", "Foo Name (FNAME): A UTF-8 null-terminated string."),
+            (
+                "55:40",
+                "Foo Identity (FUUID): A 128-bit Universally Unique Identifier (UUID).",
+            ),
+            ("63:56", "Foo Count (FCNT): The count."),
+        ),
+        figure_of(
+            189,
+            "Foo Reference Data Structure",
+            ("Bytes", "Description"),
+            (
+                "07:00",
+                "Foo Revision (FR): The value of the FR field in the Identify Foo Controller data structure.",
+            ),
+            (
+                "23:08",
+                "Foo Unique Identifier (FGUID): The value of the FGUID field in the Identify Foo Controller data structure.",
+            ),
+        ),
+    )
+    found = [
+        [(f.acronym, f.encoding, f.byte_order) for f in s.fields]
+        for s in spec.structures
+    ]
+    assert found == [
+        [
+            ("FR", "ascii", None),
+            ("FGUID", None, "big-endian"),
+            ("FNAME", "utf-8", None),
+            ("FUUID", "uuid", None),
+            ("FCNT", None, None),
+        ],
+        [("FR", "ascii", None), ("FGUID", None, "big-endian")],
+    ]
