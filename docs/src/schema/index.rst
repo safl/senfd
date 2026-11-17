@@ -33,8 +33,15 @@ has these parts:
 * ``documents``: the documents the data model is made from, by name, each
   with its file and SHA-256, so the merged data model lists every document
   in it.
-* ``command_sets``: each command set by its name, with its commands. A
-  command has its ``opcode``, its submission queue entry dwords ``sqe``,
+* ``command_sets``: each command set by its name, with its ``kind`` and its
+  commands. The ``kind`` is ``io`` for an I/O command set, which an I/O
+  Command Set specification defines and which has its Command Set
+  Identifier in ``identifier``, as Base 2.4 Figure 337 gives it: 00h for
+  NVM. The I/O commands that Base 2.4 defines for use in all I/O command
+  sets, as Flush, are no command set and have no Command Set Identifier;
+  they are listed as "Common I/O", of the kind ``common_io``. The other
+  kinds are ``admin`` and ``management_interface``, the command sets of
+  the Management Interface specification. A command has its ``opcode``, its submission queue entry dwords ``sqe``,
   its completion queue entry dwords ``cqe``, its ``operations``, its
   ``status_values``, the tables of the status values specific to it, and
   its ``status_codes``, each status value whose "Commands Affected" names
