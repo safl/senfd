@@ -2878,3 +2878,58 @@ def test_two_structures_of_one_name_are_told_apart_by_kind_or_linking_field():
     assert names[190] == "Reference Namespace State"
     (erratum,) = [e for e in spec.errata if e.code == "caption"]
     assert erratum.source.figure_nr == 190
+
+
+def test_a_numbered_field_of_another_width_and_a_size_past_a_power_of_two_are_errata():
+    """Boot 1.4 Figure 11 gives Host Fabric Interface Descriptor 2 the
+    bytes 64:32, 33 bytes, between descriptors of 32; NVM 1.3 Figure 134
+    ends in "4096:768 Reserved", 4097 bytes"""
+
+    spec = document_of(
+        figure_of(
+            11,
+            "Foo Descriptor List",
+            ("Bytes", "Description"),
+            ("31:00", "Foo Descriptor 1: The first."),
+            ("64:32", "Foo Descriptor 2: The second."),
+            ("(n*32)-1:(n-1)*32", "Foo Descriptor n: The last."),
+        ),
+        figure_of(
+            134,
+            "Foo Data Structure",
+            ("Bytes", "Description"),
+            ("767:00", "Foo (FOO): The foo."),
+            ("4096:768", "Reserved"),
+        ),
+    )
+    found = sorted(
+        (e.source.figure_nr, e.found) for e in spec.errata if e.code == "range"
+    )
+    assert found == [(11, "64:32"), (134, "4096:768")]
+
+
+def test_a_layout_of_another_kind_from_byte_0_has_its_gaps_reported():
+    """SLM 1.3 Figure 13 lays out source range entries; its second entry has
+    no row for bytes 53:52. A table whose rows name the structure of each
+    field, as NVM 1.3 Figure 188, cites fields of others, and has none."""
+
+    spec = document_of(
+        figure_of(
+            13,
+            "Foo Entries for Format 4h",
+            ("Bytes", "Description"),
+            ("03:00", "Foo (FOO): The foo."),
+            ("07:06", "Bar (BAR): The bar."),
+        ),
+        figure_of(
+            188,
+            "Reference Foo Structures",
+            ("Data Structure", "Bytes", "Description"),
+            ("Foo", "03:00", "Foo (FOO): The foo."),
+            ("Bar", "519:516", "Number of Bars (NB): The bars."),
+        ),
+    )
+    (gap,) = [e for e in spec.errata if e.code == "layout-gap"]
+    assert gap.source.figure_nr == 13
+    kinds = {s.source.figure_nr: s.kind for s in spec.structures}
+    assert kinds == {13: "other", 188: "cited_fields"}

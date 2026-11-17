@@ -132,7 +132,11 @@ def test_a_typed_value_holds_what_its_kind_needs():
 
 
 def test_the_schema_enumerates_every_kind_senfd_makes():
-    assert set(typing.get_args(CaptionKind)) == {k for k, _ in CAPTIONS} | {"other"}
+    """Every kind of a caption, "other" for a caption of none, and
+    "cited_fields", which the data model gives a table by its columns"""
+
+    kinds = {k for k, _ in CAPTIONS} | {"other", "cited_fields"}
+    assert set(typing.get_args(CaptionKind)) == kinds
     assert set(typing.get_args(TypedKind)) == {k for k, _ in TYPED_FORMS}
 
 
@@ -153,7 +157,7 @@ def test_what_a_schema_cannot_say_loading_the_data_model_refuses(values):
 
 
 # The format of the data model, and the SHA-256 of the shape its schemas give
-FORMAT_SHAPE = (6, "625d909fbd104a666cc4ac443f5cfa81c9e63ccd0a1032d31f36a3508da8ff76")
+FORMAT_SHAPE = (6, "135ca0179d517e604edcc0e784fc22a387ea850dac23ef7946509f9417810224")
 
 
 def shape(node: typing.Any) -> typing.Any:

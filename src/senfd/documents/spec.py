@@ -1276,6 +1276,61 @@ def took(
 WHOLE = ("data_structure", "log_page", "register")
 
 
+def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
+    """
+    The errata of a layout whose numbered fields differ in width: of "Host
+    Fabric Interface Descriptor 1", "2" and "n" of Boot 1.4 Figure 11, 32,
+    33 and 32 bytes, the one of another width than the others; and of a
+    layout of more than 256 bytes and one byte past a power of two, as the
+    4097 bytes of NVM 1.3 Figure 134, whose last field is "4096:768
+    Reserved".
+    """
+
+    errata: List[Erratum] = []
+    runs: Dict[str, List[Bits]] = {}
+    for field in fields:
+        match = re.fullmatch(r"(.+?)(?<!Figure) (?:\d+|[nN])", field.name or "")
+        if match and field.width:
+            runs.setdefault(match[1], []).append(field)
+    for run in runs.values():
+        widths = [f.width for f in run]
+        common = max(set(widths), key=widths.count)
+        if len(run) < 3 or widths.count(common) * 2 <= len(run):
+            continue
+        for field in run:
+            if field.width != common:
+                errata.append(
+                    Erratum(
+                        code="range",
+                        message=f"Field {field.range} {field.name}: {field.width} "
+                        f"{unit} where the other fields numbered so are {common}",
+                        found=field.range,
+                        source=source,
+                    )
+                )
+    bounds = [f.upper for f in fields if f.kind == "span" and f.upper is not None]
+    size = max(bounds) + 1 if bounds else 0
+    if size > 256 and (size - 1) & (size - 2) == 0:
+        last = next(f for f in fields if f.upper == size - 1)
+        errata.append(
+            Erratum(
+                code="range",
+                message=f"Field {last.range} {last.name or ''}".rstrip()
+                + f": the layout is {size} {unit}, one more than {size - 1}",
+                found=last.range,
+                source=source,
+            )
+        )
+    return errata
+
+
+def starts_at_zero(fields: List[Bits]) -> bool:
+    """Whether the first field of 'fields' of known bounds starts at 0"""
+
+    spans = [f for f in fields if f.kind == "span" and f.lower is not None]
+    return bool(spans) and spans[0].lower == 0
+
+
 def uncovered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     """
     The errata of a layout whose fields do not lie one after another: bits or
@@ -1478,13 +1533,22 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
 
     fields, errata, unnamed = checked(fields_of(figure.layout), None, source)
     maxima_of(fields, figure.mentions)
-    if subject.kind in WHOLE and not (errata or unnamed):
+    kind = subject.kind
+    # A table whose rows name the structure or the CNS value each field is of,
+    # as NVM 1.3 Figure 188, cites fields of other structures
+    if kind == "other" and {"data_structure", "cns_value"} & set(figure.columns):
+        kind = "cited_fields"
+    # A layout of another kind that starts at byte 0 lays out the whole of
+    # something too, as the entries of SLM 1.3 Figure 13
+    whole = kind in WHOLE or (kind == "other" and starts_at_zero(fields))
+    if whole and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
+        errata += misnumbered(fields, figure.layout.unit, source)
     took(document, errata, unnamed, source)
     document.structures.append(
         Structure(
             name=subject.name or figure.caption,
-            kind=subject.kind,
+            kind=kind,
             unit=figure.layout.unit,
             qualifier=subject.qualifier,
             offset=subject.offset,

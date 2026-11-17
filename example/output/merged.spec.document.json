@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "c81992bf50385bbdc4b355ba030131219aa5032905d83a6bc0fe1c4f641f6acb",
+    "senfd_sha256": "3cf1c2eeeef00f0aaade82d23a516a3c37acb1c52a325f46b1ccda1faa3b688c",
     "stem": "merged",
     "file": null,
     "sha256": null,
-    "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "f01739fe534b4c582aec4dc9087e75081c6ef77a8da91f99d8561dd63845d960"
+    "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
+    "combined_sha256": "af3be137e86e7f6670ec63ab3186248758ac6d0e7540fc89cbfb429831028b5a"
   },
   "command_sets": {
     "foobar": {
@@ -4672,8 +4672,8 @@
       }
     },
     {
-      "name": "Foo to Bar Mapping Table",
-      "kind": "other",
+      "name": "Foo to Bar",
+      "kind": "mapping",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
@@ -5518,7 +5518,7 @@
     },
     {
       "name": "Foo Size Fields",
-      "kind": "other",
+      "kind": "cited_fields",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
@@ -7187,6 +7187,78 @@
         "document": "example",
         "figure_nr": 100,
         "page_nr": 100,
+        "pdf_page": null,
+        "section": "4.2",
+        "section_title": "Baz Capabilities"
+      }
+    },
+    {
+      "name": "Foo Message to Admin Command SQE",
+      "kind": "mapping",
+      "unit": "bytes",
+      "qualifier": null,
+      "offset": null,
+      "fields": [
+        {
+          "name": "Foo Opcode",
+          "acronym": "FOPC",
+          "upper": 3,
+          "lower": 0,
+          "range": "03:00",
+          "description": "Is the opcode of the command.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "placements": [],
+          "byte_order": null,
+          "footnotes": [],
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "cases": [],
+          "array": null,
+          "structure": null
+        },
+        {
+          "name": "Foo Flags",
+          "acronym": "FFLG",
+          "upper": 7,
+          "lower": 4,
+          "range": "07:04",
+          "description": "Are the flags of the command.",
+          "section": null,
+          "elided": false,
+          "columns": {},
+          "union": null,
+          "alternative": null,
+          "placements": [],
+          "byte_order": null,
+          "footnotes": [],
+          "values": [],
+          "unit": "bytes",
+          "role": "field",
+          "kind": "span",
+          "formula": null,
+          "width": 4,
+          "fields": [],
+          "values_in": null,
+          "cases": [],
+          "array": null,
+          "structure": null
+        }
+      ],
+      "notes": [],
+      "source": {
+        "document": "example",
+        "figure_nr": 102,
+        "page_nr": 102,
         "pdf_page": null,
         "section": "4.2",
         "section_title": "Baz Capabilities"
@@ -9531,17 +9603,17 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "c81992bf50385bbdc4b355ba030131219aa5032905d83a6bc0fe1c4f641f6acb",
+      "senfd_sha256": "3cf1c2eeeef00f0aaade82d23a516a3c37acb1c52a325f46b1ccda1faa3b688c",
       "stem": "example",
       "file": "example.docx",
-      "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
+      "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
       "input_sha256": null,
       "combined_sha256": null
     },
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "c81992bf50385bbdc4b355ba030131219aa5032905d83a6bc0fe1c4f641f6acb",
+      "senfd_sha256": "3cf1c2eeeef00f0aaade82d23a516a3c37acb1c52a325f46b1ccda1faa3b688c",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

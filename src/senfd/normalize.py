@@ -373,6 +373,8 @@ CaptionKind = Literal[
     "requirements",
     "log_page",
     "data_structure",
+    "mapping",
+    "cited_fields",
     "other",
 ]
 
@@ -454,6 +456,8 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
         ],
     ),
     ("log_page_identifiers", [r"^(?:" + NAME + r" - )?Log Page Identifiers$"]),
+    # A table mapping the bytes of one message to another, as MI 2.2 Figure 49
+    ("mapping", [r"^" + NAME + r" Mapping Table$"]),
     (
         "status_values",
         [

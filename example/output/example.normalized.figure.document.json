@@ -2,10 +2,10 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "c81992bf50385bbdc4b355ba030131219aa5032905d83a6bc0fe1c4f641f6acb",
+    "senfd_sha256": "3cf1c2eeeef00f0aaade82d23a516a3c37acb1c52a325f46b1ccda1faa3b688c",
     "stem": "example",
     "file": "example.docx",
-    "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
+    "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
     "input_sha256": null,
     "combined_sha256": null
   },
@@ -3818,8 +3818,8 @@
       "section_title": "Data Structures",
       "mentions": [],
       "subject": {
-        "kind": "other",
-        "name": "Foo to Bar Mapping Table",
+        "kind": "mapping",
+        "name": "Foo to Bar",
         "lower": null,
         "upper": null,
         "condition": null,
@@ -6616,6 +6616,79 @@
                 "name": "Reserved"
               }
             ],
+            "cases": [],
+            "placements": []
+          }
+        ],
+        "notes": []
+      },
+      "entries": [],
+      "notes": [],
+      "rows": []
+    },
+    {
+      "figure_nr": 102,
+      "caption": "Foo Message to Admin Command SQE Mapping Table",
+      "page_nr": 102,
+      "pdf_page": null,
+      "section": "4.2",
+      "section_title": "Baz Capabilities",
+      "mentions": [],
+      "subject": {
+        "kind": "mapping",
+        "name": "Foo Message to Admin Command SQE",
+        "lower": null,
+        "upper": null,
+        "condition": null,
+        "offset": null,
+        "qualifier": null,
+        "scope": null
+      },
+      "shape": "layout",
+      "headers": [
+        "Bytes",
+        "Description"
+      ],
+      "columns": [
+        "bytes",
+        "description"
+      ],
+      "layout": {
+        "unit": "bytes",
+        "fields": [
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "03:00",
+              "upper": 3,
+              "lower": 0
+            },
+            "name": "Foo Opcode",
+            "acronym": "FOPC",
+            "description": "Is the opcode of the command.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": [],
+            "cases": [],
+            "placements": []
+          },
+          {
+            "range": {
+              "unit": "bytes",
+              "text": "07:04",
+              "upper": 7,
+              "lower": 4
+            },
+            "name": "Foo Flags",
+            "acronym": "FFLG",
+            "description": "Are the flags of the command.",
+            "columns": {},
+            "section": null,
+            "elided": false,
+            "layouts": [],
+            "values": [],
             "cases": [],
             "placements": []
           }
