@@ -585,14 +585,14 @@ def test_verbose_shows_the_cases_of_a_field_with_their_values(spec):
 
     assert lines[at + 1 : at + 6] == [
         "      while QA is Sweep (0h) or Deep Sweep (1h): Qux Options",
-        "        = 0h List all quxes.",
-        "        = 1h List the idle quxes.",
+        "        = 0h List all quxes",
+        "        = 1h List the idle quxes",
         "        = 2h to FFh Reserved",
         "      for all other values of QA: Reserved",
     ]
     markdown = senfd.query.command(spec, "foo migrate", 13, verbose=True, markdown=True)
     assert any(
-        "While QA is Sweep (0h) or Deep Sweep (1h): Qux Options. Values: 0h List all quxes."
+        "While QA is Sweep (0h) or Deep Sweep (1h): Qux Options. Values: 0h List all quxes,"
         in line
         for line in markdown
     )

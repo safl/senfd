@@ -122,10 +122,19 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   limits them to. Each entry has a ``name``: the one its row gives, a
   short definition, the text of a column naming it, as the Management
   Operation of SEL, a first sentence of at most three words, as "Low" of
-  AL in NVM 1.3, or the title of the section it refers to. An aside in
-  the name, as "(refer to RFC 6234)", and the text after a colon go to the
-  ``description``, and an acronym before a colon, as "CAP" of "CAP:
-  Controller Capabilities", is the entry's ``acronym``.
+  AL in NVM 1.3, or the title of the section it refers to. Beside named
+  values, a named range of reserved values among them, a definition of
+  one sentence of at most six words is a name, as "No action" of MO 00h,
+  and so is a name with its initials, as "Add or Replace Active ZoneGroup
+  (AAZ) operation" of ORI 2; the values of a case are named so too. An aside in the name, as "(refer to RFC 6234)"
+  or "(no shutdown has been requested)" of SHST 00b, and the text after a
+  colon go to the ``description``; a qualifier, as "(Controller scope)",
+  stays. An acronym before a colon, as "CAP" of "CAP: Controller
+  Capabilities", the initials after the name, as "GAZ" of "Get Active
+  ZoneGroup (GAZ) operation", or the Acronym column, as "PUID" of PIT 001b
+  of CP 1.2, is the entry's ``acronym``. A table of a field's bounds, as
+  the minimum and maximum STS by protection information format of NVM
+  1.3, holds none of its values.
 * ``dwords``: the dwords of every figure, by the name its caption gives, as
   read. ``unassigned`` holds the dwords that no command, feature or
   operation claims.

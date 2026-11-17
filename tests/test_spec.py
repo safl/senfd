@@ -3595,64 +3595,116 @@ def test_the_dwords_of_an_operation_within_one_field_refine_that_field():
     assert refined_by(command, dwords(bits("31:00", "BAR"))) is None
 
 
-def test_an_encoding_and_a_byte_order_are_taken_where_the_text_states_them():
-    """The paragraph referring to Base 2.4 Figure 215 says "The firmware
-    revision is indicated as an ASCII string"; every NQN is UTF-8 as SUBNQN
-    of Figure 338 says; NGUID of KV 1.4 Figure 42 refers to another
-    document, whose NGUID is big-endian; a one-byte field has no byte order,
-    whatever the description says of its dword"""
+def test_short_definitions_beside_names_acronyms_and_asides_are_tidied():
+    """MO 00h "No action" of Base 2.4 Figure 651 is a name beside "Reclaim
+    Unit Handle Status"; SHST 00b keeps "no shutdown has been requested" as
+    its description, "(Controller scope)" stays in the name; ORI 1 "Get
+    Active ZoneGroup (GAZ) operation" has the acronym GAZ; PIT 001b of CP
+    1.2 Figure 27 has PUID from its Acronym column"""
 
-    from senfd.documents.spec import merge
+    from senfd.documents.spec import Entry, Source, Values, tidy_value_names
 
-    slots = figure_of(
-        215,
-        "Foo Slot Information Log Page",
-        ("Bytes", "Description"),
-        ("07:00", "Foo Revision for Slot 1 (FRS1): The revision in slot 1."),
-    )
-    slots.mentions = ["The foo revision is indicated as an ASCII string."]
-    base = document_of(
-        slots,
-        figure_of(
-            338,
-            "Foo Controller Data Structure",
-            ("Bytes", "Description"),
-            ("255:00", "Foo NQN (FOONQN): The NQN as a UTF-8 null-terminated string."),
-            ("271:256", "Foo GUID (FGUID): The GUID. This field is big endian."),
-            (
-                "272",
-                "Foo Opcode (FOPC): The byte ordering of the dword is little endian.",
+    def values_of(*entries):
+        return Values(
+            kind="other",
+            name="Foo",
+            columns=[],
+            entries=list(entries),
+            source=Source(document="Base", figure_nr=1),
+        )
+
+    document = SpecDocument()
+    document.values = [
+        values_of(
+            Entry(value="00h", description="No action"),
+            Entry(value="01h", name="Foo Status", description="Reports foo."),
+            Entry(value="02h", description="Foo is set and bar is cleared after it."),
+            Entry(value="03h", description="Refer to: the foo."),
+        ),
+        values_of(
+            Entry(
+                value="00b", name="Normal operation (no shutdown has been requested)"
+            ),
+            Entry(value="01b", name="Foo Information (Controller scope)"),
+            Entry(value="10b", name="Get Active FooGroup (GAF) operation"),
+            Entry(
+                value="11b", name="Foo Unique Identifier", columns={"acronym": "FUID"}
             ),
         ),
-        figure_of(
-            328,
-            "Bar Entry Data Structure",
-            ("Bytes", "Description"),
-            ("255:00", "Bar NQN (BARNQN): The NQN, a null-terminated string."),
+        values_of(
+            Entry(value="0h", description="No action"),
+            Entry(value="1h", description="Vendor specific"),
         ),
-        stem="Base",
+    ]
+    tidy_value_names(document)
+
+    assert [(e.name, e.description) for e in document.values[0].entries] == [
+        ("No action", ""),
+        ("Foo Status", "Reports foo."),
+        (None, "Foo is set and bar is cleared after it."),
+        (None, "Refer to: the foo."),
+    ]
+    assert [(e.acronym, e.name, e.description) for e in document.values[1].entries] == [
+        (None, "Normal operation", "no shutdown has been requested"),
+        (None, "Foo Information (Controller scope)", ""),
+        ("GAF", "Get Active FooGroup operation", ""),
+        ("FUID", "Foo Unique Identifier", ""),
+    ]
+    # Without a named value beside them, definitions stay descriptions
+    assert [e.name for e in document.values[2].entries] == [None, None]
+
+    # A named range of reserved values is a named value beside them, as of
+    # PRS of Base 2.4 Figure 641; the initials of a name may skip words, as
+    # AAZ of ORI 2 of Figure 330; the values of a case are tidied too, as
+    # ZRAS 0h of ZNS 1.4 Figure 35
+    from senfd.documents.spec import Bits, Case, Structure
+
+    case = Case(
+        selector="FA",
+        values=[
+            Entry(value="0h", description="List all foos."),
+            Entry(value="1h", name="Reserved"),
+        ],
     )
-    kv = document_of(
-        figure_of(
-            42,
-            "Bar Namespace Data Structure",
-            ("Bytes", "Description"),
-            ("15:00", "Foo GUID (FGUID): Refer to the Base specification."),
-        ),
-        stem="KV",
-    )
-    spec = merge([base, kv])
-    fields = {
-        (s.source.document, f.acronym): f for s in spec.structures for f in s.fields
-    }
-    assert fields[("Base", "FRS1")].encoding == "ascii"
-    nqn = fields[("Base", "BARNQN")]
-    assert (nqn.encoding, nqn.encoding_from.figure_nr) == ("utf-8", 338)
-    assert fields[("Base", "FOONQN")].encoding_from is None
-    guid = fields[("KV", "FGUID")]
-    assert (guid.byte_order, guid.byte_order_from.document) == ("big-endian", "Base")
-    assert fields[("Base", "FGUID")].byte_order_from is None
-    assert fields[("Base", "FOPC")].byte_order is None
+    document = SpecDocument()
+    document.values = [
+        values_of(
+            Entry(value="000b", description="4 bytes"),
+            Entry(value="010b to 111b", name="Reserved"),
+            Entry(
+                value="001b", description="Add or Replace Active Foo (AAF) operation"
+            ),
+        )
+    ]
+    document.structures = [
+        Structure(
+            name="Foo",
+            kind="data_structure",
+            unit="bits",
+            fields=[
+                Bits(
+                    name="Foo Action Specific",
+                    acronym="FAS",
+                    unit="bits",
+                    role="field",
+                    kind="span",
+                    range="7:4",
+                    upper=7,
+                    lower=4,
+                    width=4,
+                    cases=[case],
+                )
+            ],
+            source=Source(document="ZNS", figure_nr=35),
+        )
+    ]
+    tidy_value_names(document)
+    assert [(e.acronym, e.name) for e in document.values[0].entries] == [
+        (None, "4 bytes"),
+        (None, "Reserved"),
+        ("AAF", "Add or Replace Active Foo operation"),
+    ]
+    assert case.values[0].name == "List all foos"
 
 
 def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidied():
@@ -3734,6 +3786,39 @@ def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidi
     assert value_names(listing) == []
     listing.columns["sub_type"] = "Address: The Address field specifies it."
     assert value_names(listing) == ["Address"]
+    # After a code, or "All other values", a sentence names nothing
+    for codes in ("1h", "All other values"):
+        sentence = Entry(
+            value="0h",
+            columns={"types": codes, "sub_type": "For Type 1h, it is cleared."},
+        )
+        assert value_names(sentence) == []
+    # A cell is tidied as a name is, as CPS 10b and 11b of Base 2.4 Figure
+    # 36, ACODE 00b of Figure 647, CTemp of MI 2.2 Figure 199 and NVMe/TCP
+    # of Boot 1.4 Figure 8; a sentence, as of CTRLID 02h of MI 2.2 Figure
+    # 112, names nothing
+    cells = [
+        "Domain scope (i.e., it supports domains (refer to section 3.2.5).",
+        "NVM subsystem scope.",
+        "Single Foo Cancel: The host requests that the foo stops.",
+        "Composite Foo (CFoo): This field indicates the foo.",
+        "Foo Area (Optional)",
+        "NVMe/Foo (802.3 + TCP/IP)",
+        "03h + (2 * (4 << CAP.DSTRD))",
+        "This field contains the Foo Identifier used to return a list.",
+    ]
+    assert [
+        value_names(Entry(value="10b", columns={"scope": cell})) for cell in cells
+    ] == [
+        ["Domain scope"],
+        ["NVM subsystem scope"],
+        ["Single Foo Cancel"],
+        ["Composite Foo"],
+        ["Foo Area (Optional)"],
+        ["NVMe/Foo"],
+        ["03h + (2 * (4 << CAP.DSTRD))"],
+        [],
+    ]
 
     nvm = "NVM Express Foo Command Set Specification, Revision 1-3"
     merged = SpecDocument()

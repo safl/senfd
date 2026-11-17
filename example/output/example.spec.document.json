@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "a794e29164acd0ddf23ed49a68209d5ac8b80a9959a0261093e9675a0f54bc55",
+    "senfd_sha256": "ac49797d0b866e4742c6c2694509188aac435ee6c9a169a763dfee3d863bd671",
     "stem": "example",
     "file": "example.docx",
     "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -1182,9 +1182,9 @@
                         {
                           "value": "0h",
                           "value_column": "value",
-                          "name": null,
+                          "name": "List all quxes",
                           "acronym": null,
-                          "description": "List all quxes.",
+                          "description": "",
                           "columns": {},
                           "typed": {
                             "value": {
@@ -1207,9 +1207,9 @@
                         {
                           "value": "1h",
                           "value_column": "value",
-                          "name": null,
+                          "name": "List the idle quxes",
                           "acronym": null,
-                          "description": "List the idle quxes.",
+                          "description": "",
                           "columns": {},
                           "typed": {
                             "value": {
@@ -2813,9 +2813,9 @@
                   {
                     "value": "0h",
                     "value_column": "value",
-                    "name": null,
+                    "name": "List all quxes",
                     "acronym": null,
-                    "description": "List all quxes.",
+                    "description": "",
                     "columns": {},
                     "typed": {
                       "value": {
@@ -2838,9 +2838,9 @@
                   {
                     "value": "1h",
                     "value_column": "value",
-                    "name": null,
+                    "name": "List the idle quxes",
                     "acronym": null,
-                    "description": "List the idle quxes.",
+                    "description": "",
                     "columns": {},
                     "typed": {
                       "value": {
@@ -9326,7 +9326,7 @@
           "value": "00h",
           "value_column": "offset_ofst",
           "name": "Foo Capabilities",
-          "acronym": null,
+          "acronym": "FCAP",
           "description": "",
           "columns": {
             "size_in_bytes": "8",
@@ -10511,7 +10511,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "a794e29164acd0ddf23ed49a68209d5ac8b80a9959a0261093e9675a0f54bc55",
+      "senfd_sha256": "ac49797d0b866e4742c6c2694509188aac435ee6c9a169a763dfee3d863bd671",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",

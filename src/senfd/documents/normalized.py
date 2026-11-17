@@ -592,14 +592,18 @@ def read_nested(table: Table, into, diagnostics: List[Diagnostic]) -> None:
         into.layouts.append(layout)
         return
     idx, headers, grid, _ = find_header(table.rows)
-    if into.values and idx is not None and not is_value_column(grid[0]):
+    bounds = [c for c in grid if c.endswith("_value")]
+    bounded = bounds and all(c.startswith(("minimum_", "maximum_")) for c in bounds)
+    if (into.values or bounded) and idx is not None and not is_value_column(grid[0]):
         # A second table whose first column is no value, as the usage
         # requirements by mechanism and MEB value of MEB of MI 2.2 Figure 20,
-        # says something of the values; its rows are none of them
+        # says something of the values; its rows are none of them. Nor are
+        # the rows of a table of the bounds of the field, as the minimum and
+        # maximum STS by protection information format of NVM 1.3 Figure 128
         diagnostics.append(
             warning(
                 "nested-table",
-                f"Field {getattr(into, 'name', None) or ''}: a second table, "
+                f"Field {getattr(into, 'name', None) or ''}: a table, "
                 f"of {', '.join(dict.fromkeys(normalize_text(h) for h in headers))}, "
                 "is not of its values; not modelled",
             )
