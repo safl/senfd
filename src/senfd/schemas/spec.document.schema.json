@@ -680,6 +680,32 @@
                     "title": "Name",
                     "type": "string"
                 },
+                "kind": {
+                    "default": "other",
+                    "description": "What the command set is: \"io\", an I/O command set, which an I/O Command\nSet specification defines; \"common_io\", the I/O commands the Base\nspecification defines for use in all I/O command sets, which are no\ncommand set and have no Command Set Identifier; \"admin\"; and\n\"management_interface\", a command set of the Management Interface\nspecification",
+                    "enum": [
+                        "admin",
+                        "io",
+                        "common_io",
+                        "management_interface",
+                        "other"
+                    ],
+                    "title": "Kind",
+                    "type": "string"
+                },
+                "identifier": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The Command Set Identifier (CSI) of an I/O command set, as Base 2.4\nFigure 337 gives it, 00h for NVM; None for the other kinds, and where\nthe table of identifiers is not among the documents",
+                    "title": "Identifier"
+                },
                 "commands": {
                     "additionalProperties": {
                         "$ref": "#/$defs/Command"

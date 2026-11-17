@@ -508,11 +508,25 @@ class Command(Model):
     """The opcode table listing the command"""
 
 
+CommandSetKind = Literal["admin", "io", "common_io", "management_interface", "other"]
+
+
 class CommandSet(Model):
     """The commands of an opcode table, as Admin or NVM"""
 
     name: str
     """The name of the command set"""
+    kind: CommandSetKind = "other"
+    """What the command set is: "io", an I/O command set, which an I/O Command
+    Set specification defines; "common_io", the I/O commands the Base
+    specification defines for use in all I/O command sets, which are no
+    command set and have no Command Set Identifier; "admin"; and
+    "management_interface", a command set of the Management Interface
+    specification"""
+    identifier: Optional[int] = None
+    """The Command Set Identifier (CSI) of an I/O command set, as Base 2.4
+    Figure 337 gives it, 00h for NVM; None for the other kinds, and where
+    the table of identifiers is not among the documents"""
     commands: Dict[str, Command] = Field(default_factory=dict)
     """Its commands, by their names as keys, as 'zone_append'"""
 
@@ -862,17 +876,42 @@ def without_footnote(name: str) -> str:
     return re.sub(r"(?<=[A-Za-z)])\s*\d+(?:,\s*\d+)*$", "", name)
 
 
-def command_set_name(name: str) -> str:
-    """The name of a command set, as its opcode table's caption gives it, without
-    "Command Set" and "I/O" after it: "NVM Command Set" is "NVM". The I/O
-    commands of the Base specification, of a table captioned "Opcodes for I/O
-    Commands", are no command set but those of every I/O command set, which
-    Base 2.4 Figure 30 names "Common I/O"."""
+REGEX_COMMAND_SET_TITLE = re.compile(r"^(?P<name>.+?) Command Set(?: \([^)]*\))?$")
 
+
+def command_set_name(name: str, section_title: str = "") -> str:
+    """
+    The name of a command set: the one its section's title gives, as "PCIe"
+    of "PCIe Command Set (Optional)" in MI 2.2, whose opcode table is
+    captioned "Opcodes for PCIe Commands using an Out-of-Band Mechanism";
+    else the one its opcode table's caption gives, without "Command Set" and
+    "I/O" after it: "NVM Command Set" is "NVM". The I/O commands of the Base
+    specification, of a table captioned "Opcodes for I/O Commands", are no
+    command set but the commands of every I/O command set, which Base 2.4
+    calls common I/O commands; their name is "Common I/O".
+    """
+
+    titled = REGEX_COMMAND_SET_TITLE.match(section_title.strip())
+    if titled:
+        return titled["name"]
     stripped = re.sub(r"(?:\s+Command Set)?(?:\s+I/O)?$", "", name.strip())
     if name.strip() == "I/O":
         return "Common I/O"
     return stripped or name.strip()
+
+
+def command_set_kind(name: str, document: str) -> CommandSetKind:
+    """The kind of the command set of 'name' that 'document' lists"""
+
+    if name == "Common I/O":
+        return "common_io"
+    if name == "Admin":
+        return "admin"
+    if "Management Interface Specification" in document:
+        return "management_interface"
+    if "Command Set Specification" in document:
+        return "io"
+    return "other"
 
 
 def alias(name: str) -> str:
@@ -1761,9 +1800,10 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             subject = titled
 
     if figure.shape == "opcode" and subject.kind == "opcodes" and subject.name:
-        set_name = command_set_name(subject.name)
+        set_name = command_set_name(subject.name, figure.section_title or "")
         command_set = document.command_sets.setdefault(
-            alias(set_name), CommandSet(name=set_name)
+            alias(set_name),
+            CommandSet(name=set_name, kind=command_set_kind(set_name, source.document)),
         )
         for row in figure.entries:
             entry = entry_of(row, "opcode")
@@ -3416,6 +3456,31 @@ def subject_of(document: str) -> str:
     return title.strip()
 
 
+def link_identifiers(document: SpecDocument) -> None:
+    """
+    Set 'identifier' of each I/O command set to the Command Set Identifier
+    of the entry of a table of identifiers, as Base 2.4 Figure 337, that
+    names the document listing it: 03h names the Subsystem Local Memory
+    Command Set specification, whose command set is "SLM"
+    """
+
+    listed: Dict[str, List[CommandSet]] = {}
+    for command_set in document.command_sets.values():
+        command_set.identifier = None
+        for command in command_set.commands.values():
+            listed.setdefault(command.source.document, []).append(command_set)
+    for values in document.values:
+        if "command_set_identifier_value" not in values.columns:
+            continue
+        for entry in values.entries:
+            match = REGEX_HEX.match(entry.value)
+            if not (match and entry.document):
+                continue
+            for command_set in listed.get(entry.document, []):
+                if command_set.kind == "io":
+                    command_set.identifier = int(match["hex"], 16)
+
+
 def link_selections(document: SpecDocument) -> None:
     """
     Set 'selects' on each entry of a table of CNS values, 'document' on each
@@ -3628,6 +3693,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_log_pages(document)
     link_values(document)
     link_selections(document)
+    link_identifiers(document)
     link_selectors(document)
     distinct_names(document)
 
@@ -4091,7 +4157,7 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
         merged.sections.update(document.sections)
         for key, command_set in document.command_sets.items():
             into = merged.command_sets.setdefault(
-                key, CommandSet(name=command_set.name)
+                key, command_set.model_copy(update={"commands": {}})
             )
             for name, command in command_set.commands.items():
                 into.commands.setdefault(name, command)

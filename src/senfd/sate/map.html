@@ -183,6 +183,9 @@ function mark(key) { return `<svg class="mark ${entity(key)}" viewBox="0 0 24 24
 function badge(key, text) { return `<span class="tag">${mark(key)}${text}</span>`; }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function short(s, n) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
+// The badge of a node: its own, as "I/O commands" of the Common I/O commands,
+// which are no command set, else that of its kind
+function kindLabel(n) { return n.badge || KINDLABEL[n.kind]; }
 function hex(v) { return typeof v === "number" ? v.toString(16).toUpperCase().padStart(2, "0") + "h" : ""; }
 let first = "";  // The document most items are of, which labels leave out
 function label(n) {
@@ -203,6 +206,8 @@ function subtitle(n) {
   }
   if (n.opcode !== undefined) parts.unshift("opcode " + hex(n.opcode));
   if (typeof n.identifier === "number") parts.unshift("identifier " + hex(n.identifier));
+  if (typeof n.csi === "number") parts.unshift("CSI " + hex(n.csi));
+  if (n.about) parts.unshift(n.about);
   return parts.join(", ");
 }
 
@@ -398,7 +403,7 @@ function neighbourList(list, out) {
   for (const [k, items] of groups) {
     h += `<h3>${k} (${items.length})</h3><div class="list">` + items.map(it => {
       const n = N.get(it.id);
-      return `<a class="go" data-id="${esc(it.id)}">${badge(kindOf(n), esc(KINDLABEL[n.kind]))} ${esc(label(n))}`
+      return `<a class="go" data-id="${esc(it.id)}">${badge(kindOf(n), esc(kindLabel(n)))} ${esc(label(n))}`
         + (it.e.labels.length ? ` <small>${esc(short(it.e.labels.join(", "), 60))}</small>` : "") + `</a>`;
     }).join("") + `</div>`;
   }
@@ -419,7 +424,7 @@ function showPanel(id, row) {
   const n = N.get(id);
   const right = (OUT.get(id) || []).map(e => ({ id: e.t, e }));
   const left = (IN.get(id) || []).map(e => ({ id: e.s, e }));
-  let h = `${badge(kindOf(n), esc(KINDLABEL[n.kind]) + (n.sub ? " · " + esc(n.sub.replace(/_/g, " ")) : ""))}`
+  let h = `${badge(kindOf(n), esc(kindLabel(n)) + (n.sub ? " · " + esc(n.sub.replace(/_/g, " ")) : ""))}`
     + `<h2>${esc(n.label)}</h2><div class="src">${esc(subtitle(n)) || "&nbsp;"}</div>`;
   if (id === "home") {
     h += `<p>Each point is something the specifications define, and each line a relation between two of them that the data model records. Click a point to fly to it: what it contains or links to is on its right, and what contains it or links to it is on its left.</p>`
@@ -494,7 +499,7 @@ search.oninput = () => {
     .map(x => ({ x, s: (x.acro === q ? -3 : 0) + (x.hay.startsWith(q) ? -2 : 0) + (x.kind === "field" ? 1 : 0) + x.hay.length / 200 }))
     .sort((a, b) => a.s - b.s).slice(0, 40).map(h => h.x);
   sel = 0;
-  results.innerHTML = hits.map((x, i) => `<div data-i="${i}" class="${i === 0 ? "sel" : ""}">${x.kind === "field" ? badge("acronym", "Field") : badge(kindOf(N.get(x.id)), esc(KINDLABEL[x.kind]))}${esc(short(x.text, 60))}<small>${esc(short(x.owner || subtitle(N.get(x.id)), 50))}</small></div>`).join("") || `<div>Nothing found</div>`;
+  results.innerHTML = hits.map((x, i) => `<div data-i="${i}" class="${i === 0 ? "sel" : ""}">${x.kind === "field" ? badge("acronym", "Field") : badge(kindOf(N.get(x.id)), esc(kindLabel(N.get(x.id))))}${esc(short(x.text, 60))}<small>${esc(short(x.owner || subtitle(N.get(x.id)), 50))}</small></div>`).join("") || `<div>Nothing found</div>`;
   results.style.display = "block";
 };
 function pick(i) { const x = hits[i]; if (!x) return; results.style.display = "none"; search.blur(); go(x.id, x.row); }

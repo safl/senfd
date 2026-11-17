@@ -93,6 +93,24 @@ def test_a_cns_value_of_another_command_set_is_labelled_with_its_csi():
     assert any(e["t"] == "doc:Foo 1.3" for e in graph["edges"] if e["kind"] == "csi")
 
 
+def test_a_command_set_says_its_kind_and_its_csi():
+    """The map says that the Common I/O commands are no command set, and
+    gives an I/O command set its CSI"""
+
+    from senfd.documents.spec import CommandSet, SpecDocument
+
+    document = SpecDocument()
+    document.command_sets = {
+        "common_i_o": CommandSet(name="Common I/O", kind="common_io"),
+        "nvm": CommandSet(name="NVM", kind="io", identifier=0),
+    }
+    nodes = {n["id"]: n for n in graph_of(document)["nodes"]}
+    assert "no command set" in nodes["cs:common_i_o"]["about"]
+    assert nodes["cs:common_i_o"]["badge"] == "I/O commands"
+    assert nodes["cs:common_i_o"]["csi"] is None
+    assert (nodes["cs:nvm"]["about"], nodes["cs:nvm"]["csi"]) == ("I/O command set", 0)
+
+
 def test_a_command_leads_to_each_status_value_that_affects_it():
     from senfd.documents.spec import (
         Command,

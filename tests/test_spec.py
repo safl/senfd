@@ -76,6 +76,67 @@ def test_the_i_o_commands_of_every_i_o_command_set_are_named_common_i_o():
     assert command_set_name("Admin") == "Admin"
 
 
+def test_a_command_set_has_its_kind_and_the_csi_of_an_i_o_command_set():
+    """The Common I/O commands of Base 2.4 Figure 645 are no command set and
+    have no CSI; Base 2.4 Figure 337 gives 03h to the Subsystem Local Memory
+    Command Set specification, whose command set is "SLM"; MI 2.2 names the
+    set of Figure 151 in the title of section 7, "PCIe Command Set
+    (Optional)" """
+
+    from senfd.documents.spec import (
+        Command,
+        CommandSet,
+        Entry,
+        Source,
+        SpecDocument,
+        Values,
+        command_set_kind,
+        command_set_name,
+        link_identifiers,
+    )
+
+    name = "Opcodes for PCIe Commands using an Out-of-Band Mechanism"
+    assert command_set_name(name, "PCIe Command Set (Optional)") == "PCIe"
+    assert command_set_name("NVM", "NVM Command Set Commands") == "NVM"
+    base = "NVM Express Base Specification"
+    slm = "NVM Express Subsystem Local Memory Command Set Specification"
+    mi = "NVM Express Management Interface Specification"
+    assert [
+        command_set_kind("Common I/O", base),
+        command_set_kind("Admin", base),
+        command_set_kind("SLM", slm),
+        command_set_kind("PCIe", mi),
+    ] == ["common_io", "admin", "io", "management_interface"]
+
+    def listed(name, kind, document):
+        source = Source(document=document, figure_nr=1)
+        command = Command(name="Foo", opcode=1, source=source)
+        return CommandSet(name=name, kind=kind, commands={"foo": command})
+
+    document = SpecDocument()
+    document.command_sets = {
+        "common_i_o": listed("Common I/O", "common_io", base),
+        "slm": listed("SLM", "io", slm),
+    }
+    document.values = [
+        Values(
+            kind="other",
+            name="Command Set Identifiers",
+            columns=["command_set_identifier_value", "description"],
+            source=Source(document=base, figure_nr=337),
+            entries=[
+                Entry(value="03h", description="Foo", document=slm),
+                Entry(value="04h", description="Bar", document=base),
+            ],
+        )
+    ]
+    link_identifiers(document)
+    assert [(s.kind, s.identifier) for s in document.command_sets.values()] == [
+        ("common_io", None),
+        ("io", 3),
+    ]
+
+
 def test_a_feature_has_the_dwords_its_caption_names_it_by(tmp_path):
     spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
 

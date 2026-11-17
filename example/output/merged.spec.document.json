@@ -2,16 +2,18 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "767ae47982646af9e05a22eefd3c9a6c5d5395972d1a97f933e1d335fbdea423",
+    "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "3b4c77bb4923cb04b9f9adb7eb34b121acaf0de9f96fc1c2ac6dc6d75156c3d4"
+    "combined_sha256": "cec12c28a0ce41a38bd318fb47158ab587e0a72389312e663b1930ae4427a044"
   },
   "command_sets": {
     "foobar": {
       "name": "Foobar",
+      "kind": "other",
+      "identifier": null,
       "commands": {
         "ding": {
           "name": "Ding",
@@ -1479,6 +1481,8 @@
     },
     "admin": {
       "name": "Admin",
+      "kind": "admin",
+      "identifier": null,
       "commands": {
         "foo_get": {
           "name": "Foo Get",
@@ -10383,7 +10387,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "767ae47982646af9e05a22eefd3c9a6c5d5395972d1a97f933e1d335fbdea423",
+      "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -10393,7 +10397,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "767ae47982646af9e05a22eefd3c9a6c5d5395972d1a97f933e1d335fbdea423",
+      "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

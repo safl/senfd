@@ -36,6 +36,16 @@ GROUPS = {
 }
 
 
+# What each kind of command set is, as the map says it
+COMMAND_SET_KINDS = {
+    "io": "I/O command set",
+    "common_io": "I/O commands for use in all I/O command sets, no command set",
+    "admin": "Admin command set",
+    "management_interface": "Management Interface command set",
+    "other": "command set",
+}
+
+
 def figure_key(source: Source) -> str:
     """The key of the figure of 'source', as "Base 2.4:93" """
 
@@ -201,7 +211,14 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
     affects: Dict[Tuple[str, str], List[str]] = {}
     for key, command_set in spec.command_sets.items():
         cid = f"cs:{key}"
-        g.node(cid, "cmdset", command_set.name)
+        g.node(
+            cid,
+            "cmdset",
+            command_set.name,
+            about=COMMAND_SET_KINDS[command_set.kind],
+            csi=command_set.identifier,
+            badge="I/O commands" if command_set.kind == "common_io" else None,
+        )
         g.edge("home", cid, "", "contains")
         for name, command in command_set.commands.items():
             mid = f"cmd:{key}:{name}"
