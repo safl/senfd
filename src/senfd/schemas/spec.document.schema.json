@@ -31,7 +31,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The index of this entry, for example 63 for LBAF63; None for a last\nentry whose range the figure gives as a formula",
+                    "description": "The index of this entry, for example 63 for LBAF63, or 255 for\n\"Performance Attribute FFh Identifier\"; None for a last entry whose range\nthe figure gives as a formula",
                     "title": "Index"
                 },
                 "first": {

@@ -2951,3 +2951,71 @@ def test_the_one_row_of_no_name_of_a_register_is_the_register():
     assert [(f.range, f.name, f.acronym) for f in register.fields] == [
         ("31:00", "Foo Pointer", "FPTR")
     ]
+
+
+def test_fields_numbered_in_hexadecimal_with_rows_left_out_are_an_array():
+    """NVM 1.3 Figure 104 lists Performance Attribute C1h, C2h, "..." and FFh
+    Identifier; Base 2.4 Figure 516 lists Vendor Specific Protocol FF, F1,
+    "..." and F0, the acronyms VSPFF to VSPF0 in SPS and VSP15 to VSP0 in
+    SSP, and gives AHATSDPS to two fields"""
+
+    from senfd.documents.spec import Array
+
+    spec = document_of(
+        figure_of(
+            104,
+            "Foo Identifier List",
+            ("Bytes", "Description"),
+            ("15:00", "Reserved"),
+            ("31:16", "Foo Attribute C1h Identifier (FAC1HI): The first."),
+            ("47:32", "Foo Attribute C2h Identifier (FAC2HI): The second."),
+            ("...", ""),
+            ("1023:1008", "Foo Attribute FFh Identifier (FACFFHI): The last."),
+        ),
+        figure_of(
+            516,
+            "Bar Data Structure",
+            ("Bits", "Description"),
+            ("31", "Bar Protocol FF (BPFF): The last."),
+            ("...", ""),
+            ("17", "Bar Protocol F1 (BPF1): The second."),
+            ("16", "Bar Protocol F0 (BPF0): The first."),
+            ("15:03", "Reserved"),
+            ("02", "Bar Protocol Status (BPS): The status."),
+            ("01", "Bar Protocol Support (BPS): The support."),
+            ("00", "Reserved"),
+        ),
+        figure_of(
+            517,
+            "Baz Data Structure",
+            ("Bits", "Description"),
+            ("31", "Baz Protocol FF (BZP15): The last."),
+            ("...", ""),
+            ("17", "Baz Protocol F1 (BZP1): The second."),
+            ("16", "Baz Protocol F0 (BZP0): The first."),
+            ("15:00", "Reserved"),
+        ),
+    )
+    foo, bar, baz = spec.structures
+    assert foo.fields[-1].array == Array(
+        name="Foo Attribute Identifier",
+        index=255,
+        first=193,
+        count=63,
+        stride=16,
+        lower=16,
+    )
+    assert bar.fields[0].array == Array(
+        name="Bar Protocol",
+        acronym="BP",
+        index=255,
+        first=240,
+        count=16,
+        stride=1,
+        lower=16,
+    )
+    assert [f.array.index for f in baz.fields[:3]] == [255, 241, 240]
+    assert sorted((e.source.figure_nr, e.code, e.found) for e in spec.errata) == [
+        (516, "acronym", "BPS"),
+        (517, "acronym", ""),
+    ]
