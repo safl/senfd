@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 from pydantic import BaseModel
 
 from senfd.documents.base import TRANSLATION_TABLE, Model
-from senfd.utils import unmarked
+from senfd.utils import key_of, unmarked
 
 
 class Diagnostic(Model):
@@ -95,7 +95,7 @@ SYNONYMS: Dict[str, str] = {
 
 
 def slug(text: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+    return key_of(text)
 
 
 def normalize_header(text: str) -> Tuple[str, List[Diagnostic]]:
@@ -133,7 +133,7 @@ def shape_of(columns: List[str]) -> Optional[str]:
         if all(need in columns for need in needs):
             return shape
     if any("requirement" in column for column in columns) or {
-        "i_o",
+        "io",
         "admin",
     } <= set(columns):
         return "requirement"

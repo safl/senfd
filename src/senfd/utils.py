@@ -6,6 +6,19 @@ import re
 from typing import List, Tuple
 
 
+REGEX_IO = re.compile(r"\bI/O\b", re.IGNORECASE)
+
+
+def key_of(text: str) -> str:
+    """
+    The key of a name or a header: lower case, words joined by underscores,
+    and "I/O" one word, as "create_io_completion_queue" of "Create I/O
+    Completion Queue"
+    """
+
+    return re.sub(r"[^a-z0-9]+", "_", REGEX_IO.sub("io", text).lower()).strip("_")
+
+
 def pascal_to_snake(name):
     """Convert a PascalCase to snake_case"""
     return re.sub(r"(?<!^)(?=[A-Z])", "_", name).lower()

@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
+    "senfd_sha256": "781a3052bc9c49ea84a35740f1ce2cd252f39dacdcd972c2411f63c2880a3fbc",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "cec12c28a0ce41a38bd318fb47158ab587e0a72389312e663b1930ae4427a044"
+    "combined_sha256": "733d2fc25c42b982f07420bda2d612b9c926274487690e0a064de6bdcdfdfbba"
   },
   "command_sets": {
     "foobar": {
@@ -8200,7 +8200,7 @@
       "columns": [
         "command",
         "opcode",
-        "i_o",
+        "io",
         "admin",
         "discovery",
         "reference"
@@ -8212,13 +8212,13 @@
           "name": "Foo Get",
           "description": "",
           "columns": {
-            "i_o": "M",
+            "io": "M",
             "admin": "O",
             "discovery": "P",
             "reference": "4.1"
           },
           "typed": {
-            "i_o": {
+            "io": {
               "kind": "level",
               "level": "M",
               "flag": null,
@@ -8603,7 +8603,7 @@
       "columns": [
         "feature_name",
         "identifier",
-        "i_o",
+        "io",
         "admin",
         "discovery"
       ],
@@ -8614,7 +8614,7 @@
           "name": "Foo Config",
           "description": "",
           "columns": {
-            "i_o": "O",
+            "io": "O",
             "admin": "M",
             "discovery": "NR"
           },
@@ -8629,7 +8629,7 @@
               "reference": null,
               "footnotes": []
             },
-            "i_o": {
+            "io": {
               "kind": "level",
               "level": "O",
               "flag": null,
@@ -8672,7 +8672,7 @@
           "name": "Foo Mode",
           "description": "",
           "columns": {
-            "i_o": "M 2",
+            "io": "M 2",
             "admin": "NOTE 3",
             "discovery": "Refer to the Bar Specification"
           },
@@ -8687,7 +8687,7 @@
               "reference": null,
               "footnotes": []
             },
-            "i_o": {
+            "io": {
               "kind": "level",
               "level": "M",
               "flag": null,
@@ -8732,7 +8732,7 @@
           "name": "Foo Spare",
           "description": "",
           "columns": {
-            "i_o": "Reserved",
+            "io": "Reserved",
             "admin": "Vendor Specific",
             "discovery": "O"
           },
@@ -8747,7 +8747,7 @@
               "reference": null,
               "footnotes": []
             },
-            "i_o": {
+            "io": {
               "kind": "reserved",
               "level": null,
               "flag": null,
@@ -8790,7 +8790,7 @@
           "name": "Foo Odd",
           "description": "",
           "columns": {
-            "i_o": "Maybe",
+            "io": "Maybe",
             "admin": "O",
             "discovery": "O"
           },
@@ -9130,7 +9130,7 @@
       "columns": [
         "offset_ofst",
         "size_in_bytes",
-        "i_o_controller",
+        "io_controller",
         "administrative_controller",
         "discovery_controller",
         "name"
@@ -9143,7 +9143,7 @@
           "description": "",
           "columns": {
             "size_in_bytes": "8",
-            "i_o_controller": "M",
+            "io_controller": "M",
             "administrative_controller": "M",
             "discovery_controller": "M",
             "acronym": "FCAP"
@@ -9459,7 +9459,7 @@
       "columns": [
         "command",
         "opcode",
-        "i_o",
+        "io",
         "admin"
       ],
       "entries": [
@@ -9469,11 +9469,11 @@
           "name": "Foo Get",
           "description": "",
           "columns": {
-            "i_o": "M",
+            "io": "M",
             "admin": "O"
           },
           "typed": {
-            "i_o": {
+            "io": {
               "kind": "level",
               "level": "M",
               "flag": null,
@@ -9767,7 +9767,7 @@
       "identifier": 200,
       "name": "Foo Odd",
       "columns": {
-        "i_o": "Maybe",
+        "io": "Maybe",
         "admin": "O",
         "discovery": "O"
       },
@@ -10387,7 +10387,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
+      "senfd_sha256": "781a3052bc9c49ea84a35740f1ce2cd252f39dacdcd972c2411f63c2880a3fbc",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -10397,7 +10397,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "8db43858854d04eaa56194ca6f25fb3ef6c771fde2e593328c9629adc3e3a017",
+      "senfd_sha256": "781a3052bc9c49ea84a35740f1ce2cd252f39dacdcd972c2411f63c2880a3fbc",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

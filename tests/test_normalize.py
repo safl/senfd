@@ -232,9 +232,9 @@ def test_a_header_of_two_rows_names_the_columns_below_its_spanning_cell(normaliz
     _, figures = normalized
 
     figure = figures["Foo Command Support Requirements"]
-    assert figure["columns"] == ["command", "opcode", "i_o", "admin"]
+    assert figure["columns"] == ["command", "opcode", "io", "admin"]
     assert figure["entries"] == [
-        {"command": "Foo Get", "opcode": "C2h", "i_o": "M", "admin": "O"}
+        {"command": "Foo Get", "opcode": "C2h", "io": "M", "admin": "O"}
     ]
 
 

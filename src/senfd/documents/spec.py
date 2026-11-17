@@ -43,7 +43,7 @@ from senfd.normalize import (
     warning,
 )
 from senfd.ranges import RangeKind, Unit
-from senfd.utils import unmarked
+from senfd.utils import key_of, unmarked
 import senfd.fields
 import senfd.identity
 import senfd.ranges
@@ -915,9 +915,10 @@ def command_set_kind(name: str, document: str) -> CommandSetKind:
 
 
 def alias(name: str) -> str:
-    """The key of a name: lower case, words joined by underscores"""
+    """The key of a name: lower case, words joined by underscores, and "I/O"
+    one word; see 'key_of'"""
 
-    return re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+    return key_of(name)
 
 
 REGEX_HEX = re.compile(r"^(?P<hex>[0-9A-Fa-f]+)h$")
@@ -2074,7 +2075,7 @@ def kinds_of(column: str, values: "Values") -> Optional[set]:
     """The kinds of value a column holds, by its name and the table it is of,
     or None for a column of text"""
 
-    if column in ("om", "i_o", "admin", "administrative", "discovery") or (
+    if column in ("om", "io", "admin", "administrative", "discovery") or (
         "requirement" in column
     ):
         return {"level"}
@@ -2094,9 +2095,9 @@ def kinds_of(column: str, values: "Values") -> Optional[set]:
 
 
 def column_title(column: str) -> str:
-    """A column by its key as an author reads it, as 'I/O' of 'i_o'"""
+    """A column by its key as an author reads it, as 'I/O' of 'io'"""
 
-    return {"i_o": "I/O", "om": "O/M"}.get(column, column.replace("_", " "))
+    return {"io": "I/O", "om": "O/M"}.get(column, column.replace("_", " "))
 
 
 # A kind of value, as an author reads it
