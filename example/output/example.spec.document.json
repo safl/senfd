@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "8fed79c75cee36c2df57a55b45b4ea00e6e6aa35ba2dbf3919f16872a33c3981",
+    "senfd_sha256": "4b69574f162680f6fed857794ed807bbbe42743d0093d7b4ee3bd4ceef42e384",
     "stem": "example",
     "file": "example.docx",
     "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -3050,6 +3050,82 @@
         }
       }
     ],
+    "field:cns_specific_identifier": [
+      {
+        "lower": 11,
+        "upper": 11,
+        "condition": null,
+        "qualifier": "CNS Specific Identifier",
+        "fields": [
+          {
+            "name": "Reserved",
+            "acronym": null,
+            "upper": 31,
+            "lower": 16,
+            "range": "31:16",
+            "description": "",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "placements": [],
+            "byte_order": null,
+            "encoding": null,
+            "footnotes": [],
+            "values": [],
+            "unit": "bits",
+            "role": "reserved",
+            "kind": "span",
+            "formula": null,
+            "width": 16,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "group": null,
+            "structure": null
+          },
+          {
+            "name": "Foo Identifier",
+            "acronym": "FID",
+            "upper": 15,
+            "lower": 0,
+            "range": "15:00",
+            "description": "Which foo.",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "placements": [],
+            "byte_order": null,
+            "encoding": null,
+            "footnotes": [],
+            "values": [],
+            "unit": "bits",
+            "role": "field",
+            "kind": "span",
+            "formula": null,
+            "width": 16,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "group": null,
+            "structure": null
+          }
+        ],
+        "source": {
+          "document": "example",
+          "figure_nr": 27,
+          "page_nr": 27,
+          "pdf_page": null,
+          "section": "2",
+          "section_title": "Admin Commands"
+        }
+      }
+    ],
     "foo_config": [
       {
         "lower": 11,
@@ -3439,84 +3515,6 @@
         "pdf_page": null,
         "section": "1.2",
         "section_title": "Ding command"
-      },
-      "extends": null,
-      "extends_field": null
-    },
-    {
-      "name": "Command Dword 11 - CNS Specific Identifier",
-      "kind": "command_dword",
-      "unit": "bits",
-      "qualifier": "CNS Specific Identifier",
-      "offset": null,
-      "fields": [
-        {
-          "name": "Reserved",
-          "acronym": null,
-          "upper": 31,
-          "lower": 16,
-          "range": "31:16",
-          "description": "",
-          "section": null,
-          "elided": false,
-          "columns": {},
-          "union": null,
-          "alternative": null,
-          "placements": [],
-          "byte_order": null,
-          "encoding": null,
-          "footnotes": [],
-          "values": [],
-          "unit": "bits",
-          "role": "reserved",
-          "kind": "span",
-          "formula": null,
-          "width": 16,
-          "fields": [],
-          "values_in": null,
-          "cases": [],
-          "array": null,
-          "group": null,
-          "structure": null
-        },
-        {
-          "name": "Foo Identifier",
-          "acronym": "FID",
-          "upper": 15,
-          "lower": 0,
-          "range": "15:00",
-          "description": "Which foo.",
-          "section": null,
-          "elided": false,
-          "columns": {},
-          "union": null,
-          "alternative": null,
-          "placements": [],
-          "byte_order": null,
-          "encoding": null,
-          "footnotes": [],
-          "values": [],
-          "unit": "bits",
-          "role": "field",
-          "kind": "span",
-          "formula": null,
-          "width": 16,
-          "fields": [],
-          "values_in": null,
-          "cases": [],
-          "array": null,
-          "group": null,
-          "structure": null
-        }
-      ],
-      "notes": [],
-      "source": {
-        "document": "example",
-        "figure_nr": 27,
-        "page_nr": 27,
-        "pdf_page": null,
-        "section": "2",
-        "section_title": "Admin Commands"
       },
       "extends": null,
       "extends_field": null
@@ -9509,6 +9507,82 @@
         }
       }
     ],
+    "field:cns_specific_identifier": [
+      {
+        "lower": 11,
+        "upper": 11,
+        "condition": null,
+        "qualifier": "CNS Specific Identifier",
+        "fields": [
+          {
+            "name": "Reserved",
+            "acronym": null,
+            "upper": 31,
+            "lower": 16,
+            "range": "31:16",
+            "description": "",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "placements": [],
+            "byte_order": null,
+            "encoding": null,
+            "footnotes": [],
+            "values": [],
+            "unit": "bits",
+            "role": "reserved",
+            "kind": "span",
+            "formula": null,
+            "width": 16,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "group": null,
+            "structure": null
+          },
+          {
+            "name": "Foo Identifier",
+            "acronym": "FID",
+            "upper": 15,
+            "lower": 0,
+            "range": "15:00",
+            "description": "Which foo.",
+            "section": null,
+            "elided": false,
+            "columns": {},
+            "union": null,
+            "alternative": null,
+            "placements": [],
+            "byte_order": null,
+            "encoding": null,
+            "footnotes": [],
+            "values": [],
+            "unit": "bits",
+            "role": "field",
+            "kind": "span",
+            "formula": null,
+            "width": 16,
+            "fields": [],
+            "values_in": null,
+            "cases": [],
+            "array": null,
+            "group": null,
+            "structure": null
+          }
+        ],
+        "source": {
+          "document": "example",
+          "figure_nr": 27,
+          "page_nr": 27,
+          "pdf_page": null,
+          "section": "2",
+          "section_title": "Admin Commands"
+        }
+      }
+    ],
     "nvme_management_foo": [
       {
         "lower": 0,
@@ -9610,6 +9684,12 @@
       "severity": "warning",
       "code": "dwords-unassigned",
       "message": "example, 1.2, Figure 21, page 21: dwords 10:10 of zap, of no command, feature or directive operation"
+    },
+    {
+      "figure_nr": null,
+      "severity": "warning",
+      "code": "dwords-unassigned",
+      "message": "example, 2, Figure 27, page 27: dwords 11:11 of the field cns specific identifier, of no command, feature or directive operation"
     },
     {
       "figure_nr": null,
@@ -9719,7 +9799,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "8fed79c75cee36c2df57a55b45b4ea00e6e6aa35ba2dbf3919f16872a33c3981",
+      "senfd_sha256": "4b69574f162680f6fed857794ed807bbbe42743d0093d7b4ee3bd4ceef42e384",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",

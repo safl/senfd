@@ -71,7 +71,11 @@ has these parts:
   listed in full, as TSEN1 to TSEN8, is an ``array`` as a run with rows
   left out is, and a field of a group of rows that a column names by an
   index, as "Source Range 0" to "Source Range 127", has ``group``, the
-  array of those groups.
+  array of those groups. Dwords in a section titled with a code, as
+  "SMBus/I2C Frequency (Configuration Identifier 01h)" below Configuration
+  Get, or captioned by a field of a command, as "Command Dword 11 - CNS
+  Specific Identifier" in "NVM Set List (CNS 04h)", are an operation of
+  that command, with the code in ``selectors``.
 * ``values``: the tables of values, such as status codes or identifiers,
   by the ``kind`` of their caption, with the ``scope`` that the caption
   limits them to.
