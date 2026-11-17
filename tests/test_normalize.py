@@ -1050,3 +1050,62 @@ def test_a_lead_in_to_a_list_names_nothing():
     text = "Each logical block may:\n• report an error; or\n• be read"
     assert parse_field_description(text) == (None, None, text)
     assert parse_field_description("Notice: An event.")[0] == "Notice"
+
+
+def table_of(*rows):
+    from senfd.tables import Cell, Row, Table
+
+    return Table(rows=[Row(cells=[Cell(text=t) for t in row]) for row in rows])
+
+
+def test_a_diagram_of_dwords_and_one_of_bits_are_read_as_layouts():
+    """Base 2.4 Figure 97 draws the completion queue entry as rows DW0 to
+    DW3 under bit numbers, and the text says "Dword 2 is defined in Figure
+    98"; Figure 110 draws the PRP entry as "63", "n+1", "n", "0" over "Page
+    Base Address" and "Offset" """
+
+    from senfd.documents.normalized import normalize_figure
+    from senfd.documents.plain import Figure
+
+    def figure(number, caption, table, mentions=()):
+        table.rows.insert(0, table_of((f"Figure {number}: {caption}",)).rows[0])
+        return Figure(
+            figure_nr=number,
+            caption=f"Figure {number}: {caption}",
+            description=caption,
+            table=table,
+            mentions=list(mentions),
+        )
+
+    diagnostics = []
+    entry = normalize_figure(
+        figure(
+            97,
+            "Foo Entry Layout",
+            table_of(
+                ("", "31", "15", "7 0"),
+                ("DW0", "Command Specific", "", ""),
+                ("DW1", "Foo Identifier", "Foo Pointer", ""),
+            ),
+            ["Dword 1 is defined in Figure 98."],
+        ),
+        diagnostics,
+    )
+    assert [(f.range.text, f.name, f.description) for f in entry.layout.fields] == [
+        ("3:0", "Dword 0", "Command Specific."),
+        ("7:4", "Dword 1", "Foo Identifier, Foo Pointer. Defined in Figure 98."),
+    ]
+    prp = normalize_figure(
+        figure(
+            110,
+            "Foo Entry Layout",
+            table_of(("63", "n+1", "n", "0"), ("Foo Base Address", "Offset")),
+        ),
+        diagnostics,
+    )
+    assert prp.layout.unit == "bits"
+    assert [(f.range.text, f.name) for f in prp.layout.fields] == [
+        ("63:n+1", "Foo Base Address"),
+        ("n:0", "Offset"),
+    ]
+    assert [d.code for d in diagnostics] == ["bit-diagram", "bit-diagram"]

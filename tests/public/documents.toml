@@ -16,10 +16,10 @@ sha256 = "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd"
 commands = 57
 features = 51
 log_pages = 51
-structures = 343
+structures = 345
 errata = 13
 document_errors = 9
-not_modelled = 22
+not_modelled = 20
 
 [[document]]
 name = "Boot 1.4"

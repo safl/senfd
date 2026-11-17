@@ -3094,6 +3094,34 @@ def link_parts(document: SpecDocument) -> None:
         parts(structure.fields)
 
 
+def unarray_unlike(document: SpecDocument) -> None:
+    """
+    Clear 'array' of the entries of an array that link different
+    structures, or that some link and others do not, since entries of an
+    array are alike: Dword 0 to Dword 3 of the Common Completion Queue
+    Entry Layout of Base 2.4 Figure 97, Dword 2 and 3 of which link Figures
+    98 and 99.
+    """
+
+    for _, fields in laid_out(document):
+        for within in [fields] + [f.fields for f in fields_within(fields)]:
+            arrays: Dict[Tuple, List[Bits]] = {}
+            for field in within:
+                if field.array:
+                    key = (field.array.name, field.array.first, field.array.lower)
+                    arrays.setdefault(key, []).append(field)
+            for entries in arrays.values():
+                linked = {
+                    (f.structure.document, f.structure.figure_nr)
+                    if f.structure
+                    else None
+                    for f in entries
+                }
+                if len(linked) > 1:
+                    for field in entries:
+                        field.array = None
+
+
 def unlink_itself(document: SpecDocument) -> None:
     """
     Clear 'structure' of a field linked to a structure of one field, of the
@@ -3593,6 +3621,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_structures(document)
     link_runs(document)
     unlink_itself(document)
+    unarray_unlike(document)
     link_parts(document)
     link_extended(document)
     link_encodings(document)

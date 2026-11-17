@@ -845,6 +845,89 @@ def parse_entries(
     return entries
 
 
+REGEX_BIT_LABEL = re.compile(r"^(?:\d+|[a-z](?:\s?[+-]\s?\d+)?)$")
+
+
+def parse_bit_diagram(rows: List[Row]) -> Optional[Layout]:
+    """
+    The layout of a diagram of one row of bit numbers, the upper and the
+    lower bit of each field, over one row of the fields' names, as the PRP
+    Entry Layout of Base 2.4 Figure 110: "63", "n+1", "n", "0" over "Page
+    Base Address" and "Offset". None when the rows are not such a diagram.
+    """
+
+    texts = [
+        [normalize_text(c.text) for c in row.cells if not c.merged] for row in rows
+    ]
+    texts = [row for row in texts if any(row)]
+    if len(texts) != 2:
+        return None
+    bits, names = texts
+    if (
+        len(bits) != 2 * len(names)
+        or not all(REGEX_BIT_LABEL.match(b) for b in bits)
+        or all(b.isdigit() for b in bits)
+        or not all(names)
+    ):
+        return None
+    layout = Layout(unit="bits")
+    for at, name in enumerate(names):
+        rng = parse_range("bits", f"{bits[2 * at]}:{bits[2 * at + 1]}")
+        if rng is None:
+            return None
+        layout.fields.append(LayoutField(range=rng, name=name, description=""))
+    return layout
+
+
+def parse_dword_diagram(rows: List[Row], mentions: List[str]) -> Optional[Layout]:
+    """
+    The layout of a diagram with one row for each dword, "DW0", "DW1" and
+    on, under a row of bit numbers, as the Common Completion Queue Entry
+    Layout of Base 2.4 Figure 97: a field of bytes for each dword, named
+    "Dword 0" and on, described by the names in its row, as "SQ Identifier,
+    SQ Head Pointer", and by the figure the text says defines it, as
+    "Dword 2 is defined in Figure 98". The bits of a name are not read, as
+    the row of bit numbers does not give each column's. None when the rows
+    are not such a diagram.
+    """
+
+    texts = [
+        [normalize_text(c.text) for c in row.cells if not c.merged] for row in rows
+    ]
+    starts = [i for i, row in enumerate(texts) if row[:1] == ["DW0"]]
+    if (
+        not starts
+        or not texts[starts[0] - 1][-1:]
+        or not all(re.fullmatch(r"\d+(?: \d+)?", t) for t in texts[starts[0] - 1] if t)
+    ):
+        return None
+    defined = {
+        int(m[1]): m[2]
+        for mention in mentions
+        for m in re.finditer(r"Dword (\d+) is defined in Figure (\d+)", mention)
+    }
+    layout = Layout(unit="bytes")
+    for number, row in enumerate(texts[starts[0] :]):
+        if row[:1] != [f"DW{number}"]:
+            return None
+        names = list(dict.fromkeys(t for t in row[1:] if t))
+        description = ", ".join(names) + "."
+        if number in defined:
+            description += f" Defined in Figure {defined[number]}."
+        rng = parse_range("bytes", f"{4 * number + 3}:{4 * number}")
+        if rng is None:
+            return None
+        layout.fields.append(
+            LayoutField(
+                range=rng,
+                name=f"Dword {number}",
+                acronym=f"DW{number}",
+                description=description,
+            )
+        )
+    return layout
+
+
 BITS_OF_A_BYTE = [str(bit) for bit in range(7, -1, -1)]
 
 
@@ -919,6 +1002,13 @@ def normalize_figure(figure, diagnostics: List[Diagnostic]) -> NormalizedFigure:
         normalized.headers, normalized.columns = ["Byte", "Bit"], ["bytes", "bits"]
         normalized.shape, normalized.layout = "layout", diagram
         diagnostics.append(note("byte-diagram", "Diagram of bytes by their bits"))
+        return normalized
+    diagram = parse_dword_diagram(rows, figure.mentions) or parse_bit_diagram(rows)
+    if diagram:
+        normalized.headers = ["Dword" if diagram.unit == "bytes" else "Bits"]
+        normalized.columns = [diagram.unit]
+        normalized.shape, normalized.layout = "layout", diagram
+        diagnostics.append(note("bit-diagram", "Diagram of fields by their bits"))
         return normalized
     idx, headers, grid, shape = find_header(rows)
     normalized.headers, normalized.columns, normalized.shape = (
