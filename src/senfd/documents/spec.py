@@ -43,6 +43,7 @@ from senfd.normalize import (
     warning,
 )
 from senfd.ranges import RangeKind, Unit
+from senfd.utils import unmarked
 import senfd.fields
 import senfd.identity
 import senfd.ranges
@@ -172,7 +173,8 @@ class BitsCommon(Model):
     where the MSB is in the lowest byte. None where the figure does not mark
     them, or the field is one byte"""
     footnotes: List[int] = Field(default_factory=list)
-    """The numbers of the footnotes marked at the end of the description"""
+    """The numbers of the footnotes marked on the name, at the end of the
+    description, and on the other columns"""
     values: List["Entry"] = Field(default_factory=list)
     """The values the field takes, as the table in its description gives
     them"""
@@ -431,6 +433,9 @@ class Command(Model):
     Submission Queue"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
+    footnotes: Dict[str, List[int]] = Field(default_factory=dict)
+    """The numbers of the footnotes marked on its name and columns, by the
+    key of the column, where any is marked"""
     source: Source
     """The opcode table listing the command"""
 
@@ -545,7 +550,11 @@ class Entry(Model):
     typed: Dict[str, Typed] = Field(default_factory=dict)
     """The values of the row's columns of a known kind, by their keys"""
     footnotes: List[int] = Field(default_factory=list)
-    """The numbers of the footnotes marked at the end of the description"""
+    """The numbers of the footnotes marked on the row: on the value, the
+    name, the description and the other columns, in that order"""
+    marked: Dict[str, List[int]] = Field(default_factory=dict)
+    """The numbers of the footnotes marked on each column, by its key, the
+    name's as "name", where any is marked"""
     refers_to: Optional[ValueLink] = None
     """The value of another field that the description names, where the entry
     has no name of its own"""
@@ -592,6 +601,9 @@ class Feature(Model):
     columns: Dict[str, str] = Field(default_factory=dict)
     """The feature identifier table's other columns of it, by their keys, as
     its requirements"""
+    footnotes: Dict[str, List[int]] = Field(default_factory=dict)
+    """The numbers of the footnotes marked on its name and columns, by the
+    key of the column, where any is marked"""
     sqe: List[Dwords] = Field(default_factory=list)
     """The submission queue entry dwords described for it"""
     cqe: List[Dwords] = Field(default_factory=list)
@@ -609,6 +621,9 @@ class LogPage(Model):
     """The name of the log page, as 'SMART / Health Information'"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The log page identifier table's other columns of it, by their keys"""
+    footnotes: Dict[str, List[int]] = Field(default_factory=dict)
+    """The numbers of the footnotes marked on its name and columns, by the
+    key of the column, where any is marked"""
     structure: Optional[Structure] = None
     """The structure laying it out, where a figure is known for it"""
     source: Source
@@ -761,7 +776,8 @@ def without_footnote(name: str) -> str:
     """'name' without a footnote marker, as "Flush4" or "Cancel 4" is "Flush" and
     "Cancel" """
 
-    return re.sub(r"(?<=[A-Za-z)])\s*\d+(?:,\s*\d+)*$", "", name.strip())
+    name = unmarked(name.strip())[0]
+    return re.sub(r"(?<=[A-Za-z)])\s*\d+(?:,\s*\d+)*$", "", name)
 
 
 def command_set_name(name: str) -> str:
@@ -802,6 +818,9 @@ def footnoted(description: str) -> Tuple[str, List[int]]:
     """'description' without the footnote markers at its end, as "definition.1",
     and the numbers of those footnotes"""
 
+    plain, marked = unmarked(description)
+    if marked:
+        return plain, marked
     match = REGEX_TRAILING_FOOTNOTES.search(description)
     if not match:
         return description, []
@@ -810,20 +829,25 @@ def footnoted(description: str) -> Tuple[str, List[int]]:
 
 
 def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
+    name, named = unmarked(field.name or "", within=True)
     description, footnotes = footnoted(field.description)
+    columns = {}
+    for key, text in field.columns.items():
+        columns[key], numbers = unmarked(text, within=True)
+        footnotes += [n for n in numbers if n not in footnotes]
     return ReadBits(
-        name=field.name,
+        name=name if field.name is not None else None,
         acronym=field.acronym,
         unit=unit,
         upper=field.range.upper,
         lower=field.range.lower,
         range=field.range.text,
         description=description,
-        footnotes=footnotes,
+        footnotes=named + footnotes,
         section=field.section,
         elided=field.elided,
-        columns=field.columns,
-        byte_order=byte_order_of(field.columns),
+        columns=columns,
+        byte_order=byte_order_of(columns),
         placements=[
             Placement(
                 condition=p.condition,
@@ -1344,19 +1368,21 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         command_set = document.command_sets.setdefault(
             alias(set_name), CommandSet(name=set_name)
         )
-        for entry in figure.entries:
-            match = REGEX_HEX.match(entry.get("opcode", ""))
-            name = without_footnote(entry.get("command", ""))
+        for row in figure.entries:
+            entry = entry_of(row, "opcode")
+            opcode = unmarked(row.get("opcode", ""))[0]
+            match = REGEX_HEX.match(opcode)
+            name = without_footnote(row.get("command", ""))
             if not name:
                 continue
             if not match:
                 # Reserved and vendor specific opcodes are given as ranges
-                if entry.get("opcode") and " to " not in entry["opcode"]:
+                if opcode and " to " not in opcode:
                     document.errata.append(
                         Erratum(
                             code="opcode",
                             message=f"Command {name}: opcode is not a value",
-                            found=entry.get("opcode", ""),
+                            found=opcode,
                             source=source,
                         )
                     )
@@ -1369,7 +1395,14 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                 name=name,
                 opcode=int(match["hex"], 16),
                 columns={
-                    k: v for k, v in entry.items() if k not in ("opcode", "command")
+                    k: v
+                    for k, v in entry.columns.items()
+                    if k not in ("opcode", "command")
+                },
+                footnotes={
+                    "name" if k == "command" else k: v
+                    for k, v in entry.marked.items()
+                    if k != "opcode"
                 },
                 source=source,
             )
@@ -1495,13 +1528,14 @@ COMMON = {"note", "reference", "reserved", "vendor_specific", "not_applicable"}
 def typed_of(text: str) -> Optional[Typed]:
     """The typed form of the text of a value, or None when it has none"""
 
+    text, marked = unmarked(text)
     for kind, regex in TYPED_FORMS:
         match = regex.match(text.strip())
         if not match:
             continue
         groups = match.groupdict()
         footnotes = [int(n) for n in re.findall(r"\d+", groups.get("footnotes") or "")]
-        typed = Typed(kind=kind, footnotes=footnotes)
+        typed = Typed(kind=kind, footnotes=marked + footnotes)
         if kind == "level":
             typed.level = groups["level"]
         elif kind == "flag":
@@ -1682,16 +1716,30 @@ def entry_of(
         and entry.get(named or "")
     ):
         name_key = named
+    # Footnote markers, of the value, the name, the description and the other
+    # columns, in that order, go to the footnotes of the entry
+    marked: Dict[str, List[int]] = {}
+
+    def plain(column: str, within: bool = True, mark: str = "") -> str:
+        text, numbers = unmarked(entry.get(column, ""), within)
+        if numbers:
+            marked[mark or column] = numbers
+        return text
+
+    value = plain(key, within=False)
+    name = plain(name_key, mark="name") if name_key else None
     description, footnotes = footnoted(entry.get("description", ""))
+    if footnotes:
+        marked["description"] = footnotes
+    columns = {k: plain(k) for k in entry if k not in (key, name_key, "description")}
     return Entry(
-        value=entry.get(key, ""),
+        value=value,
         value_column=key,
-        name=entry.get(name_key) if name_key else None,
+        name=name,
         description=description,
-        footnotes=footnotes,
-        columns={
-            k: v for k, v in entry.items() if k not in (key, name_key, "description")
-        },
+        footnotes=list(dict.fromkeys(n for ns in marked.values() for n in ns)),
+        marked=marked,
+        columns=columns,
     )
 
 
@@ -1755,6 +1803,18 @@ def abbreviates(short: List[str], long: List[str]) -> bool:
     return False
 
 
+def marked_of(entry: Entry) -> Dict[str, List[int]]:
+    """The footnotes marked on the name and the other columns of 'entry', by
+    the key of the column, the name's as "name"; an entry with no name is
+    named by its description"""
+
+    return {
+        "name" if k == "description" and not entry.name else k: v
+        for k, v in entry.marked.items()
+        if k != entry.value_column
+    }
+
+
 def identified(document: SpecDocument, name_column: str, kind: str):
     """
     The identifier, name and other columns of each entry of the tables of
@@ -1772,7 +1832,7 @@ def identified(document: SpecDocument, name_column: str, kind: str):
             match = REGEX_HEX.match(without_footnote(entry.value))
             name = without_footnote(entry.name or entry.description or "")
             if match and name:
-                yield int(match["hex"], 16), name, entry.columns, values.source
+                yield int(match["hex"], 16), name, entry, values.source
 
 
 REGEX_FEATURE_SECTION = re.compile(r"(?:\(Feature Identifier [0-9A-F]+h\)(?:,\s*)?)+$")
@@ -1815,14 +1875,18 @@ def link_features(document: SpecDocument, used: set) -> None:
     the dwords described for each, which the captions name by the feature"""
 
     seen: Dict[int, str] = {}
-    for identifier, name, columns, source in identified(
+    for identifier, name, entry, source in identified(
         document, "feature_name", "feature_identifiers"
     ):
         if identifier in seen:
             continue
         seen[identifier] = alias(name)
         document.features[alias(name)] = Feature(
-            identifier=identifier, name=name, columns=columns, source=source
+            identifier=identifier,
+            name=name,
+            columns=entry.columns,
+            footnotes=marked_of(entry),
+            source=source,
         )
 
     # The section a figure is in names the feature, where its title gives the
@@ -1895,7 +1959,7 @@ def link_log_pages(document: SpecDocument) -> None:
         (s for s in document.structures if s.kind in ("log_page", "data_structure")),
         key=lambda s: (s.kind != "log_page", s.source.document, s.source.figure_nr),
     )
-    for identifier, name, columns, source in identified(
+    for identifier, name, entry, source in identified(
         document, "log_page_name", "log_page_identifiers"
     ):
         key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
@@ -1911,7 +1975,8 @@ def link_log_pages(document: SpecDocument) -> None:
         document.log_pages[key] = LogPage(
             identifier=identifier,
             name=name,
-            columns=columns,
+            columns=entry.columns,
+            footnotes=marked_of(entry),
             structure=structure,
             source=source,
         )

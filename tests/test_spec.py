@@ -1827,6 +1827,57 @@ def test_a_field_has_the_footnotes_marked_at_the_end_of_its_description():
     )
 
 
+def test_a_marker_read_as_superscript_is_a_footnote_of_the_name_value_or_column():
+    """The readers give a footnote marker as superscript digits, as "List
+    Exported Controllers1" of Base 2.4 Figure 375, "000b1" of Figure 542 and
+    "Number of Placement Handles 2" of NVM 1.3 Figure 134; the marker is no
+    part of the text, and digits of the text and an exponent are kept"""
+
+    from senfd.documents.spec import entry_of, typed_of
+
+    entry = entry_of(
+        {
+            "value": "03h",
+            "management_operation": "List Exported Controllers\u00b9",
+            "scope": "NVM subsystem\u00b9 / Namespace\u00b2",
+        }
+    )
+    assert entry.columns == {
+        "management_operation": "List Exported Controllers",
+        "scope": "NVM subsystem / Namespace",
+    }
+    assert entry.footnotes == [1, 2]
+    entry = entry_of({"value": "000b\u00b9", "description": "Not supported\u00b2"})
+    assert (entry.value, entry.description, entry.footnotes) == (
+        "000b",
+        "Not supported",
+        [1, 2],
+    )
+    entry = entry_of({"value": "1h", "name": "TSEN1", "description": "2\u00b9\u2076"})
+    assert (entry.name, entry.description, entry.footnotes) == (
+        "TSEN1",
+        "2\u00b9\u2076",
+        [],
+    )
+    typed = typed_of("000b\u00b9")
+    assert typed is not None and (typed.lower, typed.footnotes) == (0, [1])
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Foo Structure",
+            ("Bytes", "Description"),
+            ("01:00", "Number of Foos \u00b2 (NFOO): The number."),
+            ("03:02", "Foo 0 Associated RUH\u00b2: The handle."),
+        )
+    )
+    (structure,) = spec.structures
+    assert [(f.name, f.acronym, f.footnotes) for f in structure.fields] == [
+        ("Number of Foos", "NFOO", [2]),
+        ("Foo 0 Associated RUH", None, [2]),
+    ]
+
+
 def test_an_entry_naming_a_value_of_another_field_links_to_it():
     """Reporting Options 1h of Zone Management Receive, "List the zones in the
     ZSE:Empty state.", names value 1h of the field ZS of the Zone Descriptor,

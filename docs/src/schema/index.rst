@@ -91,6 +91,16 @@ values, for example "Refer to Figure 336" for CNS of the Identify command,
 the field has ``values_in``. ``values_in`` is the ``source`` of that table,
 and the table is the entry of ``values`` with the same ``source``.
 
+A footnote marker, the superscript number after a name, a value or a
+cell, is no part of the text. A field lists the numbers marked on its name,
+its description and its other columns in ``footnotes``. An entry of a table
+of values lists them in ``footnotes`` too, and by the key of the column in
+``marked``. A command, a feature and a log page have ``footnotes``, the
+numbers marked on the name and the other columns of its row, by the key of
+the column. The readers of the PDF and of the ``.docx`` give a marker as
+superscript digits, as "Controllers¹". Superscript digits after a digit, as
+"2¹⁶", are an exponent and are kept.
+
 A figure lists the entries of an array as fields numbered by their index,
 with a "..." row in place of the entries between them, for example LBAF0,
 LBAF1, "..." and LBAF63 of the Identify Namespace data structure. Each

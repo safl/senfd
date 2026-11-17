@@ -16,6 +16,7 @@ import senfd.tables
 from senfd.documents.base import Converter, Document, DocumentMeta
 from senfd.errors import Error
 from senfd.tables import Cell, Row, Table
+from senfd.utils import superscript
 
 
 class Figure(BaseModel):
@@ -266,6 +267,14 @@ W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 SKIPPED = {f"{W}del", f"{W}instrText", f"{W}delText"}
 
 
+def is_superscript(text_node) -> bool:
+    """Whether the run of a text element is formatted as superscript"""
+
+    run = text_node.getparent()
+    align = run.find(f"{W}rPr/{W}vertAlign") if run is not None else None
+    return align is not None and align.get(f"{W}val") == "superscript"
+
+
 def text_of_paragraph(element) -> str:
     """
     The text of a paragraph element as it reads, the results of its fields
@@ -282,7 +291,9 @@ def text_of_paragraph(element) -> str:
         ):
             continue
         if node.tag == f"{W}t":
-            parts.append(node.text or "")
+            text = node.text or ""
+            # A footnote marker, given as superscript digits; see 'superscript'
+            parts.append(superscript(text) if is_superscript(node) else text)
         elif node.tag in (f"{W}tab", f"{W}ptab"):
             parts.append("\t")
         elif node.tag in (f"{W}br", f"{W}cr"):
