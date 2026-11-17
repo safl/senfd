@@ -103,9 +103,16 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   leaves out no row it cannot read. One entry of another width at its
   place, as Host Fabric Interface Descriptor 2 of Boot 1.4, is still an
   entry. A run whose ranges the data gives, as the ANA Group Descriptors
-  at "n:16" and "m:n+1", is an array without a count, and without
-  ``stride`` and ``lower`` where the entries' widths or offsets are of the
-  data. An array without a count takes its ``maximum`` from the field
+  at "n:16" and "m:n+1" or the Media Unit Status Descriptors at "NOTE 1",
+  is an array without a count, and without ``stride`` and ``lower`` where
+  the entries' widths or offsets are of the data; so is one entry before
+  a last one numbered by a name, as Entry 0 and Entry N of the Discovery
+  log page. Two such runs whose entries alternate, as Zone Descriptor and
+  Zone Descriptor Extension of ZNS 1.4, are two arrays without a stride.
+  A range "n/a" is none that the data gives. Where the formula of a run's
+  last entry gives a width, the entries of another width are candidate
+  errata and the array has that stride, as 260 bytes of the Exported NVM
+  Subsystem Descriptors of Base 2.4 Figure 384. An array without a count takes its ``maximum`` from the field
   counting its entries, as "up to 127 entries" of NUMENT. A field of a group of rows that a column names by an
   index, as "Source Range 0" to "Source Range 127", has ``group``, the
   array of those groups. Dwords in a section titled with a code, as
