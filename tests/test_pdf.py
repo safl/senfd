@@ -22,6 +22,7 @@ from senfd.pdf.reader import (
     outline,
     read,
     section_at,
+    split_at_captions,
     stem_of,
 )
 from senfd.pdf.tables import Columns, astray, bordered, columns_of, unwrapped
@@ -862,3 +863,26 @@ def test_a_figure_is_mentioned_by_its_number_and_not_by_its_caption():
         ],
         47,
     ) == ["The log page is defined in Figure 47."]
+
+
+def test_a_table_holding_the_caption_of_another_figure_is_two_figures():
+    """The PDF of MI 2.2 tags Figure 74 as rows of the table of Figure 73,
+    caption and all; a caption repeated after a page break is the figure's
+    own"""
+
+    def row(*texts):
+        return Row(cells=[Cell(text=text) for text in texts])
+
+    caption = "Figure 73: Configuration Get - NVMe Management Dword 0"
+    other = "Figure 74: Configuration Get - NVMe Management Dword 1"
+    found = [
+        row(caption, caption),
+        row("Bits", "Description"),
+        row("07:00", "Configuration Identifier (CID): The identifier."),
+        row(caption, caption),
+        row(other, other),
+        row("31:00", "Configuration Identifier Specific (CIS): Specific."),
+    ]
+    parts = split_at_captions(found)
+    assert [len(part) for part in parts] == [4, 2]
+    assert parts[1][0].cells[0].text == other

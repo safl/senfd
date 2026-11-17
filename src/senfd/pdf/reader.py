@@ -214,6 +214,35 @@ def assembled(figure: Figure, pieces: List[Tuple[int, Table]]) -> None:
         joined(figure, table)
 
 
+def caption_of(row: Row) -> str:
+    """The caption a row of one text is, as "Figure 74: ...", or "" """
+
+    texts = {c.text.strip() for c in row.cells if c.text.strip()}
+    caption = words(next(iter(texts))) if len(texts) == 1 else ""
+    return caption if CAPTION.match(caption) else ""
+
+
+def figure_number(caption: str) -> Optional[int]:
+    match = CAPTION.match(caption)
+    return int(match[1]) if match else None
+
+
+def split_at_captions(found: List[Row]) -> List[List[Row]]:
+    """The rows of a table, split before each row that is the caption of
+    another figure: the PDF of MI 2.2 tags Figure 74 as rows of the table of
+    Figure 73, caption and all. A caption repeated after a page break is the
+    figure's own."""
+
+    parts: List[List[Row]] = [[]]
+    for row in found:
+        number = figure_number(caption_of(row))
+        if parts[-1] and number is not None:
+            if number != figure_number(caption_of(parts[-1][0])):
+                parts.append([])
+        parts[-1].append(row)
+    return parts
+
+
 def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
     """The figure document of the tagged PDF at 'path'"""
 
@@ -281,52 +310,64 @@ def read(path: Path) -> Tuple[FigureDocument, List[Error]]:
                     begun = min(extent)
                     placed = section_at(numbered, begun, extent[begun][1])
                     where = placed if placed is not None else section
-                table = Table(table_nr=0, rows=found)
-                first = {c.text.strip() for c in found[0].cells if c.text.strip()}
-                caption = words(next(iter(first))) if len(first) == 1 else ""
-                match = CAPTION.match(caption)
-                if not match:
-                    if last is not None:  # Going on past a page break
-                        pieces[last.figure_nr].append((begun, table))
-                    continue
-                number = int(match[1])
-                if inner is not None:
+                parts = split_at_captions(found)
+                for part in parts[1:]:
                     errors.append(
                         Error(
-                            message=f"Figure {number}: table wrapped in a table "
-                            "of one cell; unwrapped"
+                            message=f"{caption_of(part[0]).split(':')[0]}: tagged "
+                            f"as rows of the table of the figure before; read "
+                            "as a figure of its own"
                         )
                     )
-                if last is not None and number == last.figure_nr:
-                    pieces[number].append((begun, table))
-                    continue
-                if number in figures:
-                    errors.append(
-                        FigureDuplicateNumberError(
-                            figure_nr=number,
-                            message=f"Duplicate figure_nr({number})",
-                            caption_toinsert=caption,
-                            caption_existing=figures[number].caption,
+                for found in parts:
+                    table = Table(table_nr=0, rows=found)
+                    caption = caption_of(found[0])
+                    match = CAPTION.match(caption)
+                    if not match:
+                        if last is not None:  # Going on past a page break
+                            pieces[last.figure_nr].append((begun, table))
+                        continue
+                    number = int(match[1])
+                    if inner is not None:
+                        errors.append(
+                            Error(
+                                message=f"Figure {number}: table wrapped in a table "
+                                "of one cell; unwrapped"
+                            )
                         )
+                    if last is not None and number == last.figure_nr:
+                        pieces[number].append((begun, table))
+                        continue
+                    if number in figures:
+                        errors.append(
+                            FigureDuplicateNumberError(
+                                figure_nr=number,
+                                message=f"Duplicate figure_nr({number})",
+                                caption_toinsert=caption,
+                                caption_existing=figures[number].caption,
+                            )
+                        )
+                        last = None
+                        continue
+                    table.table_nr = len(figures) + 1
+                    last = figures[number] = Figure(
+                        figure_nr=number,
+                        caption=caption,
+                        description=match[2].strip(),
+                        page_nr=None,
+                        pdf_page=min(extent) + 1 if extent else None,
+                        section=where.number,
+                        section_title=where.title,
+                        mentions=mentioning(
+                            [
+                                pages.text(paragraphs(p.element, p.page))[0]
+                                for p in before
+                            ],
+                            number,
+                        ),
+                        table=table,
                     )
-                    last = None
-                    continue
-                table.table_nr = len(figures) + 1
-                last = figures[number] = Figure(
-                    figure_nr=number,
-                    caption=caption,
-                    description=match[2].strip(),
-                    page_nr=None,
-                    pdf_page=min(extent) + 1 if extent else None,
-                    section=where.number,
-                    section_title=where.title,
-                    mentions=mentioning(
-                        [pages.text(paragraphs(p.element, p.page))[0] for p in before],
-                        number,
-                    ),
-                    table=table,
-                )
-                pieces[number] = []
+                    pieces[number] = []
         for number, more in pieces.items():
             assembled(figures[number], more)
         for number, page in entries.items():
