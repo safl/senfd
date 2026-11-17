@@ -304,8 +304,26 @@
                         }
                     ],
                     "default": null,
-                    "description": "The order of the field's bytes where the figure marks the byte of its\nmost significant bit (MSB) and that of its least (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\"\nwhere the MSB is in the lowest byte. None where the figure does not mark\nthem, or the field is one byte",
+                    "description": "The order of the field's bytes where the figure marks the byte of its\nmost significant bit (MSB) and that of its least (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\"\nwhere the MSB is in the lowest byte. None where the figure does not mark\nthem, or the field is one byte; else the order the description states,\nas \"This field is big endian\" of FGUID of Identify Controller",
                     "title": "Byte Order"
+                },
+                "encoding": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                "ascii",
+                                "utf-8",
+                                "uuid"
+                            ],
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "What the field's bytes encode where its description says: \"ascii\"\nfor \"as an ASCII string\", \"utf-8\" for \"a UTF-8 null-terminated string\",\n\"uuid\" for \"a 128-bit Universally Unique Identifier (UUID)\"; or what\nthe field it has the value of encodes, as FR of NVM 1.3 Figure 189, \"the\nvalue of the FR field in the Identify Controller data structure\" ",
+                    "title": "Encoding"
                 },
                 "footnotes": {
                     "description": "The numbers of the footnotes marked on the name, at the end of the\ndescription, and on the other columns",
