@@ -2,12 +2,12 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
+    "senfd_sha256": "21c843e9abd1bfee418333b55711b31fd86e2246538d7d810107d138b30bb0e6",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "5f4de1bdf7244172f8e017c42d8db7965afe2134a173c7dbb2cb1b7f58db7d2e"
+    "combined_sha256": "7a3b350d0869ff1cd23d368ef33f96f04e8f5d3e8643147a29ffc91cf9828282"
   },
   "command_sets": {
     "foobar": {
@@ -9043,6 +9043,7 @@
     "foo_statistics": {
       "identifier": 192,
       "name": "Foo Statistics",
+      "aliases": [],
       "columns": {},
       "footnotes": {},
       "structure": {
@@ -9102,6 +9103,7 @@
     "foo_events": {
       "identifier": 193,
       "name": "Foo Events",
+      "aliases": [],
       "columns": {},
       "footnotes": {},
       "structure": null,
@@ -9117,6 +9119,7 @@
     "foo_statistics_namespace_scope": {
       "identifier": 194,
       "name": "Foo Statistics (Namespace scope)",
+      "aliases": [],
       "columns": {},
       "footnotes": {},
       "structure": {
@@ -9528,7 +9531,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
+      "senfd_sha256": "21c843e9abd1bfee418333b55711b31fd86e2246538d7d810107d138b30bb0e6",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -9538,7 +9541,7 @@
     "invalid": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
+      "senfd_sha256": "21c843e9abd1bfee418333b55711b31fd86e2246538d7d810107d138b30bb0e6",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

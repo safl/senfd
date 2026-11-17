@@ -125,6 +125,12 @@ def elsewhere(
             return named[1]
         head, _, rest = name.partition(" - ")
         names = {alias(name), alias(head), alias(rest)}
+        # A log page by another name its tables give it, as "24h Manufacturer
+        # Default Configuration (also Manufacturer Default Configuration Status)"
+        also = re.search(r" \(also (.+)\)$", name)
+        if also:
+            names |= {alias(name[: also.start()])}
+            names |= {alias(other) for other in also[1].split(", ")}
         return None if alias(named[1]) in names else named[1]
     # A structure is named by its whole name or, as spot() finds it, by what
     # its command qualifies: "Identify Namespace" of "Identify - Identify

@@ -52,6 +52,25 @@ def test_a_feature_and_a_log_page_are_found_by_identifier_or_name(spec):
     assert lines[1].startswith("Foo Statistics, bytes")
 
 
+def test_a_log_page_is_found_by_another_name_its_tables_give_it():
+    """Base 2.4 Figure 209 names log page 24h "Manufacturer Default
+    Configuration", and Figure 31 "Manufacturer Default Configuration
+    Status" """
+
+    from senfd.documents.spec import LogPage
+
+    source = Source(document="example", figure_nr=209)
+    spec = SpecDocument()
+    spec.log_pages["bar_default"] = LogPage(
+        identifier=0x24,
+        name="Bar Default",
+        aliases=["Bar Default Status"],
+        source=source,
+    )
+    lines = senfd.query.log_page(spec, "bar default status")
+    assert lines[0].startswith("24h Bar Default (also Bar Default Status) [")
+
+
 def test_a_search_finds_a_field_by_its_acronym(spec):
     lines = senfd.query.search(spec, "FCNT")
     assert any(line.startswith("Ding cdw10") for line in lines)
