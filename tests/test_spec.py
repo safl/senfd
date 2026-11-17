@@ -3650,3 +3650,107 @@ def test_an_encoding_and_a_byte_order_are_taken_where_the_text_states_them():
     assert (guid.byte_order, guid.byte_order_from.document) == ("big-endian", "Base")
     assert fields[("Base", "FGUID")].byte_order_from is None
     assert fields[("Base", "FOPC")].byte_order is None
+
+
+def test_a_value_is_named_by_its_definition_column_or_sentence_and_the_name_tidied():
+    """AET 000b of Base 2.4 refers to Figure 153, not to a section, and is
+    named "Error status"; CNS 09h, whose section NVM 1.3 titles as that of
+    00h, is named for what its definition is for; "CAP: Controller
+    Capabilities" has an acronym; an aside and the text after a colon go to
+    the description; SEL 01h is named by its Management Operation column and
+    AL 11b by its first sentence"""
+
+    from senfd.documents.spec import (
+        Entry,
+        Source,
+        Values,
+        name_by_documents,
+        name_lists_of_names,
+        tidy_value_names,
+        value_names,
+    )
+
+    def values_of(*entries):
+        return Values(
+            kind="other",
+            name="Foo",
+            columns=[],
+            entries=list(entries),
+            source=Source(document="Base", figure_nr=1),
+        )
+
+    document = SpecDocument()
+    document.values = [
+        values_of(
+            Entry(
+                value="000b",
+                description="Error status",
+                columns={"reference": "Figure 153"},
+            ),
+            Entry(
+                value="001b", description="Foo status", columns={"reference": "5.1.2"}
+            ),
+            Entry(value="010b", name="Notice"),
+        ),
+        values_of(
+            Entry(value="0h", name="CAP: Controller Capabilities"),
+            Entry(value="1h", name="HMAC SHA-256 (refer to RFC 6234)"),
+            Entry(value="2h", name="Transport Specific: Refer to Figure 34."),
+            Entry(value="3h", name="Not required (i.e., not supported)"),
+        ),
+        values_of(
+            Entry(value="01h", columns={"management_operation": "Delete"}),
+            Entry(value="02h", columns={"scope": "Controller"}),
+            Entry(value="11b", description="Low. Smallest possible latency."),
+            Entry(value="00b", description="Foo is on. It is."),
+            Entry(value="01b", description="Foo is on. It is not."),
+        ),
+    ]
+    name_lists_of_names(document)
+    assert [e.name for e in document.values[0].entries] == [
+        "Error status",
+        None,
+        "Notice",
+    ]
+    name_lists_of_names(document, after_sections=True)
+    assert document.values[0].entries[1].name == "Foo status"
+    tidy_value_names(document)
+    assert [(e.acronym, e.name, e.description) for e in document.values[1].entries] == [
+        ("CAP", "Controller Capabilities", ""),
+        (None, "HMAC SHA-256", "Refer to RFC 6234"),
+        (None, "Transport Specific", "Refer to Figure 34."),
+        (None, "Not required", "i.e., not supported"),
+    ]
+    entries = document.values[2].entries
+    assert [e.name for e in entries] == ["Delete", None, "Low", None, None]
+    assert entries[2].description == "Smallest possible latency."
+    assert value_names(entries[1]) == ["Controller"]
+    # A column listing other codes names none, as LBARS 000b of NVM 1.3
+    # Figure 140 and SGLDST 0h of Base 2.4 Figure 118
+    listing = Entry(value="000b", columns={"used_with": "10h and 11h"})
+    assert value_names(listing) == []
+    listing.columns["sub_type"] = "Address: The Address field specifies it."
+    assert value_names(listing) == ["Address"]
+
+    nvm = "NVM Express Foo Command Set Specification, Revision 1-3"
+    merged = SpecDocument()
+    merged.values = [
+        cns_values([("01h", "5.1", False), ("00h", nvm, False), ("09h", nvm, False)]),
+    ]
+    _, zero, nine = merged.values[0].entries
+    zero.description = "Identify Namespace data structure for the specified NSID."
+    nine.description = (
+        "Identify Namespace data structure for the specified Format Index."
+    )
+    merged.sections = {
+        "Base": {"5.1": SECTIONS["5.1"]},
+        nvm: {
+            "4.1": "Foo Identify Namespace Data Structure (CNS 00h)",
+            "4.2": "Foo Identify Namespace Data Structure (CNS 09h, CSI 00h)",
+        },
+    }
+    name_by_documents(merged)
+    assert [zero.name, nine.name] == [
+        "Foo Identify Namespace Data Structure",
+        "Foo Identify Namespace Data Structure for the specified Format Index",
+    ]

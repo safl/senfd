@@ -1013,6 +1013,19 @@
                     "description": "The name the row gives the value",
                     "title": "Name"
                 },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym the row writes before the name, as \"CAP\" of \"CAP:\nController Capabilities\" in Base 2.4 Figure 33",
+                    "title": "Acronym"
+                },
                 "description": {
                     "default": "",
                     "description": "The text of the row's description",
