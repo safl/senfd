@@ -93,9 +93,9 @@ def test_io_is_one_word_of_a_key():
 def test_a_command_set_has_its_kind_and_the_csi_of_an_io_command_set():
     """The Common I/O commands of Base 2.4 Figure 645 are no command set and
     have no CSI; Base 2.4 Figure 337 gives 03h to the Subsystem Local Memory
-    Command Set specification, whose command set is "SLM"; MI 2.2 names the
-    set of Figure 151 in the title of section 7, "PCIe Command Set
-    (Optional)" """
+    Command Set specification, whose command set is "SLM"; the set of MI 2.2
+    Figure 151 is "PCIe Commands", without the mechanism it is used over,
+    so that its key is not that of the PCIe transport"""
 
     from senfd.documents.spec import (
         Command,
@@ -109,9 +109,8 @@ def test_a_command_set_has_its_kind_and_the_csi_of_an_io_command_set():
         link_identifiers,
     )
 
-    name = "Opcodes for PCIe Commands using an Out-of-Band Mechanism"
-    assert command_set_name(name, "PCIe Command Set (Optional)") == "PCIe"
-    assert command_set_name("NVM", "NVM Command Set Commands") == "NVM"
+    name = "PCIe Commands using an Out-of-Band Mechanism"
+    assert command_set_name(name) == "PCIe Commands"
     base = "NVM Express Base Specification"
     slm = "NVM Express Subsystem Local Memory Command Set Specification"
     mi = "NVM Express Management Interface Specification"
@@ -119,7 +118,7 @@ def test_a_command_set_has_its_kind_and_the_csi_of_an_io_command_set():
         command_set_kind("Common I/O", base),
         command_set_kind("Admin", base),
         command_set_kind("SLM", slm),
-        command_set_kind("PCIe", mi),
+        command_set_kind("PCIe Commands", mi),
     ] == ["common_io", "admin", "io", "management_interface"]
 
     def listed(name, kind, document):
