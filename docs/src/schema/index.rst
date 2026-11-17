@@ -46,7 +46,10 @@ has these parts:
   as for each directive operation.
 * ``features`` and ``log_pages``: features and log pages by identifier. A
   feature has the dwords of the commands that set and get it. A log page
-  has the ``structure`` that lays it out.
+  is one by identifier, named as the table of log page identifiers names
+  it, with the ``aliases`` other tables give it, and has the ``structure``
+  that lays it out: the figure in the section its row cites, as Base 2.4
+  Figure 270 for 12h.
 * ``structures``: every layout that is not the dwords of a command: data
   structures, the layouts of log pages, and registers.
 * ``values``: the tables of values, such as status codes or identifiers,

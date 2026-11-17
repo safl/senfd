@@ -342,7 +342,16 @@ def by_identifier_or_name(items: dict, key: str) -> list:
         found = [item for item in items.values() if item.identifier == identifier]
         if found:
             return found
-    return [items[k] for k in find(items, key)]
+    found = [items[k] for k in find(items, key)]
+    if found:
+        return found
+    # A log page by another name its tables give it
+    wanted = alias(key)
+    return [
+        item
+        for item in items.values()
+        if any(wanted in alias(name) for name in getattr(item, "aliases", []))
+    ]
 
 
 def feature(spec: SpecDocument, key: str, verbose=False, markdown=False) -> List[str]:
@@ -359,7 +368,8 @@ def log_page(spec: SpecDocument, key: str, verbose=False, markdown=False) -> Lis
     lines = []
     shown = set()
     for page in by_identifier_or_name(spec.log_pages, key):
-        title = f"{page.identifier:02X}h {page.name} [{cite(page.source)}]"
+        also = f" (also {', '.join(page.aliases)})" if page.aliases else ""
+        title = f"{page.identifier:02X}h {page.name}{also} [{cite(page.source)}]"
         lines.append(f"### Log page {title}" if markdown else title)
         where = page.structure and (
             page.structure.source.document,

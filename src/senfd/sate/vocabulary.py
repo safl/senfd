@@ -67,6 +67,9 @@ class Vocabulary:
             vocabulary.features.add(feature.name)
             vocabulary.add_dwords(feature.name, feature.sqe, feature.cqe)
         vocabulary.log_pages.update(page.name for page in spec.log_pages.values())
+        vocabulary.log_pages.update(
+            name for page in spec.log_pages.values() for name in page.aliases
+        )
         for structure in spec.structures:
             vocabulary.structures.add(structure.name)
             # A register is asked for by its acronym, "CC" of "CC - ..."

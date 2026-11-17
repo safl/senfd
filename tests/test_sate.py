@@ -164,6 +164,22 @@ def test_a_field_found_by_its_acronym_is_of_the_structure_named_by_its_rest():
     )
 
 
+def test_a_log_page_answered_by_another_of_its_names_is_what_was_asked_of():
+    vocabulary = Vocabulary(log_pages={"Bar Default", "Bar Default Status"})
+    question = "What is the Log Page Identifier of Bar Default Status?"
+    lines = ["### Log page 24h Bar Default (also Bar Default Status) [x]"]
+
+    assert (
+        grounding.elsewhere(
+            question,
+            senfd.sate.Understood("log_page", "Bar Default Status"),
+            lines,
+            vocabulary,
+        )
+        is None
+    )
+
+
 def test_a_register_acronym_in_the_name_of_the_field_asked_of_is_no_register():
     vocabulary = Vocabulary(
         structures={"Foo Descriptor", "ID - Identifiers"},

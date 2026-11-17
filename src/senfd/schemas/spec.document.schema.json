@@ -1063,6 +1063,14 @@
                     "title": "Name",
                     "type": "string"
                 },
+                "aliases": {
+                    "description": "The other names the tables give it, as \"Manufacturer Default\nConfiguration Status\" of Base 2.4 Figure 31 for 24h, which Figure 209\nnames \"Manufacturer Default Configuration\" ",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Aliases",
+                    "type": "array"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"

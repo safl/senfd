@@ -619,6 +619,10 @@ class LogPage(Model):
     """The log page identifier, as 2 of 02h"""
     name: str
     """The name of the log page, as 'SMART / Health Information'"""
+    aliases: List[str] = Field(default_factory=list)
+    """The other names the tables give it, as "Manufacturer Default
+    Configuration Status" of Base 2.4 Figure 31 for 24h, which Figure 209
+    names "Manufacturer Default Configuration" """
     columns: Dict[str, str] = Field(default_factory=dict)
     """The log page identifier table's other columns of it, by their keys"""
     footnotes: Dict[str, List[int]] = Field(default_factory=dict)
@@ -1956,31 +1960,86 @@ def log_page_key(name: str) -> str:
 
 
 def link_log_pages(document: SpecDocument) -> None:
-    """The log pages of the log page identifier tables, with the structure
-    laying out each: the log page's own figure before a data structure, the
-    first figure before later ones"""
+    """
+    The log pages of the log page identifier tables, one by identifier, with
+    the structure laying out each. A log page is named by the first table of
+    log page identifiers that lists it, as Base 2.4 Figure 209, before the
+    tables of requirements, which may list it once by scope, as "SMART /
+    Health Information (Controller scope)" and "(Namespace scope)" of Figure
+    31; the columns of the later tables, as the requirements, are added. Its
+    structure is the figure in the section its row cites that is named as a
+    table names the log page, else the first figure of a log page, else of a
+    data structure there, as Figure 270, "Feature Identifiers Effects", for
+    12h. Where the row cites no section, it is the structure named as the
+    log page.
+    """
 
     candidates = sorted(
         (s for s in document.structures if s.kind in ("log_page", "data_structure")),
         key=lambda s: (s.kind != "log_page", s.source.document, s.source.figure_nr),
     )
-    for identifier, name, entry, source in identified(
-        document, "log_page_name", "log_page_identifiers"
-    ):
-        key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
-        if key in document.log_pages:
+
+    def cited(entry: Entry, source: Source) -> List[Structure]:
+        number = entry.columns.get("reference", "").strip()
+        if not REGEX_SECTION_NUMBER.match(number):
+            return []
+        return [
+            s
+            for s in candidates
+            if s.source.document == source.document
+            and s.source.section is not None
+            and (s.source.section + ".").startswith(number + ".")
+        ]
+
+    found = list(identified(document, "log_page_name", "log_page_identifiers"))
+    # The tables of identifiers first, each in the order of the documents
+    kinds = {(v.source.document, v.source.figure_nr): v.kind for v in document.values}
+    found.sort(
+        key=lambda f: kinds.get((f[3].document, f[3].figure_nr))
+        != "log_page_identifiers"
+    )
+    # The names every table gives each identifier
+    names: Dict[int, List[str]] = {}
+    for identifier, name, _, _ in found:
+        names.setdefault(identifier, []).append(log_page_key(name))
+    taken = {page.identifier: page for page in document.log_pages.values()}
+    for identifier, name, entry, source in found:
+        if identifier in taken:
+            # A later table adds its columns, as the requirements of Figure 31
+            page = taken[identifier]
+            if (
+                log_page_key(name) != log_page_key(page.name)
+                and name not in page.aliases
+            ):
+                page.aliases.append(name)
+            for key, text in entry.columns.items():
+                page.columns.setdefault(key, text)
+            for key, numbers in marked_of(entry).items():
+                if key != "name" and key not in page.footnotes:
+                    page.footnotes[key] = numbers
             continue
         wanted = log_page_key(name)
-        structure = next(
-            (s for s in candidates if log_page_key(s.name) == wanted), None
-        ) or next(
-            (s for s in candidates if names_match(log_page_key(s.name), wanted)),
-            None,
+        # Of several in the section, as Base 2.4 Figures 321 and 322, "Extended
+        # Discovery" and "Discovery", the one named as a table names the log page
+        section = cited(entry, source)
+        named = [s for s in section if log_page_key(s.name) in names[identifier]]
+        structure = (
+            next(iter(named + section), None)
+            or next((s for s in candidates if log_page_key(s.name) == wanted), None)
+            or next(
+                (s for s in candidates if names_match(log_page_key(s.name), wanted)),
+                None,
+            )
         )
-        document.log_pages[key] = LogPage(
+        # Two log pages of one name and two scopes, as of the example, are
+        # each keyed by its name and scope
+        key = wanted
+        if key in document.log_pages:
+            key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
+        taken[identifier] = document.log_pages[key] = LogPage(
             identifier=identifier,
             name=name,
-            columns=entry.columns,
+            columns=dict(entry.columns),
             footnotes=marked_of(entry),
             structure=structure,
             source=source,

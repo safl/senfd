@@ -2783,3 +2783,51 @@ def test_a_case_selected_by_a_field_of_another_figure_links_that_figure():
     # OPC is a field of the case's own figure, and CDW3 is none
     assert own[0].selector_in is None
     assert unlinked[0].selector_in is None
+
+
+def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
+    """Base 2.4 Figure 209 names log page 24h "Manufacturer Default
+    Configuration" and Figure 31 "... Status"; Figure 31 also lists 02h once
+    by scope. A log page is one by identifier, named by Figure 209, with the
+    other name and the columns of Figure 31 added. Its structure is the
+    figure its row's reference section holds that is named as the log page,
+    as the one of 12h, whose figure is named otherwise."""
+
+    requirements = figure_of(
+        31,
+        "Log Page Support Requirements",
+        ("Log Page Name", "Log Page Identifier", "I/O", "Reference"),
+        ("Foo Information (Controller scope)", "02h", "M", "5.1"),
+        ("Foo Information (Namespace scope)", "02h", "O", "5.1"),
+        ("Bar Default Configuration Status", "24h", "O", "5.2"),
+    )
+    identifiers = figure_of(
+        209,
+        "Get Log Page - Log Page Identifiers",
+        ("Log Page Identifier", "Scope", "Log Page Name", "Reference Section"),
+        ("02h", "Controller", "Foo Information", "5.1"),
+        ("12h", "Controller", "Baz Identifiers Supported and Effects", "5.3"),
+        ("24h", "Controller", "Bar Default Configuration", "5.2"),
+    )
+    layouts = [
+        figure_of(300, f"{name} Log Page", ("Bytes", "Description"), *rows)
+        for name, rows in (
+            ("Foo Information", [("00", "Foo (FOO): The foo.")]),
+            ("Bar Extended Default", [("00", "Ext (EXT): The extended.")]),
+            ("Bar Default Configuration Status", [("00", "Bar (BAR): The bar.")]),
+            ("Baz Effects", [("00", "Baz (BAZ): The baz.")]),
+        )
+    ]
+    for layout, number, section in zip(layouts, (301, 302, 303, 304), "1223"):
+        layout.figure_nr, layout.section = number, f"5.{section}"
+        layout.caption = layout.caption.replace("Figure 300", f"Figure {number}")
+    spec = document_of(requirements, identifiers, *layouts)
+
+    pages = {page.identifier: page for page in spec.log_pages.values()}
+    assert len(spec.log_pages) == 3
+    assert pages[0x02].name == "Foo Information"
+    assert pages[0x02].columns["i_o"] == "M"
+    assert pages[0x24].name == "Bar Default Configuration"
+    assert pages[0x24].aliases == ["Bar Default Configuration Status"]
+    assert pages[0x24].structure.source.figure_nr == 303
+    assert pages[0x12].structure.name == "Baz Effects"
