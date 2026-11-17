@@ -666,8 +666,8 @@ def test_bits_beyond_the_bytes_holding_them_are_a_candidate_erratum():
 
 def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
     """As "(NUMENT-1)*32+63)" of Base 2.4, Figure 361, closing a parenthesis
-    it never opened, and "4*(N+1)+3: 4 * (N+4)" of Figure 404, whose upper
-    bound is below its lower whatever N is"""
+    it never opened, which is read without it, and "4*(N+1)+3: 4 * (N+4)" of
+    Figure 404, whose upper bound is below its lower whatever N is"""
 
     from senfd.documents.spec import ReadBits as Bits, Source, checked
 
@@ -682,6 +682,7 @@ def test_a_range_is_typed_and_text_that_is_none_is_a_candidate_erratum():
     assert [(f.name, f.kind, f.formula, f.width) for f in kept] == [
         ("Entry", "formula", "32*n - 1:32*n - 32", 32),
         ("Open", "open", None, None),
+        ("Last", "formula", "32*NUMENT + 31:32*NUMENT", 32),
     ]
     assert [(e.code, e.message) for e in errata] == [
         (
@@ -3332,7 +3333,9 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
     assert health.fields[2].array == Array(
         name="Foo Sensor", acronym="FSEN", index=3, first=1, count=3, stride=2, lower=0
     )
-    assert health.fields[3].array is None
+    assert health.fields[3].array == Array(
+        name="Bar Mode", acronym="BM", index=1, first=1, count=2, stride=2, lower=6
+    )
     assert [f.group.index for f in ranges.fields] == [0, 0, 1, 1, 3, 3]
     assert ranges.fields[0].group == Array(
         name="Foo Range", index=0, first=0, count=4, stride=16, lower=0
@@ -3931,3 +3934,66 @@ def test_an_operation_is_of_a_feature_or_selected_by_a_column_and_named_by_its_c
         618,
         "Manage Baz Data Structure",
     )
+
+
+def test_runs_of_two_of_another_width_and_at_offsets_the_data_gives_are_arrays():
+    """TMT1TC and TMT2TC of Base 2.4 Figure 213 are an array of 2, but not
+    where a row of the figure is left out, as the reversed last entry of
+    Figure 404; SC Entry NUMENT-1 of Figure 361 closes a parenthesis it never
+    opened, and NUMENT says "up to 127 entries"; Host Fabric Interface
+    Descriptor 2 of Boot 1.4 Figure 11 is 33 bytes beside entries of 32; the
+    ANA Group Descriptors of Figure 230 lie where the data says"""
+
+    def arrays(*rows, mentions=()):
+        figure = figure_of(1, "Foo List", ("Bytes", "Description"), *rows)
+        (structure,) = document_of(figure).structures
+        return [
+            (
+                f.name,
+                f.array
+                and (f.array.index, f.array.count, f.array.stride, f.array.maximum),
+            )
+            for f in structure.fields
+        ]
+
+    assert arrays(
+        ("03:00", "Foo 1 Count (F1C): The count."),
+        ("07:04", "Foo 2 Count (F2C): The count."),
+    ) == [("Foo 1 Count", (1, 2, 4, None)), ("Foo 2 Count", (2, 2, 4, None))]
+    assert arrays(
+        ("03:00", "Foo Descriptor 0: The first."),
+        ("07:04", "Foo Descriptor 1: The second."),
+        ("4*(N+1)+3: 4*(N+4)", "Foo Descriptor N: The last."),
+    ) == [("Foo Descriptor 0", None), ("Foo Descriptor 1", None)]
+    assert arrays(
+        ("00", "Number of Entries (NUMENT): There are up to 127 entries in the list."),
+        ("31:01", "Reserved"),
+        ("63:32", "Foo Entry 0: The first."),
+        ("95:64", "Foo Entry 1: The second."),
+        ("…", "…"),
+        ("(NUMENT-1)*32+63): ((NUMENT-1)*32+32)", "Foo Entry NUMENT-1: The last."),
+    )[2:] == [
+        ("Foo Entry 0", (0, None, 32, 127)),
+        ("Foo Entry 1", (1, None, 32, 127)),
+        ("Foo Entry NUMENT-1", (None, None, 32, 127)),
+    ]
+    assert arrays(
+        ("31:00", "Foo Descriptor 1: The first."),
+        ("64:32", "Foo Descriptor 2: The second."),
+        ("…", "…"),
+        ("(n*32)-1:(n-1)*32", "Foo Descriptor n: The last."),
+    ) == [
+        ("Foo Descriptor 1", (1, None, 32, None)),
+        ("Foo Descriptor 2", (2, None, 32, None)),
+        ("Foo Descriptor n", (None, None, 32, None)),
+    ]
+    assert arrays(
+        ("07:00", "Header (HDR): The header."),
+        ("n:16", "Foo Group Descriptor 0: The first."),
+        ("m:n+1", "Foo Group Descriptor 1: The second."),
+        ("x:y", "Foo Group Descriptor NFGD-1: The last."),
+    )[1:] == [
+        ("Foo Group Descriptor 0", (0, None, None, None)),
+        ("Foo Group Descriptor 1", (1, None, None, None)),
+        ("Foo Group Descriptor NFGD-1", (None, None, None, None)),
+    ]

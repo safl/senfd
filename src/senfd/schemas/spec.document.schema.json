@@ -53,14 +53,30 @@
                     "title": "Count"
                 },
                 "stride": {
-                    "description": "The size of one entry, in the unit of the field",
-                    "title": "Stride",
-                    "type": "integer"
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The size of one entry, in the unit of the field; None where the data\ngives the size of each entry, as the ANA Group Descriptors of Base 2.4\nFigure 230 at \"n:16\" and \"m:n+1\" ",
+                    "title": "Stride"
                 },
                 "lower": {
-                    "description": "The offset of the first entry, which is where the array starts",
-                    "title": "Lower",
-                    "type": "integer"
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The offset of the first entry, which is where the array starts; None\nwhere the data gives it",
+                    "title": "Lower"
                 },
                 "maximum": {
                     "anyOf": [
@@ -78,9 +94,7 @@
             },
             "required": [
                 "name",
-                "first",
-                "stride",
-                "lower"
+                "first"
             ],
             "title": "Array",
             "type": "object"

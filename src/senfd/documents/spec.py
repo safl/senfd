@@ -291,10 +291,13 @@ class Array(Model):
     """The number of entries, for example 64; None where the figure gives the
     range of the last entry as a formula, because the number is then a value
     in the data"""
-    stride: int
-    """The size of one entry, in the unit of the field"""
-    lower: int
-    """The offset of the first entry, which is where the array starts"""
+    stride: Optional[int] = None
+    """The size of one entry, in the unit of the field; None where the data
+    gives the size of each entry, as the ANA Group Descriptors of Base 2.4
+    Figure 230 at "n:16" and "m:n+1" """
+    lower: Optional[int] = None
+    """The offset of the first entry, which is where the array starts; None
+    where the data gives it"""
     maximum: Optional[int] = None
     """The most entries the array holds, where it has no count and a
     paragraph referring to its figure states it, as "up to 511 Zone
@@ -1220,7 +1223,24 @@ def checked(
             )
             acronym = None
         try:
-            rng = senfd.ranges.parse(field.unit, field.range, width)
+            try:
+                rng = senfd.ranges.parse(field.unit, field.range, width)
+            except senfd.ranges.RangeError as exc:
+                # A parenthesis closed that was never opened, as
+                # "(NUMENT-1)*32+63)" of Base 2.4 Figure 361, is an erratum,
+                # and the range is read without it
+                closed = unopened(field.range)
+                if closed == field.range:
+                    raise
+                rng = senfd.ranges.parse(field.unit, closed, width)
+                errata.append(
+                    Erratum(
+                        code=exc.code,
+                        message=f"Field {what}: {exc}",
+                        found=field.range,
+                        source=source,
+                    )
+                )
             made = senfd.fields.identity(field.name, acronym, field.description)
         except senfd.ranges.RangeError as exc:
             said = f"{exc} of {of}" if exc.code == "range-outside" else str(exc)
@@ -1294,7 +1314,10 @@ def checked(
     for field_made in kept:
         for case_made in field_made.cases:
             decide(case_made, kept)
-    for disagreeing in arrays_of(kept):
+    # A row left out, as the last entry of a list whose range is reversed,
+    # may have been the end of a run of two
+    whole = len(kept) == len(fields)
+    for disagreeing in arrays_of(kept, pairs=whole):
         errata.append(Erratum(code="acronym", message=disagreeing, source=source))
     return kept, errata, unnamed
 
@@ -1372,7 +1395,7 @@ def hexadecimal_acronym(spans: List[Tuple[int, Bits]]) -> Optional[str]:
     return "".join(parts.pop()) if len(parts) == 1 else None
 
 
-def arrays_of(fields: List[Bits]) -> List[str]:
+def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
     """
     Set 'array' on each of 'fields' that is an entry of an array. The entries
     are adjacent fields whose acronyms, or names, differ only by an index,
@@ -1423,9 +1446,15 @@ def arrays_of(fields: List[Bits]) -> List[str]:
         spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
         first, lowest = min(spans, key=lambda span: span[0])
         stride = lowest.width or 0
-        if not stride or any(
-            f.width != stride or f.lower != (lowest.lower or 0) + (i - first) * stride
-            for i, f in spans
+        # One entry of another width at its place, as the 33 bytes of Host
+        # Fabric Interface Descriptor 2 of Boot 1.4 Figure 11, is still an
+        # entry; misnumbered() reports it as a candidate erratum
+        if (
+            not stride
+            or any(
+                f.lower != (lowest.lower or 0) + (i - first) * stride for i, f in spans
+            )
+            or sum(f.width != stride for _, f in spans) > (1 if len(run) > 2 else 0)
         ):
             return None
         return start, indexes, before, after
@@ -1472,9 +1501,82 @@ def arrays_of(fields: List[Bits]) -> List[str]:
                 stride=lowest.width or 0,
                 lower=lowest.lower or 0,
             )
-    listed_arrays(fields)
+    listed_arrays(fields, pairs)
+    variable_arrays(fields)
     grouped_arrays(fields)
     return disagreeing
+
+
+def variable_arrays(fields: List[Bits]) -> None:
+    """
+    Set 'array' on the fields of each run of two or more numbered by the next
+    index whose ranges the data gives, as ANA Group Descriptor 0 at "n:16"
+    and ANA Group Descriptor 1 at "m:n+1" of Base 2.4 Figure 230: an array
+    without a count, and without a stride unless the entries are of one
+    width. A last entry numbered by a name, as "ANA
+    Group Descriptor N" after them, is an entry too, without an index.
+    """
+
+    at = 0
+    while at < len(fields):
+        end, indexes, _ = run_at(fields, at)
+        run = fields[at:end]
+        if (
+            len(run) < 2
+            or any(f.array or f.kind != "formula" for f in run)
+            or indexes != list(range(indexes[0], indexes[0] + len(run)))
+        ):
+            at = max(end, at + 1) if len(run) > 1 else at + 1
+            continue
+        first = run[0]
+        of = "acronym" if all(f.acronym for f in run) else "name"
+        before, _, after = next(
+            (b, n, a)
+            for b, n, a in reversed(numbered(getattr(first, of)))
+            if n == indexes[0]
+        )
+        last = fields[end] if end < len(fields) else None
+        text = (getattr(last, of) or "") if last else ""
+        if (
+            last
+            and not last.array
+            and last.kind == "formula"
+            and text.startswith(before)
+            and text.endswith(after)
+            and re.fullmatch(
+                r"[A-Za-z][\w+-]*", text[len(before) : len(text) - len(after)]
+            )
+        ):
+            run, indexes = [*run, last], [*indexes, None]  # type: ignore[list-item]
+            end += 1
+        name = (
+            before + after
+            if of == "name"
+            else (
+                next(
+                    (
+                        b + a
+                        for b, n, a in reversed(numbered(first.name))
+                        if n == indexes[0]
+                    ),
+                    first.name or "",
+                )
+            )
+        )
+        # Entries of one width at offsets the data gives, as the two bytes of
+        # each Channel Identifier of Figure 264 from CIO, have that stride
+        widths = {f.width for f in run}
+        stride = widths.pop() if len(widths) == 1 else None
+        for index, field in zip(indexes, run):
+            field.array = Array(
+                name=" ".join(name.split()),
+                acronym=before + after if of == "acronym" else None,
+                index=index,
+                first=indexes[0],
+                stride=stride,
+                lower=first.lower,
+            )
+        at = end
 
 
 def grouped_arrays(fields: List[Bits]) -> None:
@@ -1525,6 +1627,18 @@ def grouped_arrays(fields: List[Bits]) -> None:
         return
 
 
+def unopened(text: str) -> str:
+    """'text' without each ')' that closes no '(' before it"""
+
+    kept, depth = [], 0
+    for char in text:
+        if char == ")" and depth == 0:
+            continue
+        depth += {"(": 1, ")": -1}.get(char, 0)
+        kept.append(char)
+    return "".join(kept)
+
+
 def run_at(fields: List[Bits], at: int) -> Tuple[int, List[int], str]:
     """The run of fields from 'at' whose acronyms, or else names, differ only
     by an index and that are as wide as the first, as TSEN1 to TSEN8: the
@@ -1553,13 +1667,15 @@ def run_at(fields: List[Bits], at: int) -> Tuple[int, List[int], str]:
     return longest
 
 
-def listed_arrays(fields: List[Bits]) -> None:
+def listed_arrays(fields: List[Bits], pairs: bool = True) -> None:
     """
-    Set 'array' on the fields of each run of three or more that a figure
+    Set 'array' on the fields of each run of two or more that a figure
     lists in full, each numbered by the next index, as wide as the others
     and at the offset its index gives: TSEN1 to TSEN8 of the SMART / Health
-    Information log page, an array of 8. A run of two, as SC Entry 0 and SC
-    Entry 1, may be two fields as well as an array, and is left as it is.
+    Information log page, an array of 8, and TMT1TC and TMT2TC, an array of
+    2. Without 'pairs', where a row of the figure was left out, a run of two
+    is left as it is: Exported Controller Association Descriptor 0 and 1 of
+    Base 2.4 Figure 404 begin a list whose last entry has a reversed range.
     """
 
     at = 0
@@ -1567,7 +1683,7 @@ def listed_arrays(fields: List[Bits]) -> None:
         end, indexes, _ = run_at(fields, at)
         run = fields[at:end]
         if (
-            len(run) < 3
+            len(run) < (2 if pairs else 3)
             or any(f.array or f.kind != "span" or f.lower is None for f in run)
             or sorted(indexes) != list(range(min(indexes), max(indexes) + 1))
         ):
@@ -1622,8 +1738,30 @@ def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
             rf"\bup to (\d+) {name}(?:\s+entries)?\b", flags=re.IGNORECASE
         )
         found = {int(m[1]) for text in mentions for m in pattern.finditer(text)}
+        if not found:
+            found = counted_by(field, fields)
         if len(found) == 1:
             array.maximum = found.pop()
+
+
+def counted_by(entry: Bits, fields: List[Bits]) -> set:
+    """The maxima that the field counting the entries of the array of
+    'entry' states, as "up to 127 entries" of NUMENT in Base 2.4 Figure
+    361, whose last entry is "SC Entry NUMENT-1" """
+
+    array = entry.array
+    if array is None:
+        return set()
+    last = next(
+        (f for f in reversed(fields) if f.array and f.array.name == array.name), entry
+    )
+    named = set(re.findall(r"\b[A-Z][A-Z0-9]+\b", (last.name or "")[len(array.name) :]))
+    return {
+        int(m[1])
+        for field in fields
+        if field.acronym and field.acronym in named
+        for m in re.finditer(r"\bup to (\d+) entries\b", field.description)
+    }
 
 
 def took(
@@ -3507,7 +3645,7 @@ def link_structures(document: SpecDocument) -> None:
         ]
 
     def laying_out(field: Bits, source: Source) -> Optional[Source]:
-        size = field.array.stride if field.array else field.width
+        size = field.array.stride if field.array and field.array.stride else field.width
         bits = (size or 0) * (8 if field.unit == "bytes" else 1)
         named = cited(field, source)
         found = [key for key in named if key in widths and widths[key] == bits]
@@ -3564,7 +3702,7 @@ def link_structures(document: SpecDocument) -> None:
         return structures[found[0]].source if len(found) == 1 else None
 
     def link(fields: List[Bits], source: Source) -> None:
-        arrays: Dict[Tuple[str, int], List[Bits]] = {}
+        arrays: Dict[Tuple[str, Optional[int]], List[Bits]] = {}
         for field in fields:
             field.structure = None
             if field.role == "field" and not field.fields:

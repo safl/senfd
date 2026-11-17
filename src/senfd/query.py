@@ -141,7 +141,12 @@ def array_and_structure(field: Bits) -> List[str]:
             "last entry" if field.array.index is None else f"entry {field.array.index}"
         )
         count = field.array.count or "as many as the data says"
-        told.append(f"{index} of {count}, each of {field.array.stride} {field.unit}")
+        size = (
+            f"each of {field.array.stride} {field.unit}"
+            if field.array.stride
+            else "each of the size the data says"
+        )
+        told.append(f"{index} of {count}, {size}")
     if field.structure:
         told.append(f"laid out in [{cite(field.structure)}]")
     return told

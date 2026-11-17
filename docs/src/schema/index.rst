@@ -97,9 +97,16 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   and width in other documents that state it, as NGUID of KV 1.4 does from
   NVM 1.3. A taken encoding or byte order gives the figure it is from in
   ``encoding_from`` or ``byte_order_from``; a field of one byte has no byte
-  order. A run of three or more fields
-  listed in full, as TSEN1 to TSEN8, is an ``array`` as a run with rows
-  left out is, and a field of a group of rows that a column names by an
+  order. A run of two or more fields
+  listed in full, as TSEN1 to TSEN8 or TMT1TC and TMT2TC, is an ``array``
+  as a run with rows left out is, but a run of two only where the figure
+  leaves out no row it cannot read. One entry of another width at its
+  place, as Host Fabric Interface Descriptor 2 of Boot 1.4, is still an
+  entry. A run whose ranges the data gives, as the ANA Group Descriptors
+  at "n:16" and "m:n+1", is an array without a count, and without
+  ``stride`` and ``lower`` where the entries' widths or offsets are of the
+  data. An array without a count takes its ``maximum`` from the field
+  counting its entries, as "up to 127 entries" of NUMENT. A field of a group of rows that a column names by an
   index, as "Source Range 0" to "Source Range 127", has ``group``, the
   array of those groups. Dwords in a section titled with a code, as
   "SMBus/I2C Frequency (Configuration Identifier 01h)" below Configuration
