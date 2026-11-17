@@ -65,6 +65,17 @@ def test_a_command_name_is_without_its_footnote_marker(tmp_path):
     assert 10 in [d.lower for d in ring.sqe]
 
 
+def test_the_i_o_commands_of_every_i_o_command_set_are_named_common_i_o():
+    """Base 2.4 Figure 645, "Opcodes for I/O Commands", lists the I/O
+    commands of every I/O command set, as Flush; it is no command set "I/O" """
+
+    from senfd.documents.spec import command_set_name
+
+    assert command_set_name("I/O") == "Common I/O"
+    assert command_set_name("NVM Command Set I/O") == "NVM"
+    assert command_set_name("Admin") == "Admin"
+
+
 def test_a_feature_has_the_dwords_its_caption_names_it_by(tmp_path):
     spec = merge([spec_of(Path("example") / "example.docx", tmp_path)])
 
