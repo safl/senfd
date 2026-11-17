@@ -445,6 +445,10 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
             r"(?: (?:if|when) (?P<condition>.+))?$"
         ],
     ),
+    # The layout every command set shares, as "Common Completion Queue Entry
+    # Layout - Admin and All I/O Command Sets" of Base 2.4 Figure 97, is of
+    # the thing it lays out
+    ("other", [r"^Common " + NAME + r" Layout - (?P<qualifier>.+)$"]),
     ("data_pointer", [r"^" + NAME + r" - Data Pointer$"]),
     ("metadata_pointer", [r"^" + NAME + r" - Metadata Pointer$"]),
     ("data_buffer", [r"^" + NAME + r" - Data Buffer$"]),
