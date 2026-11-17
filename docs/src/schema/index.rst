@@ -88,7 +88,8 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   structure, and ``extends_field`` where its text names the field it lays
   out. A field has ``encoding``, "ascii", "utf-8" or "uuid", where its
   description states it, as "as an ASCII string", or where it has the
-  value of a field that has one, and ``byte_order`` where its description
+  value of a field that has one or holds bytes of it, as NQNID of Base 2.4
+  Figure 698 holds bytes of SUBNQN, and ``byte_order`` where its description
   states that, as "This field is big endian". A paragraph referring to the
   figure states an encoding too, as "The firmware revision is indicated as
   an ASCII string" of the Firmware Slot Information log page. Every NQN
