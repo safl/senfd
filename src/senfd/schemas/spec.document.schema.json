@@ -1412,6 +1412,31 @@
                 "source": {
                     "$ref": "#/$defs/Source",
                     "description": "The figure laying it out"
+                },
+                "extends": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Source"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Of a layout of some of the bytes of another structure, the figure of\nthat structure: NVM 1.3 Figure 126, AWUN, AWUPF and ACWU, extends\nIdentify Controller, Base 2.4 Figure 338"
+                },
+                "extends_field": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the field of that structure this one lays out, where\nthe text names it: CPSR, of MI 2.2 Figure 40, for Figure 41",
+                    "title": "Extends Field"
                 }
             },
             "required": [
