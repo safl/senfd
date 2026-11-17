@@ -1889,6 +1889,30 @@ def test_a_marker_read_as_superscript_is_a_footnote_of_the_name_value_or_column(
     ]
 
 
+def test_a_marker_on_a_lone_0_or_1_or_within_a_value_is_a_footnote():
+    """NVM 1.3 Figure 165 marks the bit size "0" as "0\u00b9", and Base 2.4
+    Figure 769 marks commands within the one cell listing them, twice with
+    the same footnotes; "10\u00b3" of MI 2.2 Figure 14 is an exponent"""
+
+    from senfd.documents.spec import entry_of
+
+    entry = entry_of({"value": "0h", "foo_bit_size": "0\u00b9"})
+    assert (entry.columns, entry.footnotes) == ({"foo_bit_size": "0"}, [1])
+    entry = entry_of(
+        {
+            "command": "Foo (Admin)\u2074 Bar (source)\u00b2 Baz (source)\u00b2",
+            "description": "Allowed",
+        },
+        "command",
+    )
+    assert (entry.value, entry.marked) == (
+        "Foo (Admin) Bar (source) Baz (source)",
+        {"command": [4, 2]},
+    )
+    entry = entry_of({"value": "kilo / k 10\u00b3"})
+    assert (entry.value, entry.footnotes) == ("kilo / k 10\u00b3", [])
+
+
 def test_an_entry_naming_a_value_of_another_field_links_to_it():
     """Reporting Options 1h of Zone Management Receive, "List the zones in the
     ZSE:Empty state.", names value 1h of the field ZS of the Zone Descriptor,

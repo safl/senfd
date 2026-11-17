@@ -2196,7 +2196,7 @@ def entry_of(
             marked[mark or column] = numbers
         return text
 
-    value = plain(key, within=False)
+    value = plain(key)
     name = plain(name_key, mark="name") if name_key else None
     description, footnotes = footnoted(entry.get("description", ""))
     if footnotes:
