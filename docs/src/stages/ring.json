@@ -8,6 +8,7 @@
       "condition": null,
       "selected_when": null,
       "qualifier": null,
+      "refines": null,
       "fields": [],
       "source": {
         "document": "example",
@@ -24,6 +25,7 @@
       "condition": null,
       "selected_when": null,
       "qualifier": null,
+      "refines": null,
       "fields": [
         {
           "name": "Ring Mode",
@@ -71,6 +73,7 @@
       "condition": null,
       "selected_when": null,
       "qualifier": null,
+      "refines": null,
       "fields": [
         {
           "name": "Ring Count",

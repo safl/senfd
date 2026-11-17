@@ -3542,3 +3542,36 @@ def test_a_field_is_not_linked_to_a_structure_of_only_itself():
     )
     descriptor = [s for s in spec.structures if s.source.figure_nr == 385][0]
     assert descriptor.fields[0].structure is None
+
+
+def test_the_dwords_of_an_operation_within_one_field_refine_that_field():
+    """FDPET, bit 08 of the FDP Events of Base 2.4 Figure 301, lies within LSP,
+    14:08 of Get Log Page Command Dword 10; dwords laying out fields of two
+    fields, or the whole dword, refine none"""
+
+    from senfd.documents.spec import Bits, Dwords, Source, refined_by
+
+    def bits(text, acronym=None):
+        upper, lower = (int(n) for n in (text.split(":") * 2)[:2])
+        return Bits(
+            unit="bits",
+            upper=upper,
+            lower=lower,
+            range=text,
+            acronym=acronym,
+            name=acronym or "Reserved",
+            role="field",
+            kind="span",
+            width=upper - lower + 1,
+        )
+
+    def dwords(*fields):
+        source = Source(document="Base", figure_nr=1)
+        return Dwords(lower=10, upper=10, fields=list(fields), source=source)
+
+    command = [
+        dwords(bits("31:16", "NUMDL"), bits("14:08", "LSP"), bits("07:00", "LID"))
+    ]
+    assert refined_by(command, dwords(bits("14:09"), bits("08", "FDPET"))) == "LSP"
+    assert refined_by(command, dwords(bits("15:08", "FOO"))) is None
+    assert refined_by(command, dwords(bits("31:00", "BAR"))) is None

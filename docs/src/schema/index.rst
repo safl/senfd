@@ -52,7 +52,10 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   the one command of that name in another document, as Read of the Zoned
   Namespace table, a command of the NVM Command Set. An
   operation is what the command does for one value of a selecting field,
-  as for each directive operation.
+  as for each directive operation. Dwords of an operation that lay out the
+  bits of one field of the command's own dwords give that field's acronym
+  in ``refines``: LSP of Get Log Page for the FDP Events log page, and
+  CNSSID of Identify for the CNS values that use it.
 * ``features`` and ``log_pages``: features and log pages by identifier. A
   feature has the dwords of the commands that set and get it. A log page
   is one by identifier, named as the table of log page identifiers names

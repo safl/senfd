@@ -928,6 +928,19 @@
                     "description": "What the caption says the dwords are of, as 'NVM Command Set Specific\nFields'",
                     "title": "Qualifier"
                 },
+                "refines": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the field of the command's own dwords that these dwords\nlay out the bits of, where all their fields lie within that one field:\nLSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4\nFigure 301, and CNSSID of Identify Command Dword 11",
+                    "title": "Refines"
+                },
                 "fields": {
                     "description": "The fields of the dwords, the bits counted across them",
                     "items": {
