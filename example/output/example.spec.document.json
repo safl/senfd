@@ -2,7 +2,7 @@
   "meta": {
     "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "4b69574f162680f6fed857794ed807bbbe42743d0093d7b4ee3bd4ceef42e384",
+    "senfd_sha256": "7d3ef59c88f3f6a724e418185430cc3ce5c7231a53f2cd1a9cf41e1288d56045",
     "stem": "example",
     "file": "example.docx",
     "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
@@ -49,6 +49,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -78,6 +79,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -123,6 +125,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -152,6 +155,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -197,6 +201,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -242,6 +247,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -287,6 +293,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -332,6 +339,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -379,6 +387,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -456,6 +465,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -485,6 +495,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -530,6 +541,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -614,6 +626,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -659,6 +672,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -728,6 +742,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -845,6 +860,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -890,6 +906,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -992,6 +1009,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -1037,6 +1055,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -1173,6 +1192,7 @@
                     }
                   ],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 },
@@ -1275,6 +1295,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -1329,6 +1350,7 @@
                       "values_in": null,
                       "cases": [],
                       "array": null,
+                      "part": null,
                       "group": null,
                       "structure": null
                     }
@@ -1392,6 +1414,7 @@
                       "values_in": null,
                       "cases": [],
                       "array": null,
+                      "part": null,
                       "group": null,
                       "structure": null
                     }
@@ -1509,6 +1532,7 @@
                   "values_in": null,
                   "cases": [],
                   "array": null,
+                  "part": null,
                   "group": null,
                   "structure": null
                 }
@@ -1588,6 +1612,7 @@
                       "values_in": null,
                       "cases": [],
                       "array": null,
+                      "part": null,
                       "group": null,
                       "structure": null
                     },
@@ -1617,6 +1642,7 @@
                       "values_in": null,
                       "cases": [],
                       "array": null,
+                      "part": null,
                       "group": null,
                       "structure": null
                     }
@@ -1743,6 +1769,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -1772,6 +1799,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -1817,6 +1845,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -1846,6 +1875,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -1891,6 +1921,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -1936,6 +1967,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -1981,6 +2013,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2026,6 +2059,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2073,6 +2107,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2120,6 +2155,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -2149,6 +2185,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2194,6 +2231,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2241,6 +2279,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -2358,6 +2397,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2403,6 +2443,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -2505,6 +2546,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2550,6 +2592,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -2686,6 +2729,7 @@
               }
             ],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -2788,6 +2832,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2835,6 +2880,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2882,6 +2928,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2944,6 +2991,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -2989,6 +3037,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3036,6 +3085,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3083,6 +3133,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -3112,6 +3163,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3159,6 +3211,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -3188,6 +3241,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3235,6 +3289,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3282,6 +3337,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3329,6 +3385,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3376,6 +3433,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -3405,6 +3463,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -3454,6 +3513,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3503,6 +3563,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3552,6 +3613,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3601,6 +3663,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3650,6 +3713,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -3702,6 +3766,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -3731,6 +3796,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             }
@@ -3738,6 +3804,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -3767,6 +3834,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3816,6 +3884,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3865,6 +3934,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3914,6 +3984,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -3963,6 +4034,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4012,6 +4084,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -4041,6 +4114,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4090,6 +4164,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -4119,6 +4194,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4168,6 +4244,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4217,6 +4294,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4266,6 +4344,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4318,6 +4397,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -4350,6 +4430,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4399,6 +4480,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4448,6 +4530,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4497,6 +4580,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4546,6 +4630,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4595,6 +4680,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4644,6 +4730,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4693,6 +4780,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4742,6 +4830,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4791,6 +4880,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4842,6 +4932,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4893,6 +4984,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -4944,6 +5036,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -4975,6 +5068,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5006,6 +5100,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5037,6 +5132,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5068,6 +5164,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5099,6 +5196,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5130,6 +5228,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5161,6 +5260,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5212,6 +5312,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5264,6 +5365,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5296,6 +5398,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5345,6 +5448,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5394,6 +5498,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5443,6 +5548,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5492,6 +5598,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5541,6 +5648,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5590,6 +5698,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5639,6 +5748,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5668,6 +5778,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5697,6 +5808,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5726,6 +5838,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5755,6 +5868,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5806,6 +5920,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5837,6 +5952,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -5895,6 +6011,7 @@
             "lower": 0,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5933,6 +6050,7 @@
             "lower": 0,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -5971,6 +6089,7 @@
             "lower": 0,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6000,6 +6119,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6049,6 +6169,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6101,6 +6222,11 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": {
+                "name": "Foo",
+                "acronym": null,
+                "shift": 0
+              },
               "group": null,
               "structure": null
             },
@@ -6130,6 +6256,11 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": {
+                "name": "Foo",
+                "acronym": null,
+                "shift": 4
+              },
               "group": null,
               "structure": null
             }
@@ -6137,6 +6268,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6166,6 +6298,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6215,6 +6348,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6244,6 +6378,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6273,6 +6408,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -6309,6 +6445,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -6345,6 +6482,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6394,6 +6532,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6423,6 +6562,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6461,6 +6601,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6499,6 +6640,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6537,6 +6679,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6586,6 +6729,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6615,6 +6759,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6687,6 +6832,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -6716,6 +6862,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -6745,6 +6892,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             }
@@ -6752,6 +6900,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6804,6 +6953,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -6833,6 +6983,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -6862,6 +7013,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             }
@@ -6869,6 +7021,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6898,6 +7051,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -6954,6 +7108,7 @@
           },
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -6990,6 +7145,7 @@
           },
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -7039,6 +7195,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -7077,6 +7234,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7122,6 +7280,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7167,6 +7326,7 @@
             "lower": 4,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7212,6 +7372,7 @@
             "lower": 36,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7257,6 +7418,7 @@
             "lower": 36,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7302,6 +7464,7 @@
             "lower": 36,
             "maximum": null
           },
+          "part": null,
           "group": null,
           "structure": {
             "document": "example",
@@ -7358,6 +7521,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -7387,6 +7551,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -7436,6 +7601,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -7465,6 +7631,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -7517,6 +7684,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -7549,6 +7717,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -7598,6 +7767,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         },
@@ -7627,6 +7797,7 @@
           "values_in": null,
           "cases": [],
           "array": null,
+          "part": null,
           "group": null,
           "structure": null
         }
@@ -9239,6 +9410,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             },
@@ -9268,6 +9440,7 @@
               "values_in": null,
               "cases": [],
               "array": null,
+              "part": null,
               "group": null,
               "structure": null
             }
@@ -9353,6 +9526,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9433,6 +9607,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9493,6 +9668,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9540,6 +9716,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           },
@@ -9569,6 +9746,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9616,6 +9794,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9663,6 +9842,7 @@
             "values_in": null,
             "cases": [],
             "array": null,
+            "part": null,
             "group": null,
             "structure": null
           }
@@ -9799,7 +9979,7 @@
     "example": {
       "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "4b69574f162680f6fed857794ed807bbbe42743d0093d7b4ee3bd4ceef42e384",
+      "senfd_sha256": "7d3ef59c88f3f6a724e418185430cc3ce5c7231a53f2cd1a9cf41e1288d56045",
       "stem": "example",
       "file": "example.docx",
       "sha256": "4cde62d55d8d124fd8c1838792866ffe7674ee21e4bf52840f186ca37278f60e",
