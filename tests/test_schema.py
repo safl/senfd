@@ -132,8 +132,10 @@ def test_a_typed_value_holds_what_its_kind_needs():
 
 
 def test_the_schema_enumerates_every_kind_senfd_makes():
-    """Every kind of a caption, "other" for a caption of none, and
-    "cited_fields", which the data model gives a table by its columns"""
+    """
+    Every kind of a caption, "other" for a caption without a kind, and "cited_fields",
+    the kind that senfd gives a table from its columns
+    """
 
     kinds = {k for k, _ in CAPTIONS} | {"other", "cited_fields"}
     assert set(typing.get_args(CaptionKind)) == kinds

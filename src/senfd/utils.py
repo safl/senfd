@@ -11,9 +11,8 @@ REGEX_IO = re.compile(r"\bI/O\b", re.IGNORECASE)
 
 def key_of(text: str) -> str:
     """
-    The key of a name or a header: lower case, words joined by underscores,
-    and "I/O" one word, as "create_io_completion_queue" of "Create I/O
-    Completion Queue"
+    The key of a name or a header: lower case, words joined by underscores, and "I/O" as
+    one word, for example "create_io_completion_queue" for "Create I/O Completion Queue"
     """
 
     return re.sub(r"[^a-z0-9]+", "_", REGEX_IO.sub("io", text).lower()).strip("_")
@@ -30,30 +29,30 @@ def snake_to_pascal(name):
     return "".join(word.capitalize() for word in name.split("_"))
 
 
-# A footnote marker is printed as superscript digits; the readers of the
-# documents give them as Unicode superscript digits, so that the data model can
-# tell a marker from digits of the text, as "Controllers1" from "TSEN1"
+# The readers of the documents return a footnote marker, which is printed as superscript
+# digits, as Unicode superscript digits. senfd can then tell a marker from digits of the
+# text, which it could not in "Controllers1" and "TSEN1".
 SUPERSCRIPT = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
 PLAIN = str.maketrans("⁰¹²³⁴⁵⁶⁷⁸⁹", "0123456789")
 MARK = "[⁰¹²³⁴⁵⁶⁷⁸⁹]+"
-# Markers, one or more separated by commas, as "³, ⁴, ⁶"
+# One or more markers separated by commas, for example "³, ⁴, ⁶"
 REGEX_MARKS = re.compile(rf"\s*{MARK}(?:\s*,\s*{MARK})*")
 
 
 def superscript(text: str) -> str:
-    """'text' with its digits as superscript digits"""
+    """'text' with its digits replaced by superscript digits"""
 
     return text.translate(SUPERSCRIPT)
 
 
 def unmarked(text: str, within: bool = False) -> Tuple[str, List[int]]:
     """
-    'text' without the footnote markers at its end, and the numbers of those
-    footnotes; with 'within', also without the markers after a word within
-    it, as of "Entered by host request³ or by ITPT idle timer⁴". Superscript
-    digits after a number other than 0 or 1, or after a lower-case letter
-    standing alone, are an exponent, as of "2¹⁶" and "x⁶⁴", and are kept; after
-    a lone 0 or 1 they are a marker, as of the bit size "0¹".
+    'text' without the footnote markers at its end, and the numbers of those footnotes.
+    With 'within', the markers after a word inside 'text' are removed too, for example
+    in "Entered by host request³ or by ITPT idle timer⁴". Superscript digits after a
+    number other than 0 or 1, or after a lowercase letter that stands alone, are an
+    exponent and are kept, for example in "2¹⁶" and "x⁶⁴". Superscript digits after a
+    lone 0 or 1 are a marker, for example in the bit size "0¹".
     """
 
     numbers: List[int] = []
@@ -62,7 +61,8 @@ def unmarked(text: str, within: bool = False) -> Tuple[str, List[int]]:
     for match in REGEX_MARKS.finditer(text):
         before = text[: match.start()]
         last = text[match.end() :].strip() == ""
-        # A marker may stand apart from its word, as "n/a ³"; an exponent not
+        # A marker can be separated from its word by a space, for example "n/a ³", and
+        # an exponent cannot.
         exponent = not match[0][0].isspace() and re.search(
             r"(?:(?<![0-9])[2-9]|[0-9]{2}|(?:^|[\s(+*-])[a-z])$", before
         )

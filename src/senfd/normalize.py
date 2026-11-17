@@ -169,8 +169,8 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
     has its text and neither bound, and empty text is no range
     """
 
-    # A range has no exponent, so superscript digits on it are a footnote
-    # marker, as footnote 1 on a range of Base 2.4 Figure 240
+    # A range has no exponent, so superscript digits on a range are a footnote marker,
+    # for example footnote 1 on a range of Base 2.4 Figure 240.
     text = normalize_text(re.sub("[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:,\\s*[⁰¹²³⁴⁵⁶⁷⁸⁹]+)*", "", text))
     match = REGEX_RANGE.match(text)
     if match:
@@ -301,8 +301,8 @@ def parse_field_description(text: str) -> Tuple[Optional[str], Optional[str], st
         and not is_title(name)
         and more.startswith(BULLETS)
     ):
-        # A lead-in to a list, as "Each logical block may:" of LBARS of NVM
-        # 1.3 Figure 140, names nothing
+        # A lead-in to a list, for example "Each logical block may:" of LBARS of NVM 1.3
+        # Figure 140, does not name a value.
         return None, None, "\n".join(p for p in [first, more] if p)
     description = "\n".join(p for p in [rest, more] if p)
     return name, match["acronym"], description
@@ -445,9 +445,9 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
             r"(?: (?:if|when) (?P<condition>.+))?$"
         ],
     ),
-    # The layout every command set shares, as "Common Completion Queue Entry
-    # Layout - Admin and All I/O Command Sets" of Base 2.4 Figure 97, is of
-    # the thing it lays out
+    # The layout that every command set shares, for example "Common Completion Queue
+    # Entry Layout - Admin and All I/O Command Sets" of Base 2.4 Figure 97, is named
+    # after what it lays out, with the text after the dash as its qualifier.
     ("other", [r"^Common " + NAME + r" Layout - (?P<qualifier>.+)$"]),
     ("data_pointer", [r"^" + NAME + r" - Data Pointer$"]),
     ("metadata_pointer", [r"^" + NAME + r" - Metadata Pointer$"]),
@@ -473,7 +473,8 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
         ],
     ),
     ("log_page_identifiers", [r"^(?:" + NAME + r" - )?Log Page Identifiers$"]),
-    # A table mapping the bytes of one message to another, as MI 2.2 Figure 49
+    # A table that maps the bytes of one message to another, for example MI 2.2 Figure
+    # 49
     ("mapping", [r"^" + NAME + r" Mapping Table$"]),
     (
         "status_values",
@@ -490,8 +491,8 @@ CAPTIONS: List[Tuple[CaptionKind, List[str]]] = [
             r"^" + NAME + r" Requirements$",
         ],
     ),
-    # An entry of a list is a data structure, named with "Entry", as "AVE
-    # Discovery Log Page Entry" of Base 2.4 Figure 328 beside its log page
+    # An entry of a list is a data structure whose name ends in "Entry", for example
+    # "AVE Discovery Log Page Entry" of Base 2.4 Figure 328 beside its log page.
     (
         "data_structure",
         [r"^" + NAME + r"(?: -)? (?:Log Page|(?:Data )?Structure) (?P<entry>Entry)$"],

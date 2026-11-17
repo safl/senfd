@@ -31,7 +31,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The index of this entry, for example 63 for LBAF63, or 255 for\n\"Performance Attribute FFh Identifier\"; None for a last entry whose range\nthe figure gives as a formula",
+                    "description": "The index of this entry, for example 63 for LBAF63, or 255 for \"Performance\nAttribute FFh Identifier\". None for a last entry whose range the figure gives as a\nformula.",
                     "title": "Index"
                 },
                 "first": {
@@ -62,7 +62,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The size of one entry, in the unit of the field; None where the data\ngives the size of each entry, as the ANA Group Descriptors of Base 2.4\nFigure 230 at \"n:16\" and \"m:n+1\" ",
+                    "description": "The size of one entry, in the unit of the field. None where the data gives the size\nof each entry, for example the ANA Group Descriptors of Base 2.4 Figure 230 at\n\"n:16\" and \"m:n+1\".",
                     "title": "Stride"
                 },
                 "lower": {
@@ -75,7 +75,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The offset of the first entry, which is where the array starts; None\nwhere the data gives it",
+                    "description": "The offset of the first entry, where the array starts. None where the data gives it.",
                     "title": "Lower"
                 },
                 "maximum": {
@@ -318,7 +318,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The order of the field's bytes where the figure marks the byte of its\nmost significant bit (MSB) and that of its least (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\"\nwhere the MSB is in the lowest byte. None where the figure does not mark\nthem, or the field is one byte; else the order the description states,\nas \"This field is big endian\" of FGUID of Identify Controller",
+                    "description": "The order of the bytes of the field where the figure marks the byte of its most\nsignificant bit (MSB) and the byte of its least significant bit (LSB), as the\nprotection information formats of the NVM Command Set do: \"big-endian\" where the MSB\nis in the lowest byte. Otherwise the byte order that the description states, for\nexample \"This field is big endian\" of FGUID of Identify Controller. None where\nneither gives one, and for a field of one byte.",
                     "title": "Byte Order"
                 },
                 "encoding": {
@@ -336,7 +336,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "What the field's bytes encode where its description says: \"ascii\"\nfor \"as an ASCII string\", \"utf-8\" for \"a UTF-8 null-terminated string\",\n\"uuid\" for \"a 128-bit Universally Unique Identifier (UUID)\"; or what\nthe field it has the value of encodes, as FR of NVM 1.3 Figure 189, \"the\nvalue of the FR field in the Identify Controller data structure\" ",
+                    "description": "What the bytes of the field encode, where the description says: \"ascii\" for \"as an\nASCII string\", \"utf-8\" for \"a UTF-8 null-terminated string\", and \"uuid\" for \"a\n128-bit Universally Unique Identifier (UUID)\". Otherwise the encoding taken from\nanother field, for example from the field that FR of NVM 1.3 Figure 189 has the\nvalue of, \"the value of the FR field in the Identify Controller data structure\".",
                     "title": "Encoding"
                 },
                 "encoding_from": {
@@ -349,7 +349,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "Where 'encoding' is not stated for the field but taken from another\nfield, the figure of that field: AVENQN of Base 2.4 Figure 328, an NQN,\ntakes \"utf-8\" from SUBNQN of Figure 338. None where it is stated"
+                    "description": "The figure of the field that 'encoding' is taken from, where the description of this\nfield does not state the encoding. For example, AVENQN of Base 2.4 Figure 328, an\nNQN, takes \"utf-8\" from SUBNQN of Figure 338. None where the encoding is stated."
                 },
                 "byte_order_from": {
                     "anyOf": [
@@ -361,7 +361,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "Where 'byte_order' is not stated for the field but taken from a field\nof the same name, acronym and width in another document, the figure of\nthat field: NGUID of KV 1.4 Figure 42 from NVM 1.3 Figure 123. None\nwhere it is stated"
+                    "description": "The figure of the field that 'byte_order' is taken from, a field of the same name,\nacronym and width in another document, where this field does not state the byte\norder. For example, NGUID of KV 1.4 Figure 42 takes it from NVM 1.3 Figure 123. None\nwhere the byte order is stated."
                 },
                 "footnotes": {
                     "description": "The numbers of the footnotes marked on the name, at the end of the\ndescription, and on the other columns",
@@ -486,7 +486,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The value the field holds part of, where a figure splits a value over\ntwo fields"
+                    "description": "The value that the field holds a part of, where a figure splits a value over two\nfields"
                 },
                 "group": {
                     "anyOf": [
@@ -498,7 +498,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The array of groups of fields that the field's group is an entry of,\nwhere a column names each group, as \"Source Range 0\" to \"Source Range\n127\" of NVM 1.3 Figure 40: its name, the index of the field's group,\nand the size and offset of a group"
+                    "description": "The array of groups of fields whose entry is the group of this field, where a column\nnames each group, for example \"Source Range 0\" to \"Source Range 127\" of NVM 1.3\nFigure 40. It holds the name of the array, the index of the group of this field, and\nthe size and the offset of a group."
                 },
                 "structure": {
                     "anyOf": [
@@ -693,7 +693,7 @@
                         },
                         "type": "array"
                     },
-                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "description": "The numbers of the footnotes marked on the name and the other columns of the row of\nthe command, by the key of the column, where a footnote is marked",
                     "title": "Footnotes",
                     "type": "object"
                 },
@@ -720,7 +720,7 @@
                 },
                 "kind": {
                     "default": "other",
-                    "description": "What the command set is: \"io\", an I/O command set, which an I/O Command\nSet specification defines; \"common_io\", the I/O commands the Base\nspecification defines for use in all I/O command sets, which are no\ncommand set and have no Command Set Identifier; \"admin\"; and\n\"management_interface\", a command set of the Management Interface\nspecification",
+                    "description": "The kind of the command set. \"io\" is an I/O command set, which an I/O Command Set\nspecification defines. \"common_io\" is the I/O commands that the Base specification\ndefines for use in all I/O command sets; these commands are not a command set and\nhave no Command Set Identifier. \"admin\" is the Admin command set, and\n\"management_interface\" is a command set of the Management Interface specification.",
                     "enum": [
                         "admin",
                         "io",
@@ -741,7 +741,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The Command Set Identifier (CSI) of an I/O command set, as Base 2.4\nFigure 337 gives it, 00h for NVM; None for the other kinds, and where\nthe table of identifiers is not among the documents",
+                    "description": "The Command Set Identifier (CSI) of an I/O command set, as Base 2.4 Figure 337 gives\nit, for example 00h for NVM. None for the other kinds, and where the table of\nidentifiers is not among the documents.",
                     "title": "Identifier"
                 },
                 "commands": {
@@ -760,15 +760,15 @@
             "type": "object"
         },
         "Comparison": {
-            "description": "A condition on the value of a field, as \"CETYPE is non-zero\" ",
+            "description": "A condition on the value of a field, for example \"CETYPE is non-zero\"",
             "properties": {
                 "field": {
-                    "description": "The acronym of the field, as 'CETYPE'",
+                    "description": "The acronym of the field, for example 'CETYPE'",
                     "title": "Field",
                     "type": "string"
                 },
                 "comparison": {
-                    "description": "How the field's value compares with 'value'",
+                    "description": "How the value of the field compares with 'value'",
                     "enum": [
                         "==",
                         "!="
@@ -777,7 +777,7 @@
                     "type": "string"
                 },
                 "value": {
-                    "description": "The value compared with",
+                    "description": "The value that the field is compared with",
                     "title": "Value",
                     "type": "integer"
                 }
@@ -951,7 +951,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The condition as a comparison of a field with a value, where it is of\nthe form \"X is cleared to 0h\", \"X is set to 1h\" or \"X is non-zero\" "
+                    "description": "The condition as a comparison of a field with a value, where the condition has the\nform \"X is cleared to 0h\", \"X is set to 1h\" or \"X is non-zero\""
                 },
                 "qualifier": {
                     "anyOf": [
@@ -976,7 +976,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The acronym of the field of the command's own dwords that these dwords\nlay out the bits of, where all their fields lie within that one field:\nLSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4\nFigure 301, and CNSSID of Identify Command Dword 11",
+                    "description": "The acronym of the field of the dwords of the command whose bits these dwords lay\nout, where all the fields of these dwords lie within that one field. Examples are\nLSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4 Figure 301, and\nCNSSID of Identify Command Dword 11.",
                     "title": "Refines"
                 },
                 "fields": {
@@ -1037,7 +1037,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The acronym the row writes before the name, as \"CAP\" of \"CAP:\nController Capabilities\" in Base 2.4 Figure 33",
+                    "description": "The acronym of the value. The row can write it before the name, for example \"CAP\" of\n\"CAP: Controller Capabilities\" in Base 2.4 Figure 33, or as the initials after the\nname, for example \"GAZ\" of \"Get Active ZoneGroup (GAZ) operation\". The table can\nalso give it in an Acronym column.",
                     "title": "Acronym"
                 },
                 "description": {
@@ -1077,7 +1077,7 @@
                         },
                         "type": "array"
                     },
-                    "description": "The numbers of the footnotes marked on each column, by its key, the\nname's as \"name\", where any is marked",
+                    "description": "The numbers of the footnotes marked on each column, by the key of the column, with\nthe key \"name\" for the name, where a footnote is marked",
                     "title": "Marked",
                     "type": "object"
                 },
@@ -1125,7 +1125,7 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "What kind it is: \"value\", \"acronym\", \"range\" (text that is no range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (of a command's\ndwords), 'layout-gap' (of a structure), \"reference\" (to the section of\nanother value) or \"caption\" (of another figure)",
+                    "description": "The kind of erratum: \"value\", \"acronym\", \"range\" (text that is not a range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (in the dwords of a command),\n\"layout-gap\" (in a structure), \"reference\" (to the section of another value) or\n\"caption\" (of another figure)",
                     "enum": [
                         "value",
                         "acronym",
@@ -1193,7 +1193,7 @@
                         },
                         "type": "array"
                     },
-                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "description": "The numbers of the footnotes marked on the name and the other columns of the row of\nthe feature, by the key of the column, where a footnote is marked",
                     "title": "Footnotes",
                     "type": "object"
                 },
@@ -1214,7 +1214,7 @@
                     "type": "array"
                 },
                 "operations": {
-                    "description": "What the feature does for the values of a field of its dwords, as the\nLockdown Persistence Personality of Configurable Device Personality,\nselected by PERID 02h",
+                    "description": "What the feature does for each value of a field of its dwords, for example the\nLockdown Persistence Personality of Configurable Device Personality, selected by\nPERID 02h",
                     "items": {
                         "$ref": "#/$defs/Operation"
                     },
@@ -1248,7 +1248,7 @@
                     "type": "string"
                 },
                 "aliases": {
-                    "description": "The other names the tables give it, as \"Manufacturer Default\nConfiguration Status\" of Base 2.4 Figure 31 for 24h, which Figure 209\nnames \"Manufacturer Default Configuration\" ",
+                    "description": "The other names that the tables give the log page, for example \"Manufacturer Default\nConfiguration Status\" of Base 2.4 Figure 31 for 24h, which Figure 209 names\n\"Manufacturer Default Configuration\"",
                     "items": {
                         "type": "string"
                     },
@@ -1270,7 +1270,7 @@
                         },
                         "type": "array"
                     },
-                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "description": "The numbers of the footnotes marked on the name and the other columns of the row of\nthe log page, by the key of the column, where a footnote is marked",
                     "title": "Footnotes",
                     "type": "object"
                 },
@@ -1352,10 +1352,10 @@
             "type": "object"
         },
         "Part": {
-            "description": "The value that a field holds part of, where a figure splits a value\nover two fields, as NUMDL and NUMDU of Get Log Page, \"Number of Dwords\nLower\" and \"Upper\", or \"KV Key[63:00]\" and \"KV Key[127:64]\" of KV 1.4",
+            "description": "The value of which a field holds a part, where a figure splits the value over two\nfields. Examples are NUMDL and NUMDU of Get Log Page, \"Number of Dwords Lower\" and\n\"Upper\", and \"KV Key[63:00]\" and \"KV Key[127:64]\" of KV 1.4.",
             "properties": {
                 "name": {
-                    "description": "The name of the value, as 'Number of Dwords'",
+                    "description": "The name of the value, for example 'Number of Dwords'",
                     "title": "Name",
                     "type": "string"
                 },
@@ -1369,11 +1369,11 @@
                         }
                     ],
                     "default": null,
-                    "description": "The acronym of the value, as 'NUMD', where the parts' acronyms are\nit and a letter for the part",
+                    "description": "The acronym of the value, for example 'NUMD', where the acronym of each part is this\nacronym and a letter for the part",
                     "title": "Acronym"
                 },
                 "shift": {
-                    "description": "Where in the value the field starts, in the unit of the field's\nrange: 0 of the lower part, the width of the lower part of the upper\none, 64 of \"KV Key[127:64]\" ",
+                    "description": "The bit of the value where the field starts, in the unit of the range of the field:\n0 for the lower part, and the width of the lower part for the upper part, for\nexample 64 for \"KV Key[127:64]\"",
                     "title": "Shift",
                     "type": "integer"
                 }
@@ -1640,7 +1640,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "Of a layout of some of the bytes of another structure, the figure of\nthat structure: NVM 1.3 Figure 126, AWUN, AWUPF and ACWU, extends\nIdentify Controller, Base 2.4 Figure 338"
+                    "description": "The figure of the structure of which this structure lays out some of the bytes. For\nexample, NVM 1.3 Figure 126, with AWUN, AWUPF and ACWU, extends Identify Controller,\nBase 2.4 Figure 338."
                 },
                 "extends_field": {
                     "anyOf": [
@@ -1652,7 +1652,7 @@
                         }
                     ],
                     "default": null,
-                    "description": "The acronym of the field of that structure this one lays out, where\nthe text names it: CPSR, of MI 2.2 Figure 40, for Figure 41",
+                    "description": "The acronym of the field of the extended structure that this structure lays out,\nwhere the text names it, for example CPSR of MI 2.2 Figure 40 for Figure 41",
                     "title": "Extends Field"
                 }
             },

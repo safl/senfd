@@ -245,8 +245,10 @@ def test_text_underlined_is_an_insertion_shown_and_read(tmp_path):
 
 
 def text_drawn(tmp_path, content):
-    """The text the reader gives the marked content 0 of a page drawing
-    'content'"""
+    """
+    The text that the reader returns for the marked content 0 of a page that draws
+    'content'
+    """
 
     path = one_page(tmp_path / "page.pdf", content)
     with pikepdf.open(path) as pdf, pdfplumber.open(path) as plumb:
@@ -256,17 +258,18 @@ def text_drawn(tmp_path, content):
 
 
 def test_a_digit_raised_above_its_line_is_a_footnote_marker(tmp_path):
-    """A footnote marker is printed at the size of the text, 5 points above
-    its line, as "Connect5" of Base 2.4 Figure 630; the digits of the text
-    stand on the line"""
+    """
+    A footnote marker is printed at the size of the text, 5 points above its line, for
+    example "Connect5" of Base 2.4 Figure 630. The digits of the text stand on the line.
+    """
 
     raised = (
         "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Connect) Tj"
         " 38 5 Td (5) Tj -38 -25 Td (TSEN1) Tj ET EMC"
     )
     assert text_drawn(tmp_path, raised) == "Connect\u2075\nTSEN1"
-    # A space printed after the marker, at its height, as "N 6" of ZNS 1.5
-    # Figure 48, does not make the marker the foot of the line
+    # A space printed after the marker, at the height of the marker, for example "N 6"
+    # of ZNS 1.5 Figure 48, does not make the marker the foot of the line
     spaced = "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (N) Tj 10 5 Td (6  ) Tj ET EMC"
     assert text_drawn(tmp_path, spaced).startswith("N\u2076")
 
@@ -866,9 +869,10 @@ def test_a_figure_is_mentioned_by_its_number_and_not_by_its_caption():
 
 
 def test_a_table_holding_the_caption_of_another_figure_is_two_figures():
-    """The PDF of MI 2.2 tags Figure 74 as rows of the table of Figure 73,
-    caption and all; a caption repeated after a page break is the figure's
-    own"""
+    """
+    The PDF of MI 2.2 tags Figure 74, including its caption, as rows of the table of
+    Figure 73. A caption repeated after a page break belongs to the figure itself.
+    """
 
     def row(*texts):
         return Row(cells=[Cell(text=text) for text in texts])

@@ -32,9 +32,9 @@ Horizontal = Tuple[float, float, float]
 # How far apart, in points, two lines of a paragraph's text may be and still
 # be one line, as a superscript footnote marker beside its word
 LINE = 6
-# How far, in points, the foot of a digit stands above the foot of its line
-# when it is printed as a superscript, as a footnote marker; the documents
-# raise a marker by about 5 points
+# How far, in points, the foot of a digit printed as a superscript, such as a footnote
+# marker, stands above the foot of its line. The documents raise a marker by about 5
+# points.
 RAISED = 2.5
 # How far apart, in points, two borders may be and still be one
 NEAR = 2.5
@@ -69,10 +69,12 @@ def turned(char: dict) -> int:
 
 
 def raised(chars: List[dict]) -> List[dict]:
-    """'chars' with the digits printed as superscripts, as a footnote marker,
-    given as superscript digits, and a comma between them as it is. The foot
-    of a line is where most of its printed characters stand; a space after a
-    marker stands where the marker does."""
+    """
+    'chars' with the digits that are printed as superscripts, such as a footnote marker,
+    given as superscript digits. A comma between such digits is left as it is. The foot
+    of a line is where most of its printed characters stand. A space after a marker
+    stands where the marker stands.
+    """
 
     lines = cluster_objects(chars, lambda c: c["bottom"], LINE)
     feet = {}

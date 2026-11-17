@@ -53,9 +53,10 @@ def test_a_feature_and_a_log_page_are_found_by_identifier_or_name(spec):
 
 
 def test_a_log_page_is_found_by_another_name_its_tables_give_it():
-    """Base 2.4 Figure 209 names log page 24h "Manufacturer Default
-    Configuration", and Figure 31 "Manufacturer Default Configuration
-    Status" """
+    """
+    Base 2.4 Figure 209 names log page 24h "Manufacturer Default Configuration", and
+    Figure 31 names it "Manufacturer Default Configuration Status"
+    """
 
     from senfd.documents.spec import LogPage
 

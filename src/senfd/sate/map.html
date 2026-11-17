@@ -183,8 +183,9 @@ function mark(key) { return `<svg class="mark ${entity(key)}" viewBox="0 0 24 24
 function badge(key, text) { return `<span class="tag">${mark(key)}${text}</span>`; }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
 function short(s, n) { s = String(s ?? ""); return s.length > n ? s.slice(0, n - 1) + "…" : s; }
-// The badge of a node: its own, as "I/O commands" of the Common I/O commands,
-// which are no command set, else that of its kind
+// The badge of a node: its own badge where it has one, for example "I/O commands"
+// of the Common I/O commands, which are not a command set, and otherwise the badge
+// of its kind
 function kindLabel(n) { return n.badge || KINDLABEL[n.kind]; }
 function hex(v) { return typeof v === "number" ? v.toString(16).toUpperCase().padStart(2, "0") + "h" : ""; }
 let first = "";  // The document most items are of, which labels leave out

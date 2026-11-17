@@ -167,27 +167,35 @@ class BitsCommon(Model):
     columns of ranges, where those differ; 'range' is the first that is
     present"""
     byte_order: Optional[Literal["big-endian", "little-endian"]] = None
-    """The order of the field's bytes where the figure marks the byte of its
-    most significant bit (MSB) and that of its least (LSB), as the
-    protection information formats of the NVM Command Set do: "big-endian"
-    where the MSB is in the lowest byte. None where the figure does not mark
-    them, or the field is one byte; else the order the description states,
-    as "This field is big endian" of FGUID of Identify Controller"""
+    """
+    The order of the bytes of the field where the figure marks the byte of its most
+    significant bit (MSB) and the byte of its least significant bit (LSB), as the
+    protection information formats of the NVM Command Set do: "big-endian" where the MSB
+    is in the lowest byte. Otherwise the byte order that the description states, for
+    example "This field is big endian" of FGUID of Identify Controller. None where
+    neither gives one, and for a field of one byte.
+    """
     encoding: Optional[Literal["ascii", "utf-8", "uuid"]] = None
-    """What the field's bytes encode where its description says: "ascii"
-    for "as an ASCII string", "utf-8" for "a UTF-8 null-terminated string",
-    "uuid" for "a 128-bit Universally Unique Identifier (UUID)"; or what
-    the field it has the value of encodes, as FR of NVM 1.3 Figure 189, "the
-    value of the FR field in the Identify Controller data structure" """
+    """
+    What the bytes of the field encode, where the description says: "ascii" for "as an
+    ASCII string", "utf-8" for "a UTF-8 null-terminated string", and "uuid" for "a
+    128-bit Universally Unique Identifier (UUID)". Otherwise the encoding taken from
+    another field, for example from the field that FR of NVM 1.3 Figure 189 has the
+    value of, "the value of the FR field in the Identify Controller data structure".
+    """
     encoding_from: Optional[Source] = None
-    """Where 'encoding' is not stated for the field but taken from another
-    field, the figure of that field: AVENQN of Base 2.4 Figure 328, an NQN,
-    takes "utf-8" from SUBNQN of Figure 338. None where it is stated"""
+    """
+    The figure of the field that 'encoding' is taken from, where the description of this
+    field does not state the encoding. For example, AVENQN of Base 2.4 Figure 328, an
+    NQN, takes "utf-8" from SUBNQN of Figure 338. None where the encoding is stated.
+    """
     byte_order_from: Optional[Source] = None
-    """Where 'byte_order' is not stated for the field but taken from a field
-    of the same name, acronym and width in another document, the figure of
-    that field: NGUID of KV 1.4 Figure 42 from NVM 1.3 Figure 123. None
-    where it is stated"""
+    """
+    The figure of the field that 'byte_order' is taken from, a field of the same name,
+    acronym and width in another document, where this field does not state the byte
+    order. For example, NGUID of KV 1.4 Figure 42 takes it from NVM 1.3 Figure 123. None
+    where the byte order is stated.
+    """
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked on the name, at the end of the
     description, and on the other columns"""
@@ -252,20 +260,24 @@ class ReadBits(BitsCommon):
 
 class Part(Model):
     """
-    The value that a field holds part of, where a figure splits a value
-    over two fields, as NUMDL and NUMDU of Get Log Page, "Number of Dwords
-    Lower" and "Upper", or "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4
+    The value of which a field holds a part, where a figure splits the value over two
+    fields. Examples are NUMDL and NUMDU of Get Log Page, "Number of Dwords Lower" and
+    "Upper", and "KV Key[63:00]" and "KV Key[127:64]" of KV 1.4.
     """
 
     name: str
-    """The name of the value, as 'Number of Dwords'"""
+    """The name of the value, for example 'Number of Dwords'"""
     acronym: Optional[str] = None
-    """The acronym of the value, as 'NUMD', where the parts' acronyms are
-    it and a letter for the part"""
+    """
+    The acronym of the value, for example 'NUMD', where the acronym of each part is this
+    acronym and a letter for the part
+    """
     shift: int
-    """Where in the value the field starts, in the unit of the field's
-    range: 0 of the lower part, the width of the lower part of the upper
-    one, 64 of "KV Key[127:64]" """
+    """
+    The bit of the value where the field starts, in the unit of the range of the field:
+    0 for the lower part, and the width of the lower part for the upper part, for
+    example 64 for "KV Key[127:64]"
+    """
 
 
 class Array(Model):
@@ -282,9 +294,11 @@ class Array(Model):
     acronym: Optional[str] = None
     """The acronym of the entries without the index, for example 'LBAF'"""
     index: Optional[int] = None
-    """The index of this entry, for example 63 for LBAF63, or 255 for
-    "Performance Attribute FFh Identifier"; None for a last entry whose range
-    the figure gives as a formula"""
+    """
+    The index of this entry, for example 63 for LBAF63, or 255 for "Performance
+    Attribute FFh Identifier". None for a last entry whose range the figure gives as a
+    formula.
+    """
     first: int
     """The index of the first entry, 0 or 1 depending on the figure"""
     count: Optional[int] = None
@@ -292,12 +306,15 @@ class Array(Model):
     range of the last entry as a formula, because the number is then a value
     in the data"""
     stride: Optional[int] = None
-    """The size of one entry, in the unit of the field; None where the data
-    gives the size of each entry, as the ANA Group Descriptors of Base 2.4
-    Figure 230 at "n:16" and "m:n+1" """
+    """
+    The size of one entry, in the unit of the field. None where the data gives the size
+    of each entry, for example the ANA Group Descriptors of Base 2.4 Figure 230 at
+    "n:16" and "m:n+1".
+    """
     lower: Optional[int] = None
-    """The offset of the first entry, which is where the array starts; None
-    where the data gives it"""
+    """
+    The offset of the first entry, where the array starts. None where the data gives it.
+    """
     maximum: Optional[int] = None
     """The most entries the array holds, where it has no count and a
     paragraph referring to its figure states it, as "up to 511 Zone
@@ -366,13 +383,17 @@ class Bits(BitsCommon):
     """The array that the field belongs to, where the figure lists numbered
     entries and leaves out the rows between them"""
     part: Optional[Part] = None
-    """The value the field holds part of, where a figure splits a value over
-    two fields"""
+    """
+    The value that the field holds a part of, where a figure splits a value over two
+    fields
+    """
     group: Optional[Array] = None
-    """The array of groups of fields that the field's group is an entry of,
-    where a column names each group, as "Source Range 0" to "Source Range
-    127" of NVM 1.3 Figure 40: its name, the index of the field's group,
-    and the size and offset of a group"""
+    """
+    The array of groups of fields whose entry is the group of this field, where a column
+    names each group, for example "Source Range 0" to "Source Range 127" of NVM 1.3
+    Figure 40. It holds the name of the array, the index of the group of this field, and
+    the size and the offset of a group.
+    """
     structure: Optional[Source] = None
     """The source of the structure that lays out the field. The description of
     the field refers to the figure, for example "defined in Figure 125", or,
@@ -399,14 +420,16 @@ class Bits(BitsCommon):
 
 
 class Comparison(Model):
-    """A condition on the value of a field, as "CETYPE is non-zero" """
+    """
+    A condition on the value of a field, for example "CETYPE is non-zero"
+    """
 
     field: str
-    """The acronym of the field, as 'CETYPE'"""
+    """The acronym of the field, for example 'CETYPE'"""
     comparison: Literal["==", "!="]
-    """How the field's value compares with 'value'"""
+    """How the value of the field compares with 'value'"""
     value: int
-    """The value compared with"""
+    """The value that the field is compared with"""
 
 
 REGEX_COMPARISON = re.compile(
@@ -416,8 +439,10 @@ REGEX_COMPARISON = re.compile(
 
 
 def comparison_of(condition: Optional[str]) -> Optional[Comparison]:
-    """The comparison 'condition' states, as CETYPE == 0 of "CETYPE is
-    cleared to 0h", or None of a condition of another form"""
+    """
+    The comparison that 'condition' states, for example CETYPE == 0 for "CETYPE is
+    cleared to 0h". Returns None for a condition of another form.
+    """
 
     match = REGEX_COMPARISON.match(condition or "")
     if not match:
@@ -440,16 +465,20 @@ class Dwords(Model):
     """Where the figure lays the dwords out only under a condition, the
     condition, as 'CETYPE is cleared to 0h'"""
     selected_when: Optional[Comparison] = None
-    """The condition as a comparison of a field with a value, where it is of
-    the form "X is cleared to 0h", "X is set to 1h" or "X is non-zero" """
+    """
+    The condition as a comparison of a field with a value, where the condition has the
+    form "X is cleared to 0h", "X is set to 1h" or "X is non-zero"
+    """
     qualifier: Optional[str] = None
     """What the caption says the dwords are of, as 'NVM Command Set Specific
     Fields'"""
     refines: Optional[str] = None
-    """The acronym of the field of the command's own dwords that these dwords
-    lay out the bits of, where all their fields lie within that one field:
-    LSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4
-    Figure 301, and CNSSID of Identify Command Dword 11"""
+    """
+    The acronym of the field of the dwords of the command whose bits these dwords lay
+    out, where all the fields of these dwords lie within that one field. Examples are
+    LSP of Get Log Page Command Dword 10, for the FDP Events of Base 2.4 Figure 301, and
+    CNSSID of Identify Command Dword 11.
+    """
     fields: List[Bits] = Field(default_factory=list)
     """The fields of the dwords, the bits counted across them"""
     source: Source
@@ -519,8 +548,10 @@ class Command(Model):
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
     footnotes: Dict[str, List[int]] = Field(default_factory=dict)
-    """The numbers of the footnotes marked on its name and columns, by the
-    key of the column, where any is marked"""
+    """
+    The numbers of the footnotes marked on the name and the other columns of the row of
+    the command, by the key of the column, where a footnote is marked
+    """
     source: Source
     """The opcode table listing the command"""
 
@@ -534,16 +565,19 @@ class CommandSet(Model):
     name: str
     """The name of the command set"""
     kind: CommandSetKind = "other"
-    """What the command set is: "io", an I/O command set, which an I/O Command
-    Set specification defines; "common_io", the I/O commands the Base
-    specification defines for use in all I/O command sets, which are no
-    command set and have no Command Set Identifier; "admin"; and
-    "management_interface", a command set of the Management Interface
-    specification"""
+    """
+    The kind of the command set. "io" is an I/O command set, which an I/O Command Set
+    specification defines. "common_io" is the I/O commands that the Base specification
+    defines for use in all I/O command sets; these commands are not a command set and
+    have no Command Set Identifier. "admin" is the Admin command set, and
+    "management_interface" is a command set of the Management Interface specification.
+    """
     identifier: Optional[int] = None
-    """The Command Set Identifier (CSI) of an I/O command set, as Base 2.4
-    Figure 337 gives it, 00h for NVM; None for the other kinds, and where
-    the table of identifiers is not among the documents"""
+    """
+    The Command Set Identifier (CSI) of an I/O command set, as Base 2.4 Figure 337 gives
+    it, for example 00h for NVM. None for the other kinds, and where the table of
+    identifiers is not among the documents.
+    """
     commands: Dict[str, Command] = Field(default_factory=dict)
     """Its commands, by their names as keys, as 'zone_append'"""
 
@@ -572,12 +606,16 @@ class Structure(Model):
     source: Source
     """The figure laying it out"""
     extends: Optional[Source] = None
-    """Of a layout of some of the bytes of another structure, the figure of
-    that structure: NVM 1.3 Figure 126, AWUN, AWUPF and ACWU, extends
-    Identify Controller, Base 2.4 Figure 338"""
+    """
+    The figure of the structure of which this structure lays out some of the bytes. For
+    example, NVM 1.3 Figure 126, with AWUN, AWUPF and ACWU, extends Identify Controller,
+    Base 2.4 Figure 338.
+    """
     extends_field: Optional[str] = None
-    """The acronym of the field of that structure this one lays out, where
-    the text names it: CPSR, of MI 2.2 Figure 40, for Figure 41"""
+    """
+    The acronym of the field of the extended structure that this structure lays out,
+    where the text names it, for example CPSR of MI 2.2 Figure 40 for Figure 41
+    """
 
 
 TypedKind = Literal[
@@ -650,8 +688,12 @@ class Entry(Model):
     name: Optional[str] = None
     """The name the row gives the value"""
     acronym: Optional[str] = None
-    """The acronym the row writes before the name, as "CAP" of "CAP:
-    Controller Capabilities" in Base 2.4 Figure 33"""
+    """
+    The acronym of the value. The row can write it before the name, for example "CAP" of
+    "CAP: Controller Capabilities" in Base 2.4 Figure 33, or as the initials after the
+    name, for example "GAZ" of "Get Active ZoneGroup (GAZ) operation". The table can
+    also give it in an Acronym column.
+    """
     description: str = ""
     """The text of the row's description"""
     columns: Dict[str, str] = Field(default_factory=dict)
@@ -662,8 +704,10 @@ class Entry(Model):
     """The numbers of the footnotes marked on the row: on the value, the
     name, the description and the other columns, in that order"""
     marked: Dict[str, List[int]] = Field(default_factory=dict)
-    """The numbers of the footnotes marked on each column, by its key, the
-    name's as "name", where any is marked"""
+    """
+    The numbers of the footnotes marked on each column, by the key of the column, with
+    the key "name" for the name, where a footnote is marked
+    """
     refers_to: Optional[ValueLink] = None
     """The value of another field that the description names, where the entry
     has no name of its own"""
@@ -711,16 +755,20 @@ class Feature(Model):
     """The feature identifier table's other columns of it, by their keys, as
     its requirements"""
     footnotes: Dict[str, List[int]] = Field(default_factory=dict)
-    """The numbers of the footnotes marked on its name and columns, by the
-    key of the column, where any is marked"""
+    """
+    The numbers of the footnotes marked on the name and the other columns of the row of
+    the feature, by the key of the column, where a footnote is marked
+    """
     sqe: List[Dwords] = Field(default_factory=list)
     """The submission queue entry dwords described for it"""
     cqe: List[Dwords] = Field(default_factory=list)
     """The completion queue entry dwords described for it"""
     operations: List["Operation"] = Field(default_factory=list)
-    """What the feature does for the values of a field of its dwords, as the
-    Lockdown Persistence Personality of Configurable Device Personality,
-    selected by PERID 02h"""
+    """
+    What the feature does for each value of a field of its dwords, for example the
+    Lockdown Persistence Personality of Configurable Device Personality, selected by
+    PERID 02h
+    """
     source: Source
     """The feature identifier table listing it"""
 
@@ -733,14 +781,18 @@ class LogPage(Model):
     name: str
     """The name of the log page, as 'SMART / Health Information'"""
     aliases: List[str] = Field(default_factory=list)
-    """The other names the tables give it, as "Manufacturer Default
-    Configuration Status" of Base 2.4 Figure 31 for 24h, which Figure 209
-    names "Manufacturer Default Configuration" """
+    """
+    The other names that the tables give the log page, for example "Manufacturer Default
+    Configuration Status" of Base 2.4 Figure 31 for 24h, which Figure 209 names
+    "Manufacturer Default Configuration"
+    """
     columns: Dict[str, str] = Field(default_factory=dict)
     """The log page identifier table's other columns of it, by their keys"""
     footnotes: Dict[str, List[int]] = Field(default_factory=dict)
-    """The numbers of the footnotes marked on its name and columns, by the
-    key of the column, where any is marked"""
+    """
+    The numbers of the footnotes marked on the name and the other columns of the row of
+    the log page, by the key of the column, where a footnote is marked
+    """
     structure: Optional[Structure] = None
     """The structure laying it out, where a figure is known for it"""
     source: Source
@@ -770,10 +822,12 @@ class Erratum(Model):
     """
 
     code: ErratumCode
-    """What kind it is: "value", "acronym", "range" (text that is no range),
-    "range-outside", "range-reversed", "opcode", "gap" (of a command's
-    dwords), 'layout-gap' (of a structure), "reference" (to the section of
-    another value) or "caption" (of another figure)"""
+    """
+    The kind of erratum: "value", "acronym", "range" (text that is not a range),
+    "range-outside", "range-reversed", "opcode", "gap" (in the dwords of a command),
+    "layout-gap" (in a structure), "reference" (to the section of another value) or
+    "caption" (of another figure)
+    """
     message: str
     """What is wrong, said for a person"""
     found: str = ""
@@ -905,15 +959,14 @@ REGEX_MECHANISM = re.compile(r"\s+(?:using|over)\s+an?\s+[\w-]+\s+Mechanism$")
 
 def command_set_name(name: str) -> str:
     """
-    The name of a command set, as its opcode table's caption gives it, without
-    "Command Set" and "I/O" after it and without the mechanism it is used
-    over: "NVM Command Set" is "NVM", and "PCIe Commands using an
-    Out-of-Band Mechanism" of MI 2.2 Figure 151 is "PCIe Commands", the term
-    of MI 2.2 section 7, whose key differs from that of the PCIe transport.
-    The I/O commands of the Base specification, of a table captioned
-    "Opcodes for I/O Commands", are no command set but the commands of
-    every I/O command set, which Base 2.4 calls common I/O commands; their
-    name is "Common I/O".
+    The name of a command set as the caption of its opcode table gives it, without
+    "Command Set" or "I/O" after the name, and without the mechanism that the commands
+    are used over. "NVM Command Set" is "NVM". "PCIe Commands using an Out-of-Band
+    Mechanism" of MI 2.2 Figure 151 is "PCIe Commands", the term of MI 2.2 section 7,
+    whose key differs from the key of the PCIe transport. The table "Opcodes for I/O
+    Commands" of the Base specification lists the I/O commands of every I/O command set,
+    which Base 2.4 calls common I/O commands. These commands are not a command set, and
+    their name is "Common I/O".
     """
 
     name = REGEX_MECHANISM.sub("", name.strip())
@@ -924,7 +977,7 @@ def command_set_name(name: str) -> str:
 
 
 def command_set_kind(name: str, document: str) -> CommandSetKind:
-    """The kind of the command set of 'name' that 'document' lists"""
+    """The kind of the command set named 'name' that 'document' lists"""
 
     if name == "Common I/O":
         return "common_io"
@@ -938,8 +991,10 @@ def command_set_kind(name: str, document: str) -> CommandSetKind:
 
 
 def alias(name: str) -> str:
-    """The key of a name: lower case, words joined by underscores, and "I/O"
-    one word; see 'key_of'"""
+    """
+    The key of a name: lower case, words joined by underscores, and "I/O" as one word;
+    see key_of()
+    """
 
     return key_of(name)
 
@@ -950,9 +1005,11 @@ REGEX_HEX = re.compile(r"^(?P<hex>[0-9A-Fa-f]+)h$")
 def byte_order_of(
     columns: Dict[str, str], description: str = ""
 ) -> Optional[Literal["big-endian", "little-endian"]]:
-    """The byte order the columns "msb_byte" and "lsb_byte" of a byte diagram
-    give a field, else the one 'description' states, as "This field is big
-    endian"; None where neither gives one"""
+    """
+    The byte order of a field that the columns "msb_byte" and "lsb_byte" of a byte
+    diagram give, and otherwise the byte order that 'description' states, for example
+    "This field is big endian". Returns None where neither gives one.
+    """
 
     msb, lsb = columns.get("msb_byte", ""), columns.get("lsb_byte", "")
     if msb.isdigit() and lsb.isdigit() and int(msb) != int(lsb):
@@ -983,7 +1040,7 @@ ENCODINGS: List[Tuple[Literal["ascii", "utf-8", "uuid"], re.Pattern]] = [
 
 
 def encoding_of(description: str) -> Optional[Literal["ascii", "utf-8", "uuid"]]:
-    """The encoding 'description' says a field's bytes are in, or None"""
+    """The encoding of the bytes of a field that 'description' states, or None"""
 
     text = " ".join(description.split())
     for encoding, pattern in ENCODINGS:
@@ -1030,8 +1087,8 @@ def bits_of(field: LayoutField, unit: Unit) -> ReadBits:
         section=field.section,
         elided=field.elided,
         columns=columns,
-        # A field of one byte has no byte order, whatever the description
-        # says of the bytes around it
+        # A field of one byte has no byte order, even where the description states one
+        # for the bytes around it.
         byte_order=(
             None
             if unit == "bytes"
@@ -1226,9 +1283,9 @@ def checked(
             try:
                 rng = senfd.ranges.parse(field.unit, field.range, width)
             except senfd.ranges.RangeError as exc:
-                # A parenthesis closed that was never opened, as
-                # "(NUMENT-1)*32+63)" of Base 2.4 Figure 361, is an erratum,
-                # and the range is read without it
+                # A ")" that closes no "(" is an erratum, for example in
+                # "(NUMENT-1)*32+63)" of Base 2.4 Figure 361, and the range is read
+                # without it.
                 closed = unopened(field.range)
                 if closed == field.range:
                     raise
@@ -1314,8 +1371,8 @@ def checked(
     for field_made in kept:
         for case_made in field_made.cases:
             decide(case_made, kept)
-    # A row left out, as the last entry of a list whose range is reversed,
-    # may have been the end of a run of two
+    # A row that the figure leaves out, for example the last entry of a list whose range
+    # is reversed, may have ended a run of two.
     whole = len(kept) == len(fields)
     for disagreeing in arrays_of(kept, pairs=whole):
         errata.append(Erratum(code="acronym", message=disagreeing, source=source))
@@ -1367,10 +1424,11 @@ def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
         (name[: match.start()], int(match[0]), name[match.end() :])
         for match in re.finditer(r"\d+", name)
     ]
-    # A hexadecimal index after the decimal ones, so that "10" is ten, and so
-    # that the last split of "Format 2h Enable" leaves no "h": one ending in
-    # "h", as "C1h" of "Performance Attribute C1h Identifier", or of two
-    # digits, one a letter, as "FF" of "Vendor Specific Protocol FF"
+    # The hexadecimal indexes come after the decimal ones, so that "10" is ten, and so
+    # that the last split of "Format 2h Enable" leaves no "h". A hexadecimal index ends
+    # in "h", for example "C1h" of "Performance Attribute C1h Identifier", or it has two
+    # digits of which one is a letter, for example "FF" of "Vendor Specific Protocol
+    # FF".
     hexadecimal = [
         (name[: match.start()], int(match[1] or match[2], 16), name[match.end() :])
         for match in re.finditer(
@@ -1381,9 +1439,11 @@ def numbered(text: Optional[str]) -> List[Tuple[str, int, str]]:
 
 
 def hexadecimal_acronym(spans: List[Tuple[int, Bits]]) -> Optional[str]:
-    """The acronym of entries numbered by name, where each acronym holds its
-    index in two hexadecimal digits in the same place, as VSPF0 and VSPFF;
-    otherwise None, as for PAC1HI and PACFFHI, entries C1h and FFh"""
+    """
+    The acronym of entries numbered by name, where every acronym holds the index of its
+    entry as two hexadecimal digits at the same place, for example VSPF0 and VSPFF.
+    Returns None otherwise, for example for PAC1HI and PACFFHI, the entries C1h and FFh.
+    """
 
     parts = set()
     for index, field in spans:
@@ -1397,15 +1457,14 @@ def hexadecimal_acronym(spans: List[Tuple[int, Bits]]) -> Optional[str]:
 
 def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
     """
-    Set 'array' on each of 'fields' that is an entry of an array. The entries
-    are adjacent fields whose acronyms, or names, differ only by an index,
-    decimal or hexadecimal, with rows left out between two of them. Each
-    entry must have the same width and lie at the offset that its index
-    gives. The last entry may be given by a formula, for example "Entry
-    NUMENT-1"; the array then has no count. Where the acronyms give other
-    indexes than the names, as VSP15, VSP1 and VSP0 of "Vendor Specific
-    Protocol FF", "F1" and "F0" of Base 2.4 Figure 516, the names give them,
-    and the result says so, for each such run, for a candidate erratum.
+    Set 'array' on each of 'fields' that is an entry of an array. The entries are
+    adjacent fields whose acronyms, or names, differ only by an index, decimal or
+    hexadecimal, and the figure can leave out rows between two of them. Each entry has
+    the same width and lies at the offset that its index gives. A formula can give the
+    last entry, for example "Entry NUMENT-1", and the array then has no count. Where the
+    acronyms give other indexes than the names, the names give the indexes, for example
+    VSP15, VSP1 and VSP0 of "Vendor Specific Protocol FF", "F1" and "F0" of Base 2.4
+    Figure 516. Returns a message for each such run, for a candidate erratum.
     """
 
     def entry(field: Bits, of: str, before: str, after: str) -> Optional[int]:
@@ -1418,8 +1477,10 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
         return None
 
     def run_of(at: int, of: str):
-        """The run of entries around the elided field at 'at', by 'of', as
-        (start, indexes, before, after), or None"""
+        """
+        The run of entries around the left-out field at 'at', compared by the attribute
+        'of', as the tuple (start, indexes, before, after), or None
+        """
 
         last, above = fields[at], fields[at - 1]
         text = getattr(last, of) or ""
@@ -1446,10 +1507,10 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
         spans = [(i, f) for i, f in zip(indexes, run) if i is not None]
         first, lowest = min(spans, key=lambda span: span[0])
         stride = lowest.width or 0
-        # A last entry whose formula gives the width gives the stride, where
-        # the entries lie at it, as Base 2.4 Figure 384 whose Descriptors 1
-        # and 2 are 520 and 22 bytes at the offsets of 260; misnumbered()
-        # reports them
+        # Where the formula of the last entry gives a width and the entries lie at
+        # offsets of that width, the width is the stride. For example, Descriptors 1 and
+        # 2 of Base 2.4 Figure 384 are 520 and 22 bytes at offsets 260 bytes apart.
+        # misnumbered() reports them.
         if (
             last.kind == "formula"
             and last.width
@@ -1459,9 +1520,9 @@ def arrays_of(fields: List[Bits], pairs: bool = True) -> List[str]:
             )
         ):
             return start, indexes, before, after
-        # One entry of another width at its place, as the 33 bytes of Host
-        # Fabric Interface Descriptor 2 of Boot 1.4 Figure 11, is still an
-        # entry; misnumbered() reports it as a candidate erratum
+        # One entry of another width at its place, for example Host Fabric Interface
+        # Descriptor 2 of Boot 1.4 Figure 11 with 33 bytes, is still an entry.
+        # misnumbered() reports it as a candidate erratum.
         if (
             not stride
             or any(
@@ -1530,15 +1591,16 @@ def given_run(
     fields: List[Bits], at: int, step: int, of: str
 ) -> Tuple[List[int], List[Optional[int]], str, str]:
     """
-    The entries from 'at', every 'step' fields, whose 'of' differs only by
-    the next index, and whose ranges the data gives, except the first's: the
-    positions, the indexes, and the text before and after the index. A last
-    entry numbered by a name, as "Entry NUMREC-1", has the index None.
+    The entries from 'at', at every 'step' fields, whose attribute 'of' differs only by
+    the next index, and whose ranges the data gives, except the range of the first
+    entry. Returns the positions, the indexes, and the text before and after the index.
+    A last entry numbered by a name, for example "Entry NUMREC-1", has the index None.
     """
 
     best: Tuple[List[int], List[Optional[int]], str, str] = ([at], [], "", "")
     for before, number, after in numbered(getattr(fields[at], of)):
-        # An acronym read as a hexadecimal index alone, as ED, names nothing
+        # An acronym that is only a hexadecimal index, for example ED, does not name an
+        # entry.
         if not re.search(r"[A-Za-z]", before + after):
             continue
         positions: List[int] = [at]
@@ -1573,17 +1635,17 @@ def given_run(
 
 def variable_arrays(fields: List[Bits]) -> None:
     """
-    Set 'array' on the fields of each run of two or more numbered by the next
-    index whose ranges the data gives, by a formula or a text, as ANA Group
-    Descriptor 0 at "n:16" and ANA Group Descriptor 1 at "m:n+1" of Base 2.4
-    Figure 230, and Media Unit Status Descriptor 0 and 1 at "NOTE 1" of
-    Figure 263: an array without a count, and without a stride unless the
-    entries are of one width. A last entry numbered by a name, as "ANA Group
-    Descriptor N" after them, or "Entry N" after "Entry 0" of Figure 322, is
-    an entry too, without an index. Two such runs whose entries alternate,
-    as Zone Descriptor 0 and Zone Descriptor Extension 0 of ZNS 1.4 Figure
-    37, are two arrays, without a stride. A range "n/a" is none the data
-    gives, as of CDW14 and CDW15 of MI 2.2 Figure 49.
+    Set 'array' on the fields of each run of two or more entries that are numbered by
+    consecutive indexes and whose ranges the data gives, by a formula or by a text.
+    Examples are ANA Group Descriptor 0 at "n:16" and ANA Group Descriptor 1 at "m:n+1"
+    of Base 2.4 Figure 230, and Media Unit Status Descriptor 0 and 1 at "NOTE 1" of
+    Figure 263. Such an array has no count, and it has a stride only where the entries
+    have one width. A last entry numbered by a name is an entry without an index, for
+    example "ANA Group Descriptor N" after the others, or "Entry N" after "Entry 0" of
+    Figure 322. Where the entries of two such runs alternate, for example Zone
+    Descriptor 0 and Zone Descriptor Extension 0 of ZNS 1.4 Figure 37, the runs are two
+    arrays without a stride. A range "n/a", for example of CDW14 and CDW15 of MI 2.2
+    Figure 49, is not a range that the data gives.
     """
 
     def usable(run: List[Bits]) -> bool:
@@ -1626,9 +1688,9 @@ def variable_arrays(fields: List[Bits]) -> None:
             positions, indexes, before, after = given_run(fields, at, 1, of)
         run = [fields[i] for i in positions]
         if len(run) >= 2 and usable(run):
-            # Entries of one width at offsets the data gives, as the two bytes
-            # of each Channel Identifier of Figure 264 from CIO, have that
-            # stride
+            # Entries of one width at offsets that the data gives have that width as
+            # their stride, for example the two bytes of each Channel Identifier of
+            # Figure 264 from CIO.
             widths = {f.width for f in run}
             stride = widths.pop() if len(widths) == 1 else None
             assign(positions, indexes, before, after, of, stride)
@@ -1653,12 +1715,11 @@ def variable_arrays(fields: List[Bits]) -> None:
 
 def grouped_arrays(fields: List[Bits]) -> None:
     """
-    Set 'group' on the fields of a layout whose rows a column groups by a
-    name and an index, "Source Range 0", "Source Range 1" and "Source Range
-    127" of NVM 1.3 Figure 40, a blank cell going on with the group above:
-    where the groups lie each at the offset that its index gives, by the
-    size of the first, they are entries of an array of as many as the last
-    index says.
+    Set 'group' on the fields of a layout whose rows a column groups by a name and an
+    index, for example "Source Range 0", "Source Range 1" and "Source Range 127" of NVM
+    1.3 Figure 40. A blank cell continues the group above it. Where each group lies at
+    the offset that its index gives, by the size of the first group, the groups are the
+    entries of an array from the first index to the last.
     """
 
     for column in {c for f in fields for c in f.columns}:
@@ -1700,7 +1761,7 @@ def grouped_arrays(fields: List[Bits]) -> None:
 
 
 def unopened(text: str) -> str:
-    """'text' without each ')' that closes no '(' before it"""
+    """'text' without each ')' that has no '(' before it to close"""
 
     kept, depth = [], 0
     for char in text:
@@ -1712,9 +1773,11 @@ def unopened(text: str) -> str:
 
 
 def run_at(fields: List[Bits], at: int) -> Tuple[int, List[int], str]:
-    """The run of fields from 'at' whose acronyms, or else names, differ only
-    by an index and that are as wide as the first, as TSEN1 to TSEN8: the
-    index after the run, the indexes, and the acronym or name without them"""
+    """
+    The run of fields from 'at' whose acronyms, or otherwise names, differ only by an
+    index, and that are as wide as the first field, for example TSEN1 to TSEN8. Returns
+    the position after the run, the indexes, and the acronym or name without the index.
+    """
 
     first = fields[at]
     longest: Tuple[int, List[int], str] = (at + 1, [], "")
@@ -1741,13 +1804,13 @@ def run_at(fields: List[Bits], at: int) -> Tuple[int, List[int], str]:
 
 def listed_arrays(fields: List[Bits], pairs: bool = True) -> None:
     """
-    Set 'array' on the fields of each run of two or more that a figure
-    lists in full, each numbered by the next index, as wide as the others
-    and at the offset its index gives: TSEN1 to TSEN8 of the SMART / Health
-    Information log page, an array of 8, and TMT1TC and TMT2TC, an array of
-    2. Without 'pairs', where a row of the figure was left out, a run of two
-    is left as it is: Exported Controller Association Descriptor 0 and 1 of
-    Base 2.4 Figure 404 begin a list whose last entry has a reversed range.
+    Set 'array' on the fields of each run of two or more that a figure lists in full,
+    where each field is numbered by the next index, is as wide as the others, and lies
+    at the offset that its index gives. Examples are TSEN1 to TSEN8 of the SMART /
+    Health Information log page, an array of 8, and TMT1TC and TMT2TC, an array of 2.
+    Where the figure leaves out a row, 'pairs' is false, and a run of two is not an
+    array: Exported Controller Association Descriptor 0 and 1 of Base 2.4 Figure 404
+    begin a list whose last entry has a reversed range.
     """
 
     at = 0
@@ -1817,9 +1880,11 @@ def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
 
 
 def counted_by(entry: Bits, fields: List[Bits]) -> set:
-    """The maxima that the field counting the entries of the array of
-    'entry' states, as "up to 127 entries" of NUMENT in Base 2.4 Figure
-    361, whose last entry is "SC Entry NUMENT-1" """
+    """
+    The maxima that the field counting the entries of the array of 'entry' states, for
+    example "up to 127 entries" of NUMENT in Base 2.4 Figure 361, whose last entry is
+    "SC Entry NUMENT-1"
+    """
 
     array = entry.array
     if array is None:
@@ -1857,11 +1922,12 @@ WHOLE = ("data_structure", "log_page", "register")
 
 def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     """
-    The errata of a layout whose numbered fields differ in width: of "Host
-    Fabric Interface Descriptor 1", "2" and "n" of Boot 1.4 Figure 11, 32,
-    33 and 32 bytes, the one of another width than the others; and of a
-    layout of more than 256 bytes and one byte past a power of two, as the
-    4097 bytes of NVM 1.3 Figure 134, whose last field is "4096:768
+    The candidate errata of a layout whose numbered fields differ in width, and of a
+    layout of more than 256 bytes whose size is one byte more than a power of two. Boot
+    1.4 Figure 11 gives "Host Fabric Interface Descriptor 1", "2" and "n" 32, 33 and 32
+    bytes, and the descriptor of another width than the others is an erratum. Where the
+    formula of the last field gives a width, the fields of another width than that one
+    are errata. NVM 1.3 Figure 134 is 4097 bytes, and its last field is "4096:768
     Reserved".
     """
 
@@ -1874,9 +1940,9 @@ def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     for run in runs.values():
         widths = [f.width for f in run]
         common = max(set(widths), key=widths.count)
-        # The last entry's formula gives the width of every entry, as 260
-        # bytes of "Exported NVM Subsystem Descriptor N" of Base 2.4 Figure
-        # 384, whose Descriptors 1 and 2 are 520 and 22
+        # The formula of the last entry gives the width of every entry, for example 260
+        # bytes for "Exported NVM Subsystem Descriptor N" of Base 2.4 Figure 384, whose
+        # Descriptors 1 and 2 are 520 and 22 bytes.
         given = {f.width for f in run if f.kind == "formula"}
         others = "the other fields numbered so are"
         if len(given) == 1 and len(run) >= 3:
@@ -1912,9 +1978,11 @@ def misnumbered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
 
 
 def shared_acronyms(fields: List[Bits], source: Source) -> List[Erratum]:
-    """The errata of a structure where one acronym names two fields of other
-    names, at any depth, as AHATSDPS, both "... Protocol Status" and "...
-    Protocol Support" of Base 2.4 Figure 516"""
+    """
+    The candidate errata of a structure where one acronym, at any depth, names two
+    fields of different names, for example AHATSDPS of Base 2.4 Figure 516 for both "...
+    Protocol Status" and "... Protocol Support"
+    """
 
     names: Dict[str, List[str]] = {}
 
@@ -2131,9 +2199,9 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         dwords = POINTERS[subject.kind]
 
     if dwords and (subject.name or subject.qualifier):
-        # A caption can give the acronym of the command after its name; one
-        # naming a field and no command, as "Command Dword 11 - CNS Specific
-        # Identifier", is keyed by the field, for link_titled_operations()
+        # A caption can give the acronym of the command after its name. A caption that
+        # names a field and no command, for example "Command Dword 11 - CNS Specific
+        # Identifier", is keyed by the field, for link_titled_operations().
         name = re.sub(r"\s*\([A-Z0-9]+\)$", "", subject.name or "")
         key = ("cqe:" if subject.kind == "completion_dword" else "") + (
             alias(name) if name else QUALIFIED + alias(subject.qualifier or "")
@@ -2156,21 +2224,21 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         return
 
     read = fields_of(figure.layout)
-    # A register of one row of no name, as "31:00 RO 0h Shall be cleared to
-    # zero" of CCPTR of PCIe 1.4 Figure 23, is that row: it is named as the
-    # register, so that the register has its width
+    # A register with one row and no name, for example "31:00 RO 0h Shall be cleared to
+    # zero" of CCPTR of PCIe 1.4 Figure 23, is that row. The row is named after the
+    # register, so that the register has its width.
     if subject.kind == "register" and len(read) == 1 and not read[0].name:
         acronym, _, name = (subject.name or "").partition(" - ")
         read[0].name, read[0].acronym = (name, acronym) if name else (acronym, None)
     fields, errata, unnamed = checked(read, None, source)
     maxima_of(fields, figure.mentions)
     kind = subject.kind
-    # A table whose rows name the structure or the CNS value each field is of,
-    # as NVM 1.3 Figure 188, cites fields of other structures
+    # A table whose rows name the structure or the CNS value of each field, for example
+    # NVM 1.3 Figure 188, cites fields of other structures.
     if kind == "other" and {"data_structure", "cns_value"} & set(figure.columns):
         kind = "cited_fields"
-    # A layout of another kind that starts at byte 0 lays out the whole of
-    # something too, as the entries of SLM 1.3 Figure 13
+    # A layout of another kind that starts at byte 0 also lays out a whole structure,
+    # for example the entries of SLM 1.3 Figure 13.
     whole = kind in WHOLE or (kind == "other" and starts_at_zero(fields))
     if whole and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
@@ -2197,7 +2265,9 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
 
 
 def first_byte(structure: Structure) -> Optional[int]:
-    """The lowest byte a field of 'structure' lays out, None for bits"""
+    """
+    The lowest byte that a field of 'structure' lays out, or None for a layout of bits
+    """
 
     if structure.unit != "bytes":
         return None
@@ -2209,11 +2279,12 @@ def extended_by_text(
     structure: Structure, mentions: List[str], before: List[Structure]
 ) -> Optional[Tuple[Source, Optional[str]]]:
     """
-    The structure among 'before', of the same document, that 'structure', a
-    layout of bytes from other than byte 0, extends, as its text says, and
-    the field it lays out: "The format of the CPSR field in the Control
-    Primitive Success Response is shown in Figure 41", for the one field
-    CPSR of a structure from byte 0 holding Figure 41's bytes.
+    The structure among 'before', of the same document, that 'structure' extends where
+    the text says so, and the field of that structure that 'structure' lays out.
+    'structure' is a layout of bytes that does not start at byte 0. For example, "The
+    format of the CPSR field in the Control Primitive Success Response is shown in
+    Figure 41" gives the field CPSR of the structure that starts at byte 0 and holds the
+    bytes of Figure 41.
     """
 
     lowest = first_byte(structure)
@@ -2342,7 +2413,10 @@ def kinds_of(column: str, values: "Values") -> Optional[set]:
 
 
 def column_title(column: str) -> str:
-    """A column by its key as an author reads it, as 'I/O' of 'io'"""
+    """
+    The title of a column from its key, as a document writes it, for example "I/O" for
+    "io"
+    """
 
     return {"io": "I/O", "om": "O/M"}.get(column, column.replace("_", " "))
 
@@ -2474,8 +2548,8 @@ def entry_of(
         and entry.get(named or "")
     ):
         name_key = named
-    # Footnote markers, of the value, the name, the description and the other
-    # columns, in that order, go to the footnotes of the entry
+    # The footnote markers of the value, the name, the description and the other
+    # columns, in that order, are the footnotes of the entry.
     marked: Dict[str, List[int]] = {}
 
     def plain(column: str, within: bool = True, mark: str = "") -> str:
@@ -2562,9 +2636,11 @@ def abbreviates(short: List[str], long: List[str]) -> bool:
 
 
 def marked_of(entry: Entry) -> Dict[str, List[int]]:
-    """The footnotes marked on the name and the other columns of 'entry', by
-    the key of the column, the name's as "name"; an entry with no name is
-    named by its description"""
+    """
+    The footnotes marked on the name and the other columns of 'entry', by the key of the
+    column, with the key "name" for the name. An entry without a name has the markers of
+    its description under "name".
+    """
 
     return {
         "name" if k == "description" and not entry.name else k: v
@@ -2710,17 +2786,19 @@ def log_page_key(name: str) -> str:
 
 def link_log_pages(document: SpecDocument) -> None:
     """
-    The log pages of the log page identifier tables, one by identifier, with
-    the structure laying out each. A log page is named by the first table of
-    log page identifiers that lists it, as Base 2.4 Figure 209, before the
-    tables of requirements, which may list it once by scope, as "SMART /
-    Health Information (Controller scope)" and "(Namespace scope)" of Figure
-    31; the columns of the later tables, as the requirements, are added. Its
-    structure is the figure in the section its row cites that is named as a
-    table names the log page, else the first figure of a log page, else of a
-    data structure there, as Figure 270, "Feature Identifiers Effects", for
-    12h. Where the row cites no section, it is the structure named as the
-    log page.
+    The log pages of the tables of log page identifiers, one for each identifier, each
+    with the structure that lays it out. The first table of log page identifiers that
+    lists a log page gives its name, for example Base 2.4 Figure 209. The tables of
+    requirements come after it, and they can list a log page once for each scope, for
+    example "SMART / Health Information (Controller scope)" and "(Namespace scope)" of
+    Figure 31. The columns of the later tables, such as the requirements, are added to
+    the log page.
+
+    The structure of a log page is the figure in the section that its row cites whose
+    name is a name that a table gives the log page. Otherwise it is the first figure of
+    a log page in that section, and otherwise the first figure of a data structure
+    there, for example Figure 270, "Feature Identifiers Effects", for 12h. Where the row
+    cites no section, the structure is the one with the name of the log page.
     """
 
     candidates = sorted(
@@ -2741,20 +2819,20 @@ def link_log_pages(document: SpecDocument) -> None:
         ]
 
     found = list(identified(document, "log_page_name", "log_page_identifiers"))
-    # The tables of identifiers first, each in the order of the documents
+    # The tables of identifiers come first, each in the order of the documents.
     kinds = {(v.source.document, v.source.figure_nr): v.kind for v in document.values}
     found.sort(
         key=lambda f: kinds.get((f[3].document, f[3].figure_nr))
         != "log_page_identifiers"
     )
-    # The names every table gives each identifier
+    # The names that each table gives each identifier
     names: Dict[int, List[str]] = {}
     for identifier, name, _, _ in found:
         names.setdefault(identifier, []).append(log_page_key(name))
     taken = {page.identifier: page for page in document.log_pages.values()}
     for identifier, name, entry, source in found:
         if identifier in taken:
-            # A later table adds its columns, as the requirements of Figure 31
+            # A later table adds its columns, for example the requirements of Figure 31.
             page = taken[identifier]
             if (
                 log_page_key(name) != log_page_key(page.name)
@@ -2768,8 +2846,9 @@ def link_log_pages(document: SpecDocument) -> None:
                     page.footnotes[key] = numbers
             continue
         wanted = log_page_key(name)
-        # Of several in the section, as Base 2.4 Figures 321 and 322, "Extended
-        # Discovery" and "Discovery", the one named as a table names the log page
+        # Of several figures in the section, for example "Extended Discovery" and
+        # "Discovery" of Base 2.4 Figures 321 and 322, the structure is the figure whose
+        # name is a name that a table gives the log page.
         section = cited(entry, source)
         named = [s for s in section if log_page_key(s.name) in names[identifier]]
         structure = (
@@ -2780,8 +2859,8 @@ def link_log_pages(document: SpecDocument) -> None:
                 None,
             )
         )
-        # Two log pages of one name and two scopes, as of the example, are
-        # each keyed by its name and scope
+        # Two log pages with one name and two scopes are each keyed by the name and the
+        # scope.
         key = wanted
         if key in document.log_pages:
             key = alias(re.sub(r"\s+Log Page$", "", name, flags=re.IGNORECASE))
@@ -2911,8 +2990,8 @@ def gaps(command: Command) -> List[Erratum]:
     return errata
 
 
-# Text that lists codes, as "10h and 11h" of LBARS in NVM 1.3 Figure 140,
-# refers to other values and names none
+# Text that lists codes, for example "10h and 11h" of LBARS in NVM 1.3 Figure 140,
+# refers to other values and names none.
 REGEX_CODES = re.compile(
     r"^(?:[0-9A-F]+[hb](?:(?:,|,? and|,? or| to) [0-9A-F]+[hb])*"
     r"|(?i:all|all other(?:s| values)?))$"
@@ -2920,13 +2999,15 @@ REGEX_CODES = re.compile(
 
 
 def value_names(entry: "Entry") -> List[str]:
-    """The name a value of a field goes by, as a list of none or one: its name,
-    else the text of the first column naming it, as "power_scope" does for
-    CPS of Base 2.4 Figure 36, without an aside of prose or a closing
-    period, as "Domain scope" of "Domain scope (i.e., the NVM subsystem
-    supports multiple domains ..."; the heading the value is under is no
-    name of it, nor a column listing other codes, as "1h" or "All other
-    values" of SGLDST in Base 2.4 Figure 118"""
+    """
+    The name of a value of a field, as a list of none or one name. The name is the name
+    of the entry, and otherwise the text of the first column that names the value, for
+    example the column "power_scope" for CPS of Base 2.4 Figure 36. An aside of prose
+    and a closing period are removed, for example from "Domain scope (i.e., the NVM
+    subsystem supports multiple domains ...". The heading that the value is under does
+    not name the value. Nor does a column that lists other codes, for example "1h" or
+    "All other values" of SGLDST in Base 2.4 Figure 118.
+    """
 
     if entry.name:
         return [entry.name]
@@ -2941,14 +3022,14 @@ def value_names(entry: "Entry") -> List[str]:
             continue
         if typed_of(text):
             continue
-        # After a column listing codes, only a cell holding a name and its
-        # definition gives a name, as "Address" of "Address: The Address
-        # field specifies ..." of SGLDST 0h in Base 2.4 Figure 118
+        # After a column that lists codes, only a cell that holds a name and its
+        # definition gives a name, for example "Address" of "Address: The Address field
+        # specifies ..." of SGLDST 0h in Base 2.4 Figure 118.
         if listing and ": " not in " ".join(text.split()):
             return []
-        # A sentence of what a field holds defines the value and names
-        # nothing, as "This field contains the Controller Identifier ..." of
-        # CTRLID 02h in MI 2.2 Figure 112
+        # A sentence that says what a field holds defines the value and does not name
+        # it, for example "This field contains the Controller Identifier ..." of CTRLID
+        # 02h in MI 2.2 Figure 112.
         if re.match(r"(?:This|The) ", name) and len(name.split()) > 6:
             return []
         return [name]
@@ -2956,12 +3037,14 @@ def value_names(entry: "Entry") -> List[str]:
 
 
 def is_aside(text: str, name: str) -> bool:
-    """Whether 'text', of a parenthesis after 'name', is an aside to it, not
-    part of it: prose, as "i.e., ..." or "no shutdown has been requested",
-    which has two lowercase words, or, after a name of words, a detail of
-    numbers and symbols, as "802.3 + TCP/IP" of NVMe/TCP in Boot 1.4 Figure
-    8; "Controller scope" and "Optional" qualify the name, and "(2 * (4 <<
-    CAP.DSTRD))" after "03h +" is part of a formula"""
+    """
+    Whether 'text', in a parenthesis after 'name', is an aside to the name rather than
+    part of it. Prose is an aside, for example "i.e., ..." or "no shutdown has been
+    requested", and text with two words in lower case is prose. After a name of words, a
+    detail of numbers and symbols is an aside, for example "802.3 + TCP/IP" after
+    NVMe/TCP in Boot 1.4 Figure 8. "Controller scope" and "Optional" qualify the name
+    and are part of it. "(2 * (4 << CAP.DSTRD))" after "03h +" is part of a formula.
+    """
 
     return (
         text.startswith(("i.e.,", "e.g.,", "refer to"))
@@ -2974,12 +3057,14 @@ def is_aside(text: str, name: str) -> bool:
 
 
 def name_of_cell(text: str) -> str:
-    """The name in the text of a cell naming a value: the text before a colon
-    of a name and its definition, as "Single Command Cancel" of ACODE 00b of
-    Base 2.4 Figure 647, without a parenthesis of prose after it, closed or
-    not, as "(i.e., ...", without a closing period, and without an acronym
-    after it, as "(CTemp)" of "Composite Temperature (CTemp)" of MI 2.2
-    Figure 199"""
+    """
+    The name in the text of a cell that names a value. Where the cell holds a name and
+    its definition, the name is the text before the colon, for example "Single Command
+    Cancel" of ACODE 00b of Base 2.4 Figure 647. A parenthesis of prose after the name
+    is removed, whether or not it is closed, for example "(i.e., ...". A closing period
+    is removed, and so is an acronym after the name, for example "(CTemp)" of "Composite
+    Temperature (CTemp)" of MI 2.2 Figure 199.
+    """
 
     text = " ".join(text.split())
     head, colon, _ = text.partition(": ")
@@ -3106,10 +3191,13 @@ QUALIFIED = "field:"
 
 
 def names_the_field(named: str, field: Bits) -> bool:
-    """Whether 'named', a caption's key of a field, as "cns_specific_identifiers",
-    names 'field', CNS Specific Identifier: by its name, in the plural too, or,
-    ending in "field", by the start of its name, as "log_specific_field" of
-    Base 2.4 Figure 301 names Log Specific Parameter"""
+    """
+    Whether 'named', the key that a caption gives a field, for example
+    "cns_specific_identifiers", names 'field', for example CNS Specific Identifier. The
+    key names the field by its name, also in the plural. A key that ends in "field"
+    names the field by the start of its name: "log_specific_field" of Base 2.4 Figure
+    301 names Log Specific Parameter.
+    """
 
     own = alias(field.name or "")
     stem = re.sub(r"_fields?$", "", named)
@@ -3126,32 +3214,32 @@ REGEX_TITLE_CODES = re.compile(
 
 def link_titled_operations(document: SpecDocument, used: set) -> None:
     """
-    The operations of a command, or a feature, whose dwords have a field
-    that the title of a section names with a code, as PERID of Configurable
-    Device Personality and "Lockdown Persistence Personality (Personality
-    Identifier 02h)", or whose values a column names so, as SEL and
-    "(Management Operation 05h)", as the Configuration Identifier of the
-    Configuration Get command of MI 2.2 and "SMBus/I2C Frequency
-    (Configuration Identifier 01h)": the dwords of no command in a section
-    below the command's, titled so, are those of the operation of that
-    name, selected by that code. A section below those of several commands
-    goes to the nearest.
+    The operations of a command or a feature that the titles of sections select by a
+    code of a field of its dwords. The title names the field, for example "Lockdown
+    Persistence Personality (Personality Identifier 02h)" names PERID of Configurable
+    Device Personality, and "SMBus/I2C Frequency (Configuration Identifier 01h)" names
+    the Configuration Identifier of Configuration Get of MI 2.2. A title can also name a
+    column that names the values of the field, for example "(Management Operation 05h)"
+    for SEL. The dwords of no command, in a section with such a title below the section
+    of the command, are the dwords of the operation of that name, selected by that code.
+    A section below the sections of several commands belongs to the nearest command.
 
-    Dwords whose caption names a field of a command rather than the command,
-    as "Command Dword 11 - CNS Specific Identifier" of Base 2.4 Figure 343
-    in "NVM Set List (CNS 04h)", are those of the operation of the command
-    with that field, CNSSID of Identify, in any document; a title giving
-    more codes, as "(CNS 0Ah, CSI 01h)", selects by each, and one giving a
-    code alone, as "Endurance Group List (19h)", by the field the other
-    titles of those dwords name.
+    Dwords whose caption names a field of a command rather than the command are the
+    dwords of an operation of the command with that field, in any document. For example,
+    "Command Dword 11 - CNS Specific Identifier" of Base 2.4 Figure 343, in "NVM Set
+    List (CNS 04h)", is an operation of Identify, whose field is CNSSID. A title that
+    gives more codes, for example "(CNS 0Ah, CSI 01h)", selects by each code. A title
+    that gives a code alone, for example "Endurance Group List (19h)", selects by the
+    field that the other titles of those dwords name.
     """
 
     def by(fields: List[Bits], label: str) -> Optional[Bits]:
         for field in fields:
             if alias(label) in (alias(field.name or ""), alias(field.acronym or "")):
                 return field
-        # A field whose values a column names by the label, as SEL of Manage
-        # Exported NVM Subsystem Receive by "Management Operation"
+        # A field whose values a column names, where the header of the column is the
+        # label, for example SEL of Manage Exported NVM Subsystem Receive and the column
+        # "Management Operation"
         for field in fields:
             if any(alias(label) in value.columns for value in field.values):
                 return field
@@ -3355,9 +3443,9 @@ REGEX_VALUE_OF = re.compile(
 )
 
 
-# A field holding bytes of another, as NQNID of Base 2.4 Figure 698, "bytes
-# 223:4 of the NVM Subsystem NVMe Qualified Name (SUBNQN) field (refer to
-# Figure 338 )"
+# A field that holds bytes of another field, for example NQNID of Base 2.4 Figure 698,
+# "bytes 223:4 of the NVM Subsystem NVMe Qualified Name (SUBNQN) field (refer to Figure
+# 338 )"
 REGEX_BYTES_OF = re.compile(
     r"contain bytes \d+:\d+ of the [A-Za-z0-9 -]+? \((?P<acronym>[A-Z0-9]+)\) "
     r"field \(refer to Figure (?P<figure>\d+) ?\)"
@@ -3365,7 +3453,7 @@ REGEX_BYTES_OF = re.compile(
 
 
 def all_fields(fields: List[Bits]) -> Iterator[Bits]:
-    """Each of 'fields' and, depth first, the fields within each"""
+    """Each field of 'fields' and, depth first, the fields within it"""
 
     for field in fields:
         yield field
@@ -3380,10 +3468,10 @@ REGEX_MENTIONED_ENCODING = re.compile(
 
 def encoded_by_mentions(fields: List[Bits], mentions: List[str]) -> None:
     """
-    Set the encoding of the fields without one whose name begins with a term
-    that a paragraph referring to their figure says is a string: "The
-    firmware revision is indicated as an ASCII string", of Base 2.4 Figure
-    215, makes FRS1 to FRS7, "Firmware Revision for Slot 1" and on, "ascii"
+    Set the encoding of each field that has none and whose name begins with a term that
+    a paragraph referring to its figure calls a string. For example, "The firmware
+    revision is indicated as an ASCII string", of Base 2.4 Figure 215, gives FRS1 to
+    FRS7, "Firmware Revision for Slot 1" and so on, the encoding "ascii".
     """
 
     for mention in mentions:
@@ -3400,8 +3488,10 @@ def encoded_by_mentions(fields: List[Bits], mentions: List[str]) -> None:
 
 
 def is_nqn(field: Bits) -> bool:
-    """Whether 'field' holds an NVMe Qualified Name: an acronym ending in NQN
-    and at least 64 bytes, as SUBNQN and AVENQN"""
+    """
+    Whether 'field' holds an NVMe Qualified Name: its acronym ends in NQN and it is at
+    least 64 bytes, for example SUBNQN and AVENQN
+    """
 
     return bool(
         field.acronym
@@ -3413,20 +3503,21 @@ def is_nqn(field: Bits) -> bool:
 
 def link_encodings(document: SpecDocument) -> None:
     """
-    Set the encoding and the byte order of a field that has none, and whose
-    description says it has the value of another field, to those of that
-    field: FR of NVM 1.3 Figure 189, "the value of the FR field in the
-    Identify Controller data structure", is "ascii", as FR of Base 2.4
-    Figure 338 is. A field named so in more than one structure of that name
-    gives its encoding where they all give the same. A field holding an NQN
-    takes the encoding of the NQN fields that state one, as SUBNQN of Base
-    2.4 Figure 338 does. A field takes the byte order or the encoding of
-    the fields of the same name, acronym and width in other documents that
-    state it, where they agree: NGUID and EUI64 of KV 1.4 Figure 42, which
-    refer to the Base specification, are big-endian as in NVM 1.3 Figure
-    123. A field holding bytes of another field takes its encoding, as
-    NQNID of Base 2.4 Figure 698 takes that of SUBNQN of Figure 338. Each
-    taken encoding and byte order says the figure it is from.
+    Set the encoding and the byte order of each field that has none from another field.
+    A field whose description says that it has the value of another field takes the
+    encoding and the byte order of that field. For example, FR of NVM 1.3 Figure 189,
+    "the value of the FR field in the Identify Controller data structure", is "ascii",
+    as FR of Base 2.4 Figure 338 is. Where more than one structure of that name has the
+    field, the encoding is taken where they all give the same.
+
+    A field that holds an NQN takes the encoding of the NQN fields that state one, as
+    SUBNQN of Base 2.4 Figure 338 does. A field takes the byte order or the encoding of
+    the fields of the same name, acronym and width in other documents that state it,
+    where those fields agree. For example, NGUID and EUI64 of KV 1.4 Figure 42, which
+    refer to the Base specification, are big-endian as in NVM 1.3 Figure 123. A field
+    that holds bytes of another field takes the encoding of that field, as NQNID of Base
+    2.4 Figure 698 takes the encoding of SUBNQN of Figure 338. Each taken encoding and
+    byte order names the figure it comes from.
     """
 
     for structure in document.structures:
@@ -3454,7 +3545,7 @@ def link_encodings(document: SpecDocument) -> None:
                 field.byte_order = orders.pop()
                 field.byte_order_from = next(s for o, s in others if o.byte_order)
 
-    # Bytes of a field are encoded as that field is
+    # A field that holds bytes of another field takes the encoding of that field.
     for structure in document.structures:
         for field in all_fields(structure.fields):
             match = REGEX_BYTES_OF.search(" ".join(field.description.split()))
@@ -3473,7 +3564,7 @@ def link_encodings(document: SpecDocument) -> None:
                 if other and other.encoding:
                     field.encoding, field.encoding_from = other.encoding, of.source
 
-    # A field holding an NQN is encoded as the NQN fields stating it are
+    # A field that holds an NQN takes the encoding of the NQN fields that state one.
     stated = [
         (field, structure.source)
         for structure in document.structures
@@ -3487,9 +3578,8 @@ def link_encodings(document: SpecDocument) -> None:
                 if is_nqn(field) and not field.encoding:
                     field.encoding, field.encoding_from = stating.encoding, source
 
-    # A field of the same name, acronym and width as a field of another
-    # document stating its byte order or encoding takes it, where all such
-    # fields agree
+    # A field takes the byte order or the encoding of the fields of the same name,
+    # acronym and width in another document that state it, where all such fields agree.
     alike: Dict[Tuple, List[Tuple[Bits, Source]]] = {}
     for structure in document.structures:
         for field in all_fields(structure.fields):
@@ -3529,11 +3619,11 @@ REGEX_BITS_PART = re.compile(r"^(?P<name>.+?)\s*\[(?P<upper>\d+):(?P<lower>\d+)\
 
 def link_parts(document: SpecDocument) -> None:
     """
-    Set 'part' on the fields of a value split over two of them: of a
-    command's dwords, of a feature's, of an operation's, or of a structure,
-    a field "X Lower" and one "X Upper", or "X Low" and "X High", as NUMDL
-    and NUMDU of Get Log Page; and fields "X[63:00]" and "X[127:64]", as
-    the Key of KV 1.4, by the bits of the value their names give.
+    Set 'part' on the two fields of a value split over two fields, in the dwords of a
+    command, a feature or an operation, or in a structure. The fields are "X Lower" and
+    "X Upper", or "X Low" and "X High", for example NUMDL and NUMDU of Get Log Page. The
+    fields can also be "X[63:00]" and "X[127:64]", for example the Key of KV 1.4, where
+    the names give the bits of the value.
     """
 
     def parts(fields: List[Bits]) -> None:
@@ -3590,11 +3680,11 @@ def link_parts(document: SpecDocument) -> None:
 
 def unarray_unlike(document: SpecDocument) -> None:
     """
-    Clear 'array' of the entries of an array that link different
-    structures, or that some link and others do not, since entries of an
-    array are alike: Dword 0 to Dword 3 of the Common Completion Queue
-    Entry Layout of Base 2.4 Figure 97, Dword 2 and 3 of which link Figures
-    98 and 99.
+    Clear 'array' of the entries of an array where the entries link different
+    structures, or where some entries link a structure and others do not, because the
+    entries of an array are alike. For example, Dword 0 to Dword 3 of the Common
+    Completion Queue Entry Layout of Base 2.4 Figure 97 are not an array, because Dword
+    2 and Dword 3 link Figures 98 and 99.
     """
 
     for _, fields in laid_out(document):
@@ -3618,10 +3708,10 @@ def unarray_unlike(document: SpecDocument) -> None:
 
 def unlink_itself(document: SpecDocument) -> None:
     """
-    Clear 'structure' of a field linked to a structure of one field, of the
-    same acronym and range, which is the field itself: ESUBNQN of Base 2.4
-    Figure 385 cites Figure 381, the data buffer of Create Exported NVM
-    Subsystem, whose only field is ESUBNQN, 255:00.
+    Clear 'structure' of a field linked to a structure whose only field has the acronym
+    and the range of the field, because that structure is the field itself. For example,
+    ESUBNQN of Base 2.4 Figure 385 cites Figure 381, the data buffer of Create Exported
+    NVM Subsystem, whose only field is ESUBNQN at 255:00.
     """
 
     alone = {
@@ -3640,15 +3730,15 @@ def unlink_itself(document: SpecDocument) -> None:
 
 def link_runs(document: SpecDocument) -> None:
     """
-    Link each entry of a run, fields named alike but for a last index, as
-    "SC Entry 0" and "SC Entry 1", "Descriptor 1", "Descriptor 2" and
-    "Descriptor n", to the one structure that the entries as wide link: SC Entry 1
-    of Base 2.4 Figure 361 to the Secondary Controller Entry of Figure 362,
-    as SC Entry 0 is, "defined in Figure 362". Where the entries link
-    several, they are linked to the one named as the run: Subsystem
-    Namespace Descriptor n of Boot 1.4 Figure 16, whose description cites
-    Figure 9 for the field NUMSSNS, to Subsystem Namespace (SSNS)
-    Descriptor of Figure 17, as Descriptor 1 is.
+    Link each entry of a run to the one structure that the entries of the same width
+    link. A run is fields whose names differ only by a last index, for example "SC Entry
+    0" and "SC Entry 1", or "Descriptor 1", "Descriptor 2" and "Descriptor n". SC Entry
+    1 of Base 2.4 Figure 361 is linked to the Secondary Controller Entry of Figure 362,
+    as SC Entry 0 is, which is "defined in Figure 362". Where the entries link several
+    structures, each entry is linked to the structure named as the run. Subsystem
+    Namespace Descriptor n of Boot 1.4 Figure 16 cites Figure 9 for the field NUMSSNS,
+    and it is linked to Subsystem Namespace (SSNS) Descriptor of Figure 17, as
+    Descriptor 1 is.
     """
 
     def siblings(fields: List[Bits]) -> Iterator[List[Bits]]:
@@ -3699,12 +3789,13 @@ def link_runs(document: SpecDocument) -> None:
 
 def link_extended(document: SpecDocument) -> None:
     """
-    Set 'extends' on each structure laying out bytes from other than byte 0
-    that its text gave none, to the structure from byte 0 with the most
-    fields of the same acronym and bytes, preferring one of another
-    document: NVM 1.3 Figure 126, AWUN at 527:526, AWUPF and ACWU, extends
-    Identify Controller of Base 2.4 Figure 338, which has them too. Where
-    two structures have as many, it extends neither.
+    Set 'extends' on each structure that lays out bytes from other than byte 0 and that
+    its text gave no 'extends'. The extended structure is the structure from byte 0 with
+    the most fields of the same acronym and bytes, preferring a structure of another
+    document. For example, NVM 1.3 Figure 126, with AWUN at 527:526, AWUPF and ACWU,
+    extends Identify Controller of Base 2.4 Figure 338, which has these fields too.
+    Where two structures have the same number of such fields, the structure extends
+    neither.
     """
 
     whole = [s for s in document.structures if first_byte(s) == 0]
@@ -3793,8 +3884,8 @@ def link_structures(document: SpecDocument) -> None:
         return [k for k in keys if all(bounds[k] <= bounds[o] for o in keys if o != k)]
 
     def spanning(field: Bits, source: Source) -> List[Tuple[str, int]]:
-        # A layout of bits at the positions they have in the dword, as the
-        # Status Field of Base 2.4 Figure 101 at bits 31:17 as STATUS
+        # A layout of bits at their positions in the dword, for example the Status Field
+        # of Base 2.4 Figure 101 at bits 31:17, the bits of STATUS
         return [
             key
             for key, structure in structures.items()
@@ -3927,9 +4018,11 @@ def subject_of(document: str) -> str:
 
 
 def refined_by(command: List[Dwords], dwords: Dwords) -> Optional[str]:
-    """The acronym of the one field of 'command', the dwords of a command,
-    whose bits hold all the fields of 'dwords', those of an operation of it;
-    None where no one field holds them all"""
+    """
+    The acronym of the one field of 'command', the dwords of a command, whose bits hold
+    all the fields of 'dwords', the dwords of an operation of the command. Returns None
+    where no one field holds them all.
+    """
 
     def bits(fields: List[Bits]) -> List[Tuple[int, int, Optional[str]]]:
         return [
@@ -3952,8 +4045,10 @@ def refined_by(command: List[Dwords], dwords: Dwords) -> Optional[str]:
 
 
 def link_refined(document: SpecDocument) -> None:
-    """Set 'refines' of the dwords of each operation that lay out the bits of
-    one field of the command's own dwords"""
+    """
+    Set 'refines' of the dwords of each operation whose fields lie within the bits of
+    one field of the dwords of the command
+    """
 
     for command_set in document.command_sets.values():
         for command in command_set.commands.values():
@@ -3971,10 +4066,12 @@ def link_refined(document: SpecDocument) -> None:
 
 
 def name_by_identifiers(document: SpecDocument) -> None:
-    """Name each operation selected by a Command Set Identifier with the
-    command set it identifies, where the name does not say it: the operation
-    of Identify for CNS 0Ah and CSI 01h, "I/O Command Set specific Identify
-    Namespace Data Structure" in KV 1.4, is that "(Key Value)" """
+    """
+    Add the command set to the name of each operation selected by a Command Set
+    Identifier, where the name does not say the command set. For example, the operation
+    of Identify for CNS 0Ah and CSI 01h, "I/O Command Set specific Identify Namespace
+    Data Structure" in KV 1.4, is named with "(Key Value)".
+    """
 
     sets = {
         command_set.identifier: command_set.name
@@ -3991,10 +4088,10 @@ def name_by_identifiers(document: SpecDocument) -> None:
 
 def link_identifiers(document: SpecDocument) -> None:
     """
-    Set 'identifier' of each I/O command set to the Command Set Identifier
-    of the entry of a table of identifiers, as Base 2.4 Figure 337, that
-    names the document listing it: 03h names the Subsystem Local Memory
-    Command Set specification, whose command set is "SLM"
+    Set 'identifier' of each I/O command set to the Command Set Identifier of the entry
+    of a table of identifiers, for example Base 2.4 Figure 337, that names the document
+    listing the command set. For example, 03h names the Subsystem Local Memory Command
+    Set specification, whose command set is "SLM".
     """
 
     listed: Dict[str, List[CommandSet]] = {}
@@ -4197,12 +4294,12 @@ def resolve(document: SpecDocument) -> SpecDocument:
     # Metadata, and goes to the feature below
     for key, described in document.dwords.items():
         cqe = key.startswith("cqe:")
-        # A caption may call the command so, as "Abort Command - Completion
-        # Queue Entry Dword 0" of Base 2.4 Figure 148
+        # A caption can name the command with "Command", for example "Abort Command -
+        # Completion Queue Entry Dword 0" of Base 2.4 Figure 148.
         name = key.removeprefix("cqe:")
         commands = by_name.get(name) or by_name.get(name.removesuffix("_command"), [])
-        # A caption may call the command a data structure, as "Manage Exported
-        # Port Data Structure - Command Dword 10" of Base 2.4 Figure 618
+        # A caption can call the command a data structure, for example "Manage Exported
+        # Port Data Structure - Command Dword 10" of Base 2.4 Figure 618.
         if not commands and by_name.get(name.removesuffix("_data_structure")):
             commands = by_name[name.removesuffix("_data_structure")]
             for dwords in described:
@@ -4301,17 +4398,18 @@ def code_value(code: str) -> int:
 
 def name_lists_of_names(document: SpecDocument, after_sections: bool = False) -> None:
     """
-    An entry whose description is a name of more than four words, as
-    "Invalid Number of Controller Resources" of Base 2.4 Figure 104, takes it
-    as its name, where the list the entry is in is of names: no entry of it
-    has both a name and a description, and as many entries have a name as
-    have none, counting single codes only. In a list where no entry has both,
-    a description of one line, of at most six words, with neither colon nor
-    full stop, as "Error status" of AET or "Write Locked Until Power Cycle"
-    of BP0WPS, is a name too, unless the entry refers to a section, whose
-    title names it; with 'after_sections', once the titles have named what
-    they name, it is a name of the entries referring to a section too. A
-    range of values is left as it is.
+    An entry whose description is a name of more than four words, for example "Invalid
+    Number of Controller Resources" of Base 2.4 Figure 104, takes the description as its
+    name where the entry is in a list of names. A list is of names where no entry has
+    both a name and a description, and as many entries have a name as have none,
+    counting single codes only.
+
+    In a list where no entry has both, a description of one line and at most six words,
+    without a colon or a full stop, is a name too, for example "Error status" of AET or
+    "Write Locked Until Power Cycle" of BP0WPS. This does not apply to an entry that
+    refers to a section, because the title of the section names the entry. With
+    'after_sections', after the titles have named the entries, it applies to the entries
+    that refer to a section too. A range of values is left unchanged.
     """
 
     lists = [values.entries for values in document.values]
@@ -4324,8 +4422,8 @@ def name_lists_of_names(document: SpecDocument, after_sections: bool = False) ->
             continue
         for entry in unnamed:
             text = normalize_text(entry.description)
-            # A code referring to a section takes the title of the section
-            # cited, where that title names it; name_by_sections() runs next
+            # A code that refers to a section takes the title of the cited section,
+            # where that title names the code. name_by_sections() runs next.
             reference = entry.columns.get("reference", "").strip()
             short = is_short_name(entry.description) and (
                 after_sections or not re.match(r"^[A-Z]?\d+(?:\.\d+)*$", reference)
@@ -4334,9 +4432,9 @@ def name_lists_of_names(document: SpecDocument, after_sections: bool = False) ->
                 entry.name, entry.description = text, ""
 
 
-# The columns whose text is the name of the value of their row, as "Delete"
-# of SEL 01h of Base 2.4 Figure 397, "Idle" of SANS 0h of Figure 312, and
-# "Configuration Get" of the Command Messages of MI 2.2
+# The columns whose text is the name of the value of their row, for example "Delete" of
+# SEL 01h of Base 2.4 Figure 397, "Idle" of SANS 0h of Figure 312, and "Configuration
+# Get" of the Command Messages of MI 2.2
 NAME_COLUMNS = (
     "operation",
     "management_operation",
@@ -4348,22 +4446,25 @@ NAME_COLUMNS = (
 )
 REGEX_NAME_ACRONYM = re.compile(r"^(?P<acronym>[A-Z][A-Z0-9]+): (?P<name>[A-Z].*)$")
 REGEX_NAME_ASIDE = re.compile(r"\s*\((?P<aside>(?:refer to|i\.e\.,) [^()]*)\)\s*")
-# An acronym of the name's initials after it, as "Get Active ZoneGroup (GAZ)
-# operation" of ORI 1 in Base 2.4 Figure 330
+# The initials of the name in a parenthesis after the name, for example "Get Active
+# ZoneGroup (GAZ) operation" of ORI 1 in Base 2.4 Figure 330
 REGEX_NAME_INITIALS = re.compile(
     r"^(?P<name>[A-Z][\w/-]*(?: [\w/-]+)*) \((?P<acronym>[A-Z][A-Z0-9]+)\)"
     r"(?: (?P<after>operation))?$"
 )
-# A closing parenthesis, as "(no shutdown has been requested)" of SHST 00b in
-# Base 2.4 Figure 42, which is prose where it has two lowercase words
+# A parenthesis at the end of a name, for example "(no shutdown has been requested)" of
+# SHST 00b in Base 2.4 Figure 42. The parenthesis is prose where it has two words in
+# lower case.
 REGEX_NAME_PROSE = re.compile(r"^(?P<name>[^()]+?) \((?P<aside>[^()]+)\)$")
 REGEX_SHORT_SENTENCE = re.compile(r"^[A-Za-z0-9][^:;.()]*\.?$")
 
 
 def is_initials(acronym: str, name: str) -> bool:
-    """Whether 'acronym' is made of the initials of the words of 'name', in
-    order, from the first word's to the last word's, as GAZ of "Get Active
-    ZoneGroup" and AAZ of "Add or Replace Active ZoneGroup" """
+    """
+    Whether 'acronym' is made of initials of the words of 'name', in order, from the
+    initial of the first word to the initial of the last word, for example GAZ of "Get
+    Active ZoneGroup" and AAZ of "Add or Replace Active ZoneGroup"
+    """
 
     initials = "".join(word[0].upper() for word in name.split())
     rest = iter(initials[1:-1])
@@ -4382,16 +4483,15 @@ REGEX_NAME_SENTENCE = re.compile(
 
 def tidy_value_names(document: SpecDocument) -> None:
     """
-    Make the name of each value a name alone. "CAP: Controller Capabilities"
-    of Base 2.4 Figure 33 is the name "Controller Capabilities" of acronym
-    "CAP"; "(refer to ...)" and "(i.e., ...)" in a name, as "HMAC SHA-256
-    (refer to RFC 6234)", go to the description; the text before a colon,
-    as "Transport Specific" of Figure 33, is the name and the text after
-    it the description. A value without a name takes the text of a column
-    naming it, as "Delete" of SEL 01h of Figure 397, and else a first
-    sentence of at most three words, as "Low" of "Low. Smallest possible
-    latency." of NVM 1.3 Figure 48, where no other value of the list has
-    that name.
+    Make the name of each value a name alone. "CAP: Controller Capabilities" of Base 2.4
+    Figure 33 is the name "Controller Capabilities" with the acronym "CAP". An aside in
+    a name, "(refer to ...)" or "(i.e., ...)", moves to the description, for example of
+    "HMAC SHA-256 (refer to RFC 6234)". Where a name has a colon, for example "Transport
+    Specific" of Figure 33, the text before the colon is the name and the text after it
+    moves to the description. A value without a name takes the text of a column that
+    names it, for example "Delete" of SEL 01h of Figure 397. Otherwise it takes a first
+    sentence of at most three words, for example "Low" of "Low. Smallest possible
+    latency." of NVM 1.3 Figure 48, where no other value of the list has that name.
     """
 
     def described(entry: Entry, text: str) -> None:
@@ -4403,8 +4503,8 @@ def tidy_value_names(document: SpecDocument) -> None:
 
     lists = [values.entries for values in document.values]
     lists += [field.values for field, _ in fields_with_sources(document)]
-    # The values of a case, as ZRAS 0h "List all zones." of the case of ZNS
-    # 1.4 Figure 35 where ZRA is 00h
+    # The values of a case, for example ZRAS 0h "List all zones." of the case of ZNS 1.4
+    # Figure 35 where ZRA is 00h
     lists += [
         case.values
         for field, _ in fields_with_sources(document)
@@ -4460,12 +4560,12 @@ def tidy_value_names(document: SpecDocument) -> None:
                 name, rest = sentences[id(entry)]
                 if taken.count(name.casefold()) == 1:
                     entry.name, entry.description = name, rest
-        # Beside named values, a named range of reserved values too, a
-        # definition of one short sentence is a name, as "No action" of MO
-        # 00h beside "Reclaim Unit Handle Status" in Base 2.4 Figure 651, and
-        # "4 bytes" of PRS 000b beside "010b to 111b" Reserved; so is a name
-        # with its initials, as "Add or Replace Active ZoneGroup (AAZ)
-        # operation" of ORI 2
+        # Where another value or a range of reserved values has a name, a definition of
+        # one short sentence is a name. Examples are "No action" of MO 00h beside
+        # "Reclaim Unit Handle Status" in Base 2.4 Figure 651, and "4 bytes" of PRS 000b
+        # beside the reserved range "010b to 111b". A name followed by its initials is a
+        # name too, for example "Add or Replace Active ZoneGroup (AAZ) operation" of ORI
+        # 2.
         if not any(e.name for e in entries):
             continue
         for entry in entries:
@@ -4487,9 +4587,11 @@ def tidy_value_names(document: SpecDocument) -> None:
 
 
 def is_short_name(description: str) -> bool:
-    """Whether 'description' is a name in a list of names: one line of at
-    most six words, beginning with a capital, with neither colon nor full
-    stop, as "Error status" or "No notification and no effect" """
+    """
+    Whether 'description' is a name in a list of names: one line of at most six words
+    that begins with a capital and has no colon or full stop, for example "Error status"
+    or "No notification and no effect"
+    """
 
     text = description.strip()
     return (
@@ -4603,18 +4705,18 @@ def name_by_sections(document: SpecDocument, sections: Dict[str, str]) -> None:
 
 def name_by_documents(document: SpecDocument) -> None:
     """
-    A code without a name whose reference names another document of the
-    merged 'document', as CNS 00h of Identify in Base 2.4 names "NVM Express
-    NVM Command Set Specification", takes the title of the one section of
-    that document whose title names the code with the label of the table,
-    "NVM Command Set Identify Namespace Data Structure (CNS 00h)". A
-    reference may leave out "NVM Express", as ZNS 1.5 does.
+    A code without a name whose reference names another document of the merged
+    'document' takes the title of the one section of that document whose title names the
+    code with the label of the table. For example, CNS 00h of Identify in Base 2.4 names
+    "NVM Express NVM Command Set Specification", and takes "NVM Command Set Identify
+    Namespace Data Structure (CNS 00h)". A reference can leave out "NVM Express", as ZNS
+    1.5 does.
 
-    A reference to "I/O Command Set Specification", as of CNS 0Ah, names
-    every document of a command set, and the code takes the title that more
-    than half of those with a section titled for it give, letter case aside.
-    A code that no such title names, or several titles of one document, is
-    left unnamed, as is one whose title another code of the table has.
+    A reference to "I/O Command Set Specification", for example of CNS 0Ah, names every
+    document of a command set. The code takes the title that more than half of the
+    documents with a section titled for the code give, ignoring letter case. A code is
+    left without a name where no such title names it, where one document has several
+    such titles, or where another code of the table has the title.
     """
 
     def titled(name: str) -> str:
@@ -4684,12 +4786,14 @@ REGEX_SPECIFIED = re.compile(
 
 
 def qualified_by_definition(values: Values, entry: Entry, name: str) -> Optional[str]:
-    """'name', which another code of 'values' has, qualified by what the
-    definition of 'entry' is for where the definition of no other code of
-    that name says so: CNS 09h of Base 2.4 Figure 336, "Identify Namespace
-    data structure for the specified Format Index", is "NVM Command Set
-    Identify Namespace Data Structure for the specified Format Index", as
-    NVM 1.3 titles CNS 00h and 09h alike. None where nothing qualifies it"""
+    """
+    'name', which another code of 'values' has, qualified by what the definition of
+    'entry' is for, where the definition of no other code of that name says so. For
+    example, CNS 09h of Base 2.4 Figure 336, "Identify Namespace data structure for the
+    specified Format Index", is "NVM Command Set Identify Namespace Data Structure for
+    the specified Format Index", because NVM 1.3 gives the sections of CNS 00h and 09h
+    the same title. Returns None where nothing qualifies the name.
+    """
 
     match = REGEX_SPECIFIED.search(" ".join(entry.description.split()))
     if not match:
@@ -4705,9 +4809,11 @@ def qualified_by_definition(values: Values, entry: Entry, name: str) -> Optional
 
 
 def named_already(values: Values, name: str, code: str) -> bool:
-    """Whether a code of 'values' other than 'code' has 'name': two sections
-    titled alike, as "NVM Command Set Identify Namespace Data Structure" of
-    CNS 00h and of CNS 09h in NVM 1.3, name the first code only"""
+    """
+    Whether a code of 'values' other than 'code' has 'name'. Where two sections have the
+    same title, for example "NVM Command Set Identify Namespace Data Structure" of CNS
+    00h and of CNS 09h in NVM 1.3, the title names only the first code.
+    """
 
     return any(
         (e.name or "").casefold() == name.casefold()
@@ -4725,8 +4831,8 @@ REGEX_NAMED_VALUE = re.compile(
 )
 
 
-# The words a caption names a kind of structure by, which tell two figures of
-# one name apart
+# The words by which a caption names a kind of structure, which distinguish two figures
+# of one name
 STRUCTURE_WORDS = {
     "data_structure": "Data Structure",
     "data_buffer": "Data Buffer",
@@ -4736,19 +4842,20 @@ STRUCTURE_WORDS = {
 
 def distinct_names(document: SpecDocument) -> None:
     """
-    Two structures of a document named alike are told apart by name, so that
-    a generator has a name for each. Of two of different kinds, as the log
-    page and the data structure "Commands Supported and Effects" of Base 2.4
-    Figures 216 and 217, the log page, else the first, keeps the name, and
-    the other is named with its kind, "Commands Supported and Effects Data
-    Structure". Of two of one kind and no qualifier, the later figure takes
-    the name of the one field linking it, where that names it otherwise:
-    NVM 1.3 Figure 190 has the caption of Figure 189, "Reference Exported
-    Controller Configuration State", and is the layout of RENSCS, Reference
-    Exported Namespace Configuration State. The caption is a candidate
-    erratum. Of two whose qualifiers differ, each is named with its
-    qualifier: Base 2.4 Figures 479 and 480 are "Timestamp (Set Features)"
-    and "Timestamp (Get Features)".
+    Give two structures of a document with the same name different names, so that a
+    generator has a name for each. Of a log page and a data structure, for example
+    "Commands Supported and Effects" of Base 2.4 Figures 216 and 217, the log page keeps
+    the name, and the data structure is named with its kind, "Commands Supported and
+    Effects Data Structure". Of two structures of other different kinds, the first keeps
+    the name.
+
+    Of two structures of one kind without a qualifier, the later figure takes the name
+    of the one field that links it, where that field names it differently. For example,
+    NVM 1.3 Figure 190 has the caption of Figure 189, "Reference Exported Controller
+    Configuration State", and is the layout of RENSCS, Reference Exported Namespace
+    Configuration State. The caption is a candidate erratum. Of two structures whose
+    qualifiers differ, each is named with its qualifier, for example "Timestamp (Set
+    Features)" and "Timestamp (Get Features)" of Base 2.4 Figures 479 and 480.
     """
 
     groups: Dict[Tuple[str, str], List[Structure]] = {}
