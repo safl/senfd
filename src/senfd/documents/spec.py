@@ -3355,6 +3355,15 @@ REGEX_VALUE_OF = re.compile(
 )
 
 
+# A field holding bytes of another, as NQNID of Base 2.4 Figure 698, "bytes
+# 223:4 of the NVM Subsystem NVMe Qualified Name (SUBNQN) field (refer to
+# Figure 338 )"
+REGEX_BYTES_OF = re.compile(
+    r"contain bytes \d+:\d+ of the [A-Za-z0-9 -]+? \((?P<acronym>[A-Z0-9]+)\) "
+    r"field \(refer to Figure (?P<figure>\d+) ?\)"
+)
+
+
 def all_fields(fields: List[Bits]) -> Iterator[Bits]:
     """Each of 'fields' and, depth first, the fields within each"""
 
@@ -3415,7 +3424,9 @@ def link_encodings(document: SpecDocument) -> None:
     the fields of the same name, acronym and width in other documents that
     state it, where they agree: NGUID and EUI64 of KV 1.4 Figure 42, which
     refer to the Base specification, are big-endian as in NVM 1.3 Figure
-    123. Each taken encoding and byte order says the figure it is from.
+    123. A field holding bytes of another field takes its encoding, as
+    NQNID of Base 2.4 Figure 698 takes that of SUBNQN of Figure 338. Each
+    taken encoding and byte order says the figure it is from.
     """
 
     for structure in document.structures:
@@ -3442,6 +3453,25 @@ def link_encodings(document: SpecDocument) -> None:
             if not field.byte_order and len(orders) == 1:
                 field.byte_order = orders.pop()
                 field.byte_order_from = next(s for o, s in others if o.byte_order)
+
+    # Bytes of a field are encoded as that field is
+    for structure in document.structures:
+        for field in all_fields(structure.fields):
+            match = REGEX_BYTES_OF.search(" ".join(field.description.split()))
+            if field.encoding or not match:
+                continue
+            for of in document.structures:
+                if (of.source.document, of.source.figure_nr) != (
+                    structure.source.document,
+                    int(match["figure"]),
+                ):
+                    continue
+                other = next(
+                    (o for o in all_fields(of.fields) if o.acronym == match["acronym"]),
+                    None,
+                )
+                if other and other.encoding:
+                    field.encoding, field.encoding_from = other.encoding, of.source
 
     # A field holding an NQN is encoded as the NQN fields stating it are
     stated = [
