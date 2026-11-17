@@ -1,13 +1,13 @@
 {
   "meta": {
-    "format": 5,
+    "format": 6,
     "version": "0.22.0",
-    "senfd_sha256": "ba6d66727ddfc0d907e97cd70229ee5e512bbb013b3491d8fe9e8774e0ff9719",
+    "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
     "stem": "merged",
     "file": null,
     "sha256": null,
     "input_sha256": "6cfcabff5d79fd4ae073cd42d8653e52250376144c03907c985851df2e4dc9b6",
-    "combined_sha256": "5665f3b6e4a3ad8d2f55a1336ebc14002f76d37d1d5575068138ecdb836d4714"
+    "combined_sha256": "5f4de1bdf7244172f8e017c42d8db7965afe2134a173c7dbb2cb1b7f58db7d2e"
   },
   "command_sets": {
     "foobar": {
@@ -392,6 +392,7 @@
             "data_transfer": "01b",
             "reference": "3.1"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 1,
@@ -528,6 +529,7 @@
             "data_transfer": "10b",
             "reference": "3.2"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 1,
@@ -652,6 +654,7 @@
             "data_transfer": "00b",
             "reference": "3.3"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 1,
@@ -738,6 +741,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -766,6 +770,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -794,6 +799,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -888,6 +894,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -911,6 +918,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -934,6 +942,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -1053,6 +1062,7 @@
                             }
                           },
                           "footnotes": [],
+                          "marked": {},
                           "refers_to": null,
                           "selects": [],
                           "document": null
@@ -1076,6 +1086,7 @@
                             }
                           },
                           "footnotes": [],
+                          "marked": {},
                           "refers_to": null,
                           "selects": [],
                           "document": null
@@ -1099,6 +1110,7 @@
                             }
                           },
                           "footnotes": [],
+                          "marked": {},
                           "refers_to": null,
                           "selects": [],
                           "document": null
@@ -1159,6 +1171,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -1182,6 +1195,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -1205,6 +1219,7 @@
                         }
                       },
                       "footnotes": [],
+                      "marked": {},
                       "refers_to": null,
                       "selects": [],
                       "document": null
@@ -1364,6 +1379,7 @@
             "data_transfer": "01b",
             "reference": "3.5"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 1,
@@ -1401,6 +1417,7 @@
             "namespace_identifier_used": "Yes",
             "reference": "4.1"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 23,
@@ -1468,6 +1485,7 @@
             "namespace_identifier_used": "No",
             "reference": "4.2"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 23,
@@ -1581,6 +1599,7 @@
             "namespace_identifier_used": "No",
             "reference": "4.3"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 23,
@@ -1625,6 +1644,7 @@
             "namespace_identifier_used": "No",
             "reference": "4.4"
           },
+          "footnotes": {},
           "source": {
             "document": "example",
             "figure_nr": 23,
@@ -2186,6 +2206,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2214,6 +2235,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2242,6 +2264,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2336,6 +2359,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2359,6 +2383,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2382,6 +2407,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2501,6 +2527,7 @@
                       }
                     },
                     "footnotes": [],
+                    "marked": {},
                     "refers_to": null,
                     "selects": [],
                     "document": null
@@ -2524,6 +2551,7 @@
                       }
                     },
                     "footnotes": [],
+                    "marked": {},
                     "refers_to": null,
                     "selects": [],
                     "document": null
@@ -2547,6 +2575,7 @@
                       }
                     },
                     "footnotes": [],
+                    "marked": {},
                     "refers_to": null,
                     "selects": [],
                     "document": null
@@ -2607,6 +2636,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2630,6 +2660,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -2653,6 +2684,7 @@
                   }
                 },
                 "footnotes": [],
+                "marked": {},
                 "refers_to": null,
                 "selects": [],
                 "document": null
@@ -7361,6 +7393,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7373,6 +7406,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7405,6 +7439,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7477,6 +7512,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7522,6 +7558,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7547,6 +7584,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7641,6 +7679,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7684,6 +7723,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7707,6 +7747,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7730,6 +7771,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7800,6 +7842,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7880,6 +7923,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7939,6 +7983,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -7996,6 +8041,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8043,6 +8089,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8081,6 +8128,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8097,6 +8145,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8129,6 +8178,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8141,6 +8191,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8173,6 +8224,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8205,6 +8257,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8237,6 +8290,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8249,6 +8303,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8281,6 +8336,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8313,6 +8369,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8355,6 +8412,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8394,6 +8452,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8430,6 +8489,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8467,6 +8527,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8501,6 +8562,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8515,6 +8577,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8550,6 +8613,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8564,6 +8628,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8601,6 +8666,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8616,6 +8682,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8631,6 +8698,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8689,6 +8757,7 @@
             }
           },
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8723,6 +8792,7 @@
           },
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8755,6 +8825,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8767,6 +8838,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8779,6 +8851,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8811,6 +8884,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8823,6 +8897,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8835,6 +8910,7 @@
           "columns": {},
           "typed": {},
           "footnotes": [],
+          "marked": {},
           "refers_to": null,
           "selects": [],
           "document": null
@@ -8859,6 +8935,7 @@
         "uses_memory_buffer_for_attributes": "No",
         "scope": "Controller"
       },
+      "footnotes": {},
       "sqe": [
         {
           "lower": 11,
@@ -8949,6 +9026,7 @@
         "admin": "O",
         "discovery": "O"
       },
+      "footnotes": {},
       "sqe": [],
       "cqe": [],
       "source": {
@@ -8966,6 +9044,7 @@
       "identifier": 192,
       "name": "Foo Statistics",
       "columns": {},
+      "footnotes": {},
       "structure": {
         "name": "Foo Statistics",
         "kind": "log_page",
@@ -9024,6 +9103,7 @@
       "identifier": 193,
       "name": "Foo Events",
       "columns": {},
+      "footnotes": {},
       "structure": null,
       "source": {
         "document": "example",
@@ -9038,6 +9118,7 @@
       "identifier": 194,
       "name": "Foo Statistics (Namespace scope)",
       "columns": {},
+      "footnotes": {},
       "structure": {
         "name": "Foo Statistics",
         "kind": "log_page",
@@ -9445,9 +9526,9 @@
   },
   "documents": {
     "example": {
-      "format": 5,
+      "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "ba6d66727ddfc0d907e97cd70229ee5e512bbb013b3491d8fe9e8774e0ff9719",
+      "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
       "stem": "example",
       "file": "example.docx",
       "sha256": "5ed03c1765714ac89fb748f51d5c5e7085c7b914f3053ee7e9c17221700fa425",
@@ -9455,9 +9536,9 @@
       "combined_sha256": null
     },
     "invalid": {
-      "format": 5,
+      "format": 6,
       "version": "0.22.0",
-      "senfd_sha256": "ba6d66727ddfc0d907e97cd70229ee5e512bbb013b3491d8fe9e8774e0ff9719",
+      "senfd_sha256": "65f79ef50341fb16c32d6b3ea870a86c702fb12b9b52002aa13016b7997f8c52",
       "stem": "invalid",
       "file": "invalid.docx",
       "sha256": "a74ae57a39849fff8dfa9aff389d5ea9f103db5e47e0ef9d9bb9f8e14bab985b",

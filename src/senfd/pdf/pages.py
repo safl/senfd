@@ -12,7 +12,7 @@ not its text, and are kept apart, to be reported as an error of the document.
 
 import re
 from bisect import bisect_left, bisect_right
-from collections import OrderedDict, defaultdict
+from collections import Counter, OrderedDict, defaultdict
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import pdfplumber
@@ -20,6 +20,7 @@ from pdfplumber.utils import cluster_objects
 from pdfplumber.utils import extract_text as text_of_chars
 
 from senfd.pdf.tree import Leaf, PageId
+from senfd.utils import superscript
 
 # A box on a page: left, top, right, bottom, in points from the top left
 Box = Tuple[float, float, float, float]
@@ -31,6 +32,10 @@ Horizontal = Tuple[float, float, float]
 # How far apart, in points, two lines of a paragraph's text may be and still
 # be one line, as a superscript footnote marker beside its word
 LINE = 6
+# How far, in points, the foot of a digit stands above the foot of its line
+# when it is printed as a superscript, as a footnote marker; the documents
+# raise a marker by about 5 points
+RAISED = 2.5
 # How far apart, in points, two borders may be and still be one
 NEAR = 2.5
 # Where a line through a character strikes it out, as a share of its height
@@ -61,6 +66,28 @@ def turned(char: dict) -> int:
     if abs(b) <= abs(a):
         return 0
     return 1 if b > 0 else -1
+
+
+def raised(chars: List[dict]) -> List[dict]:
+    """'chars' with the digits printed as superscripts, as a footnote marker,
+    given as superscript digits, and a comma between them as it is. The foot
+    of a line is where most of its printed characters stand; a space after a
+    marker stands where the marker does."""
+
+    lines = cluster_objects(chars, lambda c: c["bottom"], LINE)
+    feet = {}
+    for line in lines:
+        printed = [c for c in line if c["text"].strip()] or line
+        counted = Counter(round(c["bottom"], 1) for c in printed)
+        foot = max(counted, key=lambda b: (counted[b], b))
+        for c in line:
+            feet[id(c)] = foot
+    return [
+        {**char, "text": superscript(char["text"])}
+        if char["text"].isdigit() and feet[id(char)] - char["bottom"] >= RAISED
+        else char
+        for char in chars
+    ]
 
 
 def struck(char: dict, rules: Sequence[Horizontal]) -> bool:
@@ -216,7 +243,7 @@ class Pages:
                 # one word, as "non-" and "zero", "end-to-" and "end"; a hyphen
                 # left hanging before "and" or "or", as "host- or controller-
                 # initiated", is no break of a word
-                text = text_of_chars(chars, y_tolerance=LINE)
+                text = text_of_chars(raised(chars), y_tolerance=LINE)
                 lines.append(re.sub(JOINED, "", text))
         return "\n".join(lines), boxes
 

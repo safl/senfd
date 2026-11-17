@@ -243,6 +243,33 @@ def test_text_underlined_is_an_insertion_shown_and_read(tmp_path):
     assert marked_text(tmp_path, "100 199 52 0.5 re f") == "Figure 338"
 
 
+def text_drawn(tmp_path, content):
+    """The text the reader gives the marked content 0 of a page drawing
+    'content'"""
+
+    path = one_page(tmp_path / "page.pdf", content)
+    with pikepdf.open(path) as pdf, pdfplumber.open(path) as plumb:
+        pages = Pages(plumb, {page.objgen: i for i, page in enumerate(pdf.pages)})
+        text, _ = pages.text([[Leaf(pdf.pages[0].objgen, 0)]])
+    return text
+
+
+def test_a_digit_raised_above_its_line_is_a_footnote_marker(tmp_path):
+    """A footnote marker is printed at the size of the text, 5 points above
+    its line, as "Connect5" of Base 2.4 Figure 630; the digits of the text
+    stand on the line"""
+
+    raised = (
+        "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (Connect) Tj"
+        " 38 5 Td (5) Tj -38 -25 Td (TSEN1) Tj ET EMC"
+    )
+    assert text_drawn(tmp_path, raised) == "Connect\u2075\nTSEN1"
+    # A space printed after the marker, at its height, as "N 6" of ZNS 1.5
+    # Figure 48, does not make the marker the foot of the line
+    spaced = "/P <</MCID 0>> BDC BT /F1 10 Tf 100 200 Td (N) Tj 10 5 Td (6  ) Tj ET EMC"
+    assert text_drawn(tmp_path, spaced).startswith("N\u2076")
+
+
 def struck_pages(tmp_path, drawn):
     """The Pages of a page drawing "Figure 338" and then 'drawn'"""
 

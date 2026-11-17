@@ -308,7 +308,7 @@
                     "title": "Byte Order"
                 },
                 "footnotes": {
-                    "description": "The numbers of the footnotes marked at the end of the description",
+                    "description": "The numbers of the footnotes marked on the name, at the end of the\ndescription, and on the other columns",
                     "items": {
                         "type": "integer"
                     },
@@ -606,6 +606,17 @@
                     "title": "Columns",
                     "type": "object"
                 },
+                "footnotes": {
+                    "additionalProperties": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "title": "Footnotes",
+                    "type": "object"
+                },
                 "source": {
                     "$ref": "#/$defs/Source",
                     "description": "The opcode table listing the command"
@@ -690,7 +701,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 5,
+                    "default": 6,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
@@ -877,12 +888,23 @@
                     "type": "object"
                 },
                 "footnotes": {
-                    "description": "The numbers of the footnotes marked at the end of the description",
+                    "description": "The numbers of the footnotes marked on the row: on the value, the\nname, the description and the other columns, in that order",
                     "items": {
                         "type": "integer"
                     },
                     "title": "Footnotes",
                     "type": "array"
+                },
+                "marked": {
+                    "additionalProperties": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "description": "The numbers of the footnotes marked on each column, by its key, the\nname's as \"name\", where any is marked",
+                    "title": "Marked",
+                    "type": "object"
                 },
                 "refers_to": {
                     "anyOf": [
@@ -988,6 +1010,17 @@
                     "title": "Columns",
                     "type": "object"
                 },
+                "footnotes": {
+                    "additionalProperties": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "title": "Footnotes",
+                    "type": "object"
+                },
                 "sqe": {
                     "description": "The submission queue entry dwords described for it",
                     "items": {
@@ -1036,6 +1069,17 @@
                     },
                     "description": "The log page identifier table's other columns of it, by their keys",
                     "title": "Columns",
+                    "type": "object"
+                },
+                "footnotes": {
+                    "additionalProperties": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "description": "The numbers of the footnotes marked on its name and columns, by the\nkey of the column, where any is marked",
+                    "title": "Footnotes",
                     "type": "object"
                 },
                 "structure": {

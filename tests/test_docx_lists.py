@@ -8,7 +8,12 @@ from pathlib import Path
 import docx
 from docx.oxml import parse_xml
 
-from senfd.documents.plain import Numbering, numbered, text_of_cell
+from senfd.documents.plain import (
+    Numbering,
+    numbered,
+    text_of_cell,
+    text_of_paragraph,
+)
 
 NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
 
@@ -113,3 +118,12 @@ def test_the_paragraphs_before_a_table_since_its_heading_are_given_by_table():
     before = paragraphs_before_tables(document)
     assert mentioning(before[1], 1) == ["Up to 511 entries, as defined in Figure 1."]
     assert mentioning(before[2], 2) == ["After Figure 1, and before Figure 2."]
+
+
+def test_digits_of_a_superscript_run_are_a_footnote_marker():
+    paragraph = parse_xml(
+        f"<w:p {NS}><w:r><w:t>Controllers</w:t></w:r>"
+        '<w:r><w:rPr><w:vertAlign w:val="superscript"/></w:rPr><w:t>1</w:t></w:r>'
+        "<w:r><w:t> of TSEN1</w:t></w:r></w:p>"
+    )
+    assert text_of_paragraph(paragraph) == "Controllers\u00b9 of TSEN1"

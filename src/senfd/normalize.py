@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 from pydantic import BaseModel
 
 from senfd.documents.base import TRANSLATION_TABLE, Model
+from senfd.utils import unmarked
 
 
 class Diagnostic(Model):
@@ -105,7 +106,7 @@ def normalize_header(text: str) -> Tuple[str, List[Diagnostic]]:
         return SYNONYMS[header], []
 
     # A footnote marker: "O/M1", "NSID 2", "Combined Opcode1"
-    stripped = re.sub(r"(?<=[a-z/)])\s*\d+$", "", header)
+    stripped = re.sub(r"(?<=[a-z/)])\s*\d+$", "", unmarked(header)[0])
     if stripped in SYNONYMS:
         return SYNONYMS[stripped], []
 
@@ -168,7 +169,9 @@ def parse_range(unit: str, text: str) -> Optional[Range]:
     has its text and neither bound, and empty text is no range
     """
 
-    text = normalize_text(text)
+    # A range has no exponent, so superscript digits on it are a footnote
+    # marker, as footnote 1 on a range of Base 2.4 Figure 240
+    text = normalize_text(re.sub("[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:,\\s*[⁰¹²³⁴⁵⁶⁷⁸⁹]+)*", "", text))
     match = REGEX_RANGE.match(text)
     if match:
         lower = int(match["lower"])
@@ -186,7 +189,7 @@ NAME = r"(?P<name>(?:[^:()\[\]]|\[[^\]]*\])+?)(?<!\s)"
 # state
 REGEX_FIELD = re.compile(
     rf"^{NAME}\s*(?:\((?P<acronym>[^()]+)\)"
-    r"(?:\s*\d+(?:,\s*\d+)*)?)?\s*(?::(?(acronym)|(?=\s|$))\s*(?P<rest>.*))?$"
+    r"(?:\s*[\d⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:,\s*[\d⁰¹²³⁴⁵⁶⁷⁸⁹]+)*)?)?\s*(?::(?(acronym)|(?=\s|$))\s*(?P<rest>.*))?$"
 )
 
 
