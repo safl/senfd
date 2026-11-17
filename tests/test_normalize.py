@@ -1050,6 +1050,36 @@ def test_a_second_table_in_a_cell_whose_first_column_is_no_value_is_no_values():
     assert [d.code for d in diagnostics] == ["nested-table"]
 
 
+def test_a_table_of_the_bounds_of_a_field_is_no_values():
+    """STS of NVM 1.3 Figure 128 has a table of its minimum and maximum by
+    protection information format, and no values"""
+
+    from senfd.documents.normalized import LayoutField, read_nested
+    from senfd.normalize import Range
+    from senfd.tables import Cell, Row, Table
+
+    field = LayoutField(
+        range=Range(unit="bits", text="6:0", upper=6, lower=0),
+        name="Foo Size",
+        acronym="FS",
+        description="",
+    )
+    rows = (
+        ("Foo Format", "Minimum Value", "Maximum Value"),
+        ("16b Foo", "0", "32"),
+        ("32b Foo", "16", "64"),
+    )
+    diagnostics = []
+    read_nested(
+        Table(rows=[Row(cells=[Cell(text=t) for t in row]) for row in rows]),
+        field,
+        diagnostics,
+    )
+
+    assert field.values == []
+    assert [d.code for d in diagnostics] == ["nested-table"]
+
+
 def test_a_lead_in_to_a_list_names_nothing():
     """LBARS 000b of NVM 1.3 Figure 140: "Each logical block may:" and a
     list of what it may do"""

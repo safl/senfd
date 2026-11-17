@@ -2833,33 +2833,87 @@ def gaps(command: Command) -> List[Erratum]:
 
 # Text that lists codes, as "10h and 11h" of LBARS in NVM 1.3 Figure 140,
 # refers to other values and names none
-REGEX_CODES = re.compile(r"^[0-9A-F]+[hb](?:(?:,|,? and|,? or| to) [0-9A-F]+[hb])*$")
+REGEX_CODES = re.compile(
+    r"^(?:[0-9A-F]+[hb](?:(?:,|,? and|,? or| to) [0-9A-F]+[hb])*"
+    r"|(?i:all|all other(?:s| values)?))$"
+)
 
 
 def value_names(entry: "Entry") -> List[str]:
     """The name a value of a field goes by, as a list of none or one: its name,
     else the text of the first column naming it, as "power_scope" does for
-    CPS of Base 2.4 Figure 36; the heading the value is under is no name of
-    it, nor a column listing other codes"""
+    CPS of Base 2.4 Figure 36, without an aside of prose or a closing
+    period, as "Domain scope" of "Domain scope (i.e., the NVM subsystem
+    supports multiple domains ..."; the heading the value is under is no
+    name of it, nor a column listing other codes, as "1h" or "All other
+    values" of SGLDST in Base 2.4 Figure 118"""
 
     if entry.name:
         return [entry.name]
     skip = {"reference", "om", "description", "refer_to_section", "section"}
     listing = False
     for column, text in entry.columns.items():
-        if column in skip or not text or typed_of(text):
+        if column in skip or not text:
             continue
-        if REGEX_CODES.match(text.strip()):
+        name = name_of_cell(text)
+        if REGEX_CODES.match(name):
             listing = True
             continue
-        # After a column listing codes, a cell holding a name and its
-        # definition gives the name, as "Address" of "Address: The Address
+        if typed_of(text):
+            continue
+        # After a column listing codes, only a cell holding a name and its
+        # definition gives a name, as "Address" of "Address: The Address
         # field specifies ..." of SGLDST 0h in Base 2.4 Figure 118
-        head, colon, _ = text.partition(": ")
-        if listing:
-            return [head] if colon and len(head.split()) <= 6 else []
-        return [text]
+        if listing and ": " not in " ".join(text.split()):
+            return []
+        # A sentence of what a field holds defines the value and names
+        # nothing, as "This field contains the Controller Identifier ..." of
+        # CTRLID 02h in MI 2.2 Figure 112
+        if re.match(r"(?:This|The) ", name) and len(name.split()) > 6:
+            return []
+        return [name]
     return []
+
+
+def is_aside(text: str, name: str) -> bool:
+    """Whether 'text', of a parenthesis after 'name', is an aside to it, not
+    part of it: prose, as "i.e., ..." or "no shutdown has been requested",
+    which has two lowercase words, or, after a name of words, a detail of
+    numbers and symbols, as "802.3 + TCP/IP" of NVMe/TCP in Boot 1.4 Figure
+    8; "Controller scope" and "Optional" qualify the name, and "(2 * (4 <<
+    CAP.DSTRD))" after "03h +" is part of a formula"""
+
+    return (
+        text.startswith(("i.e.,", "e.g.,", "refer to"))
+        or sum(w[:1].islower() for w in re.split(r"[\s/]+", text)) >= 2
+        or bool(
+            re.search(r"\d|\+", text)
+            and re.fullmatch(r"[A-Za-z][\w/-]*(?: [A-Za-z][\w/-]*)*", name)
+        )
+    )
+
+
+def name_of_cell(text: str) -> str:
+    """The name in the text of a cell naming a value: the text before a colon
+    of a name and its definition, as "Single Command Cancel" of ACODE 00b of
+    Base 2.4 Figure 647, without a parenthesis of prose after it, closed or
+    not, as "(i.e., ...", without a closing period, and without an acronym
+    after it, as "(CTemp)" of "Composite Temperature (CTemp)" of MI 2.2
+    Figure 199"""
+
+    text = " ".join(text.split())
+    head, colon, _ = text.partition(": ")
+    if colon and len(head.split()) <= 6:
+        text = head
+    name, paren, aside = text.partition(" (")
+    if paren and is_aside(aside, name):
+        text = name
+    text = re.sub(
+        r" \((?=[A-Za-z0-9]*[A-Z][A-Za-z0-9]*[A-Z])[A-Z][A-Za-z0-9]+\)$",
+        "",
+        text.removesuffix("."),
+    )
+    return text
 
 
 def names_operation(caption: str, name: str) -> bool:
@@ -4184,6 +4238,33 @@ NAME_COLUMNS = (
 )
 REGEX_NAME_ACRONYM = re.compile(r"^(?P<acronym>[A-Z][A-Z0-9]+): (?P<name>[A-Z].*)$")
 REGEX_NAME_ASIDE = re.compile(r"\s*\((?P<aside>(?:refer to|i\.e\.,) [^()]*)\)\s*")
+# An acronym of the name's initials after it, as "Get Active ZoneGroup (GAZ)
+# operation" of ORI 1 in Base 2.4 Figure 330
+REGEX_NAME_INITIALS = re.compile(
+    r"^(?P<name>[A-Z][\w/-]*(?: [\w/-]+)*) \((?P<acronym>[A-Z][A-Z0-9]+)\)"
+    r"(?: (?P<after>operation))?$"
+)
+# A closing parenthesis, as "(no shutdown has been requested)" of SHST 00b in
+# Base 2.4 Figure 42, which is prose where it has two lowercase words
+REGEX_NAME_PROSE = re.compile(r"^(?P<name>[^()]+?) \((?P<aside>[^()]+)\)$")
+REGEX_SHORT_SENTENCE = re.compile(r"^[A-Za-z0-9][^:;.()]*\.?$")
+
+
+def is_initials(acronym: str, name: str) -> bool:
+    """Whether 'acronym' is made of the initials of the words of 'name', in
+    order, from the first word's to the last word's, as GAZ of "Get Active
+    ZoneGroup" and AAZ of "Add or Replace Active ZoneGroup" """
+
+    initials = "".join(word[0].upper() for word in name.split())
+    rest = iter(initials[1:-1])
+    return (
+        len(acronym) >= 2
+        and acronym[0] == initials[0]
+        and acronym[-1] == initials[-1]
+        and all(letter in rest for letter in acronym[1:-1])
+    )
+
+
 REGEX_NAME_SENTENCE = re.compile(
     r"^(?P<name>[A-Z][\w/-]*(?: [\w/-]+){0,2})\. (?P<rest>.+)$"
 )
@@ -4212,6 +4293,13 @@ def tidy_value_names(document: SpecDocument) -> None:
 
     lists = [values.entries for values in document.values]
     lists += [field.values for field, _ in fields_with_sources(document)]
+    # The values of a case, as ZRAS 0h "List all zones." of the case of ZNS
+    # 1.4 Figure 35 where ZRA is 00h
+    lists += [
+        case.values
+        for field, _ in fields_with_sources(document)
+        for case in field.cases
+    ]
     for entries in lists:
         for entry in entries:
             if not entry.name and REGEX_NAMED_CODE.match(entry.value):
@@ -4225,6 +4313,23 @@ def tidy_value_names(document: SpecDocument) -> None:
             match = REGEX_NAME_ACRONYM.match(entry.name)
             if match:
                 entry.acronym, entry.name = match["acronym"], match["name"]
+            acronym = entry.columns.get("acronym", "").strip()
+            if not entry.acronym and re.fullmatch(r"[A-Z][A-Z0-9]+", acronym):
+                entry.acronym = acronym
+            initials = REGEX_NAME_INITIALS.match(entry.name)
+            if (
+                initials
+                and not entry.acronym
+                and is_initials(initials["acronym"], initials["name"])
+            ):
+                entry.acronym = initials["acronym"]
+                entry.name = " ".join(
+                    part for part in (initials["name"], initials["after"]) if part
+                )
+            prose = REGEX_NAME_PROSE.match(entry.name)
+            if prose and is_aside(prose["aside"], prose["name"]):
+                entry.name = prose["name"]
+                described(entry, prose["aside"])
             for aside in REGEX_NAME_ASIDE.finditer(entry.name):
                 described(entry, aside["aside"])
             entry.name = REGEX_NAME_ASIDE.sub(" ", entry.name).strip()
@@ -4245,6 +4350,30 @@ def tidy_value_names(document: SpecDocument) -> None:
                 name, rest = sentences[id(entry)]
                 if taken.count(name.casefold()) == 1:
                     entry.name, entry.description = name, rest
+        # Beside named values, a named range of reserved values too, a
+        # definition of one short sentence is a name, as "No action" of MO
+        # 00h beside "Reclaim Unit Handle Status" in Base 2.4 Figure 651, and
+        # "4 bytes" of PRS 000b beside "010b to 111b" Reserved; so is a name
+        # with its initials, as "Add or Replace Active ZoneGroup (AAZ)
+        # operation" of ORI 2
+        if not any(e.name for e in entries):
+            continue
+        for entry in entries:
+            text = " ".join(entry.description.split())
+            if entry.name or not REGEX_NAMED_CODE.match(entry.value):
+                continue
+            initials = REGEX_NAME_INITIALS.match(text)
+            if initials and is_initials(initials["acronym"], initials["name"]):
+                entry.acronym, entry.description = initials["acronym"], ""
+                entry.name = " ".join(
+                    part for part in (initials["name"], initials["after"]) if part
+                )
+            elif (
+                REGEX_SHORT_SENTENCE.match(text)
+                and len(text.split()) <= 6
+                and not value_names(entry)
+            ):
+                entry.name, entry.description = text.removesuffix("."), ""
 
 
 def is_short_name(description: str) -> bool:
