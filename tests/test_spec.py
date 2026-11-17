@@ -2933,3 +2933,21 @@ def test_a_layout_of_another_kind_from_byte_0_has_its_gaps_reported():
     assert gap.source.figure_nr == 13
     kinds = {s.source.figure_nr: s.kind for s in spec.structures}
     assert kinds == {13: "other", 188: "cited_fields"}
+
+
+def test_the_one_row_of_no_name_of_a_register_is_the_register():
+    """CCPTR of PCIe 1.4 Figure 23 has one row, "31:00 RO 0h Shall be
+    cleared to zero for NVM Express use", and no field otherwise"""
+
+    spec = document_of(
+        figure_of(
+            23,
+            "Offset 28h: FPTR - Foo Pointer",
+            ("Bits", "Type", "Reset", "Description"),
+            ("31:00", "RO", "0h", "Shall be cleared to zero for NVM Express use."),
+        )
+    )
+    (register,) = spec.structures
+    assert [(f.range, f.name, f.acronym) for f in register.fields] == [
+        ("31:00", "Foo Pointer", "FPTR")
+    ]
