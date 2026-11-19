@@ -112,6 +112,44 @@ def test_the_command_set_of_an_opcode_table_has_its_key_title_and_document():
     assert (foo.key, foo.title, foo.document) == ("foo", "Foo Command Set", "foo")
 
 
+def test_the_bits_of_an_opcode_and_whether_the_nsid_is_used_are_typed():
+    """Base 2.4 Figure 143 gives the Function bits of an opcode as "0000 01b", and
+    "Namespace Identifier Used" as Yes, No or a note"""
+
+    spec = document_of(
+        figure_of(
+            143,
+            "Opcodes for Admin Commands",
+            (
+                "07:02",
+                "01:00",
+                "Combined Opcode",
+                "Namespace Identifier Used",
+                "Command",
+            ),
+            ("0000 01b", "10b", "06h", "Yes", "Foo Identify"),
+            ("0000 10b", "00b", "08h", "NOTE 6", "Foo Abort"),
+        ),
+    )
+    (admin,) = spec.command_sets.values()
+    typed = {
+        name: {k: (t.kind, t.lower, t.flag, t.note) for k, t in command.typed.items()}
+        for name, command in admin.commands.items()
+    }
+    assert typed == {
+        "foo_identify": {
+            "07_02": ("number", 1, None, None),
+            "01_00": ("number", 2, None, None),
+            "namespace_identifier_used": ("flag", None, True, None),
+        },
+        "foo_abort": {
+            "07_02": ("number", 2, None, None),
+            "01_00": ("number", 0, None, None),
+            "namespace_identifier_used": ("note", None, None, 6),
+        },
+    }
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
@@ -4463,7 +4501,9 @@ def test_a_document_has_the_key_and_the_revision_of_its_specification(tmp_path):
     from senfd.documents.normalized import NormalizedFigureDocument
     from senfd.documents.spec import FromNormalizedDocument, document_key
 
-    stem = "NVM Express Zoned Namespace Command Set Specification, Revision 1-5 Ratified"
+    stem = (
+        "NVM Express Zoned Namespace Command Set Specification, Revision 1-5 Ratified"
+    )
     path = tmp_path / f"{stem}{NormalizedFigureDocument.SUFFIX_JSON}"
     path.write_text(NormalizedFigureDocument().model_dump_json(), encoding="utf-8")
     document, _ = FromNormalizedDocument.convert(path, Namespace())
@@ -4528,7 +4568,9 @@ def test_a_value_of_a_field_named_reserved_has_the_role_reserved():
                 holding(
                     "Foo Mode (FM): The mode.",
                     table_of(
-                        ("Value", "Definition"), ("0h", "Ding"), ("1h to Fh", "Reserved")
+                        ("Value", "Definition"),
+                        ("0h", "Ding"),
+                        ("1h to Fh", "Reserved"),
                     ),
                 ),
             ),
@@ -4569,21 +4611,43 @@ def test_a_title_gives_the_name_owner_acronym_and_offset_of_a_structure():
         None,
     )
     header = parts("PDU Common Header (CH)")
-    assert (header.name, header.acronym, header.qualifier) == ("PDU Common Header", "CH", None)
+    assert (header.name, header.acronym, header.qualifier) == (
+        "PDU Common Header",
+        "CH",
+        None,
+    )
     stamp = parts("Timestamp (Set Features)")
-    assert (stamp.name, stamp.acronym, stamp.qualifier) == ("Timestamp", None, "Set Features")
+    assert (stamp.name, stamp.acronym, stamp.qualifier) == (
+        "Timestamp",
+        None,
+        "Set Features",
+    )
     name_parts(stamp)
     assert (stamp.name, stamp.qualifier) == ("Timestamp", "Set Features")
     bist = parts("BIST - Built-In Self Test (Optional)", "register", "bits")
-    assert (bist.name, bist.acronym, bist.optional) == ("Built-In Self Test", "BIST", True)
-    capability = parts("Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2", unit="bits")
-    assert (capability.kind, capability.acronym, capability.offset_base, capability.offset) == (
+    assert (bist.name, bist.acronym, bist.optional) == (
+        "Built-In Self Test",
+        "BIST",
+        True,
+    )
+    capability = parts(
+        "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2", unit="bits"
+    )
+    assert (
+        capability.kind,
+        capability.acronym,
+        capability.offset_base,
+        capability.offset,
+    ) == (
         "register",
         "PXDCAP2",
         "PXCAP",
         0x24,
     )
-    doorbell = parts("Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail Doorbell", unit="bits")
+    doorbell = parts(
+        "Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail Doorbell",
+        unit="bits",
+    )
     assert (doorbell.acronym, doorbell.offset, doorbell.offset_formula) == (
         "SQyTDBL",
         None,
@@ -4647,7 +4711,11 @@ def test_a_structure_has_a_key_unique_in_its_document_and_its_size():
         6: "ring_prp_entry_1",
     }
     names = {s.source.figure_nr: s.name for s in spec.structures}
-    assert (names[1], names[3], names[5]) == ("Identify Namespace", "Foo Stamp", "PRP Entry 1")
+    assert (names[1], names[3], names[5]) == (
+        "Identify Namespace",
+        "Foo Stamp",
+        "PRP Entry 1",
+    )
     sizes = {s.source.figure_nr: s.size for s in spec.structures}
     assert (sizes[1], sizes[3], sizes[5]) == (8, 6, 8)
 

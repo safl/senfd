@@ -548,6 +548,12 @@ class Command(Model):
     Submission Queue"""
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
+    typed: Dict[str, "Typed"] = Field(default_factory=dict)
+    """
+    The columns of a known kind as what they are, by their keys: the bits of the opcode,
+    as "0000 01b" of "07_02", a number; "namespace_identifier_used" a flag, or the
+    note it is given by
+    """
     footnotes: Dict[str, List[int]] = Field(default_factory=dict)
     """
     The numbers of the footnotes marked on the name and the other columns of the row of
@@ -672,6 +678,7 @@ class Structure(Model):
         if isinstance(data, dict) and "title" not in data and "name" in data:
             data = {**data, "title": data["name"]}
         return data
+
     fields: List[Bits] = Field(default_factory=list)
     """Its fields"""
     notes: List[str] = Field(default_factory=list)
@@ -1562,7 +1569,12 @@ def relative_to(holder: "senfd.ranges.Range", fields: List[Bits]) -> None:
     """
 
     spans = [f for f in fields if f.kind == "span"]
-    if holder.kind != "span" or holder.upper is None or holder.lower is None or not spans:
+    if (
+        holder.kind != "span"
+        or holder.upper is None
+        or holder.lower is None
+        or not spans
+    ):
         return
     if any(f.unit != holder.unit for f in spans):
         return
@@ -2444,6 +2456,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                 },
                 source=source,
             )
+            document.errata += type_command(command_set.commands[alias(name)])
         return
 
     if figure.layout is None:
@@ -2633,7 +2646,7 @@ TYPED_FORMS: List[Tuple[TypedKind, re.Pattern]] = [
     (
         "number",
         re.compile(
-            r"^(?P<binary>[01]+)b(?:\s*(?:to|-)\s*(?P<binary_upper>[01]+)b)?"
+            r"^(?P<binary>[01][01 ]*)b(?:\s*(?:to|-)\s*(?P<binary_upper>[01][01 ]*)b)?"
             + FOOTNOTES
             + r"$"
         ),
@@ -2685,15 +2698,17 @@ def typed_of(text: str) -> Optional[Typed]:
             typed.upper = int(upper, 16) if upper else typed.lower
         elif kind == "number":
             if groups.get("binary"):
-                typed.lower = int(groups["binary"], 2)
+                typed.lower = int(groups["binary"].replace(" ", ""), 2)
                 upper = groups.get("binary_upper")
-                typed.upper = int(upper, 2) if upper else typed.lower
+                typed.upper = int(upper.replace(" ", ""), 2) if upper else typed.lower
             else:
                 typed.lower = int(groups["decimal"])
                 upper = groups.get("decimal_upper")
                 typed.upper = int(upper) if upper else typed.lower
         elif kind == "identifiers":
-            typed.listed = [int(code, 16) for code in re.findall(r"([0-9A-Fa-f]+)h", text)]
+            typed.listed = [
+                int(code, 16) for code in re.findall(r"([0-9A-Fa-f]+)h", text)
+            ]
         elif kind == "note":
             typed.note = int(groups["note"])
         elif kind == "reference":
@@ -2753,6 +2768,49 @@ def free_text(values: "Values") -> set:
         for column, texts in cells.items()
         if sum(len(text.split()) > 4 for text in texts) * 2 > len(texts)
     }
+
+
+def command_kinds(column: str) -> Optional[set]:
+    """
+    The kinds of value a column of an opcode table holds, or None for a column of
+    text: the bits of the opcode, as "07_02", hold numbers, as "0000 01b"
+    """
+
+    if re.fullmatch(r"\d+_\d+", column):
+        return {"number"}
+    if column.startswith("namespace_identifier_used"):
+        return {"flag"}
+    if column in ("om", "io", "admin") or column.endswith("_o_m_p"):
+        return {"level"}
+    return None
+
+
+def type_command(command: "Command") -> List["Erratum"]:
+    """Type the columns of a known kind of 'command', and the errata of those of no
+    form their column holds"""
+
+    errata = []
+    for column, text in command.columns.items():
+        kinds = command_kinds(column)
+        if kinds is None or not text.strip():
+            continue
+        typed = typed_of(text)
+        if typed and typed.kind in kinds | COMMON:
+            command.typed[column] = typed
+            continue
+        errata.append(
+            Erratum(
+                code="value",
+                message=(
+                    f"{command.name}: '{text}' in the column "
+                    f'"{column_title(column)}" is not '
+                    + " or ".join(KIND_WORDS.get(k, f"a {k}") for k in sorted(kinds))
+                ),
+                found=text,
+                source=command.source,
+            )
+        )
+    return errata
 
 
 def type_values(values: "Values") -> List["Erratum"]:
@@ -5402,9 +5460,7 @@ def name_structures(document: SpecDocument) -> None:
                 break
         for index, structure in enumerate(structures):
             structure.key = candidates[index][at[index]]
-    keys_by_title = {
-        (s.source.document, s.title): s.key for s in document.structures
-    }
+    keys_by_title = {(s.source.document, s.title): s.key for s in document.structures}
     for operation in operations_of(document):
         operation.structures = [
             keys_by_title.get((operation.source.document, title), title)
