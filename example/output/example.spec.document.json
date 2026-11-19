@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "e16deda96a71cf40614b252c3b58cb76db09d71100f482fd5b81cfd0526d2ffb",
+    "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
     "stem": "example",
     "name": null,
     "key": null,
@@ -8653,6 +8653,8 @@
           "document": null
         }
       ],
+      "status_code_type": 1,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 9,
@@ -8700,6 +8702,8 @@
           "document": null
         }
       ],
+      "status_code_type": 0,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 22,
@@ -8789,6 +8793,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 24,
@@ -8867,6 +8873,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 25,
@@ -8969,6 +8977,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 26,
@@ -9070,6 +9080,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 30,
@@ -9146,6 +9158,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 31,
@@ -9416,6 +9430,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 33,
@@ -9476,6 +9492,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 34,
@@ -9550,6 +9568,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 44,
@@ -9585,6 +9605,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 45,
@@ -9632,6 +9654,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 46,
@@ -9706,6 +9730,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 47,
@@ -9753,6 +9779,8 @@
           "document": null
         }
       ],
+      "status_code_type": 0,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 48,
@@ -9800,6 +9828,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 49,
@@ -9857,6 +9887,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 56,
@@ -9911,6 +9943,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 58,
@@ -9950,6 +9984,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 59,
@@ -10002,6 +10038,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 69,
@@ -10080,6 +10118,8 @@
           "document": null
         }
       ],
+      "status_code_type": 1,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 70,
@@ -10159,6 +10199,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 74,
@@ -10271,6 +10313,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 75,
@@ -10345,6 +10389,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 78,
@@ -10382,6 +10428,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 91,
@@ -10483,6 +10531,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 95,
@@ -10584,6 +10634,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 96,
@@ -11243,7 +11295,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "e16deda96a71cf40614b252c3b58cb76db09d71100f482fd5b81cfd0526d2ffb",
+      "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
       "stem": "example",
       "name": null,
       "key": null,

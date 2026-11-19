@@ -2729,6 +2729,38 @@ def test_a_cns_value_the_csi_selects_has_the_structures_of_each_command_set():
     assert [s.figure_nr for s in document.values[2].entries[1].selects] == [127]
 
 
+def test_a_table_of_status_values_has_the_status_code_type_and_scope_of_its_caption():
+    """Base 2.4 Figure 105 is "Status Code - Command Specific Status Values, I/O
+    Command Set Specific", of Status Code Type 1h; Figure 107 is "Status Code - Media
+    and Data Integrity Error Values" of 2h"""
+
+    spec = document_of(
+        figure_of(
+            105,
+            "Status Code - Command Specific Status Values, I/O Command Set Specific",
+            ("Value", "Description"),
+            ("80h", "Foo Conflict"),
+        ),
+        figure_of(
+            107,
+            "Status Code - Media and Data Integrity Error Values",
+            ("Value", "Description"),
+            ("81h", "Foo Fault"),
+        ),
+        figure_of(
+            108,
+            "Status Code - Path Related Status Values",
+            ("Value", "Description"),
+            ("00h", "Foo Path Error"),
+        ),
+    )
+    assert [(v.status_code_type, v.status_scope) for v in spec.values] == [
+        (1, "io_command_set"),
+        (2, None),
+        (3, None),
+    ]
+
+
 def test_a_command_has_the_tables_of_status_values_its_name_captions():
     """Base 2.4 Figure 331, "Get Log Page - Command Specific Status Values",
     gives the status values of Get Log Page"""

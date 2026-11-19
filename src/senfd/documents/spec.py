@@ -802,6 +802,23 @@ class Entry(Model):
     Specification for "NVM Command Set" of the Command Set Identifiers"""
 
 
+StatusScope = Literal["io_command_set", "fabrics"]
+
+# The Status Code Type of a table of status values by the words of its caption, as
+# Base 2.4 Figure 102 gives them
+STATUS_CODE_TYPES = {
+    "generic_command": 0,
+    "command_specific": 1,
+    "command_operation_specific": 1,
+    "media_and_data_integrity_error": 2,
+    "path_related": 3,
+}
+STATUS_SCOPES: Dict[str, StatusScope] = {
+    "io_command_set_specific": "io_command_set",
+    "fabrics_command_specific": "fabrics",
+}
+
+
 class Values(Model):
     """A table of values, by the kind of its caption and what it names; the
     scope is what the caption confines it to, as "I/O Commands" """
@@ -819,6 +836,18 @@ class Values(Model):
     """The keys of its columns"""
     entries: List[Entry] = Field(default_factory=list)
     """Its rows"""
+    status_code_type: Optional[int] = None
+    """
+    The Status Code Type of the status codes of a table of status values, by its
+    caption, as 1 of "Command Specific Status Values" and 2 of "Media and Data
+    Integrity Error Values"
+    """
+    status_scope: Optional[StatusScope] = None
+    """
+    What the caption of a table of status values confines its codes to, beyond the
+    document: "io_command_set" of "Status Code - Command Specific Status Values, I/O
+    Command Set Specific", or "fabrics" of the Fabrics Command Specific ones
+    """
     source: Source
     """The figure holding the table"""
 
@@ -2399,6 +2428,16 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
                     scope=subject.scope,
                     columns=figure.columns,
                     entries=[entry_of(e, code, named) for e in figure.entries],
+                    status_code_type=(
+                        STATUS_CODE_TYPES.get(alias(subject.qualifier or ""))
+                        if subject.kind == "status_values"
+                        else None
+                    ),
+                    status_scope=(
+                        STATUS_SCOPES.get(alias(subject.scope or ""))
+                        if subject.kind == "status_values"
+                        else None
+                    ),
                     source=source,
                 )
             )
