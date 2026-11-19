@@ -90,6 +90,19 @@
                     "default": null,
                     "description": "The most entries the array holds, where it has no count and a\nparagraph referring to its figure states it, as \"up to 511 Zone\nIdentifier entries\" of the Changed Zone List of ZNS 1.5",
                     "title": "Maximum"
+                },
+                "counted_by": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the field of the structure that holds the number of entries, where\nthe array has no count and the last entry names that field, as NZID of \"Zone\nIdentifier NZID-1\" of the Changed Zone List of ZNS 1.5, or NUMENT of \"SC Entry\nNUMENT-1\" of the Secondary Controller List of Base 2.4",
+                    "title": "Counted By"
                 }
             },
             "required": [

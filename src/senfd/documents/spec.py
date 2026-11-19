@@ -319,6 +319,13 @@ class Array(Model):
     """The most entries the array holds, where it has no count and a
     paragraph referring to its figure states it, as "up to 511 Zone
     Identifier entries" of the Changed Zone List of ZNS 1.5"""
+    counted_by: Optional[str] = None
+    """
+    The acronym of the field of the structure that holds the number of entries, where
+    the array has no count and the last entry names that field, as NZID of "Zone
+    Identifier NZID-1" of the Changed Zone List of ZNS 1.5, or NUMENT of "SC Entry
+    NUMENT-1" of the Secondary Controller List of Base 2.4
+    """
 
 
 class Case(CaseCommon):
@@ -2052,6 +2059,29 @@ def maxima_of(fields: List[Bits], mentions: List[str]) -> None:
             array.maximum = found.pop()
 
 
+def link_counts(fields: List[Bits]) -> None:
+    """
+    Set 'counted_by' on the arrays of 'fields' that have no count, where the last entry
+    names one field of 'fields' by its acronym in place of its index, as NUMCIDS of
+    "Controller Identifier NUMCIDS-1"
+    """
+
+    acronyms = {f.acronym for f in fields if f.acronym}
+    last: Dict[str, Bits] = {}
+    for field in fields:
+        if field.array is not None and field.array.count is None:
+            last[field.array.name] = field
+    for name, entry in last.items():
+        words = (entry.name or "").replace(name, " ", 1) if entry.name else ""
+        named = set(re.findall(r"\b[A-Za-z][A-Za-z0-9]*\b", words)) & acronyms
+        if len(named) != 1:
+            continue
+        (counter,) = named
+        for field in fields:
+            if field.array is not None and field.array.name == name:
+                field.array.counted_by = counter
+
+
 def counted_by(entry: Bits, fields: List[Bits]) -> set:
     """
     The maxima that the field counting the entries of the array of 'entry' states, for
@@ -2428,6 +2458,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         read[0].name, read[0].acronym = (name, acronym) if name else (acronym, None)
     fields, errata, unnamed = checked(read, None, source)
     maxima_of(fields, figure.mentions)
+    link_counts(fields)
     kind = subject.kind
     # A table whose rows name the structure or the CNS value of each field, for example
     # NVM 1.3 Figure 188, cites fields of other structures.

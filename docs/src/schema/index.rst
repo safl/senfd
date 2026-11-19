@@ -202,7 +202,9 @@ that stride, and the entries of another width are candidate errata. For
 example, the formula of Exported NVM Subsystem Descriptor N of Base 2.4
 Figure 384 gives 260 bytes, and Descriptors 1 and 2 are 520 and 22 bytes. An
 array without a count takes its ``maximum`` from the field that counts its
-entries, for example "up to 127 entries" of NUMENT. The rows of a group
+entries, for example "up to 127 entries" of NUMENT. Where the last entry
+names a field of the structure in place of its index, as "Zone Identifier
+NZID-1", the array has ``counted_by``, the acronym of that field. The rows of a group
 that a column names by an index, such as "Source Range 0" to "Source Range
 127" of NVM 1.3 Figure 40, are one field, an entry of the array of those
 groups, whose ``fields`` are the rows at offsets from the start of the

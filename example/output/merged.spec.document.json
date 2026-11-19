@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
+    "senfd_sha256": "0b87f29d097d0b2f17e813421ff0fb502905805a9792ca13576b2d276ed9f240",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "9b8871e8e7c603293522777e0066d4b1bf2f149881809a694d5f11496fe9a608"
+    "combined_sha256": "eb44818a31381c289f4164d422e073ebe62e3a625b448f4febbc89b878159a27"
   },
   "command_sets": {
     "foobar": {
@@ -5734,7 +5734,8 @@
             "count": null,
             "stride": null,
             "lower": null,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -5776,7 +5777,8 @@
             "count": null,
             "stride": null,
             "lower": null,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6665,7 +6667,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6705,7 +6708,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6745,7 +6749,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7098,7 +7103,8 @@
             "count": 2,
             "stride": 32,
             "lower": 16,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -7145,7 +7151,8 @@
             "count": 2,
             "stride": 32,
             "lower": 16,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -7313,7 +7320,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7353,7 +7361,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7393,7 +7402,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7995,7 +8005,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8042,7 +8053,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8089,7 +8101,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8136,7 +8149,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8183,7 +8197,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8230,7 +8245,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -11601,7 +11617,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
+      "senfd_sha256": "0b87f29d097d0b2f17e813421ff0fb502905805a9792ca13576b2d276ed9f240",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11614,7 +11630,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
+      "senfd_sha256": "0b87f29d097d0b2f17e813421ff0fb502905805a9792ca13576b2d276ed9f240",
       "stem": "invalid",
       "name": null,
       "key": null,
