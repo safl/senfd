@@ -202,9 +202,11 @@ that stride, and the entries of another width are candidate errata. For
 example, the formula of Exported NVM Subsystem Descriptor N of Base 2.4
 Figure 384 gives 260 bytes, and Descriptors 1 and 2 are 520 and 22 bytes. An
 array without a count takes its ``maximum`` from the field that counts its
-entries, for example "up to 127 entries" of NUMENT. A field of a group of
-rows that a column names by an index, such as "Source Range 0" to "Source
-Range 127", has ``group``, the array of those groups.
+entries, for example "up to 127 entries" of NUMENT. The rows of a group
+that a column names by an index, such as "Source Range 0" to "Source Range
+127" of NVM 1.3 Figure 40, are one field, an entry of the array of those
+groups, whose ``fields`` are the rows at offsets from the start of the
+entry.
 
 A field has ``structure`` where another figure lays out the field.
 ``structure`` is the ``source`` of that figure, and the structure is the
@@ -316,7 +318,9 @@ controlling field that the case applies to, each with its ``name`` as the
 figure writes it and its ``value`` as a number. ``otherwise`` is true for
 the case of all other values. A case also has the ``name``, ``acronym``,
 ``role`` and ``description`` of the field in that case, and the ``values``
-and ``fields`` of the field in that case. The ``values`` of the field
+and ``fields`` of the field in that case, with their ranges relative to the
+field, as bytes 15:08 of DPTR for PRP2, which Base 2.4 Figure 93 gives as
+bytes 39:32. The ``values`` of the field
 itself apply whatever the value of the controlling field. Where the
 controlling field is a field of another figure, the case has
 ``selector_in``, the ``source`` of that figure: DPTR of the Common Command

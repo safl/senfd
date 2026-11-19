@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
+    "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
     "stem": "invalid",
     "name": null,
     "key": null,
@@ -52,7 +52,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -112,7 +111,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -144,7 +142,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -176,7 +173,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -233,7 +229,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -265,7 +260,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -273,7 +267,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -332,7 +325,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -371,7 +363,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
+      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
       "stem": "invalid",
       "name": null,
       "key": null,

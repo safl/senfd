@@ -387,13 +387,6 @@ class Bits(BitsCommon):
     The value that the field holds a part of, where a figure splits a value over two
     fields
     """
-    group: Optional[Array] = None
-    """
-    The array of groups of fields whose entry is the group of this field, where a column
-    names each group, for example "Source Range 0" to "Source Range 127" of NVM 1.3
-    Figure 40. It holds the name of the array, the index of the group of this field, and
-    the size and the offset of a group.
-    """
     structure: Optional[Source] = None
     """The source of the structure that lays out the field. The description of
     the field refers to the figure, for example "defined in Figure 125", or,
@@ -1453,6 +1446,7 @@ def checked(
             laid_out, case_errata, case_unnamed = checked(
                 case.fields, within, source, holding
             )
+            relative_to(rng, laid_out)
             errata += case_errata
             unnamed += case_unnamed
             is_a = senfd.fields.identity(case.name, None).role if case.name else "field"
@@ -1496,6 +1490,32 @@ def checked(
     for disagreeing in arrays_of(kept, pairs=whole):
         errata.append(Erratum(code="acronym", message=disagreeing, source=source))
     return kept, errata, unnamed
+
+
+def relative_to(holder: "senfd.ranges.Range", fields: List[Bits]) -> None:
+    """
+    Make the ranges of 'fields', the fields of a case of the field of the range 'holder',
+    relative to that field where the figure gives them relative to the structure: where
+    they all lie within the field and one lies beyond its width, as PRP2 at bytes 39:32
+    of DPTR at bytes 39:24 of Base 2.4 Figure 93, which is bytes 15:08 of DPTR
+    """
+
+    spans = [f for f in fields if f.kind == "span"]
+    if holder.kind != "span" or holder.upper is None or holder.lower is None or not spans:
+        return
+    if any(f.unit != holder.unit for f in spans):
+        return
+    width = holder.upper - holder.lower + 1
+    inside = all(
+        holder.lower <= (f.lower or 0) and (f.upper or 0) <= holder.upper for f in spans
+    )
+    if inside and any((f.upper or 0) >= width for f in spans):
+        for field in spans:
+            field.lower = (field.lower or 0) - holder.lower
+            field.upper = (field.upper or 0) - holder.lower
+            field.range = f"{field.upper:02d}:{field.lower:02d}"
+            if field.upper == field.lower:
+                field.range = f"{field.lower:02d}"
 
 
 def decide(case: Case, fields: List[Bits]) -> None:
@@ -1834,11 +1854,13 @@ def variable_arrays(fields: List[Bits]) -> None:
 
 def grouped_arrays(fields: List[Bits]) -> None:
     """
-    Set 'group' on the fields of a layout whose rows a column groups by a name and an
-    index, for example "Source Range 0", "Source Range 1" and "Source Range 127" of NVM
-    1.3 Figure 40. A blank cell continues the group above it. Where each group lies at
-    the offset that its index gives, by the size of the first group, the groups are the
-    entries of an array from the first index to the last.
+    Make the entries of an array of the rows of a layout that a column groups by a name
+    and an index, for example "Source Range 0", "Source Range 1" and "Source Range 127"
+    of NVM 1.3 Figure 40. A blank cell continues the group above it. Where each group
+    lies at the offset that its index gives, by the size of the first group, the groups
+    are the entries of an array from the first index to the last. The rows of each group
+    become one field, the entry, whose fields are the rows at offsets from the start of
+    the entry.
     """
 
     for column in {c for f in fields for c in f.columns}:
@@ -1867,15 +1889,47 @@ def grouped_arrays(fields: List[Bits]) -> None:
         ):
             continue
         name = labels[0][0]  # type: ignore
+        grouped: Dict[int, List[Bits]] = {}
         for (_, index), field in zip(labels, fields):  # type: ignore
-            field.group = Array(
-                name=name,
-                index=index,
-                first=first,
-                count=indexes[-1] - first + 1,
-                stride=stride,
-                lower=starts[first],
+            grouped.setdefault(index, []).append(field)
+        entries = []
+        for index, rows in grouped.items():
+            start = starts[index]
+            upper, lower = start + stride - 1, start
+            inner = []
+            for row in rows:
+                moved = row.model_copy(deep=True)
+                moved.columns = {k: v for k, v in row.columns.items() if k != column}
+                if moved.kind == "span" and moved.upper is not None:
+                    moved.lower = (moved.lower or 0) - start
+                    moved.upper -= start
+                    moved.range = f"{moved.upper:02d}:{moved.lower:02d}"
+                    if moved.upper == moved.lower:
+                        moved.range = f"{moved.lower:02d}"
+                inner.append(moved)
+            entries.append(
+                Bits(
+                    name=f"{name} {index}",
+                    unit=rows[0].unit,
+                    role="field",
+                    kind="span",
+                    upper=upper,
+                    lower=lower,
+                    range=f"{upper}:{lower}",
+                    width=stride,
+                    elided=any(row.elided for row in rows),
+                    fields=inner,
+                    array=Array(
+                        name=name,
+                        index=index,
+                        first=first,
+                        count=indexes[-1] - first + 1,
+                        stride=stride,
+                        lower=starts[first],
+                    ),
+                )
             )
+        fields[:] = entries
         return
 
 
@@ -2176,6 +2230,29 @@ def uncovered(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
     return errata
 
 
+def uncovered_entries(fields: List[Bits], unit: str, source: Source) -> List[Erratum]:
+    """
+    The errata of uncovered() of the entries that grouped_arrays() made, each entry's
+    fields at the offsets of the figure, as the bytes of no field of Source Range 1 of
+    SLM 1.3 Figure 13
+    """
+
+    errata = []
+    for entry in fields:
+        if entry.array is None or not entry.fields or entry.lower is None:
+            continue
+        placed = []
+        for field in entry.fields:
+            moved = field.model_copy()
+            if field.kind == "span" and field.upper is not None:
+                moved.lower = (field.lower or 0) + entry.lower
+                moved.upper = field.upper + entry.lower
+                moved.range = f"{moved.upper}:{moved.lower}"
+            placed.append(moved)
+        errata += uncovered(placed, unit, source)
+    return errata
+
+
 def source_of(figure: NormalizedFigure, stem: str) -> Source:
     return Source(
         document=stem,
@@ -2361,6 +2438,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
     whole = kind in WHOLE or (kind == "other" and starts_at_zero(fields))
     if whole and not (errata or unnamed):
         errata = uncovered(fields, figure.layout.unit, source)
+        errata += uncovered_entries(fields, figure.layout.unit, source)
         errata += misnumbered(fields, figure.layout.unit, source)
     errata += shared_acronyms(fields, source)
     took(document, errata, unnamed, source)
