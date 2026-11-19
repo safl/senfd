@@ -305,6 +305,15 @@ command sets. The command sets are those whose documents the entries of
 the Command Set Identifiers name, and such an entry has ``document``, the
 name of the document whose subject it names.
 
+A value of a field also has ``selects`` where its name is the title of a
+section one level below a section that the field's description cites. The
+value selects the structures of that section, other than examples. PIF of
+NVM 1.3 cites section 5.3.1, and its value 00b, "16b Guard Protection
+Information", selects Figures 155 and 156 of section 5.3.1.1. Where a
+caption lays a structure out under a condition, the structure has the
+``condition``, and ``selected_when`` where the condition compares a field
+with a value: Figure 155 holds where the STS field is cleared to 0h.
+
 An entry of a table of values has the ``name`` that its row gives. Otherwise
 senfd takes the name from a short definition, from a column that names the
 value, such as the Management Operation column of SEL, from a first sentence
