@@ -4180,7 +4180,8 @@ def test_entries_at_a_text_alternating_or_before_a_named_last_are_arrays():
     """
     Media Unit Status Descriptor 0 and 1 of Base 2.4 Figure 263 are at "NOTE 1". Entry 0
     and Entry N of Figure 322 are an array. Zone Descriptor and Zone Descriptor
-    Extension of ZNS 1.4 Figure 37 alternate and are two arrays. CDW14 and CDW15 at
+    Extension of ZNS 1.5 Figure 37 alternate, and each pair is an entry of an array whose
+    fields lie at offsets from the start of the entry. CDW14 and CDW15 at
     "n/a" of MI 2.2 Figure 49 are not an array, and neither are ED and PAD. Exported NVM
     Subsystem Descriptor 1 and 2 of Base 2.4 Figure 384 are 520 and 22 bytes, where the
     formula of Descriptor N gives 260. The descriptors are an array with that stride,
@@ -4218,10 +4219,44 @@ def test_entries_at_a_text_alternating_or_before_a_named_last_are_arrays():
         ("(FDES+127):(FDES+64)", "Foo Descriptor 1: The second."),
         ("((2*FDES)+127):(FDES+128)", "Foo Descriptor Extension 1: The second."),
     )[0][1:] == [
-        ("Foo Descriptor 0", ("Foo Descriptor", 0, None)),
-        ("Foo Descriptor Extension 0", ("Foo Descriptor Extension", 0, None)),
-        ("Foo Descriptor 1", ("Foo Descriptor", 1, None)),
-        ("Foo Descriptor Extension 1", ("Foo Descriptor Extension", 1, None)),
+        (
+            "Foo Descriptor and Foo Descriptor Extension 0",
+            ("Foo Descriptor and Foo Descriptor Extension", 0, None),
+        ),
+        (
+            "Foo Descriptor and Foo Descriptor Extension 1",
+            ("Foo Descriptor and Foo Descriptor Extension", 1, None),
+        ),
+    ]
+    paired = document_of(
+        figure_of(
+            1,
+            "Foo List",
+            ("Bytes", "Description"),
+            ("07:00", "Number of Foos (NF): The count."),
+            ("63:08", "Foo Descriptor 0: The first."),
+            ("(FDES+63):64", "Foo Descriptor Extension 0: The first."),
+            ("(FDES+127):(FDES+64)", "Foo Descriptor 1: The second."),
+            ("((2*FDES)+127):(FDES+128)", "Foo Descriptor Extension 1: The second."),
+        )
+    ).structures[0]
+    assert [
+        (f.range, [(g.name, g.range) for g in f.fields]) for f in paired.fields[1:]
+    ] == [
+        (
+            "FDES + 63:8",
+            [
+                ("Foo Descriptor 0", "55:00"),
+                ("Foo Descriptor Extension 0", "FDES + 55:56"),
+            ],
+        ),
+        (
+            "2*FDES + 127:FDES + 64",
+            [
+                ("Foo Descriptor 1", "63:00"),
+                ("Foo Descriptor Extension 1", "FDES + 63:64"),
+            ],
+        ),
     ]
     assert arrays(
         ("n/a", "Foo Dword 14 (FDW14): The first."),
