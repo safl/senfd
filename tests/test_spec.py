@@ -453,6 +453,71 @@ def test_a_command_has_the_fields_its_section_says_it_uses_and_delegates():
     ]
 
 
+def test_a_command_whose_section_states_no_uses_uses_what_its_figures_lay_out():
+    """
+    NVM 1.3 states no fields that Read uses; its figures lay out MPTR, DPTR, ELBTU in
+    Command Dword 3, and Command Dwords 10 to 15. A dword of only reserved fields, or of
+    a field that is not used, as DPTR of SLM 1.3 Memory Fill, is not used. A merge
+    keeps the uses that a section states.
+    """
+
+    from senfd.documents.spec import merge
+
+    opcodes = figure_of(
+        1,
+        "Opcodes for Foo Commands",
+        ("Combined Opcode", "Command"),
+        ("02h", "Foo Read"),
+    )
+    figures = [
+        figure_of(
+            2,
+            "Foo Read - Data Pointer",
+            ("Bits", "Description"),
+            ("127:00", "Data Pointer (DPTR): Where data goes."),
+        ),
+        figure_of(
+            3,
+            "Foo Read - Command Dword 2 and Command Dword 3",
+            ("Bits", "Description"),
+            ("63:48", "Foo Upper (FU): The upper bits."),
+            ("47:00", "Reserved"),
+        ),
+        figure_of(
+            4,
+            "Foo Read - Command Dword 10",
+            ("Bits", "Description"),
+            ("31:00", "Starting LBA (SLBA): The first."),
+        ),
+        figure_of(
+            5,
+            "Foo Read - Command Dword 13",
+            ("Bits", "Description"),
+            ("31:00", "Reserved"),
+        ),
+        figure_of(
+            7,
+            "Foo Read - Command Dword 14",
+            ("Bits", "Description"),
+            ("31:00", "Foo Ignored (FI): This field is not used."),
+        ),
+    ]
+    spec = document_of(opcodes, *figures)
+    read = spec.command_sets["foo"].commands["foo_read"]
+    assert (read.uses, read.uses_stated) == (["CDW3", "DPTR", "CDW10"], False)
+
+    stated = figure_of(
+        6,
+        "Foo Read - Command Dword 11",
+        ("Bits", "Description"),
+        ("31:00", "Foo Count (FC): The count."),
+    )
+    stated.mentions = ["The Foo Read command uses the Command Dword 11 field."]
+    other = document_of(opcodes, stated, stem="other")
+    merged = merge([spec, other]).command_sets["foo"].commands["foo_read"]
+    assert (merged.uses, merged.uses_stated) == (["CDW11"], True)
+
+
 def test_a_paragraph_stating_what_a_command_uses_is_a_mention_of_the_next_figure():
     from senfd.documents.plain import mentioning
 

@@ -566,8 +566,12 @@ class Command(Model):
     """
     The acronyms of the command specific fields the command uses, as its section states
     them: 'DPTR', 'CDW10' to 'CDW14' of "The Get Log Page command uses the Data Pointer,
-    Command Dword 10, ... fields"
+    Command Dword 10, ... fields". Where the section states none, the fields that its
+    figures lay out, as uses_stated says: 'MPTR', 'DPTR', 'CDW10' and others of Read.
     """
+    uses_stated: bool = False
+    """Whether the section of the command states 'uses' and 'delegated', rather than
+    'uses' being the fields that its figures lay out"""
     delegated: List[Delegation] = Field(default_factory=list)
     """
     The fields whose use other fields select, as its section states them: DPTR, CDW11
@@ -4469,6 +4473,50 @@ def give_uses(document: SpecDocument, paragraph: str) -> None:
                 delegated.append(Delegation(fields=fields, selectors=selectors))
     for command in commands:
         command.uses, command.delegated = uses, delegated
+        command.uses_stated = True
+
+
+# The fields of the dwords of a command that a sentence on what it uses names by their
+# acronyms, rather than by their dwords
+POINTER_FIELDS = {"NSID", "MPTR", "DPTR", "PRP1", "PRP2", "SGL1"}
+
+
+def laid_out_uses(command: Command) -> List[str]:
+    """
+    The command specific fields of 'command' that its figures lay out, in the order of
+    their dwords: the acronym of a pointer, as DPTR, and else CDWn for each dword that
+    a field lies in, other than a reserved one or one that is not used. ELBTU of Read
+    in bits 63:48 of Command Dwords 2 and 3 is CDW3.
+    """
+
+    found: List[Tuple[int, str]] = []
+    for dwords in command.sqe:
+        for field in dwords.fields:
+            if field.role != "field" or field.kind != "span" or field.upper is None:
+                continue
+            if REGEX_NOT_USED.search(field.description):
+                continue
+            per = 4 if field.unit == "bytes" else 32
+            first = dwords.lower + (field.lower or 0) // per
+            last = dwords.lower + field.upper // per
+            if field.acronym in POINTER_FIELDS:
+                found.append((first, field.acronym or ""))
+            else:
+                found += [(n, f"CDW{n}") for n in range(max(first, 1), last + 1)]
+    return list(dict.fromkeys(name for _, name in sorted(found, key=lambda f: f[0])))
+
+
+def give_laid_out_uses(document: SpecDocument) -> None:
+    """Give each command whose section states no 'uses' the fields that its figures
+    lay out, by laid_out_uses(); not the commands of the Management Interface, whose
+    dwords are no command dwords, nor the Fabrics command"""
+
+    for command_set in document.command_sets.values():
+        if command_set.kind in ("management_interface", "fabrics"):
+            continue
+        for command in command_set.commands.values():
+            if not command.uses_stated:
+                command.uses = laid_out_uses(command)
 
 
 def link_delegations(document: SpecDocument) -> None:
@@ -5410,6 +5458,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_selectors(document)
     link_subsections(document)
     link_delegations(document)
+    give_laid_out_uses(document)
     give_pointer_cases(document)
     nest_layouts(document)
     bytes_of_bits(document)
@@ -6245,7 +6294,11 @@ def merge(documents: List[SpecDocument]) -> SpecDocument:
                 key, command_set.model_copy(update={"commands": {}})
             )
             for name, command in command_set.commands.items():
-                into.commands.setdefault(name, command)
+                kept = into.commands.setdefault(name, command)
+                # The document whose section states what the command uses gives it
+                if command.uses_stated and not kept.uses_stated:
+                    kept.uses, kept.delegated = command.uses, command.delegated
+                    kept.uses_stated = True
         for key, described in document.dwords.items():
             merged.dwords.setdefault(key, []).extend(described)
         merged.structures += document.structures
