@@ -2138,8 +2138,30 @@ def grouped_arrays(fields: List[Bits]) -> None:
                     ),
                 )
             )
+        named_like_first(entries)
         fields[:] = entries
         return
+
+
+def named_like_first(entries: List[Bits]) -> None:
+    """
+    Give a field of an entry that a row names by an acronym only the name and the
+    acronym of the field of another entry at the same range whose acronym that is, as
+    SNSID of Source Range 1 of SLM 1.3 Figure 13, which Source Range 0 names "Source
+    Namespace Identifier (SNSID)"
+    """
+
+    full = {
+        (f.lower, f.upper, f.acronym): f
+        for entry in entries
+        for f in entry.fields
+        if f.acronym and f.name
+    }
+    for entry in entries:
+        for field in entry.fields:
+            given = full.get((field.lower, field.upper, field.name))
+            if field.acronym is None and given is not None:
+                field.name, field.acronym = given.name, given.acronym
 
 
 def unopened(text: str) -> str:

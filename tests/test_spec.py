@@ -4115,6 +4115,30 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
     ]
 
 
+def test_a_field_of_an_entry_named_by_an_acronym_has_the_name_of_entry_0():
+    """
+    The rows of Source Range 1 and Source Range 127 of SLM 1.3 Figure 13 give only the
+    acronyms, as SNSID, which the rows of Source Range 0 give with the names
+    """
+
+    spec = document_of(
+        figure_of(
+            13,
+            "Foo Range Entries",
+            ("Range", "Bytes", "Description"),
+            ("Foo Range 0", "07:00", "Foo Start (FST): The start."),
+            ("", "15:08", "Foo Length (FLEN): The length."),
+            ("Foo Range 1", "23:16", "FST"),
+            ("Foo Range 1", "31:24", "FLEN"),
+        ),
+    )
+    (ranges,) = spec.structures
+    assert [[(f.name, f.acronym) for f in e.fields] for e in ranges.fields] == [
+        [("Foo Start", "FST"), ("Foo Length", "FLEN")],
+        [("Foo Start", "FST"), ("Foo Length", "FLEN")],
+    ]
+
+
 def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
     """
     SC Entry 0 of Base 2.4 Figure 361 is "defined in Figure 362", and SC Entry 1 cites
