@@ -10,6 +10,43 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.25.0
+
+The data model takes up the improvements that were known after 0.24.0. The
+format of the data model is 8, since a command set and a candidate erratum
+each have a new kind.
+
+The data pointer of each command has the cases of the data pointer of the
+Common Command Format, Base 2.4 Figure 93, in the unit of its own figure:
+DPTR of Read at bits 127:00 has PRP1 at bits 63:00, PRP2 at bits 127:64
+and SGL1 at bits 127:00, selected by PSDT, with the links of the common
+ones. A data pointer that its figure says is not used has no cases.
+
+The Fabrics commands of Base 2.4 are the command set "Fabrics", of the new
+kind `fabrics`, with one command "Fabrics" of the opcode 7Fh, whose `sqe`
+is Command Dword 0 of Figure 96. Each Fabrics command is an operation of
+that command, selected by FCTYPE, with its submission queue entry as its
+`sqe` and its response as its `cqe`, dwords with the fields in bits, and
+the data it transfers in its `structures`.
+
+A command whose section states no fields that it uses has the fields that
+its figures lay out as its `uses`, other than reserved fields and fields
+that are not used, and `uses_stated` is false for it. The commands of the
+Management Interface and the Fabrics command have no such `uses`.
+
+A caption's condition that names a field by its name, as "Select" in Base
+2.4 Figure 201, gives `selected_when` with the acronym of the field of that
+name in the section of the structure or the nearest section above it, SEL.
+The fields of the entries of an array that a row gives by acronym only, as
+in Source Range 1 of SLM 1.3 Figure 13, have the name and the acronym that
+another entry gives the field at the same range.
+
+A layout headed "Bits" with a field wider than 64 bits that does not start
+and end at byte boundaries is read as bytes, and the heading is a candidate
+erratum of the new kind `unit`, as Base 2.4 Figures 372 and 373. sate
+counts commands, features, log pages and structures as senfd does, each
+entity once.
+
 ## 0.24.0
 
 The data model now gives a generator of code what xNVMe's generators of

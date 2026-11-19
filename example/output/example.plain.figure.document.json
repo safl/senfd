@@ -1,8 +1,8 @@
 {
   "meta": {
     "format": 8,
-    "version": "0.24.0",
-    "senfd_sha256": "daca6fdfdd7628d6fbc3d51187fb5a7bab79e06a0dd7c2e9242465f9c867e7ec",
+    "version": "0.25.0",
+    "senfd_sha256": "db20d00d1f0b366dc7fa16c10ca831ee1a32d2615c0a423cd09bf6abf80377fd",
     "stem": "example",
     "name": null,
     "key": null,
