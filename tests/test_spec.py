@@ -2824,6 +2824,94 @@ def test_a_case_by_a_field_of_another_figure_has_the_numbers_of_its_codes():
     ]
 
 
+def test_the_data_pointer_of_a_command_has_the_cases_of_the_common_one():
+    """
+    DPTR of the Common Command Format, Base 2.4 Figure 93, gives the cases by PSDT in
+    bytes of DPTR. DPTR of a command, as of Read at bits 127:00 of NVM 1.3 Figure 51,
+    has those cases in bits, also where it is not used under a condition, as of Set
+    Features. DPTR of SLM 1.3 Memory Fill is not used and has none.
+    """
+
+    from senfd.tables import Cell, Row, Table
+
+    described = Cell(
+        text=(
+            "Data Pointer (DPTR): The data.\n"
+            "If CDW0.PSDT is cleared to 00b, then the definition of this field is:\n"
+            "If CDW0.PSDT is set to 01b or 10b, then the definition of this field is:"
+        ),
+        tables=[
+            Table(
+                rows=[
+                    Row(
+                        cells=[Cell(text="39:32"), Cell(text="PRP Entry 2 (PRP2): 2.")]
+                    ),
+                    Row(
+                        cells=[Cell(text="31:24"), Cell(text="PRP Entry 1 (PRP1): 1.")]
+                    ),
+                ]
+            ),
+            Table(
+                rows=[
+                    Row(cells=[Cell(text="39:24"), Cell(text="SGL Entry 1 (SGL1): 1.")])
+                ]
+            ),
+        ],
+    )
+    spec = document_of(
+        figure_of(
+            1,
+            "Common Command Format",
+            ("Bytes", "Description"),
+            ("23:00", "Foo (F): Foo."),
+            ("39:24", described),
+        ),
+        figure_of(
+            2,
+            "Opcodes for Foo Commands",
+            ("Combined Opcode", "Command"),
+            ("02h", "Foo Read"),
+            ("0Eh", "Foo Fill"),
+        ),
+        figure_of(
+            3,
+            "Foo Read - Data Pointer",
+            ("Bits", "Description"),
+            (
+                "127:00",
+                "Data Pointer (DPTR): Where data goes. Refer to Figure 1. If no data "
+                "structure is used, then this field is not used.",
+            ),
+        ),
+        figure_of(
+            4,
+            "Foo Fill - Data Pointer",
+            ("Bits", "Description"),
+            ("127:00", "Data Pointer (DPTR): This field is not used."),
+        ),
+    )
+    commands = spec.command_sets["foo"].commands
+    (read,) = commands["foo_read"].sqe[0].fields
+    assert [
+        (
+            c.selector,
+            [w.value for w in c.when],
+            [(f.acronym, f.range) for f in c.fields],
+        )
+        for c in read.cases
+    ] == [
+        ("PSDT", [0], [("PRP2", "127:64"), ("PRP1", "63:00")]),
+        ("PSDT", [1, 2], [("SGL1", "127:00")]),
+    ]
+    assert {f.unit for c in read.cases for f in c.fields} == {"bits"}
+    (fill,) = commands["foo_fill"].sqe[0].fields
+    assert fill.cases == []
+    # Resolving again gives the same cases
+    from senfd.documents.spec import resolve
+
+    assert resolve(spec.model_copy(deep=True)).command_sets == spec.command_sets
+
+
 def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
     """PRP1 of the Common Command Format is "the first PRP entry for the
     command; or a PRP List pointer, depending on the command (e.g., the
