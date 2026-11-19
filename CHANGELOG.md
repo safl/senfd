@@ -10,6 +10,70 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.24.0
+
+The data model now gives a generator of code what xNVMe's generators of
+its specification headers and command constructors otherwise derive with
+rules of their own. The format of the data model is 7, and a consumer of
+0.23.0 has to adapt to the changes below.
+
+Each document has the `name`, the `key` and the `revision` of its
+specification, such as "NVM Command Set", `nvm` and `1.3`. A command set
+has its `key`, its `title` as the specifications write it, such as "NVM
+Command Set" or "I/O Commands", and the key of the `document` whose opcode
+table lists it.
+
+A structure has the name its caption gives as `title`, and the parts of the
+title as `name`, `owner`, `acronym`, `qualifier`, `optional` and
+`condition`: "CC - Controller Configuration" has the name "Controller
+Configuration" and the acronym "CC". A structure has a `key` unique among
+the structures of its document. The key leaves out "Data Structure", the
+name of the document's command set and words such as "I/O Command Set
+Specific", and takes them back only where two keys would otherwise be the
+same. An operation lists the keys of the structures it transfers, where it
+listed their names. A register has its `offset` as a number, with
+`offset_base` for a register of a PCI capability and `offset_formula` for
+the doorbell registers, and a structure has its `size` in bytes. A
+caption's condition, as "when STS field is cleared to 0h" of NVM 1.3
+Figure 155, is the structure's `condition`, with `selected_when` where it
+compares a field with a value.
+
+Every code in a table of values is typed under the key of its column, and
+so are the columns of an opcode table, such as the Function bits "0000
+01b". An entry of a table has its `role`, as a field has. A table of status
+values has its `status_code_type`, 0 to 3, and its `status_scope`,
+`io_command_set` or `fabrics` where the caption confines the codes.
+
+The rows of a group that a column names by index, such as the Source Range
+entries of Copy, are one field each, an entry of an array whose `fields`
+are the rows at offsets from the start of the entry; `Bits.group` is
+removed. The Zone Descriptors and Zone Descriptor Extensions of ZNS 1.5
+Figure 37, whose entries alternate, are one array of pairs. The fields of
+a case are relative to their field, as PRP2 at bytes 15:08 of DPTR. An
+array whose last entry names the field that counts the entries, as "Zone
+Identifier NZID-1", has `counted_by`. An entry of an array of no known size
+links the one figure it cites, and an entry named as a structure is
+captioned, without "Data Structure", links that structure. A field that a
+layout of bits lays out, as DW3 of the Completion Queue Entry, has the
+fields of that layout as its own, from its own bit 0. A data structure
+given in bits whose fields are whole bytes is given in bytes, as the LBA
+Format Extension of ZNS 1.5.
+
+A command has the fields its section says it `uses`, and the fields it has
+`delegated` to the fields that select their use, as CDW11 to CDW15 of Set
+Features to FID. A value of a field selects the structures of the section
+its name titles, below a section the field cites, so 00b of PIF selects
+the 16b Guard Protection Information formats.
+
+`senfd.layout.words()` gives the integers of 1, 2, 4 or 8 bytes that hold
+the bit fields of a layout. `senfd.invariants` gives what of a data model
+breaks one of two invariants: the keys of the structures of a document
+differ, and the dwords that a document gives a command lie in one section.
+The check of the public documents runs it. A command whose opcode table
+refers to a section titled for another command is a candidate erratum, as
+Migration Receive, Controller Data Queue and Security Receive in Base 2.4
+Figure 143.
+
 ## 0.23.0
 
 The data model now gives a generator of code what xNVMe's generators of
