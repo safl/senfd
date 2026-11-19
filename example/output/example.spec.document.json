@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
+    "senfd_sha256": "0b87f29d097d0b2f17e813421ff0fb502905805a9792ca13576b2d276ed9f240",
     "stem": "example",
     "name": null,
     "key": null,
@@ -5683,7 +5683,8 @@
             "count": null,
             "stride": null,
             "lower": null,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -5725,7 +5726,8 @@
             "count": null,
             "stride": null,
             "lower": null,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6614,7 +6616,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6654,7 +6657,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -6694,7 +6698,8 @@
             "count": 8,
             "stride": 32,
             "lower": 0,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7047,7 +7052,8 @@
             "count": 2,
             "stride": 32,
             "lower": 16,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -7094,7 +7100,8 @@
             "count": 2,
             "stride": 32,
             "lower": 16,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -7262,7 +7269,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7302,7 +7310,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7342,7 +7351,8 @@
             "count": 5,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": null
@@ -7944,7 +7954,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -7991,7 +8002,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8038,7 +8050,8 @@
             "count": 8,
             "stride": 4,
             "lower": 4,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8085,7 +8098,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8132,7 +8146,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -8179,7 +8194,8 @@
             "count": 4,
             "stride": 8,
             "lower": 36,
-            "maximum": null
+            "maximum": null,
+            "counted_by": null
           },
           "part": null,
           "structure": {
@@ -11227,7 +11243,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
+      "senfd_sha256": "0b87f29d097d0b2f17e813421ff0fb502905805a9792ca13576b2d276ed9f240",
       "stem": "example",
       "name": null,
       "key": null,

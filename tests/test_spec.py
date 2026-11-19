@@ -2220,6 +2220,37 @@ def test_a_long_name_in_a_list_of_names_is_a_name():
     assert [e.name for e in sentences.entries] == ["Foo", None, None]
 
 
+def test_an_array_whose_last_entry_names_a_field_is_counted_by_that_field():
+    """The last entry of ZNS 1.5 Figure 47 is "Zone Identifier NZID-1", and NZID is a
+    field of the figure; "Namespace Identifier N" of Base 2.4 Figure 140 names none"""
+
+    spec = document_of(
+        figure_of(
+            47,
+            "Foo Zone List",
+            ("Bytes", "Description"),
+            ("01:00", "Number of Zone Identifiers (NZID): The number."),
+            ("07:02", "Reserved"),
+            ("15:08", "Zone Identifier 0: The first."),
+            ("23:16", "Zone Identifier 1: The second."),
+            ("...", ""),
+            ("8*NZID + 7:8*NZID", "Zone Identifier NZID-1: The last."),
+        ),
+        figure_of(
+            140,
+            "Foo Namespace List",
+            ("Bytes", "Description"),
+            ("03:00", "Namespace Identifier 0: The first."),
+            ("07:04", "Namespace Identifier 1: The second."),
+            ("...", ""),
+            ("4*N + 3:4*N", "Namespace Identifier N: The last."),
+        ),
+    )
+    zones, namespaces = spec.structures
+    assert {f.array.counted_by for f in zones.fields if f.array} == {"NZID"}
+    assert {f.array.counted_by for f in namespaces.fields if f.array} == {None}
+
+
 def test_an_array_ending_in_a_formula_has_the_maximum_its_figure_s_text_states():
     """ZNS 1.5 Figure 47 gives the last Zone Identifier as "Zone Identifier
     NZID-1", at a formula; the paragraph before it says the log page holds
