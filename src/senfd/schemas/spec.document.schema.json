@@ -784,11 +784,12 @@
                 },
                 "kind": {
                     "default": "other",
-                    "description": "The kind of the command set. \"io\" is an I/O command set, which an I/O Command Set\nspecification defines. \"common_io\" is the I/O commands that the Base specification\ndefines for use in all I/O command sets; these commands are not a command set and\nhave no Command Set Identifier. \"admin\" is the Admin command set, and\n\"management_interface\" is a command set of the Management Interface specification.",
+                    "description": "The kind of the command set. \"io\" is an I/O command set, which an I/O Command Set\nspecification defines. \"common_io\" is the I/O commands that the Base specification\ndefines for use in all I/O command sets; these commands are not a command set and\nhave no Command Set Identifier. \"admin\" is the Admin command set, \"fabrics\" the\nFabrics command set of the Base specification, and \"management_interface\" a command\nset of the Management Interface specification.",
                     "enum": [
                         "admin",
                         "io",
                         "common_io",
+                        "fabrics",
                         "management_interface",
                         "other"
                     ],
@@ -925,7 +926,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 7,
+                    "default": 8,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
