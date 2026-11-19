@@ -40,7 +40,10 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
 * ``command_sets``: each command set by its ``key``, with its ``kind``, its
   ``title`` as the specifications write it, such as "NVM Command Set" or
   "I/O Commands", the key of the ``document`` whose opcode table lists it,
-  and its commands. A command has its ``opcode``, its submission queue entry dwords
+  and its commands. A command has the opcode table's other columns of it,
+  and ``typed`` holds those of a known kind as on an entry of a table of
+  values: the bits of the opcode, as "0000 01b" of ``07_02``, and whether
+  the command uses the namespace identifier. A command has its ``opcode``, its submission queue entry dwords
   ``sqe``, its completion queue entry dwords ``cqe``, its ``operations``,
   its ``status_values``, the tables of the status values specific to it, and
   its ``status_codes``, each status value whose "Commands Affected" names

@@ -687,6 +687,14 @@
                     "title": "Columns",
                     "type": "object"
                 },
+                "typed": {
+                    "additionalProperties": {
+                        "$ref": "#/$defs/Typed"
+                    },
+                    "description": "The columns of a known kind as what they are, by their keys: the bits of the opcode,\nas \"0000 01b\" of \"07_02\", a number; \"namespace_identifier_used\" a flag, or the\nnote it is given by",
+                    "title": "Typed",
+                    "type": "object"
+                },
                 "footnotes": {
                     "additionalProperties": {
                         "items": {
