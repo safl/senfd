@@ -1989,7 +1989,7 @@ def grouped_arrays(fields: List[Bits]) -> None:
                     kind="span",
                     upper=upper,
                     lower=lower,
-                    range=f"{upper}:{lower}",
+                    range=f"{upper:02d}:{lower:02d}",
                     width=stride,
                     elided=any(row.elided for row in rows),
                     fields=inner,
@@ -4251,6 +4251,88 @@ def link_extended(document: SpecDocument) -> None:
 REGEX_DATA_STRUCTURE = re.compile(r"\s+Data Structure$", re.IGNORECASE)
 
 
+def unnest_layouts(document: SpecDocument) -> None:
+    """Remove the fields that nest_layouts() gave, so that the links are made anew: a
+    field has both 'structure' and 'fields' only where nest_layouts() gave them"""
+
+    for _, fields in laid_out(document):
+        for field in fields_within(fields):
+            if field.structure is not None and field.fields:
+                field.fields = []
+
+
+def nested_fields(field: Bits, layout: Structure) -> Optional[List[Bits]]:
+    """
+    The fields of 'layout', a layout of bits, as the fields of 'field', which it lays
+    out: as they are where they lie within the bits of the field, as SQID and SQHD of
+    Base 2.4 Figure 98 within DW2, or moved to start at bit 0 where the layout gives
+    them at the bits of the field, as DNR to SC of Figure 101 at bits 31:17 of STATUS.
+    None where the fields lie in neither.
+    """
+
+    spans = [f for f in layout.fields if f.kind == "span" and f.upper is not None]
+    if not spans or len(spans) != len(layout.fields) or field.upper is None:
+        return None
+    lowest = min(f.lower or 0 for f in spans)
+    highest = max(f.upper or 0 for f in spans)
+    bits = (field.width or 0) * (8 if field.unit == "bytes" else 1)
+    shift = 0
+    if field.unit == "bits" and highest >= bits:
+        if lowest < (field.lower or 0) or highest > field.upper:
+            return None
+        shift = field.lower or 0
+    elif highest >= bits:
+        return None
+    nested = []
+    for each in layout.fields:
+        moved = each.model_copy(deep=True)
+        if shift:
+            moved.lower = (each.lower or 0) - shift
+            moved.upper = (each.upper or 0) - shift
+            moved.range = f"{moved.upper:02d}:{moved.lower:02d}"
+            if moved.upper == moved.lower:
+                moved.range = f"{moved.lower:02d}"
+        nested.append(moved)
+    return nested
+
+
+def nest_layouts(document: SpecDocument) -> None:
+    """
+    Give each field that is no entry of an array, and that a layout of bits lays out,
+    the fields of that layout as its own, keeping 'structure': DW2 and DW3 of the
+    Completion Queue Entry of Base 2.4 Figure 97 the fields of Figures 98 and 99, and
+    STATUS of DW3 the fields of Figure 101, from bit 0 of STATUS
+    """
+
+    structures = {
+        (s.source.document, s.source.figure_nr): s for s in document.structures
+    }
+    done: set = set()
+
+    def nest(fields: List[Bits], seen: Tuple[Tuple[str, int], ...]) -> None:
+        for field in fields_within(fields):
+            link = field.structure
+            if link is None or field.array is not None or field.fields:
+                continue
+            key = (link.document, link.figure_nr)
+            layout = structures.get(key)
+            if layout is None or layout.unit != "bits" or key in seen:
+                continue
+            if key not in done:
+                nest(layout.fields, seen + (key,))
+                done.add(key)
+            field.fields = nested_fields(field, layout) or []
+
+    for structure in document.structures:
+        key = (structure.source.document, structure.source.figure_nr)
+        if key not in done:
+            nest(structure.fields, (key,))
+            done.add(key)
+    for described in document.dwords.values():
+        for dwords in described:
+            nest(dwords.fields, ())
+
+
 def link_structures(document: SpecDocument) -> None:
     """
     Set 'structure' on each field that has no subfields and whose description
@@ -4286,6 +4368,7 @@ def link_structures(document: SpecDocument) -> None:
     structures = {
         (s.source.document, s.source.figure_nr): s for s in document.structures
     }
+    unnest_layouts(document)
     widths = {key: bits_wide(structure) for key, structure in structures.items()}
     referring: List[Tuple[Bits, List[Tuple[str, int]]]] = []
 
@@ -4828,6 +4911,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_identifiers(document)
     name_by_identifiers(document)
     link_selectors(document)
+    nest_layouts(document)
     name_structures(document)
 
     # A gap where a field was left out as an erratum is that erratum again
