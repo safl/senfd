@@ -4496,6 +4496,103 @@ def link_delegations(document: SpecDocument) -> None:
                 ]
 
 
+# A description saying that a field holds nothing, as DPTR of SLM 1.3 Memory Fill;
+# not a field unused only under a condition, as DPTR of Set Features
+REGEX_NOT_USED = re.compile(r"(?:^|[.:]\s+)This field is not used\b")
+
+
+def common_pointer(document: SpecDocument) -> Optional[Bits]:
+    """
+    The data pointer whose cases the data pointers of the commands share: DPTR of a
+    structure that gives its cases, as Base 2.4 Figure 93, the Common Command Format;
+    the Base specification's first
+    """
+
+    structures = sorted(
+        document.structures,
+        key=lambda s: document_key(s.source.document) != "base",
+    )
+    return next(
+        (
+            field
+            for structure in structures
+            for field in structure.fields
+            if field.acronym == "DPTR"
+            and field.cases
+            and field.kind == "span"
+            and field.upper is not None
+        ),
+        None,
+    )
+
+
+def bit_width(field: Bits) -> Optional[int]:
+    """The number of bits of 'field', a span, or None for another kind"""
+
+    if field.kind != "span" or field.upper is None:
+        return None
+    return (field.upper - (field.lower or 0) + 1) * (8 if field.unit == "bytes" else 1)
+
+
+def in_bits(field: Bits) -> Bits:
+    """'field', a span of bytes, as a span of bits; any other field as it is"""
+
+    if field.unit != "bytes" or field.kind != "span" or field.upper is None:
+        return field
+    moved = field.model_copy()
+    moved.unit = "bits"
+    moved.lower = (field.lower or 0) * 8
+    moved.upper = field.upper * 8 + 7
+    moved.width = moved.upper - moved.lower + 1
+    moved.range = f"{moved.upper:02d}:{moved.lower:02d}"
+    return moved
+
+
+def case_shape(case: Case, unit: str) -> Tuple:
+    """What tells cases apart, but for the links of their fields, in 'unit'"""
+
+    fields = [in_bits(f) if unit == "bits" else f for f in case.fields]
+    return (
+        case.selector,
+        [w.value for w in case.when],
+        case.otherwise,
+        [(f.acronym, f.unit, f.lower, f.upper) for f in fields],
+    )
+
+
+def give_pointer_cases(document: SpecDocument) -> None:
+    """
+    Give each other data pointer of 'document', as those of the dwords of the commands,
+    the cases of common_pointer(), in the unit of the data pointer: DPTR of Read at bits 127:00 has PRP1 at bits
+    63:00, PRP2 at bits 127:64 and SGL1 at bits 127:00, by PSDT, with their links. A
+    data pointer that is not as wide, that is not used, or that has cases of its own,
+    keeps what it has. Cases given before are given again, so that their links are
+    those of common_pointer().
+    """
+
+    common = common_pointer(document)
+    if common is None:
+        return
+    for _, fields in laid_out(document):
+        for field in fields_within(fields):
+            if (
+                field is common
+                or field.acronym != "DPTR"
+                or bit_width(field) != bit_width(common)
+                or REGEX_NOT_USED.search(field.description)
+            ):
+                continue
+            cases = []
+            for case in common.cases:
+                copied = case.model_copy(deep=True)
+                if field.unit == "bits":
+                    copied.fields = [in_bits(f) for f in copied.fields]
+                cases.append(copied)
+            given = [case_shape(c, field.unit) for c in field.cases]
+            if not field.cases or given == [case_shape(c, field.unit) for c in cases]:
+                field.cases = cases
+
+
 def unnest_layouts(document: SpecDocument) -> None:
     """Remove the fields that nest_layouts() gave, so that the links are made anew: a
     field has both 'structure' and 'fields' only where nest_layouts() gave them"""
@@ -5203,6 +5300,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_selectors(document)
     link_subsections(document)
     link_delegations(document)
+    give_pointer_cases(document)
     nest_layouts(document)
     bytes_of_bits(document)
     name_structures(document)

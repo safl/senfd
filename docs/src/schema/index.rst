@@ -359,7 +359,11 @@ itself apply whatever the value of the controlling field. Where the
 controlling field is a field of another figure, the case has
 ``selector_in``, the ``source`` of that figure: DPTR of the Common Command
 Format has cases by "CDW0.PSDT", and CDW0 of that figure is laid out by
-Command Dword 0, which has PSDT.
+Command Dword 0, which has PSDT. The DPTR of each command has the cases of
+the DPTR of the Common Command Format, in the unit of its own figure, so
+that DPTR of Read at bits 127:00 has PRP1 at bits 63:00, PRP2 at bits
+127:64 and SGL1 at bits 127:00. A DPTR that its figure says is not used,
+as of Memory Fill, has no cases.
 
 A figure can draw a structure as a diagram instead of a table of ranges,
 with the bits 7 to 0 as columns, one row for each byte, and each field
