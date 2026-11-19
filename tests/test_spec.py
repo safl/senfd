@@ -2353,7 +2353,8 @@ def test_a_field_is_linked_to_the_structure_its_name_captions_in_its_section():
 
 def test_a_case_by_a_field_of_another_figure_has_the_numbers_of_its_codes():
     """The cases of DPTR of Base 2.4 Figure 93 are by PSDT of CDW0, which
-    another figure lays out; "00b", "01b" and "10b" are codes"""
+    another figure lays out; "00b", "01b" and "10b" are codes, and the ranges of the
+    fields of each case are relative to DPTR"""
 
     from senfd.tables import Cell, Table
 
@@ -2392,6 +2393,12 @@ def test_a_case_by_a_field_of_another_figure_has_the_numbers_of_its_codes():
     ] == [
         ("PSDT", [("00b", 0)], ["PRP2", "PRP1"]),
         ("PSDT", [("01b", 1), ("10b", 2)], ["SGL1"]),
+    ]
+    # The figure gives the ranges of the cases' fields in the structure; the data model
+    # gives them in DPTR
+    assert [[(f.upper, f.lower, f.range) for f in c.fields] for c in dptr.cases] == [
+        [(15, 8, "15:08"), (7, 0, "07:00")],
+        [(15, 0, "15:00")],
     ]
 
 
@@ -3334,7 +3341,8 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
     """
     TSEN1 to TSEN8 of the SMART / Health Information log page are listed one by one. NVM
     1.3 Figure 40 names its groups of rows "Source Range 0" to "Source Range 127" in a
-    column of their own.
+    column of their own; each group is an entry, whose fields lie at offsets from the
+    start of the entry.
     """
 
     from senfd.documents.spec import Array
@@ -3370,10 +3378,18 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
     assert health.fields[3].array == Array(
         name="Bar Mode", acronym="BM", index=1, first=1, count=2, stride=2, lower=6
     )
-    assert [f.group.index for f in ranges.fields] == [0, 0, 1, 1, 3, 3]
-    assert ranges.fields[0].group == Array(
-        name="Foo Range", index=0, first=0, count=4, stride=16, lower=0
+    assert [(f.name, f.range, f.elided) for f in ranges.fields] == [
+        ("Foo Range 0", "15:0", False),
+        ("Foo Range 1", "31:16", False),
+        ("Foo Range 3", "63:48", True),
+    ]
+    assert ranges.fields[2].array == Array(
+        name="Foo Range", index=3, first=0, count=4, stride=16, lower=0
     )
+    assert [(f.acronym, f.upper, f.lower) for f in ranges.fields[2].fields] == [
+        ("FST", 7, 0),
+        ("FLEN", 15, 8),
+    ]
 
 
 def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
@@ -4490,3 +4506,22 @@ def test_a_structure_has_a_key_unique_in_its_document_and_its_size():
     assert (names[1], names[3], names[5]) == ("Identify Namespace", "Foo Stamp", "PRP Entry 1")
     sizes = {s.source.figure_nr: s.size for s in spec.structures}
     assert (sizes[1], sizes[3], sizes[5]) == (8, 6, 8)
+
+
+def test_bytes_of_no_field_in_an_entry_of_groups_of_rows_are_an_erratum():
+    """Source Range 1 of SLM 1.3 Figure 13 leaves out the reserved bytes 21:20 of the
+    entry, which Source Range 0 lists"""
+
+    spec = document_of(
+        figure_of(
+            13,
+            "Foo Range Entries",
+            ("Range", "Bytes", "Description"),
+            ("Foo Range 0", "07:00", "Foo Start (FST): The start."),
+            ("", "15:08", "Foo Length (FLEN): The length."),
+            ("Foo Range 1", "23:16", "Foo Start (FST): The start."),
+            ("Foo Range 1", "31:26", "Foo Length (FLEN): The length."),
+        ),
+    )
+    (gap,) = [e for e in spec.errata if e.code == "layout-gap"]
+    assert gap.message == "Bytes 24 to 25 are of no field, before 31:26 Foo Length"

@@ -488,18 +488,6 @@
                     "default": null,
                     "description": "The value that the field holds a part of, where a figure splits a value over two\nfields"
                 },
-                "group": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/$defs/Array"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "default": null,
-                    "description": "The array of groups of fields whose entry is the group of this field, where a column\nnames each group, for example \"Source Range 0\" to \"Source Range 127\" of NVM 1.3\nFigure 40. It holds the name of the array, the index of the group of this field, and\nthe size and the offset of a group."
-                },
                 "structure": {
                     "anyOf": [
                         {

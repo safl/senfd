@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
+    "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "4d8525be5c2f855caa96ff1cdae26f5126f3f147d83c4e00249757a7cf818014"
+    "combined_sha256": "9b8871e8e7c603293522777e0066d4b1bf2f149881809a694d5f11496fe9a608"
   },
   "command_sets": {
     "foobar": {
@@ -59,7 +59,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -91,7 +90,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -141,7 +139,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -173,7 +170,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -223,7 +219,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -273,7 +268,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -323,7 +317,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -373,7 +366,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -425,7 +417,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -507,7 +498,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -539,7 +529,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -589,7 +578,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -680,7 +668,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -730,7 +717,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -804,7 +790,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -933,7 +918,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -983,7 +967,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -1097,7 +1080,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -1147,7 +1129,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -1295,7 +1276,6 @@
                   ],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 },
                 {
@@ -1409,7 +1389,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -1468,7 +1447,6 @@
                       "cases": [],
                       "array": null,
                       "part": null,
-                      "group": null,
                       "structure": null
                     }
                   ],
@@ -1536,7 +1514,6 @@
                       "cases": [],
                       "array": null,
                       "part": null,
-                      "group": null,
                       "structure": null
                     }
                   ],
@@ -1660,7 +1637,6 @@
                   "cases": [],
                   "array": null,
                   "part": null,
-                  "group": null,
                   "structure": null
                 }
               ],
@@ -1744,7 +1720,6 @@
                       "cases": [],
                       "array": null,
                       "part": null,
-                      "group": null,
                       "structure": null
                     },
                     {
@@ -1776,7 +1751,6 @@
                       "cases": [],
                       "array": null,
                       "part": null,
-                      "group": null,
                       "structure": null
                     }
                   ],
@@ -1907,7 +1881,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -1939,7 +1912,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -1989,7 +1961,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -2021,7 +1992,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2071,7 +2041,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2121,7 +2090,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2171,7 +2139,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2221,7 +2188,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2273,7 +2239,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2325,7 +2290,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -2357,7 +2321,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2407,7 +2370,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2459,7 +2421,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -2588,7 +2549,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2638,7 +2598,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -2752,7 +2711,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -2802,7 +2760,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -2950,7 +2907,6 @@
             ],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -3064,7 +3020,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3116,7 +3071,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3168,7 +3122,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3237,7 +3190,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3287,7 +3239,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3339,7 +3290,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3391,7 +3341,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -3423,7 +3372,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3475,7 +3423,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -3507,7 +3454,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3559,7 +3505,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3611,7 +3556,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3663,7 +3607,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3715,7 +3658,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -3747,7 +3689,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3799,7 +3740,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -3859,7 +3799,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -3919,7 +3858,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -3979,7 +3917,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4039,7 +3976,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4099,7 +4035,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -4156,7 +4091,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -4188,7 +4122,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -4196,7 +4129,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -4228,7 +4160,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4288,7 +4219,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4348,7 +4278,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4408,7 +4337,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4468,7 +4396,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4528,7 +4455,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -4560,7 +4486,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4620,7 +4545,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -4652,7 +4576,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4712,7 +4635,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4772,7 +4694,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4832,7 +4753,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4895,7 +4815,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -4930,7 +4849,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -4990,7 +4908,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5050,7 +4967,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5110,7 +5026,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5170,7 +5085,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5230,7 +5144,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5290,7 +5203,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5350,7 +5262,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5410,7 +5321,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5470,7 +5380,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5532,7 +5441,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5594,7 +5502,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5656,7 +5563,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5690,7 +5596,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5724,7 +5629,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5758,7 +5662,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5792,7 +5695,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5835,7 +5737,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5878,7 +5779,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -5912,7 +5812,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -5974,7 +5873,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6037,7 +5935,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6072,7 +5969,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6132,7 +6028,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6192,7 +6087,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6252,7 +6146,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6312,7 +6205,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6372,7 +6264,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6432,7 +6323,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6492,7 +6382,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6524,7 +6413,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6556,7 +6444,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6588,7 +6475,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6620,7 +6506,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6682,7 +6567,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6716,7 +6600,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6785,7 +6668,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6826,7 +6708,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6867,7 +6748,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -6899,7 +6779,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -6959,7 +6838,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7020,7 +6898,6 @@
                 "acronym": null,
                 "shift": 0
               },
-              "group": null,
               "structure": null
             },
             {
@@ -7056,7 +6933,6 @@
                 "acronym": null,
                 "shift": 4
               },
-              "group": null,
               "structure": null
             }
           ],
@@ -7064,7 +6940,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7096,7 +6971,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -7156,7 +7030,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7188,7 +7061,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7229,7 +7101,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 87,
@@ -7277,7 +7148,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 87,
@@ -7316,7 +7186,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -7376,7 +7245,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7408,7 +7276,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7449,7 +7316,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7490,7 +7356,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7531,7 +7396,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -7591,7 +7455,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7623,7 +7486,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -7708,7 +7570,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -7740,7 +7601,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -7772,7 +7632,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -7780,7 +7639,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7837,7 +7695,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -7869,7 +7726,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -7901,7 +7757,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -7909,7 +7764,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -7941,7 +7795,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8008,7 +7861,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8047,7 +7899,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8107,7 +7958,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8148,7 +7998,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 98,
@@ -8196,7 +8045,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 98,
@@ -8244,7 +8092,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 98,
@@ -8292,7 +8139,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 99,
@@ -8340,7 +8186,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 99,
@@ -8388,7 +8233,6 @@
             "maximum": null
           },
           "part": null,
-          "group": null,
           "structure": {
             "document": "example",
             "figure_nr": 99,
@@ -8455,7 +8299,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8487,7 +8330,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8547,7 +8389,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8579,7 +8420,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8642,7 +8482,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8677,7 +8516,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8737,7 +8575,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8769,7 +8606,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -8829,7 +8665,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8861,7 +8696,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8893,7 +8727,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         },
         {
@@ -8950,7 +8783,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -8982,7 +8814,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -8990,7 +8821,6 @@
           "cases": [],
           "array": null,
           "part": null,
-          "group": null,
           "structure": null
         }
       ],
@@ -11062,7 +10892,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             },
             {
@@ -11094,7 +10923,6 @@
               "cases": [],
               "array": null,
               "part": null,
-              "group": null,
               "structure": null
             }
           ],
@@ -11192,7 +11020,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11283,7 +11110,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11348,7 +11174,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11400,7 +11225,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           },
           {
@@ -11432,7 +11256,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11484,7 +11307,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11536,7 +11358,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11588,7 +11409,6 @@
             "cases": [],
             "array": null,
             "part": null,
-            "group": null,
             "structure": null
           }
         ],
@@ -11781,7 +11601,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
+      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11794,7 +11614,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
+      "senfd_sha256": "b943fb21ee1c1909854b41a42ff295a988c1ba9e9c544f53ddd87779e382cbc1",
       "stem": "invalid",
       "name": null,
       "key": null,
