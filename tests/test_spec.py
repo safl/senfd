@@ -3459,6 +3459,53 @@ def test_each_entry_of_a_run_links_the_structure_one_of_them_links():
     assert [f.structure and f.structure.figure_nr for f in listing.fields] == [362] * 3
 
 
+def test_an_entry_of_no_known_size_or_named_as_a_structure_links_that_structure():
+    """
+    Power Histogram Descriptor 0 of Base 2.4 Figure 305 is at "63+PHDS:64" and cites
+    Figure 306, whose size is not that of the entry. The Registrant Data Structure
+    entries of Base 2.4 Figure 671 cite nothing, and Figure 673 is captioned
+    "Registrant".
+    """
+
+    spec = document_of(
+        figure_of(
+            305,
+            "Foo Histogram",
+            ("Bytes", "Description"),
+            ("63:00", "Foo Descriptor Size (PHDS): The size."),
+            ("63+PHDS:64", "Foo Descriptor 0: The first, as defined in Figure 306."),
+            ("PHDS*2+63:64+PHDS", "Foo Descriptor 1: The second, if any."),
+        ),
+        figure_of(
+            306,
+            "Foo Descriptor",
+            ("Bytes", "Description"),
+            ("07:00", "Foo Count (FC): The count."),
+        ),
+        figure_of(
+            671,
+            "Foo Status",
+            ("Bytes", "Description"),
+            ("23:00", "Foo Header (FH): The header."),
+            ("47:24", "Bar Data Structure 0: The first."),
+            ("71:48", "Bar Data Structure 1: The second."),
+        ),
+        figure_of(
+            673,
+            "Bar",
+            ("Bytes", "Description"),
+            ("15:00", "Bar Identifier (BID): The identifier."),
+            ("23:16", "Bar Key (BK): The key."),
+        ),
+    )
+    figures = {s.source.figure_nr: s for s in spec.structures}
+    linked = {
+        nr: [f.structure and f.structure.figure_nr for f in figures[nr].fields]
+        for nr in (305, 671)
+    }
+    assert linked == {305: [None, 306, 306], 671: [None, 673, 673]}
+
+
 def test_dwords_in_a_section_titled_with_a_code_are_an_operation_selected_by_it():
     """
     MI 2.2 lays out the Management Dword 0 of Configuration Get for each configuration
