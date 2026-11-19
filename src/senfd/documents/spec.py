@@ -564,7 +564,16 @@ class CommandSet(Model):
     """The commands of an opcode table, as Admin or NVM"""
 
     name: str
-    """The name of the command set"""
+    """The name of the command set, as "NVM" """
+    key: Optional[str] = None
+    """The key of the command set among the command sets, as 'nvm'"""
+    title: Optional[str] = None
+    """
+    The name of the command set as the specifications write it in text, as "NVM
+    Command Set", "Admin Command Set" or "I/O Commands" of the common I/O commands
+    """
+    document: Optional[str] = None
+    """The key of the document whose opcode table lists the command set, as 'nvm'"""
     kind: CommandSetKind = "other"
     """
     The kind of the command set. "io" is an I/O command set, which an I/O Command Set
@@ -1122,6 +1131,22 @@ def command_set_name(name: str) -> str:
     if name == "I/O":
         return "Common I/O"
     return stripped or name
+
+
+def command_set_title(name: str) -> str:
+    """
+    The name of a command set as the specifications write it in text, from the name
+    that the caption of its opcode table gives, as "NVM Command Set" of "NVM", "I/O
+    Commands" of "I/O", and "PCIe Commands" of "PCIe Commands using an Out-of-Band
+    Mechanism"
+    """
+
+    name = re.sub(r"\s+I/O$", "", REGEX_MECHANISM.sub("", name.strip()))
+    if name == "I/O":
+        return "I/O Commands"
+    if name.endswith(" Commands") or name.endswith(" Command Set"):
+        return name
+    return f"{name} Command Set"
 
 
 def command_set_kind(name: str, document: str) -> CommandSetKind:
@@ -2373,7 +2398,13 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         set_name = command_set_name(subject.name)
         command_set = document.command_sets.setdefault(
             alias(set_name),
-            CommandSet(name=set_name, kind=command_set_kind(set_name, source.document)),
+            CommandSet(
+                name=set_name,
+                key=alias(set_name),
+                title=command_set_title(subject.name),
+                document=document_key(source.document),
+                kind=command_set_kind(set_name, source.document),
+            ),
         )
         for row in figure.entries:
             entry = entry_of(row, "opcode")

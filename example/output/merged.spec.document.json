@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
+    "senfd_sha256": "3d75d61fad862819ff963dc9c273db58a81cb1ce90cdea20a2b092dde443cdaf",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,11 +10,14 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "045048e6148678e213a1a650ae1286f2c7d66fbfe78d8d2c1496d9da3670d7bf"
+    "combined_sha256": "3e711ee2742084b538a856d01e1c92db26b68e2ea7a3588c455bd540fb9c776b"
   },
   "command_sets": {
     "foobar": {
       "name": "Foobar",
+      "key": "foobar",
+      "title": "Foobar Command Set",
+      "document": null,
       "kind": "other",
       "identifier": null,
       "commands": {
@@ -1560,6 +1563,9 @@
     },
     "admin": {
       "name": "Admin",
+      "key": "admin",
+      "title": "Admin Command Set",
+      "document": null,
       "kind": "admin",
       "identifier": null,
       "commands": {
@@ -11669,7 +11675,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
+      "senfd_sha256": "3d75d61fad862819ff963dc9c273db58a81cb1ce90cdea20a2b092dde443cdaf",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11682,7 +11688,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
+      "senfd_sha256": "3d75d61fad862819ff963dc9c273db58a81cb1ce90cdea20a2b092dde443cdaf",
       "stem": "invalid",
       "name": null,
       "key": null,

@@ -37,8 +37,10 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   in it. Each also has the ``name`` of its specification, such as "NVM
   Command Set", the ``key`` of the specification without the revision, such
   as ``nvm``, and the ``revision``, such as ``1.3``.
-* ``command_sets``: each command set by its name, with its ``kind`` and its
-  commands. A command has its ``opcode``, its submission queue entry dwords
+* ``command_sets``: each command set by its ``key``, with its ``kind``, its
+  ``title`` as the specifications write it, such as "NVM Command Set" or
+  "I/O Commands", the key of the ``document`` whose opcode table lists it,
+  and its commands. A command has its ``opcode``, its submission queue entry dwords
   ``sqe``, its completion queue entry dwords ``cqe``, its ``operations``,
   its ``status_values``, the tables of the status values specific to it, and
   its ``status_codes``, each status value whose "Commands Affected" names

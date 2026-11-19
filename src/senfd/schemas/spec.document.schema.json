@@ -715,9 +715,48 @@
             "description": "The commands of an opcode table, as Admin or NVM",
             "properties": {
                 "name": {
-                    "description": "The name of the command set",
+                    "description": "The name of the command set, as \"NVM\" ",
                     "title": "Name",
                     "type": "string"
+                },
+                "key": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The key of the command set among the command sets, as 'nvm'",
+                    "title": "Key"
+                },
+                "title": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The name of the command set as the specifications write it in text, as \"NVM\nCommand Set\", \"Admin Command Set\" or \"I/O Commands\" of the common I/O commands",
+                    "title": "Title"
+                },
+                "document": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The key of the document whose opcode table lists the command set, as 'nvm'",
+                    "title": "Document"
                 },
                 "kind": {
                     "default": "other",
