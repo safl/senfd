@@ -202,6 +202,58 @@ def test_a_reference_to_a_section_without_the_command_s_dwords_is_an_erratum():
     ]
 
 
+def test_a_dword_has_the_fields_of_the_layout_of_bits_it_links_from_its_own_bit_0():
+    """
+    DW3 of the Completion Queue Entry of Base 2.4 Figure 97 is laid out by Figure 99,
+    whose STATUS at bits 31:17 is laid out by Figure 101 at bits 31:17
+    """
+
+    figures = [
+        figure_of(
+            97,
+            "Foo Queue Entry",
+            ("Bytes", "Description"),
+            ("03:00", "Dword 0 (DW0): Defined in Figure 99."),
+        ),
+        figure_of(
+            99,
+            "Foo Queue Entry: DW 0",
+            ("Bits", "Description"),
+            ("31:17", "Status (STATUS): The status. Refer to section 4.2.3."),
+            ("16", "Phase Tag (P): The phase."),
+            ("15:00", "Command Identifier (CID): The command."),
+        ),
+        figure_of(
+            101,
+            "Foo Queue Entry: Status Field",
+            ("Bits", "Description"),
+            ("31", "Do Not Retry (DNR): Do not."),
+            ("30:17", "Status Code (SC): The code."),
+        ),
+    ]
+    for figure, section in zip(figures, ("4.2.1", "4.2.1", "4.2.3")):
+        figure.section = section
+    spec = document_of(*figures)
+    entry = next(s for s in spec.structures if s.source.figure_nr == 97)
+    (dw0,) = entry.fields
+    assert dw0.structure is not None and dw0.structure.figure_nr == 99
+    assert [(f.acronym, f.range) for f in dw0.fields] == [
+        ("STATUS", "31:17"),
+        ("P", "16"),
+        ("CID", "15:00"),
+    ]
+    status = dw0.fields[0]
+    assert [(f.acronym, f.upper, f.lower, f.range) for f in status.fields] == [
+        ("DNR", 14, 14, "14"),
+        ("SC", 13, 0, "13:00"),
+    ]
+    figure = next(s for s in spec.structures if s.source.figure_nr == 101)
+    assert [(f.upper, f.lower) for f in figure.fields] == [(31, 31), (30, 17)]
+    merged = merge([spec])
+    entry = next(s for s in merged.structures if s.source.figure_nr == 97)
+    assert [f.acronym for f in entry.fields[0].fields[0].fields] == ["DNR", "SC"]
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
@@ -3566,7 +3618,7 @@ def test_a_run_listed_in_full_and_groups_of_rows_named_by_index_are_arrays():
         name="Bar Mode", acronym="BM", index=1, first=1, count=2, stride=2, lower=6
     )
     assert [(f.name, f.range, f.elided) for f in ranges.fields] == [
-        ("Foo Range 0", "15:0", False),
+        ("Foo Range 0", "15:00", False),
         ("Foo Range 1", "31:16", False),
         ("Foo Range 3", "63:48", True),
     ]

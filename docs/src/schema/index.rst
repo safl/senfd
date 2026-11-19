@@ -218,7 +218,12 @@ that a column names by an index, such as "Source Range 0" to "Source Range
 groups, whose ``fields`` are the rows at offsets from the start of the
 entry.
 
-A field has ``structure`` where another figure lays out the field.
+A field has ``structure`` where another figure lays out the field. Where
+that figure lays out bits and the field is no entry of an array, the field
+also has the fields of that figure as its own ``fields``, counted from bit
+0 of the field: DW3 of the Completion Queue Entry of Base 2.4 Figure 97
+holds STATUS, P and CID, and STATUS holds DNR to SC, which Figure 101
+gives at bits 31:17.
 ``structure`` is the ``source`` of that figure, and the structure is the
 entry of ``structures`` with the same ``source``. senfd links a field that
 has no subfields to a structure when the description of the field refers
