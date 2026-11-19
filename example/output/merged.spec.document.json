@@ -1,8 +1,8 @@
 {
   "meta": {
     "format": 7,
-    "version": "0.23.0",
-    "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
+    "version": "0.24.0",
+    "senfd_sha256": "95837feef4cfb319c3ae2c9127a5a884e0d72c1a80e9b77705a153af911c3dac",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "e4df539a4b8ce9ebbb523a33769d5b28d886b1d7a8effe595a232f0794b2e8ef"
+    "combined_sha256": "22a6c038f305ca38128cede00c836d8ac06b9a686b97f0015bd5d491142095bd"
   },
   "command_sets": {
     "foobar": {
@@ -11863,8 +11863,8 @@
   "documents": {
     "example": {
       "format": 7,
-      "version": "0.23.0",
-      "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
+      "version": "0.24.0",
+      "senfd_sha256": "95837feef4cfb319c3ae2c9127a5a884e0d72c1a80e9b77705a153af911c3dac",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11876,8 +11876,8 @@
     },
     "invalid": {
       "format": 7,
-      "version": "0.23.0",
-      "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
+      "version": "0.24.0",
+      "senfd_sha256": "95837feef4cfb319c3ae2c9127a5a884e0d72c1a80e9b77705a153af911c3dac",
       "stem": "invalid",
       "name": null,
       "key": null,
