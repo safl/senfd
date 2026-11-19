@@ -204,7 +204,7 @@ def summary(spec: SpecDocument, documents: int, written: Path) -> str:
     def counted(code: str) -> int:
         return sum(d.code == code for d in spec.diagnostics)
 
-    commands = sum(len(s.commands) for s in spec.command_sets.values())
+    counts = senfd.query.held(spec)
     errata = senfd.query.errata(spec, none=[])
     unassigned = sum(len(d) for d in spec.unassigned.values())
     examples = sum(
@@ -215,8 +215,8 @@ def summary(spec: SpecDocument, documents: int, written: Path) -> str:
     spec_option = "" if default else f" --spec {at_home(written)}"
     return (
         f"{documents} document{'s' if documents != 1 else ''} into {at_home(written)}: "
-        f"{commands} commands, {len(spec.features)} features, "
-        f"{len(spec.log_pages)} log pages and {len(spec.structures)} structures.\n"
+        f"{counts['commands']} commands, {counts['features']} features, "
+        f"{counts['log_pages']} log pages and {counts['structures']} structures.\n"
         f"For the authors: {plural(len(errata), 'candidate erratum', 'candidate errata')}"
         f" and {plural(counted('document-error'), 'document error')}. "
         f"For senfd, or the figures: "

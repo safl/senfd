@@ -99,12 +99,12 @@ class Recognised(Lexer):
 
 
 def holds(vocabulary: Vocabulary) -> str:
-    """What the data model holds, as counted for a person"""
+    """What the data model holds, as counted for a person, as senfd counts it"""
 
+    held = vocabulary.held
     return (
-        f"{len(vocabulary.commands)} commands, {len(vocabulary.features)} "
-        f"features, {len(vocabulary.log_pages)} log pages, "
-        f"{len(vocabulary.structures)} structures"
+        f"{held.get('commands', 0)} commands, {held.get('features', 0)} features, "
+        f"{held.get('log_pages', 0)} log pages, {held.get('structures', 0)} structures"
     )
 
 

@@ -41,6 +41,18 @@ from senfd.documents.spec import (
 )
 
 
+def held(spec: SpecDocument) -> Dict[str, int]:
+    """The number of commands, features, log pages and structures of 'spec', as senfd
+    and sate report them: each entity once, not each name"""
+
+    return {
+        "commands": sum(len(s.commands) for s in spec.command_sets.values()),
+        "features": len(spec.features),
+        "log_pages": len(spec.log_pages),
+        "structures": len(spec.structures),
+    }
+
+
 def default_spec_path() -> Path:
     if os.environ.get("SENFD_SPEC"):
         return Path(os.environ["SENFD_SPEC"])
