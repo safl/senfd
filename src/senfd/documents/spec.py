@@ -4333,6 +4333,51 @@ def nest_layouts(document: SpecDocument) -> None:
             nest(dwords.fields, ())
 
 
+def bytes_of_bits(document: SpecDocument) -> None:
+    """
+    Give in bytes each data structure given in bits whose fields all start and end at
+    byte boundaries, as ZSZE at bits 63:00 and ZDES at bits 71:64 of the LBA Format
+    Extension of ZNS 1.5, which are bytes 07:00 and 08. A layout that a field other
+    than an entry of an array lays out keeps the bits of that field, as the CQE Dword 2
+    of Base 2.4 Figure 98.
+    """
+
+    nested = {
+        (f.structure.document, f.structure.figure_nr)
+        for _, fields in laid_out(document)
+        for f in fields_within(fields)
+        if f.structure is not None and f.array is None
+    }
+    for structure in document.structures:
+        key = (structure.source.document, structure.source.figure_nr)
+        if structure.unit != "bits" or structure.kind != "data_structure":
+            continue
+        fields = structure.fields
+        if (
+            key in nested
+            or not fields
+            or any(
+                f.kind != "span"
+                or f.upper is None
+                or (f.lower or 0) % 8
+                or (f.upper + 1) % 8
+                or f.fields
+                or f.cases
+                for f in fields
+            )
+        ):
+            continue
+        for field in fields:
+            field.lower = (field.lower or 0) // 8
+            field.upper = ((field.upper or 0) + 1) // 8 - 1
+            field.width = field.upper - field.lower + 1
+            field.unit = "bytes"
+            field.range = f"{field.upper:02d}:{field.lower:02d}"
+            if field.upper == field.lower:
+                field.range = f"{field.lower:02d}"
+        structure.unit = "bytes"
+
+
 def link_structures(document: SpecDocument) -> None:
     """
     Set 'structure' on each field that has no subfields and whose description
@@ -4912,6 +4957,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     name_by_identifiers(document)
     link_selectors(document)
     nest_layouts(document)
+    bytes_of_bits(document)
     name_structures(document)
 
     # A gap where a field was left out as an erratum is that erratum again

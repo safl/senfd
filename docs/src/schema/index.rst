@@ -223,7 +223,10 @@ that figure lays out bits and the field is no entry of an array, the field
 also has the fields of that figure as its own ``fields``, counted from bit
 0 of the field: DW3 of the Completion Queue Entry of Base 2.4 Figure 97
 holds STATUS, P and CID, and STATUS holds DNR to SC, which Figure 101
-gives at bits 31:17.
+gives at bits 31:17. A data structure that a figure gives in bits, whose
+fields all start and end at byte boundaries, is given in bytes, as the LBA
+Format Extension of ZNS 1.5, unless a field other than an entry of an
+array lays it out.
 ``structure`` is the ``source`` of that figure, and the structure is the
 entry of ``structures`` with the same ``source``. senfd links a field that
 has no subfields to a structure when the description of the field refers

@@ -254,6 +254,39 @@ def test_a_dword_has_the_fields_of_the_layout_of_bits_it_links_from_its_own_bit_
     assert [f.acronym for f in entry.fields[0].fields[0].fields] == ["DNR", "SC"]
 
 
+def test_a_data_structure_in_bits_of_whole_bytes_is_given_in_bytes():
+    """ZSZE and ZDES of the LBA Format Extension of ZNS 1.5 are at bits 63:00 and 71:64;
+    MXPS of the Power State Descriptor is at bit 24, within a byte"""
+
+    spec = document_of(
+        figure_of(
+            50,
+            "Foo Extension Data Structure",
+            ("Bits", "Description"),
+            ("127:72", "Reserved"),
+            ("71:64", "Foo Size (FSZ): The size."),
+            ("63:00", "Foo Zone (FZ): The zone."),
+        ),
+        figure_of(
+            340,
+            "Foo Power Data Structure",
+            ("Bits", "Description"),
+            ("31:25", "Reserved"),
+            ("24", "Foo Scale (FS): The scale."),
+            ("23:00", "Foo Power (FP): The power."),
+        ),
+    )
+    extension, power = spec.structures
+    assert extension.unit == "bytes"
+    assert [(f.range, f.upper, f.lower, f.width, f.unit) for f in extension.fields] == [
+        ("15:09", 15, 9, 7, "bytes"),
+        ("08", 8, 8, 1, "bytes"),
+        ("07:00", 7, 0, 8, "bytes"),
+    ]
+    assert extension.size == 16
+    assert power.unit == "bits"
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
