@@ -997,6 +997,7 @@ ErratumCode = Literal[
     "layout-gap",
     "reference",
     "caption",
+    "unit",
 ]
 
 
@@ -1013,8 +1014,7 @@ class Erratum(Model):
     The kind of erratum: "value", "acronym", "range" (text that is not a range),
     "range-outside", "range-reversed", "opcode", "gap" (in the dwords of a command),
     "layout-gap" (in a structure), "reference" (to the section of another value or
-    command) or
-    "caption" (of another figure)
+    command), "caption" (of another figure) or "unit" (of the ranges of a layout)
     """
     message: str
     """What is wrong, said for a person"""
@@ -2507,6 +2507,24 @@ def uncovered_entries(fields: List[Bits], unit: str, source: Source) -> List[Err
     return errata
 
 
+def unaligned(fields: List[Bits]) -> List[str]:
+    """
+    The acronyms or names of the fields of 'fields', fields of bits, that are wider than
+    64 bits and do not start and end at byte boundaries, which no integer holds, as
+    ENSNQN at "bits" 291:36 of Base 2.4 Figure 372
+    """
+
+    return [
+        field.acronym or field.name or field.range
+        for field in fields
+        if field.role == "field"
+        and field.kind == "span"
+        and field.upper is not None
+        and field.upper - (field.lower or 0) + 1 > 64
+        and ((field.lower or 0) % 8 or (field.upper + 1) % 8)
+    ]
+
+
 def source_of(figure: NormalizedFigure, stem: str) -> Source:
     return Source(
         document=stem,
@@ -2715,6 +2733,23 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         errata += uncovered_entries(fields, figure.layout.unit, source)
         errata += misnumbered(fields, figure.layout.unit, source)
     errata += shared_acronyms(fields, source)
+    unit = figure.layout.unit
+    if unit == "bits" and kind != "register" and unaligned(fields):
+        unit = "bytes"
+        for field in fields:
+            field.unit = "bytes"
+        errata.append(
+            Erratum(
+                code="unit",
+                message=(
+                    f"Figure {source.figure_nr} heads its ranges Bits, and gives "
+                    "ranges wider than 64 bits that do not start and end at byte "
+                    f"boundaries, of {', '.join(unaligned(fields))}; the ranges are bytes"
+                ),
+                found="Bits",
+                source=source,
+            )
+        )
     took(document, errata, unnamed, source)
     title = subject.name or figure.caption
     hexadecimal = REGEX_HEX.match(subject.offset or "")
@@ -2723,7 +2758,7 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
             title=title,
             name=title,
             kind=kind,
-            unit=figure.layout.unit,
+            unit=unit,
             qualifier=subject.qualifier,
             offset=int(hexadecimal["hex"], 16) if hexadecimal else None,
             fields=fields,

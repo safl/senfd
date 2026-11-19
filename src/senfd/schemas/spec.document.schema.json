@@ -1271,7 +1271,7 @@
             "description": "Something of a figure that is not what its kind of value must be, as a\nrange beyond the dword it is of, left out of the model; or fields that do\nnot fit together, as two of the same bits, which the model keeps. Each is\na candidate erratum of the specification, saying where it is.",
             "properties": {
                 "code": {
-                    "description": "The kind of erratum: \"value\", \"acronym\", \"range\" (text that is not a range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (in the dwords of a command),\n\"layout-gap\" (in a structure), \"reference\" (to the section of another value or\ncommand) or\n\"caption\" (of another figure)",
+                    "description": "The kind of erratum: \"value\", \"acronym\", \"range\" (text that is not a range),\n\"range-outside\", \"range-reversed\", \"opcode\", \"gap\" (in the dwords of a command),\n\"layout-gap\" (in a structure), \"reference\" (to the section of another value or\ncommand), \"caption\" (of another figure) or \"unit\" (of the ranges of a layout)",
                     "enum": [
                         "value",
                         "acronym",
@@ -1282,7 +1282,8 @@
                         "gap",
                         "layout-gap",
                         "reference",
-                        "caption"
+                        "caption",
+                        "unit"
                     ],
                     "title": "Code",
                     "type": "string"
