@@ -433,7 +433,8 @@ class Comparison(Model):
 
 
 REGEX_COMPARISON = re.compile(
-    r"^(?P<field>[A-Z][A-Z0-9]*) is (?:(?:cleared|set) to (?P<value>[0-9A-F]+h|[01]+b|\d+)"
+    r"^(?P<field>[A-Z][A-Z0-9]*)(?: field| bit)? is "
+    r"(?:(?:cleared|set) to (?P<value>[0-9A-F]+h|[01]+b|\d+)"
     r"|(?P<nonzero>non-zero))$"
 )
 
@@ -649,6 +650,13 @@ class Structure(Model):
     in parentheses that is no acronym, as "Set Features" of "Timestamp (Set Features)"
     or "Event Type 02h"
     """
+    condition: Optional[str] = None
+    """
+    Where the caption lays the structure out only under a condition, the condition, as
+    "STS field is cleared to 0h" of NVM 1.3 Figure 155
+    """
+    selected_when: Optional[Comparison] = None
+    """The condition as a comparison of a field with a value, as STS == 0"""
     offset: Optional[int] = None
     """
     Of a register, its offset in bytes, as 20 of CC at 14h; of a register of a
@@ -4251,6 +4259,37 @@ def link_extended(document: SpecDocument) -> None:
 REGEX_DATA_STRUCTURE = re.compile(r"\s+Data Structure$", re.IGNORECASE)
 
 
+def link_subsections(document: SpecDocument) -> None:
+    """
+    Set 'selects' on each value of a field whose name is the title of a section one
+    level below a section the field's description cites, to the structures of that
+    section, other than examples. PIF of NVM 1.3 Figure 128 cites section 5.3.1, and
+    its value 00b, "16b Guard Protection Information", is the title of section 5.3.1.1,
+    which holds Figures 155 and 156.
+    """
+
+    by_section: Dict[Tuple[str, Optional[str]], List[Source]] = {}
+    for structure in document.structures:
+        if structure.kind != "example":
+            at = (structure.source.document, structure.source.section)
+            by_section.setdefault(at, []).append(structure.source)
+    for source, fields in laid_out(document):
+        titles = document.sections.get(source.document, {})
+        for field in fields_within(fields):
+            cited = set(REGEX_SECTION.findall(field.description))
+            if not cited or not field.values:
+                continue
+            below = {
+                alias(title): number
+                for number, title in titles.items()
+                if number.rpartition(".")[0] in cited
+            }
+            for entry in field.values:
+                number = below.get(alias(entry.name or ""))
+                if number and not entry.selects:
+                    entry.selects = by_section.get((source.document, number), [])
+
+
 def unnest_layouts(document: SpecDocument) -> None:
     """Remove the fields that nest_layouts() gave, so that the links are made anew: a
     field has both 'structure' and 'fields' only where nest_layouts() gave them"""
@@ -4956,6 +4995,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_identifiers(document)
     name_by_identifiers(document)
     link_selectors(document)
+    link_subsections(document)
     nest_layouts(document)
     bytes_of_bits(document)
     name_structures(document)
@@ -5470,11 +5510,17 @@ REGEX_CONTEXT_WORDS = re.compile(
 )
 
 
+# A title that lays out the structure under a condition, as "16b Guard Protection
+# Information Format when STS field is cleared to 0h"
+REGEX_TITLE_CONDITION = re.compile(r"^(?P<head>.+?) (?:when|if) (?P<condition>.+)$")
+
+
 def name_parts(structure: Structure) -> None:
     """
-    Set the name, owner, acronym, optional, qualifier and offset of 'structure' from
-    its title, as "Controller Configuration" and the acronym "CC" of "CC - Controller
-    Configuration"; a title giving an offset makes the structure a register
+    Set the name, owner, acronym, optional, qualifier, condition and offset of
+    'structure' from its title, as "Controller Configuration" and the acronym "CC" of
+    "CC - Controller Configuration"; a title giving an offset makes the structure a
+    register
     """
 
     text = structure.title.strip()
@@ -5490,6 +5536,10 @@ def name_parts(structure: Structure) -> None:
             structure.offset_formula = where
         if structure.unit == "bits":
             structure.kind = "register"
+    if match := REGEX_TITLE_CONDITION.match(text):
+        text = match["head"]
+        structure.condition = match["condition"]
+        structure.selected_when = comparison_of(match["condition"])
     acronym = owner = None
     while match := REGEX_TRAILING.match(text):
         inner = match["inner"].strip()
@@ -5532,6 +5582,8 @@ def key_candidates(structure: Structure, document_title: Optional[str]) -> List[
     keys.append(alias(f"{owner} {name}") if owned else keys[-1])
     qualifier = structure.qualifier
     keys.append(f"{keys[-1]}_{alias(qualifier)}" if qualifier else keys[-1])
+    condition = structure.condition
+    keys.append(f"{keys[-1]}_{alias(condition)}" if condition else keys[-1])
     word = STRUCTURE_WORDS.get(structure.kind)
     keys.append(f"{keys[-1]}_{alias(word)}" if word else keys[-1])
     keys.append(f"{keys[-1]}_figure_{structure.source.figure_nr}")

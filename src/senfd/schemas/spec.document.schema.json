@@ -1740,6 +1740,31 @@
                     "description": "What the caption says it is of, as \"Log Specific Field\", or what its title gives\nin parentheses that is no acronym, as \"Set Features\" of \"Timestamp (Set Features)\"\nor \"Event Type 02h\"",
                     "title": "Qualifier"
                 },
+                "condition": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Where the caption lays the structure out only under a condition, the condition, as\n\"STS field is cleared to 0h\" of NVM 1.3 Figure 155",
+                    "title": "Condition"
+                },
+                "selected_when": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Comparison"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The condition as a comparison of a field with a value, as STS == 0"
+                },
                 "offset": {
                     "anyOf": [
                         {

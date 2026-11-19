@@ -287,6 +287,94 @@ def test_a_data_structure_in_bits_of_whole_bytes_is_given_in_bytes():
     assert power.unit == "bits"
 
 
+def test_a_caption_s_condition_is_the_condition_of_the_structure():
+    """NVM 1.3 Figures 155 and 156 are the 16b Guard Protection Information Format "when
+    STS field is cleared to 0h" and "when STS field is non-zero" """
+
+    spec = document_of(
+        figure_of(
+            155,
+            "16b Foo Format when STS field is cleared to 0h",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Guard (FG): The guard."),
+        ),
+        figure_of(
+            156,
+            "16b Foo Format when STS field is non-zero",
+            ("Bytes", "Description"),
+            ("03:00", "Foo Guard (FG): The guard."),
+        ),
+    )
+    cleared, nonzero = spec.structures
+    assert (cleared.name, cleared.condition) == (
+        "16b Foo Format",
+        "STS field is cleared to 0h",
+    )
+    assert cleared.selected_when is not None and nonzero.selected_when is not None
+    assert cleared.selected_when.model_dump() == {
+        "field": "STS",
+        "comparison": "==",
+        "value": 0,
+    }
+    assert nonzero.selected_when.comparison == "!="
+    assert (cleared.key, nonzero.key) == (
+        "16b_foo_format_sts_field_is_cleared_to_0h",
+        "16b_foo_format_sts_field_is_non_zero",
+    )
+
+
+def test_a_value_named_as_a_section_the_field_cites_selects_its_structures():
+    """PIF of NVM 1.3 Figure 128 cites section 5.3.1, and its value 00b is "16b Guard
+    Protection Information", the title of section 5.3.1.1, which holds Figure 155"""
+
+    from senfd.documents.spec import link_subsections
+    from senfd.tables import Cell
+
+    figures = [
+        figure_of(
+            128,
+            "Foo LBA Format",
+            ("Bits", "Description"),
+            (
+                "8:7",
+                Cell(
+                    text="Foo Information Format (FIF): The format (refer to section "
+                    "5.3.1).",
+                    tables=[
+                        table_of(
+                            ("Value", "Definition"),
+                            ("00b", "16b Foo Information"),
+                            ("01b", "32b Foo Information"),
+                        )
+                    ],
+                ),
+            ),
+            ("6:0", "Reserved"),
+        ),
+        figure_of(
+            155,
+            "16b Foo Information Format",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Guard (FG): The guard."),
+        ),
+        figure_of(
+            156,
+            "16b Foo Information Write Example",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Guard (FG): The guard."),
+        ),
+    ]
+    for figure, section in zip(figures, ("4.1", "5.3.1.1", "5.3.1.1")):
+        figure.section = section
+    spec = document_of(*figures)
+    spec.sections = {
+        "example": {"5.3.1.1": "16b Foo Information", "5.3.1.2": "32b Foo Information"}
+    }
+    link_subsections(spec)
+    (fif,) = [f for f in spec.structures[0].fields if f.acronym == "FIF"]
+    assert [[s.figure_nr for s in v.selects] for v in fif.values] == [[155], []]
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
