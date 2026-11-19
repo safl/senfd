@@ -1864,9 +1864,9 @@ def variable_arrays(fields: List[Bits]) -> None:
     have one width. A last entry numbered by a name is an entry without an index, for
     example "ANA Group Descriptor N" after the others, or "Entry N" after "Entry 0" of
     Figure 322. Where the entries of two such runs alternate, for example Zone
-    Descriptor 0 and Zone Descriptor Extension 0 of ZNS 1.4 Figure 37, the runs are two
-    arrays without a stride. A range "n/a", for example of CDW14 and CDW15 of MI 2.2
-    Figure 49, is not a range that the data gives.
+    Descriptor 0 and Zone Descriptor Extension 0 of ZNS 1.5 Figure 37, each pair is one
+    entry of an array without a stride; paired() makes them. A range "n/a", for example
+    of CDW14 and CDW15 of MI 2.2 Figure 49, is not a range that the data gives.
     """
 
     def usable(run: List[Bits]) -> bool:
@@ -1927,11 +1927,84 @@ def variable_arrays(fields: List[Bits]) -> None:
                 and one[2:] != two[2:]
                 and usable([fields[i] for i in one[0] + two[0]])
             ):
-                assign(*one, "name", None)
-                assign(*two, "name", None)
-                at = two[0][-1] + 1
+                entries = paired(fields, one, two)
+                fields[one[0][0] : two[0][-1] + 1] = entries
+                at = one[0][0] + len(entries)
                 continue
         at += 1
+
+
+def bounds_of(
+    field: Bits,
+) -> Tuple["senfd.ranges.Expression", "senfd.ranges.Expression"]:
+    """The upper and the lower bound of 'field', a span or a formula"""
+
+    if field.kind == "span":
+        number = senfd.ranges.Expression.number
+        return number(field.upper or 0), number(field.lower or 0)
+    upper, _, lower = (field.formula or "").partition(":")
+    return senfd.ranges.expression(upper), senfd.ranges.expression(lower)
+
+
+def ranged(field: Bits, upper: "senfd.ranges.Expression", lower) -> Bits:
+    """'field' at the bounds 'upper' and 'lower', a span where both are numbers"""
+
+    moved = field.model_copy(deep=True)
+    high, low = upper.constant(), lower.constant()
+    width = (upper - lower + senfd.ranges.Expression.number(1)).constant()
+    if high is not None and low is not None:
+        moved.kind, moved.formula = "span", None
+        moved.upper, moved.lower, moved.width = high, low, high - low + 1
+        moved.range = f"{high:02d}:{low:02d}" if high != low else f"{low:02d}"
+    else:
+        moved.kind, moved.formula = "formula", f"{upper}:{lower}"
+        moved.upper = moved.lower = None
+        moved.width = width
+        moved.range = moved.formula
+    return moved
+
+
+def paired(fields: List[Bits], one, two) -> List[Bits]:
+    """
+    The entries of an array of pairs of the fields of the runs 'one' and 'two', whose
+    entries alternate, as given_run() gives each run. Zone Descriptor 0 and Zone
+    Descriptor Extension 0 of ZNS 1.5 Figure 37 are the entry "Zone Descriptor and Zone
+    Descriptor Extension 0", from the lower bound of the first to the upper bound of the
+    second, whose fields lie at offsets from the start of the entry: the Zone
+    Descriptor at bytes 63:00, and the extension from byte 64.
+    """
+
+    names = [" ".join((run[2] + run[3]).split()) for run in (one, two)]
+    name = " and ".join(names)
+    entries = []
+    for index, a, b in zip(one[1], one[0], two[0]):
+        first, second = fields[a], fields[b]
+        start = bounds_of(first)[1]
+        inner = []
+        for each in (first, second):
+            upper, lower = bounds_of(each)
+            moved = ranged(each, upper - start, lower - start)
+            moved.array = None
+            inner.append(moved)
+        label = str(index)
+        if index is None:
+            text = first.name or ""
+            label = text[len(one[2]) : len(text) - len(one[3]) or None].strip()
+        entry = ranged(first, bounds_of(second)[0], start)
+        entry.name, entry.acronym, entry.description = f"{name} {label}", None, ""
+        entry.values, entry.cases, entry.structure = [], [], None
+        entry.elided = first.elided or second.elided
+        entry.fields = inner
+        lowest = fields[one[0][0]]
+        entry.array = Array(
+            name=name,
+            index=index,
+            first=one[1][0],
+            stride=None,
+            lower=lowest.lower if lowest.kind == "span" else None,
+        )
+        entries.append(entry)
+    return entries
 
 
 def grouped_arrays(fields: List[Bits]) -> None:

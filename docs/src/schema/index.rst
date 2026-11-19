@@ -202,8 +202,10 @@ Its ``stride`` and ``lower`` are null where the widths or the offsets of the
 entries depend on the data. One entry followed by a last entry numbered by a
 name, such as Entry 0 and Entry N of the Discovery log page, is such an
 array too. Where the entries of two runs alternate, such as Zone Descriptor
-and Zone Descriptor Extension of ZNS 1.4, each run is an array without a
-stride. A range "n/a" is not a range that the data gives.
+and Zone Descriptor Extension of ZNS 1.5 Figure 37, each pair is one entry
+of an array without a stride, named "Zone Descriptor and Zone Descriptor
+Extension 0", whose ``fields`` are the two at offsets from the start of the
+entry. A range "n/a" is not a range that the data gives.
 
 Where the formula of the last entry of a run gives a width, the array has
 that stride, and the entries of another width are candidate errata. For
