@@ -42,7 +42,11 @@ These tests download the PDFs from nvmexpress.org into a cache,
 its SHA-256, and are skipped when the download fails. The tests check what
 senfd makes of each document against ``tests/public/documents.toml``. A
 change that alters what senfd makes of a document, such as reading one
-more figure, updates the counts in that file in the same commit.
+more figure, updates the counts in that file in the same commit. The
+public documents check also checks each data model against
+``senfd.invariants``: the keys of the structures of a document differ, and
+the dwords that a document gives a command or a feature lie in one section
+of that document.
 
 The tests of the map of ``sate-web`` click through the page in a headless
 browser, and are skipped without it. Install the browser once:

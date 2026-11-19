@@ -375,8 +375,9 @@ def test_a_pdf_without_a_structure_tree_is_refused(tmp_path):
 @pytest.mark.parametrize("name", ["Key Value Command Set 1.4", "NVM Command Set 1.3"])
 def test_a_published_pdf_gives_the_data_model_its_manifest_says(public, name, tmp_path):
     document, path = document_named(public, name)
-    found = public.counts(public.made(path, tmp_path))
-    assert found == {key: document[key] for key in public.COUNTED}
+    model = public.made(path, tmp_path)
+    assert public.counts(model) == {key: document[key] for key in public.COUNTED}
+    assert public.violated(model) == []
 
 
 def test_a_published_pdf_reads_as_its_figures(public, tmp_path):

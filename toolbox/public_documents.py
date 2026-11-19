@@ -127,9 +127,18 @@ def formats(model: Dict) -> List[str]:
     ]
 
 
+def violated(model: Dict) -> List[str]:
+    """What of 'model' does not hold that holds of every data model senfd makes"""
+
+    from senfd.documents.spec import SpecDocument
+    from senfd.invariants import violations
+
+    return violations(SpecDocument.model_validate(model))
+
+
 def check(names: Optional[List[str]] = None) -> int:
-    """Each document, or those of 'names', read by senfd and its counts
-    compared with the manifest's"""
+    """Each document, or those of 'names', read by senfd, checked against the schema
+    and the invariants, and its counts compared with the manifest's"""
 
     failed = 0
     for document in documents():
@@ -141,6 +150,9 @@ def check(names: Optional[List[str]] = None) -> int:
         for wrong in formats(model):
             failed += 1
             print(f"{document['name']}: not of the schema: {wrong}")
+        for wrong in violated(model):
+            failed += 1
+            print(f"{document['name']}: {wrong}")
         expected = {key: document[key] for key in COUNTED}
         differ = {
             k: (expected[k], found[k]) for k in COUNTED if expected[k] != found[k]
