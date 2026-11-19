@@ -2176,6 +2176,36 @@
                     "title": "Entries",
                     "type": "array"
                 },
+                "status_code_type": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The Status Code Type of the status codes of a table of status values, by its\ncaption, as 1 of \"Command Specific Status Values\" and 2 of \"Media and Data\nIntegrity Error Values\"",
+                    "title": "Status Code Type"
+                },
+                "status_scope": {
+                    "anyOf": [
+                        {
+                            "enum": [
+                                "io_command_set",
+                                "fabrics"
+                            ],
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "What the caption of a table of status values confines its codes to, beyond the\ndocument: \"io_command_set\" of \"Status Code - Command Specific Status Values, I/O\nCommand Set Specific\", or \"fabrics\" of the Fabrics Command Specific ones",
+                    "title": "Status Scope"
+                },
                 "source": {
                     "$ref": "#/$defs/Source",
                     "description": "The figure holding the table"

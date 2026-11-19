@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "e16deda96a71cf40614b252c3b58cb76db09d71100f482fd5b81cfd0526d2ffb",
+    "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "4bf6ac27684e6f6099f25b3fbafe810ab0fff08053093b08f3df979e9c97042d"
+    "combined_sha256": "045048e6148678e213a1a650ae1286f2c7d66fbfe78d8d2c1496d9da3670d7bf"
   },
   "command_sets": {
     "foobar": {
@@ -8919,6 +8919,8 @@
           "document": null
         }
       ],
+      "status_code_type": 1,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 9,
@@ -8966,6 +8968,8 @@
           "document": null
         }
       ],
+      "status_code_type": 0,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 22,
@@ -9055,6 +9059,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 24,
@@ -9133,6 +9139,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 25,
@@ -9235,6 +9243,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 26,
@@ -9336,6 +9346,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 30,
@@ -9412,6 +9424,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 31,
@@ -9682,6 +9696,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 33,
@@ -9742,6 +9758,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 34,
@@ -9816,6 +9834,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 44,
@@ -9851,6 +9871,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 45,
@@ -9898,6 +9920,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 46,
@@ -9972,6 +9996,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 47,
@@ -10019,6 +10045,8 @@
           "document": null
         }
       ],
+      "status_code_type": 0,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 48,
@@ -10066,6 +10094,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 49,
@@ -10123,6 +10153,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 56,
@@ -10177,6 +10209,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 58,
@@ -10216,6 +10250,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 59,
@@ -10268,6 +10304,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 69,
@@ -10346,6 +10384,8 @@
           "document": null
         }
       ],
+      "status_code_type": 1,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 70,
@@ -10425,6 +10465,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 74,
@@ -10537,6 +10579,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 75,
@@ -10611,6 +10655,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 78,
@@ -10648,6 +10694,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 91,
@@ -10749,6 +10797,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 95,
@@ -10850,6 +10900,8 @@
           "document": null
         }
       ],
+      "status_code_type": null,
+      "status_scope": null,
       "source": {
         "document": "example",
         "figure_nr": 96,
@@ -11617,7 +11669,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "e16deda96a71cf40614b252c3b58cb76db09d71100f482fd5b81cfd0526d2ffb",
+      "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11630,7 +11682,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "e16deda96a71cf40614b252c3b58cb76db09d71100f482fd5b81cfd0526d2ffb",
+      "senfd_sha256": "b2f3b040af3370ad3bb9a79c4babd70d0344f37ade200b6c7439cc3d59781d22",
       "stem": "invalid",
       "name": null,
       "key": null,

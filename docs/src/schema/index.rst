@@ -74,7 +74,10 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   value of an entry is a code, a range or a list of codes, a number, or
   "All others", ``typed`` holds it as such under the key of its column. The
   ``role`` of an entry is ``field``, or the place the entry holds, such as
-  ``reserved``.
+  ``reserved``. A table of status values has the ``status_code_type`` its
+  caption names, as 1 of "Command Specific Status Values", and a
+  ``status_scope`` of ``io_command_set`` or ``fabrics`` where the caption
+  confines the codes to the I/O command sets or to Fabrics commands.
 * ``dwords``: the dwords of every figure, by the name its caption gives, as
   read. ``unassigned`` holds the dwords that no command, feature or
   operation claims.
