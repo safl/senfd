@@ -333,7 +333,11 @@ NVM 1.3 cites section 5.3.1, and its value 00b, "16b Guard Protection
 Information", selects Figures 155 and 156 of section 5.3.1.1. Where a
 caption lays a structure out under a condition, the structure has the
 ``condition``, and ``selected_when`` where the condition compares a field
-with a value: Figure 155 holds where the STS field is cleared to 0h.
+with a value: Figure 155 holds where the STS field is cleared to 0h. A
+condition can name the field by its name, as Base 2.4 Figure 201 names
+Select; ``selected_when`` then has the acronym of the field of that name in
+the section of the structure or the nearest section above it, SEL of Get
+Features.
 
 An entry of a table of values has the ``name`` that its row gives. Otherwise
 senfd takes the name from a short definition, from a column that names the

@@ -3055,6 +3055,44 @@ def test_the_fabrics_commands_are_operations_of_one_command_by_fctype():
     assert command.operations[0].sqe == []
 
 
+def test_a_caption_condition_naming_a_field_compares_the_field_of_that_name():
+    """
+    Base 2.4 Figure 201, in a section below that of Get Features, lays out Dword 0 of
+    the completion queue entry when Select is set to 11b; Select is SEL of Get
+    Features Command Dword 10
+    """
+
+    opcodes = figure_of(
+        1,
+        "Opcodes for Foo Commands",
+        ("Combined Opcode", "Command"),
+        ("0Ah", "Foo Get"),
+    )
+    dword = figure_of(
+        2,
+        "Foo Get - Command Dword 10",
+        ("Bits", "Description"),
+        ("31:02", "Reserved"),
+        ("01:00", "Select (SEL): What to get."),
+    )
+    data = figure_of(
+        3,
+        "Foo Get Data when Select is set to 11b",
+        ("Bits", "Description"),
+        ("31:00", "Foo Value (FV): The value."),
+    )
+    dword.section, data.section = "5.2", "5.2.1"
+    spec = document_of(opcodes, dword, data)
+    (structure,) = [s for s in spec.structures if s.source.figure_nr == 3]
+    assert structure.condition == "Select is set to 11b"
+    assert structure.selected_when is not None
+    assert structure.selected_when.model_dump() == {
+        "field": "SEL",
+        "comparison": "==",
+        "value": 3,
+    }
+
+
 def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
     """PRP1 of the Common Command Format is "the first PRP entry for the
     command; or a PRP List pointer, depending on the command (e.g., the

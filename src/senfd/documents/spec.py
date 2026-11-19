@@ -11,10 +11,21 @@ answer can be checked against the specification. What a figure holds that the
 model leaves out is a diagnostic.
 """
 
+import functools
 import re
 from argparse import Namespace
 from pathlib import Path
-from typing import ClassVar, Dict, Iterator, List, Literal, Optional, Tuple, Union
+from typing import (
+    Callable,
+    ClassVar,
+    Dict,
+    Iterator,
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    Union,
+)
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.config import JsonDict
@@ -433,26 +444,35 @@ class Comparison(Model):
 
 
 REGEX_COMPARISON = re.compile(
-    r"^(?P<field>[A-Z][A-Z0-9]*)(?: field| bit)? is "
+    r"^(?:(?P<field>[A-Z][A-Z0-9]*)|(?P<name>[A-Z][A-Za-z]*(?: [A-Z][A-Za-z]*)*))"
+    r"(?: field| bit)? is "
     r"(?:(?:cleared|set) to (?P<value>[0-9A-F]+h|[01]+b|\d+)"
     r"|(?P<nonzero>non-zero))$"
 )
 
 
-def comparison_of(condition: Optional[str]) -> Optional[Comparison]:
+def comparison_of(
+    condition: Optional[str],
+    acronym_of: Optional[Callable[[str], Optional[str]]] = None,
+) -> Optional[Comparison]:
     """
     The comparison that 'condition' states, for example CETYPE == 0 for "CETYPE is
-    cleared to 0h". Returns None for a condition of another form.
+    cleared to 0h". Where the condition names the field by its name, as "Select is set
+    to 11b", 'acronym_of' gives the acronym of the field of that name. Returns None for
+    a condition of another form, or naming a field of no known acronym.
     """
 
     match = REGEX_COMPARISON.match(condition or "")
     if not match:
         return None
+    field = match["field"]
+    if field is None:
+        field = acronym_of(match["name"]) if acronym_of else None
+        if field is None:
+            return None
     if match["nonzero"]:
-        return Comparison(field=match["field"], comparison="!=", value=0)
-    return Comparison(
-        field=match["field"], comparison="==", value=code_value(match["value"])
-    )
+        return Comparison(field=field, comparison="!=", value=0)
+    return Comparison(field=field, comparison="==", value=code_value(match["value"]))
 
 
 class Dwords(Model):
@@ -5980,7 +6000,49 @@ REGEX_CONTEXT_WORDS = re.compile(
 REGEX_TITLE_CONDITION = re.compile(r"^(?P<head>.+?) (?:when|if) (?P<condition>.+)$")
 
 
-def name_parts(structure: Structure) -> None:
+def acronyms_by_name(
+    document: SpecDocument,
+) -> Dict[Tuple[str, str], List[Tuple[str, str]]]:
+    """The section and the acronym of each field of 'document' that has both a name
+    and an acronym, by its document and the key of its name"""
+
+    found: Dict[Tuple[str, str], List[Tuple[str, str]]] = {}
+    for source, fields in laid_out(document):
+        for field in fields_within(fields):
+            if field.name and field.acronym and source.section:
+                found.setdefault((source.document, alias(field.name)), []).append(
+                    (source.section, field.acronym)
+                )
+    return found
+
+
+def acronym_near(
+    named: Dict[Tuple[str, str], List[Tuple[str, str]]], source: Source, name: str
+) -> Optional[str]:
+    """
+    The acronym of the field named 'name' in the section of 'source' or the nearest
+    section above it that has one, as SEL of "Select" of Get Features for Base 2.4
+    Figure 201 in a section below that of Get Features; None where that section has
+    fields of the name with different acronyms
+    """
+
+    section = source.section or ""
+    near = [
+        (there, acronym)
+        for there, acronym in named.get((source.document, alias(name)), [])
+        if section == there or section.startswith(f"{there}.")
+    ]
+    if not near:
+        return None
+    deepest = max(there.count(".") for there, _ in near)
+    acronyms = {acronym for there, acronym in near if there.count(".") == deepest}
+    return acronyms.pop() if len(acronyms) == 1 else None
+
+
+def name_parts(
+    structure: Structure,
+    acronym_of: Optional[Callable[[str], Optional[str]]] = None,
+) -> None:
     """
     Set the name, owner, acronym, optional, qualifier, condition and offset of
     'structure' from its title, as "Controller Configuration" and the acronym "CC" of
@@ -6004,7 +6066,7 @@ def name_parts(structure: Structure) -> None:
     if match := REGEX_TITLE_CONDITION.match(text):
         text = match["head"]
         structure.condition = match["condition"]
-        structure.selected_when = comparison_of(match["condition"])
+        structure.selected_when = comparison_of(match["condition"], acronym_of)
     acronym = owner = None
     while match := REGEX_TRAILING.match(text):
         inner = match["inner"].strip()
@@ -6107,8 +6169,9 @@ def name_structures(document: SpecDocument) -> None:
     they transfer
     """
 
+    named = acronyms_by_name(document)
     for structure in document.structures:
-        name_parts(structure)
+        name_parts(structure, functools.partial(acronym_near, named, structure.source))
     renamed_by_linking_field(document)
     for structure in document.structures:
         structure.size = size_of(structure)
