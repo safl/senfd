@@ -4119,6 +4119,9 @@ def link_extended(document: SpecDocument) -> None:
         structure.extends = keyed[scored[-1][1]][0].source
 
 
+REGEX_DATA_STRUCTURE = re.compile(r"\s+Data Structure$", re.IGNORECASE)
+
+
 def link_structures(document: SpecDocument) -> None:
     """
     Set 'structure' on each field that has no subfields and whose description
@@ -4140,7 +4143,11 @@ def link_structures(document: SpecDocument) -> None:
     structure as wide as it captioned with that name, as "PRP Entry - Page
     Base Address and Offset". A field whose description refers to a figure
     where none is as wide, as "Refer to Figure 95." of SGL1 in Connect, has
-    the link of the field of the same acronym and range in that figure.
+    the link of the field of the same acronym and range in that figure. An
+    entry of an array of no known size, as "Power Histogram Descriptor 0" at
+    "63+PHDS:64", is linked to the one figure it cites. An entry of an array
+    named as a structure is captioned, apart from "Data Structure", is linked
+    to that structure, as "Registrant Data Structure 0" to "Registrant".
     All entries of an array get the structure
     that any of them has. A structure that lays out the entries of an array
     becomes a data structure whatever its caption says, and uncovered() then
@@ -4245,6 +4252,22 @@ def link_structures(document: SpecDocument) -> None:
                 and widths[key] == bits
                 and "_" in alias(structure.title)
                 and f" {alias(structure.title).replace('_', ' ')} " in text
+            ]
+        if not found and field.array and not bits:
+            # An entry of no known size, as "Power Histogram Descriptor 0" at
+            # "63+PHDS:64", is laid out by the one figure it cites
+            found = [key for key in named if key in structures]
+        if not found and field.array:
+            # The array is named as the structure is captioned, but for "Data
+            # Structure", as "Registrant Data Structure" of Base 2.4 Figure 671
+            name = alias(REGEX_DATA_STRUCTURE.sub("", field.array.name))
+            found = [
+                key
+                for key, structure in structures.items()
+                if key[0] == source.document
+                and key[1] != source.figure_nr
+                and (not bits or widths[key] == bits)
+                and alias(REGEX_DATA_STRUCTURE.sub("", structure.name)) == name
             ]
         return structures[found[0]].source if len(found) == 1 else None
 
