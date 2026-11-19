@@ -4312,3 +4312,69 @@ def test_a_document_has_the_key_and_the_revision_of_its_specification(tmp_path):
     assert document.documents[stem].key == "zns"
     assert document_key("NVM Express Foo Bar Specification, Revision 2-0") == "foo_bar"
     assert document_key("example") is None
+
+
+def test_every_code_of_a_table_is_typed_and_every_entry_has_its_role():
+    """Base 2.4 Figure 102 gives the status code types "0h" and "4h to 6h" in a column
+    of no known kind; a row named "Reserved" holds a place. A table can list codes, as
+    "02h and 03h", count in decimal, as "1 to 191", and end in "All others"."""
+
+    spec = document_of(
+        figure_of(
+            102,
+            "Foo Code Types",
+            ("Value", "Description"),
+            ("0h", "Ding: A foo that dings."),
+            ("1h, 2h, and 3h", "Ring: A foo that rings."),
+            ("4h to 6h", "Reserved"),
+            ("7", "Vendor Specific"),
+            ("8 to 191", "Sing: A foo that sings."),
+            ("All others", "Reserved"),
+            ("Version 1.0", "Bing: A foo of the first version."),
+        ),
+    )
+    (values,) = spec.values
+    typed = [e.typed.get(e.value_column) for e in values.entries]
+    assert [(t.kind, t.lower, t.upper, t.listed) for t in typed[:6] if t] == [
+        ("identifier", 0, 0, []),
+        ("identifiers", None, None, [1, 2, 3]),
+        ("identifier", 4, 6, []),
+        ("number", 7, 7, []),
+        ("number", 8, 191, []),
+        ("others", None, None, []),
+    ]
+    assert typed[6] is None
+    assert [e.role for e in values.entries] == [
+        "field",
+        "field",
+        "reserved",
+        "vendor_specific",
+        "field",
+        "reserved",
+        "field",
+    ]
+    assert [e for e in spec.errata if e.code == "value"] == []
+
+
+def test_a_value_of_a_field_named_reserved_has_the_role_reserved():
+    spec = document_of(
+        figure_of(
+            7,
+            "Foo Settings",
+            ("Bytes", "Description"),
+            (
+                "00",
+                holding(
+                    "Foo Mode (FM): The mode.",
+                    table_of(
+                        ("Value", "Definition"), ("0h", "Ding"), ("1h to Fh", "Reserved")
+                    ),
+                ),
+            ),
+        ),
+    )
+    (field,) = spec.structures[0].fields
+    assert [(v.value, v.role) for v in field.values] == [
+        ("0h", "field"),
+        ("1h to Fh", "reserved"),
+    ]

@@ -622,7 +622,9 @@ TypedKind = Literal[
     "level",
     "flag",
     "identifier",
+    "identifiers",
     "number",
+    "others",
     "note",
     "reference",
     "reserved",
@@ -640,6 +642,7 @@ TYPED_BY_KIND: JsonDict = {
             (["level"], "level", "string"),
             (["flag"], "flag", "boolean"),
             (["identifier", "number"], "lower", "integer"),
+            (["identifiers"], "listed", "array"),
             (["note"], "note", "integer"),
             (["reference"], "reference", "string"),
         )
@@ -650,8 +653,9 @@ TYPED_BY_KIND: JsonDict = {
 class Typed(Model):
     """
     A value of a table as what it is: a requirement "level" (M, O, P, NR, R),
-    a yes or no "flag", an "identifier" or a range of them, a "note" it is
-    given by, a "reference" to another specification, or "reserved",
+    a yes or no "flag", an "identifier" or a range of them, "identifiers" listed, a
+    "number" or a range of them, "others" for the row of all other values, a "note"
+    it is given by, a "reference" to another specification, or "reserved",
     "vendor_specific" or "not_applicable"; with the footnotes marked on it
     """
 
@@ -668,7 +672,9 @@ class Typed(Model):
     lower: Optional[int] = None
     """Of an identifier, it, or the first of a range"""
     upper: Optional[int] = None
-    """Of a range of identifiers, the last"""
+    """Of a range of identifiers or numbers, the last"""
+    listed: List[int] = Field(default_factory=list)
+    """Of identifiers listed, as '00h, 01h, 08h, and 09h', each of them"""
     note: Optional[int] = None
     """Of a note, its number"""
     reference: Optional[str] = None
@@ -699,7 +705,17 @@ class Entry(Model):
     columns: Dict[str, str] = Field(default_factory=dict)
     """The row's other columns, by their keys"""
     typed: Dict[str, Typed] = Field(default_factory=dict)
-    """The values of the row's columns of a known kind, by their keys"""
+    """
+    The values of the row's columns of a known kind, by their keys. The value of every
+    row whose value is a code, a range of codes or a number is typed, under the key
+    'value_column'.
+    """
+    role: Role = "field"
+    """
+    What the row is: "field" for a value of its own meaning, or the place a value holds,
+    "reserved", "obsolete", "vendor_specific" or "ignored", as the row of "4h to 6h"
+    named "Reserved" in Base 2.4 Figure 102
+    """
     footnotes: List[int] = Field(default_factory=list)
     """The numbers of the footnotes marked on the row: on the value, the
     name, the description and the other columns, in that order"""
@@ -2376,7 +2392,15 @@ TYPED_FORMS: List[Tuple[TypedKind, re.Pattern]] = [
             + r"$"
         ),
     ),
-    ("number", re.compile(r"^(?P<decimal>\d+)$")),
+    (
+        "identifiers",
+        re.compile(r"^[0-9A-Fa-f]+h(?:(?:\s*,)?(?:\s+and)?\s+[0-9A-Fa-f]+h)+$"),
+    ),
+    (
+        "number",
+        re.compile(r"^(?P<decimal>\d+)(?:\s*(?:to|-)\s*(?P<decimal_upper>\d+))?$"),
+    ),
+    ("others", re.compile(r"^All other(?:s| values)?$", re.IGNORECASE)),
     ("note", re.compile(r"^Note\s*(?P<note>\d+)$", re.IGNORECASE)),
     ("reference", re.compile(r"^Refer to (?:the )?(?P<reference>.+?)\.?$")),
     ("reserved", re.compile(r"^Reserved\b.*$", re.IGNORECASE)),
@@ -2419,7 +2443,11 @@ def typed_of(text: str) -> Optional[Typed]:
                 upper = groups.get("binary_upper")
                 typed.upper = int(upper, 2) if upper else typed.lower
             else:
-                typed.lower = typed.upper = int(groups["decimal"])
+                typed.lower = int(groups["decimal"])
+                upper = groups.get("decimal_upper")
+                typed.upper = int(upper) if upper else typed.lower
+        elif kind == "identifiers":
+            typed.listed = [int(code, 16) for code in re.findall(r"([0-9A-Fa-f]+)h", text)]
         elif kind == "note":
             typed.note = int(groups["note"])
         elif kind == "reference":
@@ -2492,11 +2520,18 @@ def type_values(values: "Values") -> List["Erratum"]:
         others = [v for k, v in cells.items() if k != entry.value_column and v]
         for column, text in cells.items():
             kinds = kinds_of(column, values)
+            # The value of a row is typed wherever it is a code or a number, in a
+            # column of no known kind too, for which text is no erratum
+            loose = kinds is None and column == entry.value_column
+            if loose:
+                kinds = {"identifier", "identifiers", "number", "others"}
             if kinds is None or column in prose or not text.strip():
                 continue
             typed = typed_of(text)
             if typed and typed.kind in kinds | COMMON:
                 entry.typed[column] = typed
+            elif loose:
+                continue
             elif others or entry.name or entry.description:
                 errata.append(
                     Erratum(
@@ -2612,6 +2647,48 @@ def entry_of(
         marked=marked,
         columns=columns,
     )
+
+
+PLACE_KINDS: Dict[str, Role] = {
+    "reserved": "reserved",
+    "vendor_specific": "vendor_specific",
+}
+
+
+def role_of(entry: Entry) -> Role:
+    """
+    What 'entry' is: the place its name, else its value, else the start of its
+    description says it holds, as "Reserved", or else "field"
+    """
+
+    typed = entry.typed.get(entry.value_column)
+    if entry.name:
+        return senfd.fields.place_of(entry.name) or "field"
+    if typed and typed.kind in PLACE_KINDS:
+        return PLACE_KINDS[typed.kind]
+    if entry.description:
+        first = re.split(r"[.:]", entry.description.split("\n")[0], maxsplit=1)[0]
+        return senfd.fields.place_of(first.strip()) or "field"
+    return "field"
+
+
+def entries_of(document: SpecDocument) -> Iterator[Entry]:
+    """Every entry of the tables of values and of the values of fields of 'document'"""
+
+    for values in document.values:
+        yield from values.entries
+    for _, fields in laid_out(document):
+        for field in fields_within(fields):
+            yield from field.values
+            for case in field.cases:
+                yield from case.values
+
+
+def give_roles(document: SpecDocument) -> None:
+    """Give every entry of 'document' the role that role_of() finds"""
+
+    for entry in entries_of(document):
+        entry.role = role_of(entry)
 
 
 def add_dwords(have: List[Dwords], dwords: Dwords) -> None:
@@ -4415,6 +4492,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
                     "feature or directive operation",
                 )
             )
+    give_roles(document)
     return document
 
 
@@ -5040,6 +5118,7 @@ class FromNormalizedDocument(Converter):
         document.errata += noted_errata(normalized, document.meta.stem)
         document = resolve(document)
         link_named_values(document)
+        give_roles(document)
         return document, []
 
 
