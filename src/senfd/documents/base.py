@@ -98,6 +98,19 @@ class DocumentMeta(Model):
     """The SHA-256 of the source of the senfd that made it"""
     stem: str = Field(default_factory=str)
     """The name of the document it is of, "merged" for the merged one"""
+    name: Optional[str] = None
+    """
+    The name of the specification the document is, without "NVM Express",
+    "Specification" and the revision, for example "NVM Command Set" or "Base"
+    """
+    key: Optional[str] = None
+    """
+    The key of the specification the document is, without its revision, for example
+    "base", "nvm" or "zns". None for the merged data model and for a document that is
+    no NVM Express specification.
+    """
+    revision: Optional[str] = None
+    """The revision of the specification, for example '2.4'"""
     file: Optional[str] = None
     """The name of the file the document was made from, as given"""
     sha256: Optional[str] = None

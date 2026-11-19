@@ -34,7 +34,9 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   together with senfd's source. :ref:`sec-schema-identity` describes them.
 * ``documents``: the documents the data model is made from, by name, each
   with its file and SHA-256, so the merged data model lists every document
-  in it.
+  in it. Each also has the ``name`` of its specification, such as "NVM
+  Command Set", the ``key`` of the specification without the revision, such
+  as ``nvm``, and the ``revision``, such as ``1.3``.
 * ``command_sets``: each command set by its name, with its ``kind`` and its
   commands. A command has its ``opcode``, its submission queue entry dwords
   ``sqe``, its completion queue entry dwords ``cqe``, its ``operations``,
