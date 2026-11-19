@@ -51,7 +51,8 @@ class Figure(BaseModel):
     section: Optional[str] = None
     section_title: Optional[str] = None
     # The paragraphs of its section before it that refer to it by number, as
-    # "The Changed Zone List log page is defined in Figure 47."
+    # "The Changed Zone List log page is defined in Figure 47.", or that state the
+    # fields a command uses, as "The Get Log Page command uses the Data Pointer ..."
     mentions: List[str] = Field(default_factory=list)
     table: Optional[senfd.tables.Table] = None
 
@@ -233,12 +234,19 @@ def sections_of(
     return by_table, by_caption, titles, errors
 
 
+# A paragraph stating the fields a command uses, as "The Get Log Page command uses the
+# Data Pointer, Command Dword 10, ... fields."
+REGEX_USES = re.compile(r"\bThe .+? command uses\b")
+
+
 def mentioning(texts: List[str], figure_nr: int) -> List[str]:
     """Of the paragraphs 'texts', those that refer to Figure 'figure_nr' by
-    its number; its caption is not one"""
+    its number, its caption not being one, or that state the fields a command uses"""
 
     pattern = re.compile(rf"\bFigure\s+{figure_nr}(?![\d:])")
-    return [" ".join(t.split()) for t in texts if pattern.search(t)]
+    return [
+        " ".join(t.split()) for t in texts if pattern.search(t) or REGEX_USES.search(t)
+    ]
 
 
 def paragraphs_before_tables(docx_document) -> Dict[int, List[str]]:

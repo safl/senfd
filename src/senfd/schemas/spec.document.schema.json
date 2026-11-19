@@ -679,6 +679,22 @@
                     "title": "Status Codes",
                     "type": "array"
                 },
+                "uses": {
+                    "description": "The acronyms of the command specific fields the command uses, as its section states\nthem: 'DPTR', 'CDW10' to 'CDW14' of \"The Get Log Page command uses the Data Pointer,\nCommand Dword 10, ... fields\"",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Uses",
+                    "type": "array"
+                },
+                "delegated": {
+                    "description": "The fields whose use other fields select, as its section states them: DPTR, CDW11\nto CDW13 and CDW15 of Migration Send, \"specific to the management operation\nspecified by the Select field\", SEL",
+                    "items": {
+                        "$ref": "#/$defs/Delegation"
+                    },
+                    "title": "Delegated",
+                    "type": "array"
+                },
                 "columns": {
                     "additionalProperties": {
                         "type": "string"
@@ -836,6 +852,29 @@
                 "value"
             ],
             "title": "Comparison",
+            "type": "object"
+        },
+        "Delegation": {
+            "description": "Fields of a command whose use other fields of it select, as CDW11 to CDW15 of Set\nFeatures, which are \"Feature specific\", selected by FID",
+            "properties": {
+                "fields": {
+                    "description": "The acronyms of the fields, as 'CDW11'",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Fields",
+                    "type": "array"
+                },
+                "selectors": {
+                    "description": "The acronyms of the fields that select their use, as 'FID'; the name the text gives\nwhere no field of the command has that name",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Selectors",
+                    "type": "array"
+                }
+            },
+            "title": "Delegation",
             "type": "object"
         },
         "Diagnostic": {

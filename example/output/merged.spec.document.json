@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "b196d512bb09a2289ded54bfe38c298ca207ed66e61d03245c95347e29988530",
+    "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "86e67d095d3fd647ea21848ea4a6dee94be178492faec289327e5d25d69620bb"
+    "combined_sha256": "e4df539a4b8ce9ebbb523a33769d5b28d886b1d7a8effe595a232f0794b2e8ef"
   },
   "command_sets": {
     "foobar": {
@@ -445,6 +445,8 @@
             }
           ],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "01b",
@@ -599,6 +601,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "10b",
@@ -739,6 +743,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "00b",
@@ -1547,6 +1553,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0001 00b",
             "data_transfer": "01b",
@@ -1590,6 +1598,8 @@
             }
           ],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "10b",
@@ -1677,6 +1687,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "01b",
@@ -1814,6 +1826,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "01b",
@@ -1872,6 +1886,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "10b",
@@ -11848,7 +11864,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b196d512bb09a2289ded54bfe38c298ca207ed66e61d03245c95347e29988530",
+      "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11861,7 +11877,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b196d512bb09a2289ded54bfe38c298ca207ed66e61d03245c95347e29988530",
+      "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
       "stem": "invalid",
       "name": null,
       "key": null,

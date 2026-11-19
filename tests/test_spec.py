@@ -375,6 +375,100 @@ def test_a_value_named_as_a_section_the_field_cites_selects_its_structures():
     assert [[s.figure_nr for s in v.selects] for v in fif.values] == [[155], []]
 
 
+def test_a_command_has_the_fields_its_section_says_it_uses_and_delegates():
+    """
+    Base 2.4 says "The Migration Send command uses the Command Dword 10 field and Command
+    Dword 14 field. The use of the Data Pointer field, Command Dword 11 field, ... and
+    Command Dword 15 field is specific to the management operation specified by the
+    Select field." Set Features delegates CDW11 to CDW15 as "Feature specific". Base
+    2.4 names Fabric Zoning Lookup "FZL" in its sentence, and Directive Receive writes
+    "Command Dword 12 and Dword 13".
+    """
+
+    from senfd.documents.spec import Delegation
+
+    opcodes = figure_of(
+        1,
+        "Opcodes for Admin Commands",
+        ("Combined Opcode", "Command"),
+        ("41h", "Foo Send"),
+        ("09h", "Foo Features"),
+        ("7Ch", "Foo Directive Send"),
+    )
+    send = figure_of(
+        2,
+        "Foo Send - Command Dword 10",
+        ("Bits", "Description"),
+        ("31:08", "Reserved"),
+        ("07:00", "Select (SEL): The operation."),
+    )
+    send.mentions = [
+        "The Foo Send command uses the Command Dword 10 field and Command Dword 14 "
+        "field. The use of the Data Pointer field, Command Dword 11 field, Command "
+        "Dword 12 field, Command Dword 13 field, and Command Dword 15 field is specific "
+        "to the management operation specified by the Select field . All other command "
+        "specific fields are reserved."
+    ]
+    features = figure_of(
+        3,
+        "Foo Features - Command Dword 10",
+        ("Bits", "Description"),
+        ("31:08", "Reserved"),
+        ("07:00", "Feature Identifier (FID): The feature."),
+    )
+    features.mentions = [
+        "The Foo Features command uses the Data Pointer and Command Dword 10. The use "
+        "of Command Dword 11, Command Dword 12, Command Dword 13, Command Dword 14, and "
+        "Command Dword 15 fields are Feature specific. If Command Dword 11 is not used, "
+        "then it is reserved."
+    ]
+    directive = figure_of(
+        4,
+        "Foo Directive Send - Command Dword 11",
+        ("Bits", "Description"),
+        ("31:16", "Directive Specific (DSPEC): The value."),
+        ("15:08", "Directive Type (DTYPE): The type."),
+        ("07:00", "Directive Operation (DOPER): The operation."),
+    )
+    directive.mentions = [
+        "The FDS command uses the Data Pointer, Command Dword 10, and Command Dword 11 "
+        "fields. Command Dword 12 and Dword 13 may be used based on the Directive Type "
+        "field and the Directive Operation field."
+    ]
+    spec = document_of(opcodes, send, features, directive)
+    commands = spec.command_sets["admin"].commands
+    assert commands["foo_send"].uses == ["CDW10", "CDW14"]
+    assert commands["foo_send"].delegated == [
+        Delegation(
+            fields=["DPTR", "CDW11", "CDW12", "CDW13", "CDW15"], selectors=["SEL"]
+        )
+    ]
+    assert commands["foo_features"].uses == ["DPTR", "CDW10"]
+    assert commands["foo_features"].delegated == [
+        Delegation(fields=[f"CDW{n}" for n in range(11, 16)], selectors=["FID"])
+    ]
+    assert commands["foo_directive_send"].uses == ["DPTR", "CDW10", "CDW11"]
+    assert commands["foo_directive_send"].delegated == [
+        Delegation(fields=["CDW12", "CDW13"], selectors=["DTYPE", "DOPER"])
+    ]
+
+
+def test_a_paragraph_stating_what_a_command_uses_is_a_mention_of_the_next_figure():
+    from senfd.documents.plain import mentioning
+
+    assert mentioning(
+        [
+            "The Foo Log command returns a buffer.",
+            "The Foo Log command uses the Data Pointer and Command Dword 10 fields.",
+            "Figure 12 shows the format.",
+        ],
+        12,
+    ) == [
+        "The Foo Log command uses the Data Pointer and Command Dword 10 fields.",
+        "Figure 12 shows the format.",
+    ]
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common

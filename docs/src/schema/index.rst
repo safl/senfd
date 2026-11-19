@@ -40,7 +40,12 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
 * ``command_sets``: each command set by its ``key``, with its ``kind``, its
   ``title`` as the specifications write it, such as "NVM Command Set" or
   "I/O Commands", the key of the ``document`` whose opcode table lists it,
-  and its commands. A command has the opcode table's other columns of it,
+  and its commands. A command has the fields it ``uses``, as its section
+  states them, such as ``DPTR`` and ``CDW10`` of "The Set Features command
+  uses the Data Pointer and Command Dword 10", and the fields it
+  ``delegated``, each with the ``fields`` whose use the ``selectors``
+  select, such as ``CDW11`` to ``CDW15``, which are "Feature specific", by
+  ``FID``. A command has the opcode table's other columns of it,
   and ``typed`` holds those of a known kind as on an entry of a table of
   values: the bits of the opcode, as "0000 01b" of ``07_02``, and whether
   the command uses the namespace identifier. A command has its ``opcode``, its submission queue entry dwords
