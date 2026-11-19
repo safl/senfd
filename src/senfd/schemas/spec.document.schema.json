@@ -680,12 +680,18 @@
                     "type": "array"
                 },
                 "uses": {
-                    "description": "The acronyms of the command specific fields the command uses, as its section states\nthem: 'DPTR', 'CDW10' to 'CDW14' of \"The Get Log Page command uses the Data Pointer,\nCommand Dword 10, ... fields\"",
+                    "description": "The acronyms of the command specific fields the command uses, as its section states\nthem: 'DPTR', 'CDW10' to 'CDW14' of \"The Get Log Page command uses the Data Pointer,\nCommand Dword 10, ... fields\". Where the section states none, the fields that its\nfigures lay out, as uses_stated says: 'MPTR', 'DPTR', 'CDW10' and others of Read.",
                     "items": {
                         "type": "string"
                     },
                     "title": "Uses",
                     "type": "array"
+                },
+                "uses_stated": {
+                    "default": false,
+                    "description": "Whether the section of the command states 'uses' and 'delegated', rather than\n'uses' being the fields that its figures lay out",
+                    "title": "Uses Stated",
+                    "type": "boolean"
                 },
                 "delegated": {
                     "description": "The fields whose use other fields select, as its section states them: DPTR, CDW11\nto CDW13 and CDW15 of Migration Send, \"specific to the management operation\nspecified by the Select field\", SEL",

@@ -122,7 +122,11 @@
   "operations": [],
   "status_values": [],
   "status_codes": [],
-  "uses": [],
+  "uses": [
+    "CDW10",
+    "CDW11"
+  ],
+  "uses_stated": false,
   "delegated": [],
   "columns": {
     "function": "0000 10b",

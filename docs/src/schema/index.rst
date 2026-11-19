@@ -45,7 +45,11 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   uses the Data Pointer and Command Dword 10", and the fields it
   ``delegated``, each with the ``fields`` whose use the ``selectors``
   select, such as ``CDW11`` to ``CDW15``, which are "Feature specific", by
-  ``FID``. A command has the opcode table's other columns of it,
+  ``FID``. Where the section states no such sentence, ``uses_stated`` is
+  false, and ``uses`` are the fields that the figures of the command lay
+  out, other than reserved fields and fields that are not used: ``CDW3``,
+  ``MPTR``, ``DPTR`` and ``CDW10`` to ``CDW15`` of Read. The commands of the
+  Management Interface and the Fabrics command have no such ``uses``. A command has the opcode table's other columns of it,
   and ``typed`` holds those of a known kind as on an entry of a table of
   values: the bits of the opcode, as "0000 01b" of ``07_02``, and whether
   the command uses the namespace identifier. A command has its ``opcode``, its submission queue entry dwords

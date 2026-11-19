@@ -2,7 +2,7 @@
   "meta": {
     "format": 8,
     "version": "0.24.0",
-    "senfd_sha256": "c6f73e49d68e9aa1a3cd4387daf9f2e106949078b7fa2d8ff4fe377a3798d1a7",
+    "senfd_sha256": "9e69df1de283616dc92726df8700fa5e5a72c870561dd9cf64bd29a7dcd00c49",
     "stem": "example",
     "name": null,
     "key": null,
@@ -445,7 +445,17 @@
             }
           ],
           "status_codes": [],
-          "uses": [],
+          "uses": [
+            "CDW2",
+            "CDW3",
+            "MPTR",
+            "DPTR",
+            "CDW10",
+            "CDW11",
+            "CDW14",
+            "CDW15"
+          ],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 00b",
@@ -601,7 +611,11 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
-          "uses": [],
+          "uses": [
+            "DPTR",
+            "CDW10"
+          ],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 01b",
@@ -743,7 +757,11 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
-          "uses": [],
+          "uses": [
+            "CDW10",
+            "CDW11"
+          ],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 10b",
@@ -1553,7 +1571,12 @@
           ],
           "status_values": [],
           "status_codes": [],
-          "uses": [],
+          "uses": [
+            "CDW10",
+            "CDW12",
+            "CDW13"
+          ],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0001 00b",
@@ -1599,6 +1622,7 @@
           ],
           "status_codes": [],
           "uses": [],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 00b",
@@ -1687,7 +1711,10 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
-          "uses": [],
+          "uses": [
+            "CDW10"
+          ],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 01b",
@@ -1827,6 +1854,7 @@
           "status_values": [],
           "status_codes": [],
           "uses": [],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 10b",
@@ -1887,6 +1915,7 @@
           "status_values": [],
           "status_codes": [],
           "uses": [],
+          "uses_stated": false,
           "delegated": [],
           "columns": {
             "function": "0000 10b",
@@ -11488,7 +11517,7 @@
     "example": {
       "format": 8,
       "version": "0.24.0",
-      "senfd_sha256": "c6f73e49d68e9aa1a3cd4387daf9f2e106949078b7fa2d8ff4fe377a3798d1a7",
+      "senfd_sha256": "9e69df1de283616dc92726df8700fa5e5a72c870561dd9cf64bd29a7dcd00c49",
       "stem": "example",
       "name": null,
       "key": null,
