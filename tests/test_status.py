@@ -41,6 +41,7 @@ def spec() -> SpecDocument:
     return SpecDocument(
         structures=[
             Structure(
+                title="Completion Queue Entry: Status Field",
                 name="Completion Queue Entry: Status Field",
                 kind="other",
                 unit="bits",

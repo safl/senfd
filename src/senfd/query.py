@@ -381,7 +381,7 @@ def log_page(spec: SpecDocument, key: str, verbose=False, markdown=False) -> Lis
             page.structure.source.figure_nr,
         )
         if where and where in shown:
-            lines.append(f"  laid out as above, {page.structure.name}")
+            lines.append(f"  laid out as above, {page.structure.title}")
         elif page.structure:
             shown.add(where)
             lines += lines_of_structure(page.structure, verbose, markdown)
@@ -390,11 +390,26 @@ def log_page(spec: SpecDocument, key: str, verbose=False, markdown=False) -> Lis
     return lines or [f"No log page '{key}'"]
 
 
+def offset_of(structure: Structure) -> str:
+    """The offset of 'structure' as a document writes it, as "14h" or "PMCAP + 2h",
+    or "" where it has none"""
+
+    if structure.offset_formula:
+        return structure.offset_formula
+    if structure.offset is None:
+        return ""
+    if structure.offset_base:
+        more = f" + {structure.offset:X}h" if structure.offset else ""
+        return f"{structure.offset_base}{more}"
+    return f"{structure.offset:X}h"
+
+
 def lines_of_structure(
     structure: Structure, verbose: bool, markdown: bool = False
 ) -> List[str]:
-    offset = f" at offset {structure.offset}" if structure.offset else ""
-    title = f"{structure.name}{offset}, {structure.unit} [{cite(structure.source)}]"
+    offset = offset_of(structure)
+    offset = f" at offset {offset}" if offset else ""
+    title = f"{structure.title}{offset}, {structure.unit} [{cite(structure.source)}]"
     if markdown:
         lines = ["", f"**{title}**", ""]
         lines += table_of_fields(structure.fields, verbose, structure.unit)
@@ -414,7 +429,8 @@ def structure(
 
     def exact(s: Structure) -> bool:
         # "Identify Controller" names "Identify - Identify Controller" too
-        return key in (alias(s.name), alias(s.name.partition(" - ")[2]))
+        names = (s.title, s.title.partition(" - ")[2], s.name, s.acronym or "")
+        return key in {alias(n) for n in names} | {s.key}
 
     def base_first(s: Structure) -> Tuple[bool, str]:
         document = document_name(s.source.document)
@@ -423,12 +439,12 @@ def structure(
     # Of the structures of the name given, and then of those whose names
     # contain it, the Base specification's before the command sets'
     named = sorted((s for s in spec.structures if exact(s)), key=base_first) + sorted(
-        (s for s in spec.structures if key in alias(s.name) and not exact(s)),
+        (s for s in spec.structures if key in alias(s.title) and not exact(s)),
         key=base_first,
     )
     if len(named) > 8:
         return [f"{len(named)} structures; be more specific:"] + [
-            f"  {s.name} [{cite(s.source)}]" for s in named[:40]
+            f"  {s.title} [{cite(s.source)}]" for s in named[:40]
         ]
     lines = []
     for s in named:
@@ -487,9 +503,9 @@ def search(
                 f"log page {page.identifier:02X}h {page.name} [{cite(page.source)}]"
             )
     for s in spec.structures:
-        if needle in s.name.lower():
-            hits.append(f"structure {s.name} [{cite(s.source)}]")
-        fields(f"{s.name} [{cite(s.source)}]", s.fields)
+        if needle in s.title.lower():
+            hits.append(f"structure {s.title} [{cite(s.source)}]")
+        fields(f"{s.title} [{cite(s.source)}]", s.fields)
 
     unique = list(dict.fromkeys(hits))
     if len(unique) > limit:
@@ -715,7 +731,7 @@ def status_field(spec: SpecDocument) -> Optional[Structure]:
 
     for structure in spec.structures:
         acronyms = {f.acronym for f in structure.fields}
-        if "status field" in structure.name.lower() and {"SC", "SCT"} <= acronyms:
+        if "status field" in structure.title.lower() and {"SC", "SCT"} <= acronyms:
             return structure
     return None
 
@@ -867,7 +883,7 @@ def section(spec: SpecDocument, key: str) -> List[str]:
         for d in f.cqe:
             found.append((d.source, f"feature {f.name} {dword_label(d, 'cqe dw')}"))
     for s in spec.structures:
-        found.append((s.source, f"structure {s.name} [{cite(s.source)}]"))
+        found.append((s.source, f"structure {s.title} [{cite(s.source)}]"))
     for v in spec.values:
         kind = "values" if v.kind == "other" else v.kind.replace("_", " ")
         found.append((v.source, f"table of {kind} {v.name or ''} [{cite(v.source)}]"))

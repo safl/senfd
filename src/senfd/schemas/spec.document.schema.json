@@ -1384,7 +1384,7 @@
                     "type": "array"
                 },
                 "structures": {
-                    "description": "The names of the structures the operation transfers",
+                    "description": "The keys of the structures the operation transfers, structures of the\ndocument of 'source'",
                     "items": {
                         "type": "string"
                     },
@@ -1595,9 +1595,52 @@
         "Structure": {
             "description": "A layout of fields that is no command's dwords: a data structure, a log\npage, a register or anything else a figure lays out",
             "properties": {
-                "name": {
+                "title": {
                     "description": "The name its caption gives, as 'CC - Controller Configuration'",
+                    "title": "Title",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the structure without the parts of its title that 'owner', 'acronym',\n'optional', 'qualifier' and the offset hold, as \"Controller Configuration\" of \"CC -\nController Configuration\" and \"Identify Controller\" of \"Identify - Identify\nController\"",
                     "title": "Name",
+                    "type": "string"
+                },
+                "owner": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "What the title names before \" - \" where that is no acronym: the command, feature,\nlog page or structure the structure is of, as \"Identify\" of \"Identify - Identify\nController\"",
+                    "title": "Owner"
+                },
+                "acronym": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The acronym of the structure, as \"CC\" of \"CC - Controller Configuration\",\n\"PXDCAP2\" of \"Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2\" and\n\"CH\" of 'PDU Common Header (CH)'",
+                    "title": "Acronym"
+                },
+                "optional": {
+                    "default": false,
+                    "description": "Whether the title marks the structure \"(Optional)\", as BIST of PCIe 1.4",
+                    "title": "Optional",
+                    "type": "boolean"
+                },
+                "key": {
+                    "default": "",
+                    "description": "The key of the structure, unique among the structures of its document. It is the\nkey of the name without words that the document and the context give: \"Data\nStructure\", the name of the document's command set, and \"I/O Command Set\nSpecific\" and the like, as \"identify_namespace\" of NVM 1.3 Figure 123. Where two\nstructures of a document would have the same key, the key of each includes those\nwords, then its owner, its qualifier, its kind and, last, its figure number, as far\nas it takes to tell them apart, as \"timestamp_set_features\" and\n'timestamp_get_features'.",
+                    "title": "Key",
                     "type": "string"
                 },
                 "kind": {
@@ -1646,10 +1689,23 @@
                         }
                     ],
                     "default": null,
-                    "description": "What the caption says it is of, as 'Log Specific Field'",
+                    "description": "What the caption says it is of, as \"Log Specific Field\", or what its title gives\nin parentheses that is no acronym, as \"Set Features\" of \"Timestamp (Set Features)\"\nor \"Event Type 02h\"",
                     "title": "Qualifier"
                 },
                 "offset": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "Of a register, its offset in bytes, as 20 of CC at 14h; of a register of a\ncapability, its offset from 'offset_base', as 2 of 'Offset PMCAP + 2h'",
+                    "title": "Offset"
+                },
+                "offset_base": {
                     "anyOf": [
                         {
                             "type": "string"
@@ -1659,8 +1715,34 @@
                         }
                     ],
                     "default": null,
-                    "description": "Of a register, its offset, as '14h'",
-                    "title": "Offset"
+                    "description": "The register of the capability that 'offset' counts from, as \"PMCAP\" of 'Offset\nPMCAP + 2h'",
+                    "title": "Offset Base"
+                },
+                "offset_formula": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The offset where the title gives it by a formula, as the doorbell registers of\nPCIe 1.4 at '(1000h + ((2y) * (4 << CAP.DSTRD)))'",
+                    "title": "Offset Formula"
+                },
+                "size": {
+                    "anyOf": [
+                        {
+                            "type": "integer"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The size of the structure in bytes, by the highest bound of its fields. None where\na field's range is a formula or open, so that the data gives the size.",
+                    "title": "Size"
                 },
                 "fields": {
                     "description": "Its fields",
@@ -1709,6 +1791,7 @@
                 }
             },
             "required": [
+                "title",
                 "name",
                 "kind",
                 "unit",

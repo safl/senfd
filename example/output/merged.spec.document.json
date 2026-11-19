@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "587867b9ffa22f2978c6a17e28760bb71116fb2cb392505f754e5cde2e98f408",
+    "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
     "stem": "merged",
     "name": null,
     "key": null,
@@ -10,7 +10,7 @@
     "file": null,
     "sha256": null,
     "input_sha256": "6f8e554fcbc5f5691ef0be2d307d0be9360e4655586ac76c3f9bb30640c54cf9",
-    "combined_sha256": "0d48508d8347bac4339544004be4605b6a517c50b7003f68fcec2c6a53b7a1a7"
+    "combined_sha256": "4d8525be5c2f855caa96ff1cdae26f5126f3f147d83c4e00249757a7cf818014"
   },
   "command_sets": {
     "foobar": {
@@ -1835,7 +1835,7 @@
               "sqe": [],
               "cqe": [],
               "structures": [
-                "Bar Directive - Bar Report"
+                "bar_report"
               ],
               "source": {
                 "document": "example",
@@ -3816,11 +3816,19 @@
   },
   "structures": [
     {
+      "title": "Dong",
       "name": "Dong",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "dong",
       "kind": "data_buffer",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 512,
       "fields": [
         {
           "name": "Bar Data",
@@ -3868,11 +3876,19 @@
       "extends_field": null
     },
     {
-      "name": "Dong - Data",
+      "title": "Dong - Data",
+      "name": "Data",
+      "owner": "Dong",
+      "acronym": null,
+      "optional": false,
+      "key": "data",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Bar Size",
@@ -3920,11 +3936,19 @@
       "extends_field": null
     },
     {
+      "title": "Command Dword 0",
       "name": "Command Dword 0",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "command_dword_0",
       "kind": "command_dword",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Command Identifier",
@@ -3972,11 +3996,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Get - Log Specific Identifier",
+      "title": "Foo Get - Log Specific Identifier",
+      "name": "Log Specific Identifier",
+      "owner": "Foo Get",
+      "acronym": null,
+      "optional": false,
+      "key": "log_specific_identifier",
       "kind": "other",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 2,
       "fields": [
         {
           "name": "Foo Index",
@@ -4024,11 +4056,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Statistics Data Structure",
+      "title": "Foo Statistics",
+      "name": "Foo Statistics",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_statistics_data_structure",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 512,
       "fields": [
         {
           "name": "Foo Count",
@@ -4205,11 +4245,19 @@
       "extends_field": null
     },
     {
-      "name": "Identify - Foo Namespace",
+      "title": "Identify - Foo Namespace",
+      "name": "Foo Namespace",
+      "owner": "Identify",
+      "acronym": null,
+      "optional": false,
+      "key": "foo_namespace",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": "Foobar Command Set Specific",
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Size",
@@ -4257,11 +4305,19 @@
       "extends_field": null
     },
     {
+      "title": "FB Format",
       "name": "FB Format",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "fb_format",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 2,
       "fields": [
         {
           "name": "Foo Format Size",
@@ -4309,11 +4365,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Statistics",
       "name": "Foo Statistics",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_statistics",
       "kind": "log_page",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 16,
       "fields": [
         {
           "name": "Foo Reads",
@@ -4361,11 +4425,19 @@
       "extends_field": null
     },
     {
+      "title": "Example Foo Element returned by Foo Statistics Log Page",
       "name": "Example Foo Element returned by Foo Statistics Log Page",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "example_foo_element_returned_by_foo_statistics_log_page",
       "kind": "example",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 16,
       "fields": [
         {
           "name": "Foo Reads",
@@ -4413,11 +4485,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo - Create Queue Specific",
+      "title": "Foo - Create Queue Specific",
+      "name": "Create Queue Specific",
+      "owner": "Foo",
+      "acronym": null,
+      "optional": false,
+      "key": "create_queue_specific",
       "kind": "other",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Queue Size",
@@ -4497,11 +4577,19 @@
       "extends_field": null
     },
     {
-      "name": "PRP Entry - Foo Layout",
+      "title": "PRP Entry - Foo Layout",
+      "name": "Foo Layout",
+      "owner": "PRP Entry",
+      "acronym": null,
+      "optional": false,
+      "key": "foo_layout",
       "kind": "other",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Page Address",
@@ -4581,11 +4669,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo - Management Operation Specific",
+      "title": "Foo - Management Operation Specific",
+      "name": "Management Operation Specific",
+      "owner": "Foo",
+      "acronym": null,
+      "optional": false,
+      "key": "management_operation_specific",
       "kind": "other",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Operation",
@@ -4633,11 +4729,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Report Data for Foo Zones",
       "name": "Foo Report Data for Foo Zones",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_report_data_for_foo_zones",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 64,
       "fields": [
         {
           "name": "Number of Foo Zones",
@@ -4685,11 +4789,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Management - Host Software Specified Fields",
+      "title": "Foo Management - Host Software Specified Fields",
+      "name": "Host Software Specified Fields",
+      "owner": "Foo Management",
+      "acronym": null,
+      "optional": false,
+      "key": "host_software_specified_fields",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Owner",
@@ -4737,11 +4849,19 @@
       "extends_field": null
     },
     {
-      "name": "FOOCAP - Foo Capabilities",
+      "title": "FOOCAP - Foo Capabilities",
+      "name": "Foo Capabilities",
+      "owner": null,
+      "acronym": "FOOCAP",
+      "optional": false,
+      "key": "foo_capabilities",
       "kind": "register",
       "unit": "bits",
       "qualifier": null,
-      "offset": "10h",
+      "offset": 16,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Reserved",
@@ -4827,11 +4947,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Get - Foo Specific Fields",
+      "title": "Foo Get - Foo Specific Fields",
+      "name": "Foo Specific Fields",
+      "owner": "Foo Get",
+      "acronym": null,
+      "optional": false,
+      "key": "foo_specific_fields",
       "kind": "other",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Option",
@@ -4879,11 +5007,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Submission Queue Entry",
       "name": "Foo Submission Queue Entry",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_submission_queue_entry",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 64,
       "fields": [
         {
           "name": "Foo Command",
@@ -4931,11 +5067,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Descriptor",
       "name": "Foo Descriptor",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_descriptor",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 16,
       "fields": [
         {
           "name": "Foo Key",
@@ -4983,11 +5127,19 @@
       "extends_field": null
     },
     {
-      "name": "Completion Queue Entry Layout - Foo",
+      "title": "Completion Queue Entry Layout - Foo",
+      "name": "Foo",
+      "owner": "Completion Queue Entry Layout",
+      "acronym": null,
+      "optional": false,
+      "key": "completion_queue_entry_layout_foo",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 16,
       "fields": [
         {
           "name": "Foo Status",
@@ -5035,11 +5187,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Event Data Format (Event Type 02h)",
+      "title": "Foo Event Data Format (Event Type 02h)",
+      "name": "Foo Event Data Format",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_event_data_format",
       "kind": "other",
       "unit": "bytes",
-      "qualifier": null,
+      "qualifier": "Event Type 02h",
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Event Count",
@@ -5087,11 +5247,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Response",
       "name": "Foo Response",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_response",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Reply",
@@ -5139,11 +5307,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Attributes Entry",
       "name": "Foo Attributes Entry",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_attributes_entry",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 2,
       "fields": [
         {
           "name": "Foo Attribute",
@@ -5191,11 +5367,19 @@
       "extends_field": null
     },
     {
-      "name": "Additional Hardware Error Information - Foo",
+      "title": "Additional Hardware Error Information - Foo",
+      "name": "Foo",
+      "owner": "Additional Hardware Error Information",
+      "acronym": null,
+      "optional": false,
+      "key": "additional_hardware_error_information_foo",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Error Address",
@@ -5243,11 +5427,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Request Fields",
       "name": "Foo Request Fields",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_request_fields",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Tag",
@@ -5295,11 +5487,19 @@
       "extends_field": null
     },
     {
-      "name": "Foo Request PDU (FooReq)",
+      "title": "Foo Request PDU (FooReq)",
+      "name": "Foo Request PDU",
+      "owner": null,
+      "acronym": "FooReq",
+      "optional": false,
+      "key": "foo_request_pdu",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Header",
@@ -5349,11 +5549,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo to Bar",
       "name": "Foo to Bar",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_to_bar",
       "kind": "mapping",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Word Bar Word",
@@ -5403,11 +5611,19 @@
       "extends_field": null
     },
     {
+      "title": "Bar",
       "name": "Bar",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "bar",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": null,
       "fields": [
         {
           "name": "Bar Identifier",
@@ -5715,11 +5931,19 @@
       "extends_field": null
     },
     {
+      "title": "Completion Queue Entry Dword 0 when Foo is set to 1b",
       "name": "Completion Queue Entry Dword 0 when Foo is set to 1b",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "completion_queue_entry_dword_0_when_foo_is_set_to_1b",
       "kind": "completion_dword",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Result",
@@ -5767,11 +5991,19 @@
       "extends_field": null
     },
     {
-      "name": "BARCTL - Bar Control",
+      "title": "BARCTL - Bar Control",
+      "name": "Bar Control",
+      "owner": null,
+      "acronym": "BARCTL",
+      "optional": false,
+      "key": "bar_control",
       "kind": "register",
       "unit": "bits",
       "qualifier": null,
-      "offset": "20h",
+      "offset": 32,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Reserved",
@@ -5857,11 +6089,19 @@
       "extends_field": null
     },
     {
-      "name": "Bar Directive - Bar Report",
+      "title": "Bar Directive - Bar Report",
+      "name": "Bar Report",
+      "owner": "Bar Directive",
+      "acronym": null,
+      "optional": false,
+      "key": "bar_report",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 2,
       "fields": [
         {
           "name": "Bar Report Length",
@@ -5909,11 +6149,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Numbered Layout",
       "name": "Foo Numbered Layout",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_numbered_layout",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo-Bar Number",
@@ -5961,11 +6209,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Indented Layout",
       "name": "Foo Indented Layout",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_indented_layout",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Indent",
@@ -6013,11 +6269,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Wrapped Layout",
       "name": "Foo Wrapped Layout",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_wrapped_layout",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Wrap",
@@ -6065,11 +6329,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Joined Layout",
       "name": "Foo Joined Layout",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_joined_layout",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo First",
@@ -6117,11 +6389,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Joining Layout",
       "name": "Foo Joining Layout",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_joining_layout",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Second",
@@ -6169,11 +6449,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Address",
       "name": "Foo Address",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_address",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 18,
       "fields": [
         {
           "name": "Foo Address Family",
@@ -6349,11 +6637,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Size Fields",
       "name": "Foo Size Fields",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_size_fields",
       "kind": "cited_fields",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Size",
@@ -6437,11 +6733,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Table",
       "name": "Foo Table",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_table",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 264,
       "fields": [
         {
           "name": "Foo Slot 0 Descriptor",
@@ -6612,11 +6916,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Entry",
       "name": "Foo Entry",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_entry",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 32,
       "fields": [
         {
           "name": "Foo Entry Key",
@@ -6801,11 +7113,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo List",
       "name": "Foo List",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_list",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": null,
       "fields": [
         {
           "name": "Number of Foo Entries",
@@ -7013,11 +7333,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Results",
       "name": "Foo Results",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_results",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 24,
       "fields": [
         {
           "name": "Foo Result Count",
@@ -7220,11 +7548,19 @@
       "extends_field": null
     },
     {
-      "name": "FOOVER - Foo Version",
+      "title": "FOOVER - Foo Version",
+      "name": "Foo Version",
+      "owner": null,
+      "acronym": "FOOVER",
+      "optional": false,
+      "key": "foo_version",
       "kind": "register",
       "unit": "bits",
       "qualifier": null,
-      "offset": "18h",
+      "offset": 24,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Foo Major Version",
@@ -7304,11 +7640,19 @@
       "extends_field": null
     },
     {
+      "title": "Baz Capabilities",
       "name": "Baz Capabilities",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "baz_capabilities",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4096,
       "fields": [
         {
           "name": "Baz Supported",
@@ -7614,11 +7958,19 @@
       "extends_field": null
     },
     {
+      "title": "Qux",
       "name": "Qux",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "qux",
       "kind": "data_structure",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 2,
       "fields": [
         {
           "name": "Qux Type",
@@ -7712,11 +8064,19 @@
       "extends_field": null
     },
     {
+      "title": "Qux List",
       "name": "Qux List",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "qux_list",
       "kind": "data_structure",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 68,
       "fields": [
         {
           "name": "Number of Qux Formats",
@@ -8052,11 +8412,19 @@
       "extends_field": null
     },
     {
+      "title": "Qux Format",
       "name": "Qux Format",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "qux_format",
       "kind": "data_structure",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 4,
       "fields": [
         {
           "name": "Reserved",
@@ -8136,11 +8504,19 @@
       "extends_field": null
     },
     {
+      "title": "Qux Vector",
       "name": "Qux Vector",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "qux_vector",
       "kind": "data_structure",
       "unit": "bits",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Reserved",
@@ -8220,11 +8596,19 @@
       "extends_field": null
     },
     {
+      "title": "Qux Guard Format",
       "name": "Qux Guard Format",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "qux_guard_format",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 5,
       "fields": [
         {
           "name": "Qux Guard",
@@ -8310,11 +8694,19 @@
       "extends_field": null
     },
     {
+      "title": "Foo Message to Admin Command SQE",
       "name": "Foo Message to Admin Command SQE",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "foo_message_to_admin_command_sqe",
       "kind": "mapping",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 8,
       "fields": [
         {
           "name": "Foo Opcode",
@@ -8394,11 +8786,19 @@
       "extends_field": null
     },
     {
+      "title": "A byte-table with an embedded bit-table",
       "name": "A byte-table with an embedded bit-table",
+      "owner": null,
+      "acronym": null,
+      "optional": false,
+      "key": "a_byte_table_with_an_embedded_bit_table",
       "kind": "other",
       "unit": "bytes",
       "qualifier": null,
       "offset": null,
+      "offset_base": null,
+      "offset_formula": null,
+      "size": 16,
       "fields": [
         {
           "name": "Reserved",
@@ -10749,11 +11149,19 @@
       "columns": {},
       "footnotes": {},
       "structure": {
+        "title": "Foo Statistics",
         "name": "Foo Statistics",
+        "owner": null,
+        "acronym": null,
+        "optional": false,
+        "key": "foo_statistics",
         "kind": "log_page",
         "unit": "bytes",
         "qualifier": null,
         "offset": null,
+        "offset_base": null,
+        "offset_formula": null,
+        "size": 16,
         "fields": [
           {
             "name": "Foo Reads",
@@ -10832,11 +11240,19 @@
       "columns": {},
       "footnotes": {},
       "structure": {
+        "title": "Foo Statistics",
         "name": "Foo Statistics",
+        "owner": null,
+        "acronym": null,
+        "optional": false,
+        "key": "foo_statistics",
         "kind": "log_page",
         "unit": "bytes",
         "qualifier": null,
         "offset": null,
+        "offset_base": null,
+        "offset_formula": null,
+        "size": 16,
         "fields": [
           {
             "name": "Foo Reads",
@@ -11365,7 +11781,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "587867b9ffa22f2978c6a17e28760bb71116fb2cb392505f754e5cde2e98f408",
+      "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
       "stem": "example",
       "name": null,
       "key": null,
@@ -11378,7 +11794,7 @@
     "invalid": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "587867b9ffa22f2978c6a17e28760bb71116fb2cb392505f754e5cde2e98f408",
+      "senfd_sha256": "dcabccc4e7cce2f2e007bca18f6638f17b26467d02c9cd0369f3696c35d02653",
       "stem": "invalid",
       "name": null,
       "key": null,

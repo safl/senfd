@@ -141,7 +141,7 @@ def answer(spec: SpecDocument, understood: Understood) -> List[str]:
     if understood.query == "register":
         found = []
         for s in spec.structures:
-            if s.name.lower().startswith(understood.argument.lower() + " - "):
+            if s.title.lower().startswith(understood.argument.lower() + " - "):
                 found += q.lines_of_structure(s, describe, markdown=True)
         return found or [f"No register {understood.argument}"]
     if understood.query == "acronym":

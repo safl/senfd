@@ -184,7 +184,7 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
         g.node(
             nid,
             "structure",
-            structure.name,
+            structure.title,
             sub=structure.kind,
             where=where(structure.source),
             rows=rows_of(structure.fields),
@@ -253,7 +253,10 @@ def graph_of(spec: SpecDocument) -> Dict[str, Any]:
                 )
             for op in command.operations:
                 for st in spec.structures:
-                    if st.name in op.structures:
+                    if (
+                        st.source.document == op.source.document
+                        and st.key in op.structures
+                    ):
                         g.edge(
                             mid, f"st:{figure_key(st.source)}", f"{op.name} transfers"
                         )

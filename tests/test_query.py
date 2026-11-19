@@ -201,7 +201,9 @@ def test_a_structure_of_the_name_given_comes_before_those_containing_it(spec):
 def test_structures_of_one_name_come_with_the_base_specification_s_first(spec):
     def structure(name: str, document: str) -> Structure:
         source = Source(document=document, figure_nr=1)
-        return Structure(name=name, kind="data_structure", unit="bytes", source=source)
+        return Structure(
+            title=name, name=name, kind="data_structure", unit="bytes", source=source
+        )
 
     revision = "Specification, Revision 1-3 Ratified 2026-07-31"
     shared = spec.model_copy(

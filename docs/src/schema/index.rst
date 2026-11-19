@@ -51,7 +51,23 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   ``operations``. A log page has the ``structure`` that lays it out, and
   ``aliases``, the other names that tables give it.
 * ``structures``: every layout that is not the dwords of a command: data
-  structures, the layouts of log pages, and registers.
+  structures, the layouts of log pages, and registers. The ``title`` of a
+  structure is the name its caption gives, such as "CC - Controller
+  Configuration". The title is split into the ``name``, "Controller
+  Configuration", and the ``acronym``, "CC". Where the part before " - " is
+  no acronym, it is the ``owner``, such as "Identify" of "Identify -
+  Identify Controller". Text in parentheses is the acronym, as "CH" of "PDU
+  Common Header (CH)", the flag ``optional``, or else the ``qualifier``, as
+  "Set Features" of "Timestamp (Set Features)". The ``key`` of a structure
+  is unique among the structures of its document. It is the key of the
+  name without "Data Structure", the name of the document's command set,
+  and words such as "I/O Command Set Specific". Where two keys would be the
+  same, each takes those words back, then its owner, its qualifier, its
+  kind and its figure number, as far as needed to tell them apart. A
+  register has its ``offset`` in bytes, counted from ``offset_base`` for a
+  register of a PCI capability, or an ``offset_formula`` for the doorbell
+  registers. ``size`` is the size of the structure in bytes, where no range
+  of its fields is a formula.
 * ``values``: the tables of values, such as status codes or identifiers, by
   the ``kind`` of their caption, with the ``scope`` that the caption limits
   them to. Each entry has a ``name``, and can have an ``acronym``. Where the
