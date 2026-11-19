@@ -150,6 +150,58 @@ def test_the_bits_of_an_opcode_and_whether_the_nsid_is_used_are_typed():
     }
 
 
+def test_a_reference_to_a_section_without_the_command_s_dwords_is_an_erratum():
+    """Base 2.4 Figure 143 gives section 5.2.17, Manage Exported Namespace command, for
+    Migration Receive, whose dwords are in section 5.2.20, and 5.2.13 for Get Log Page,
+    whose dwords are in 5.2.13"""
+
+    from senfd.documents.spec import Command, CommandSet, Dwords, check_references
+
+    def command(name, reference, section):
+        dwords = Dwords(
+            lower=10,
+            upper=10,
+            source=Source(document="Base", figure_nr=2, section=section),
+        )
+        return Command(
+            name=name,
+            opcode=2,
+            sqe=[dwords],
+            columns={"reference": reference},
+            source=Source(document="Base", figure_nr=143),
+        )
+
+    document = SpecDocument()
+    document.command_sets = {
+        "admin": CommandSet(
+            name="Admin",
+            commands={
+                "foo_receive": command("Foo Receive", "5.2.17", "5.2.20"),
+                "foo_log": command("Foo Log", "5.2.13", "5.2.13.1"),
+                # A section the document does not have says nothing
+                "foo_send": command("Foo Send", "9.9", "5.2.21"),
+            },
+        )
+    }
+    document.sections = {
+        "Base": {
+            "5.2.13": "Foo Log command",
+            "5.2.17": "Bar Namespace command",
+            "5.2.20": "Foo Receive command",
+        }
+    }
+    check_references(document)
+    check_references(document)
+    assert [(e.code, e.found, e.message) for e in document.errata] == [
+        (
+            "reference",
+            "5.2.17",
+            "Foo Receive: the Reference column gives section 5.2.17, and the dwords "
+            "of the command are in section 5.2.20",
+        )
+    ]
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common

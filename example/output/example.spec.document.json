@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "a59b80bdbb96617d51a70ea72a72ce5ce1d41fbc96d636a2c32f0498cd8fb3be",
+    "senfd_sha256": "4363b5ab15ff4850a7920c4762cfff5ae9d76d8bdf035803f1289baaff6b9cc3",
     "stem": "example",
     "name": null,
     "key": null,
@@ -11329,6 +11329,19 @@
       }
     },
     {
+      "code": "reference",
+      "message": "Foo Set: the Reference column gives section 4.2, and the dwords of the command are in section 4",
+      "found": "4.2",
+      "source": {
+        "document": "example",
+        "figure_nr": 23,
+        "page_nr": 23,
+        "pdf_page": null,
+        "section": "2",
+        "section_title": "Admin Commands"
+      }
+    },
+    {
       "code": "gap",
       "message": "Ring cdw11: bits 0 to 15 are of no field",
       "found": "0, 1, 2, 3, 4, 5, 6, 7",
@@ -11357,7 +11370,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "a59b80bdbb96617d51a70ea72a72ce5ce1d41fbc96d636a2c32f0498cd8fb3be",
+      "senfd_sha256": "4363b5ab15ff4850a7920c4762cfff5ae9d76d8bdf035803f1289baaff6b9cc3",
       "stem": "example",
       "name": null,
       "key": null,

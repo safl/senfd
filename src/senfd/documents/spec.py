@@ -950,7 +950,8 @@ class Erratum(Model):
     """
     The kind of erratum: "value", "acronym", "range" (text that is not a range),
     "range-outside", "range-reversed", "opcode", "gap" (in the dwords of a command),
-    "layout-gap" (in a structure), "reference" (to the section of another value) or
+    "layout-gap" (in a structure), "reference" (to the section of another value or
+    command) or
     "caption" (of another figure)
     """
     message: str
@@ -4714,6 +4715,43 @@ def affected(text: str) -> List[str]:
     return [re.sub(r"(?<=[a-z])\d+$", "", n.strip()) for n in names if n.strip()]
 
 
+def check_references(document: SpecDocument) -> None:
+    """
+    Add the errata of commands whose opcode table refers to a section of the document
+    titled for something else, and holding none of the dwords the document gives the
+    command, as 5.2.17 of Migration Receive in Base 2.4 Figure 143: section 5.2.17 is
+    "Manage Exported Namespace command", and the dwords are in section 5.2.20
+    """
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            section = command.columns.get("reference", "")
+            title = document.sections.get(command.source.document, {}).get(section)
+            if title is None or alias(command.name) in alias(title):
+                continue
+            given = [
+                d.source.section
+                for d in command.sqe + command.cqe
+                if d.source.document == command.source.document and d.source.section
+            ]
+            if not given or any(
+                s == section or s.startswith(f"{section}.") for s in given
+            ):
+                continue
+            top = min(given, key=lambda s: s.count("."))
+            erratum = Erratum(
+                code="reference",
+                message=(
+                    f"{command.name}: the Reference column gives section {section}, "
+                    f"and the dwords of the command are in section {top}"
+                ),
+                found=section,
+                source=command.source,
+            )
+            if erratum not in document.errata:
+                document.errata.append(erratum)
+
+
 def resolve(document: SpecDocument) -> SpecDocument:
     """
     Make, from what the figures of 'document' describe, the dwords and the
@@ -4786,6 +4824,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_log_pages(document)
     link_values(document)
     link_selections(document)
+    check_references(document)
     link_identifiers(document)
     name_by_identifiers(document)
     link_selectors(document)
