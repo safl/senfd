@@ -46,6 +46,9 @@ them. senfd reports these as candidate errata:
   that lays out a whole data structure, log page or register. senfd does
   not report these when the figure leaves out rows there with "..." or
   gives a formula between the two fields.
+* Ranges headed "Bits" that are bytes, where a field is wider than 64
+  bits and does not start and end at byte boundaries, as in Base 2.4
+  Figures 372 and 373. senfd reads the ranges as bytes.
 
 A valid range is a span of numbers, a formula over values that the figure
 names, as "(N*16)+15:N*16", or a value left open, as "n/a". Text that is

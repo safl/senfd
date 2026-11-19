@@ -3093,6 +3093,32 @@ def test_a_caption_condition_naming_a_field_compares_the_field_of_that_name():
     }
 
 
+def test_a_layout_headed_bits_whose_wide_fields_lie_within_bytes_is_of_bytes():
+    """
+    Base 2.4 Figure 372 heads its ranges "Bits", and gives ENSID at 35:32 and ENSNQN at
+    291:36, 256 units from unit 36, which no integer of bits holds; the ranges are
+    bytes, and the heading is a candidate erratum
+    """
+
+    spec = document_of(
+        figure_of(
+            372,
+            "Foo Associate Data Structure",
+            ("Bits", "Description"),
+            ("31:00", "Padding (PAD): Cleared to 0h."),
+            ("35:32", "Foo Namespace ID (FNSID): The namespace."),
+            ("291:36", "Foo Subsystem NQN (FSNQN): The subsystem."),
+            ("295:292", "Reserved"),
+        )
+    )
+    (structure,) = spec.structures
+    assert structure.unit == "bytes"
+    assert {f.unit for f in structure.fields} == {"bytes"}
+    assert structure.size == 296
+    assert [(e.code, e.found) for e in spec.errata] == [("unit", "Bits")]
+    assert "FSNQN" in spec.errata[0].message
+
+
 def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
     """PRP1 of the Common Command Format is "the first PRP entry for the
     command; or a PRP List pointer, depending on the command (e.g., the
