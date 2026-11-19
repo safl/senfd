@@ -416,6 +416,19 @@ def test_the_field_asked_of_is_said_with_a_linked_citation():
     )
 
 
+def test_sate_counts_what_senfd_counts(spec, vocabulary):
+    """Two structures of the example share a title, and a log page can have aliases;
+    sate counted names, so it gave fewer structures than senfd and more log pages"""
+
+    assert len({s.title for s in spec.structures}) < len(spec.structures)
+    held = senfd.query.held(spec)
+    assert held["structures"] == len(spec.structures)
+    assert senfd.sate.session.holds(vocabulary) == (
+        f"{held['commands']} commands, {held['features']} features, "
+        f"{held['log_pages']} log pages, {held['structures']} structures"
+    )
+
+
 def test_the_bottom_line_reads_the_question_as_it_is_typed(vocabulary):
     assert senfd.sate.session.reading_so_far("", vocabulary).startswith(
         " Ask of 8 commands"

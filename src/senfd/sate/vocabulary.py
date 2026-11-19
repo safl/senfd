@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
+import senfd.query
 from senfd.sate.phrasing import GENERIC
 from senfd.documents.spec import Bits, Dwords, SpecDocument, document_name
 
@@ -37,6 +38,8 @@ class Vocabulary:
     structures: Set[str] = field(default_factory=set)
     acronyms: Set[str] = field(default_factory=set)
     registers: Set[str] = field(default_factory=set)
+    # The number of each kind of entity of the data model, by senfd.query.held()
+    held: Dict[str, int] = field(default_factory=dict)
     # The structures that a CNS value returns, by a CNS entry naming them
     cns: Set[str] = field(default_factory=set)
     # The names of the entries of the tables of values, as "RDMA Invalid
@@ -56,7 +59,7 @@ class Vocabulary:
 
     @classmethod
     def of(cls, spec: SpecDocument) -> "Vocabulary":
-        vocabulary = cls()
+        vocabulary = cls(held=senfd.query.held(spec))
         for command_set in spec.command_sets.values():
             for cmd in command_set.commands.values():
                 vocabulary.commands.add(cmd.name)
