@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "34c08fde7c320f68cda17ca7648f0ab0cec3574bb460619052136f36d01dc670",
+    "senfd_sha256": "587867b9ffa22f2978c6a17e28760bb71116fb2cb392505f754e5cde2e98f408",
     "stem": "example",
     "name": null,
     "key": null,
@@ -845,11 +845,13 @@
                           "flag": null,
                           "lower": 0,
                           "upper": 0,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -875,11 +877,13 @@
                           "flag": null,
                           "lower": 1,
                           "upper": 1,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -905,11 +909,13 @@
                           "flag": null,
                           "lower": 2,
                           "upper": 2,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1013,11 +1019,13 @@
                           "flag": null,
                           "lower": 0,
                           "upper": 0,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1038,11 +1046,13 @@
                           "flag": null,
                           "lower": 1,
                           "upper": 1,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1063,11 +1073,13 @@
                           "flag": null,
                           "lower": 2,
                           "upper": 7,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "reserved",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1196,11 +1208,13 @@
                               "flag": null,
                               "lower": 0,
                               "upper": 0,
+                              "listed": [],
                               "note": null,
                               "reference": null,
                               "footnotes": []
                             }
                           },
+                          "role": "field",
                           "footnotes": [],
                           "marked": {},
                           "refers_to": null,
@@ -1221,11 +1235,13 @@
                               "flag": null,
                               "lower": 1,
                               "upper": 1,
+                              "listed": [],
                               "note": null,
                               "reference": null,
                               "footnotes": []
                             }
                           },
+                          "role": "field",
                           "footnotes": [],
                           "marked": {},
                           "refers_to": null,
@@ -1246,11 +1262,13 @@
                               "flag": null,
                               "lower": 2,
                               "upper": 255,
+                              "listed": [],
                               "note": null,
                               "reference": null,
                               "footnotes": []
                             }
                           },
+                          "role": "reserved",
                           "footnotes": [],
                           "marked": {},
                           "refers_to": null,
@@ -1313,11 +1331,13 @@
                           "flag": null,
                           "lower": 0,
                           "upper": 0,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1338,11 +1358,13 @@
                           "flag": null,
                           "lower": 1,
                           "upper": 1,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "field",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -1363,11 +1385,13 @@
                           "flag": null,
                           "lower": 2,
                           "upper": 255,
+                          "listed": [],
                           "note": null,
                           "reference": null,
                           "footnotes": []
                         }
                       },
+                      "role": "reserved",
                       "footnotes": [],
                       "marked": {},
                       "refers_to": null,
@@ -2476,11 +2500,13 @@
                     "flag": null,
                     "lower": 0,
                     "upper": 0,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2506,11 +2532,13 @@
                     "flag": null,
                     "lower": 1,
                     "upper": 1,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2536,11 +2564,13 @@
                     "flag": null,
                     "lower": 2,
                     "upper": 2,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2644,11 +2674,13 @@
                     "flag": null,
                     "lower": 0,
                     "upper": 0,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2669,11 +2701,13 @@
                     "flag": null,
                     "lower": 1,
                     "upper": 1,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2694,11 +2728,13 @@
                     "flag": null,
                     "lower": 2,
                     "upper": 7,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "reserved",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2827,11 +2863,13 @@
                         "flag": null,
                         "lower": 0,
                         "upper": 0,
+                        "listed": [],
                         "note": null,
                         "reference": null,
                         "footnotes": []
                       }
                     },
+                    "role": "field",
                     "footnotes": [],
                     "marked": {},
                     "refers_to": null,
@@ -2852,11 +2890,13 @@
                         "flag": null,
                         "lower": 1,
                         "upper": 1,
+                        "listed": [],
                         "note": null,
                         "reference": null,
                         "footnotes": []
                       }
                     },
+                    "role": "field",
                     "footnotes": [],
                     "marked": {},
                     "refers_to": null,
@@ -2877,11 +2917,13 @@
                         "flag": null,
                         "lower": 2,
                         "upper": 255,
+                        "listed": [],
                         "note": null,
                         "reference": null,
                         "footnotes": []
                       }
                     },
+                    "role": "reserved",
                     "footnotes": [],
                     "marked": {},
                     "refers_to": null,
@@ -2944,11 +2986,13 @@
                     "flag": null,
                     "lower": 0,
                     "upper": 0,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2969,11 +3013,13 @@
                     "flag": null,
                     "lower": 1,
                     "upper": 1,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "field",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -2994,11 +3040,13 @@
                     "flag": null,
                     "lower": 2,
                     "upper": 255,
+                    "listed": [],
                     "note": null,
                     "reference": null,
                     "footnotes": []
                   }
                 },
+                "role": "reserved",
                 "footnotes": [],
                 "marked": {},
                 "refers_to": null,
@@ -8312,7 +8360,20 @@
           "acronym": null,
           "description": "Foo is busy.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 128,
+              "upper": 128,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8326,7 +8387,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 129,
+              "upper": 129,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8360,7 +8434,20 @@
           "acronym": null,
           "description": "Foo is not valid.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 192,
+              "upper": 192,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8404,12 +8491,24 @@
             "reference": "4.1"
           },
           "typed": {
+            "opcode": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 194,
+              "upper": 194,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            },
             "io": {
               "kind": "level",
               "level": "M",
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8420,6 +8519,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8430,11 +8530,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8477,11 +8579,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8504,11 +8608,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8560,6 +8666,7 @@
               "flag": null,
               "lower": 28,
               "upper": 28,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8570,6 +8677,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8580,6 +8688,7 @@
               "flag": true,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8590,6 +8699,7 @@
               "flag": false,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8600,11 +8710,13 @@
               "flag": true,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8645,11 +8757,13 @@
               "flag": null,
               "lower": 192,
               "upper": 192,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8670,11 +8784,13 @@
               "flag": null,
               "lower": 193,
               "upper": 193,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8695,11 +8811,13 @@
               "flag": null,
               "lower": 194,
               "upper": 194,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8747,6 +8865,7 @@
               "flag": null,
               "lower": 192,
               "upper": 192,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8757,6 +8876,7 @@
               "flag": false,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8767,11 +8887,13 @@
               "flag": false,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8819,6 +8941,7 @@
               "flag": null,
               "lower": 192,
               "upper": 192,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8829,6 +8952,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8839,6 +8963,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8849,11 +8974,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8878,6 +9005,7 @@
               "flag": null,
               "lower": 193,
               "upper": 195,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8888,6 +9016,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": [
@@ -8900,6 +9029,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": 3,
               "reference": null,
               "footnotes": []
@@ -8910,11 +9040,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": "Bar Specification",
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8939,6 +9071,7 @@
               "flag": null,
               "lower": 196,
               "upper": 199,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8949,6 +9082,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8959,6 +9093,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -8969,11 +9104,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -8998,6 +9135,7 @@
               "flag": null,
               "lower": 200,
               "upper": 200,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -9008,6 +9146,7 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -9018,11 +9157,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9063,6 +9204,7 @@
             "ter_field": "0h"
           },
           "typed": {},
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9081,6 +9223,7 @@
             "ter_field": "0h"
           },
           "typed": {},
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9114,7 +9257,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9128,7 +9284,20 @@
           "acronym": null,
           "description": "Not foo.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9163,6 +9332,7 @@
           "description": "Foo Over Ober",
           "columns": {},
           "typed": {},
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9196,7 +9366,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9230,7 +9413,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9244,7 +9440,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 7,
+              "upper": 7,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "vendor_specific",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9278,7 +9487,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 192,
+              "upper": 192,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9312,7 +9534,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9356,7 +9591,20 @@
             "discovery_controller": "M",
             "acronym": "FCAP"
           },
-          "typed": {},
+          "typed": {
+            "offset_ofst": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9397,7 +9645,20 @@
             "bytes_in_command": "511:00",
             "objective": "Write foo"
           },
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 4660,
+              "upper": 4660,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9436,6 +9697,7 @@
             "transition_condition": "A foo arrives"
           },
           "typed": {},
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9474,7 +9736,20 @@
             "command_1": "Ding",
             "command_2": "Dong"
           },
-          "typed": {},
+          "typed": {
+            "opcode": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 5,
+              "upper": 5,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9510,7 +9785,20 @@
           "columns": {
             "section": "Foo Errors"
           },
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 130,
+              "upper": 130,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9526,7 +9814,20 @@
           "columns": {
             "section": "Foo Errors"
           },
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 131,
+              "upper": 131,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9563,7 +9864,20 @@
           "columns": {
             "reference": "6.1"
           },
-          "typed": {},
+          "typed": {
+            "directive_type_value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9579,7 +9893,20 @@
           "columns": {
             "reference": "6.2"
           },
-          "typed": {},
+          "typed": {
+            "directive_type_value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9618,7 +9945,20 @@
             "directive_command": "Foo Directive Receive",
             "reference": "6.2.1"
           },
-          "typed": {},
+          "typed": {
+            "directive_operation_value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9635,7 +9975,20 @@
             "directive_command": "Foo Directive Receive",
             "reference": ""
           },
-          "typed": {},
+          "typed": {
+            "directive_operation_value": {
+              "kind": "others",
+              "level": null,
+              "flag": null,
+              "lower": null,
+              "upper": null,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "reserved",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9652,7 +10005,20 @@
             "directive_command": "Foo Directive Send",
             "reference": "6.2.2"
           },
-          "typed": {},
+          "typed": {
+            "directive_operation_value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9692,12 +10058,24 @@
             "admin": "O"
           },
           "typed": {
+            "opcode": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 194,
+              "upper": 194,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            },
             "io": {
               "kind": "level",
               "level": "M",
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
@@ -9708,11 +10086,13 @@
               "flag": null,
               "lower": null,
               "upper": null,
+              "listed": [],
               "note": null,
               "reference": null,
               "footnotes": []
             }
           },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9749,6 +10129,7 @@
             "purpose": "Bar"
           },
           "typed": {},
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9782,7 +10163,20 @@
           "acronym": null,
           "description": "A qux that dings.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9796,7 +10190,20 @@
           "acronym": null,
           "description": "A qux that rings.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9810,7 +10217,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 2,
+              "upper": 255,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "reserved",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9844,7 +10264,20 @@
           "acronym": null,
           "description": "A qux of no kind.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 0,
+              "upper": 0,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9858,7 +10291,20 @@
           "acronym": null,
           "description": "A qux of a kind.",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 1,
+              "upper": 1,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "field",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -9872,7 +10318,20 @@
           "acronym": null,
           "description": "",
           "columns": {},
-          "typed": {},
+          "typed": {
+            "value": {
+              "kind": "identifier",
+              "level": null,
+              "flag": null,
+              "lower": 2,
+              "upper": 255,
+              "listed": [],
+              "note": null,
+              "reference": null,
+              "footnotes": []
+            }
+          },
+          "role": "reserved",
           "footnotes": [],
           "marked": {},
           "refers_to": null,
@@ -10532,7 +10991,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "34c08fde7c320f68cda17ca7648f0ab0cec3574bb460619052136f36d01dc670",
+      "senfd_sha256": "587867b9ffa22f2978c6a17e28760bb71116fb2cb392505f754e5cde2e98f408",
       "stem": "example",
       "name": null,
       "key": null,

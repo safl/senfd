@@ -54,7 +54,11 @@ is ``create_io_completion_queue``. The ``SpecDocument`` has these parts:
   structures, the layouts of log pages, and registers.
 * ``values``: the tables of values, such as status codes or identifiers, by
   the ``kind`` of their caption, with the ``scope`` that the caption limits
-  them to. Each entry has a ``name``, and can have an ``acronym``.
+  them to. Each entry has a ``name``, and can have an ``acronym``. Where the
+  value of an entry is a code, a range or a list of codes, a number, or
+  "All others", ``typed`` holds it as such under the key of its column. The
+  ``role`` of an entry is ``field``, or the place the entry holds, such as
+  ``reserved``.
 * ``dwords``: the dwords of every figure, by the name its caption gives, as
   read. ``unassigned`` holds the dwords that no command, feature or
   operation claims.

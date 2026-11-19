@@ -77,6 +77,22 @@ def identity(
     raise Unnamed(description)
 
 
+def place_of(text: Optional[str]) -> Optional[Role]:
+    """
+    The place that 'text', a name or the start of a description, says something holds,
+    as "reserved" for "Reserved" or "Reserved by PCI-SIG"; None where it names no place
+    """
+
+    for form, role, _ in PLACES:
+        if (
+            text
+            and (match := form.match(text))
+            and QUALIFIED.match(text[match.end() :])
+        ):
+            return role
+    return None
+
+
 def is_phrase(text: str) -> bool:
     """Whether 'text', all a row gives of its field, is that field's name, as
     "Most significant 16 bits of the LBST", rather than a sentence about it,

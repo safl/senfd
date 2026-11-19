@@ -1097,9 +1097,22 @@
                     "additionalProperties": {
                         "$ref": "#/$defs/Typed"
                     },
-                    "description": "The values of the row's columns of a known kind, by their keys",
+                    "description": "The values of the row's columns of a known kind, by their keys. The value of every\nrow whose value is a code, a range of codes or a number is typed, under the key\n'value_column'.",
                     "title": "Typed",
                     "type": "object"
+                },
+                "role": {
+                    "default": "field",
+                    "description": "What the row is: \"field\" for a value of its own meaning, or the place a value holds,\n\"reserved\", \"obsolete\", \"vendor_specific\" or \"ignored\", as the row of \"4h to 6h\"\nnamed \"Reserved\" in Base 2.4 Figure 102",
+                    "enum": [
+                        "field",
+                        "reserved",
+                        "obsolete",
+                        "vendor_specific",
+                        "ignored"
+                    ],
+                    "title": "Role",
+                    "type": "string"
                 },
                 "footnotes": {
                     "description": "The numbers of the footnotes marked on the row: on the value, the\nname, the description and the other columns, in that order",
@@ -1775,6 +1788,27 @@
                         "properties": {
                             "kind": {
                                 "enum": [
+                                    "identifiers"
+                                ]
+                            }
+                        }
+                    },
+                    "then": {
+                        "properties": {
+                            "listed": {
+                                "type": "array"
+                            }
+                        },
+                        "required": [
+                            "listed"
+                        ]
+                    }
+                },
+                {
+                    "if": {
+                        "properties": {
+                            "kind": {
+                                "enum": [
                                     "note"
                                 ]
                             }
@@ -1813,7 +1847,7 @@
                     }
                 }
             ],
-            "description": "A value of a table as what it is: a requirement \"level\" (M, O, P, NR, R),\na yes or no \"flag\", an \"identifier\" or a range of them, a \"note\" it is\ngiven by, a \"reference\" to another specification, or \"reserved\",\n\"vendor_specific\" or \"not_applicable\"; with the footnotes marked on it",
+            "description": "A value of a table as what it is: a requirement \"level\" (M, O, P, NR, R),\na yes or no \"flag\", an \"identifier\" or a range of them, \"identifiers\" listed, a\n\"number\" or a range of them, \"others\" for the row of all other values, a \"note\"\nit is given by, a \"reference\" to another specification, or \"reserved\",\n\"vendor_specific\" or \"not_applicable\"; with the footnotes marked on it",
             "properties": {
                 "kind": {
                     "description": "Which of those it is",
@@ -1821,7 +1855,9 @@
                         "level",
                         "flag",
                         "identifier",
+                        "identifiers",
                         "number",
+                        "others",
                         "note",
                         "reference",
                         "reserved",
@@ -1880,8 +1916,16 @@
                         }
                     ],
                     "default": null,
-                    "description": "Of a range of identifiers, the last",
+                    "description": "Of a range of identifiers or numbers, the last",
                     "title": "Upper"
+                },
+                "listed": {
+                    "description": "Of identifiers listed, as '00h, 01h, 08h, and 09h', each of them",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Listed",
+                    "type": "array"
                 },
                 "note": {
                     "anyOf": [
