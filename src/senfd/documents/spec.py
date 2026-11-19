@@ -591,7 +591,9 @@ class Command(Model):
     """The opcode table listing the command"""
 
 
-CommandSetKind = Literal["admin", "io", "common_io", "management_interface", "other"]
+CommandSetKind = Literal[
+    "admin", "io", "common_io", "fabrics", "management_interface", "other"
+]
 
 
 class CommandSet(Model):
@@ -613,8 +615,9 @@ class CommandSet(Model):
     The kind of the command set. "io" is an I/O command set, which an I/O Command Set
     specification defines. "common_io" is the I/O commands that the Base specification
     defines for use in all I/O command sets; these commands are not a command set and
-    have no Command Set Identifier. "admin" is the Admin command set, and
-    "management_interface" is a command set of the Management Interface specification.
+    have no Command Set Identifier. "admin" is the Admin command set, "fabrics" the
+    Fabrics command set of the Base specification, and "management_interface" a command
+    set of the Management Interface specification.
     """
     identifier: Optional[int] = None
     """
@@ -4560,6 +4563,112 @@ def case_shape(case: Case, unit: str) -> Tuple:
     )
 
 
+def fabrics_requirements(document: SpecDocument) -> Optional[Values]:
+    """The table giving the opcode and the Fabrics Command Type of each Fabrics
+    command, as Base 2.4 Figure 29"""
+
+    return next(
+        (
+            values
+            for values in document.values
+            if {"opcode", "fabrics_command_type"} <= set(values.columns)
+        ),
+        None,
+    )
+
+
+def fabrics_command_set(document: SpecDocument) -> None:
+    """
+    Add the Fabrics command set of the table fabrics_requirements() finds: one command,
+    "Fabrics", of the opcode that all Fabrics commands share, 7Fh, whose operations
+    link_fabrics() gives
+    """
+
+    table = fabrics_requirements(document)
+    if table is None:
+        return
+    opcodes = [
+        REGEX_HEX.match(entry.columns.get("opcode", "").strip())
+        for entry in table.entries
+    ]
+    opcode = next((int(match["hex"], 16) for match in opcodes if match), None)
+    if opcode is None:
+        return
+    command_set = document.command_sets.setdefault(
+        "fabrics",
+        CommandSet(
+            name="Fabrics",
+            key="fabrics",
+            title="Fabrics Command Set",
+            document=document_key(table.source.document),
+            kind="fabrics",
+        ),
+    )
+    command_set.commands.setdefault(
+        "fabrics", Command(name="Fabrics", opcode=opcode, source=table.source)
+    )
+
+
+def dwords_of(structure: Optional[Structure]) -> Optional[Dwords]:
+    """
+    'structure', a layout of bytes from byte 0 as the submission queue entry of a
+    Fabrics command, as the dwords it spans with its fields in bits; None where it is
+    of no whole number of dwords
+    """
+
+    if structure is None or structure.unit != "bytes" or not structure.size:
+        return None
+    if structure.size % 4:
+        return None
+    return Dwords(
+        lower=0,
+        upper=structure.size // 4 - 1,
+        fields=[in_bits(f.model_copy(deep=True)) for f in structure.fields],
+        source=structure.source,
+    )
+
+
+def link_fabrics(document: SpecDocument) -> None:
+    """
+    Give the Fabrics command the operations of the Fabrics Command Types that
+    fabrics_requirements() lists, each selected by its FCTYPE, with the figures
+    captioned for it: "X Command - Submission Queue Entry" as its 'sqe', "X Response"
+    as its 'cqe', and "X Command - Data" in its 'structures', as Connect of Base 2.4
+    Figures 635, 637 and 636. The dwords are copies of the structures, so this is
+    the last step.
+    """
+
+    table = fabrics_requirements(document)
+    fabrics = document.command_sets.get("fabrics")
+    command = fabrics.commands.get("fabrics") if fabrics else None
+    if table is None or command is None:
+        return
+    titled = {
+        alias(s.title): s
+        for s in document.structures
+        if s.source.document == table.source.document
+    }
+    command.operations = []
+    for entry in table.entries:
+        match = REGEX_HEX.match(entry.columns.get("fabrics_command_type", "").strip())
+        name = entry.value or entry.name
+        if not match or not name:
+            continue
+        sqe = dwords_of(titled.get(alias(f"{name} Command - Submission Queue Entry")))
+        cqe = dwords_of(titled.get(alias(f"{name} Response")))
+        data = titled.get(alias(f"{name} Command - Data"))
+        command.operations.append(
+            Operation(
+                name=name,
+                selectors={"FCTYPE": int(match["hex"], 16)},
+                sqe=[sqe] if sqe else [],
+                cqe=[cqe] if cqe else [],
+                structures=[data.key] if data else [],
+                source=table.source,
+            )
+        )
+
+
 def give_pointer_cases(document: SpecDocument) -> None:
     """
     Give each other data pointer of 'document', as those of the dwords of the commands,
@@ -5232,6 +5341,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
 
     used: set = set()
     by_name: Dict[str, List[Command]] = {}
+    fabrics_command_set(document)
     for command_set in document.command_sets.values():
         for name, command in command_set.commands.items():
             command.sqe, command.cqe, command.operations = [], [], []
@@ -5334,6 +5444,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
                 )
             )
     give_roles(document)
+    link_fabrics(document)
     return document
 
 
@@ -6113,6 +6224,7 @@ class FromNormalizedDocument(Converter):
         document = resolve(document)
         link_named_values(document)
         give_roles(document)
+        link_fabrics(document)
         return document, []
 
 

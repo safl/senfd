@@ -2912,6 +2912,84 @@ def test_the_data_pointer_of_a_command_has_the_cases_of_the_common_one():
     assert resolve(spec.model_copy(deep=True)).command_sets == spec.command_sets
 
 
+def test_the_fabrics_commands_are_operations_of_one_command_by_fctype():
+    """
+    Base 2.4 Figure 29 lists each Fabrics command with the opcode 7Fh and its Fabrics
+    Command Type. Connect has its submission queue entry, its response and its data in
+    Figures 635, 637 and 636, and Figure 96 lays out Command Dword 0 of every Fabrics
+    command.
+    """
+
+    spec = document_of(
+        figure_of(
+            1,
+            "Fabrics Command Support Requirements",
+            ("Command", "Opcode", "Fabrics Command Type", "Reference"),
+            ("Foo Set", "7Fh", "00h", "6.6"),
+            ("Foo Connect", "7Fh", "01h", "6.3"),
+            ("Vendor Specific", "7Fh", "C0h to FFh", ""),
+        ),
+        figure_of(
+            2,
+            "Foo Connect Command - Submission Queue Entry",
+            ("Bytes", "Description"),
+            ("03:00", "Command Dword 0 (CDW0): Refer to Figure 3."),
+            ("04", "Fabrics Command Type (FCTYPE): Set to 01h."),
+            ("23:05", "Reserved"),
+            ("63:24", "Foo Specific (FOOS): The rest."),
+        ),
+        figure_of(
+            3,
+            "Fabrics Command - Command Dword 0",
+            ("Bits", "Description"),
+            ("31:16", "Command Identifier (CID): The identifier."),
+            ("15:08", "Reserved"),
+            ("07:00", "Opcode (OPC): Set to 7Fh."),
+        ),
+        figure_of(
+            4,
+            "Foo Connect Response",
+            ("Bytes", "Description"),
+            ("01:00", "Foo Status Specific (FSS): The status."),
+            ("15:02", "Reserved"),
+        ),
+        figure_of(
+            5,
+            "Foo Connect Command - Data",
+            ("Bytes", "Description"),
+            ("15:00", "Host Identifier (HOSTID): The host."),
+        ),
+    )
+    fabrics = spec.command_sets["fabrics"]
+    assert (fabrics.name, fabrics.title, fabrics.kind) == (
+        "Fabrics",
+        "Fabrics Command Set",
+        "fabrics",
+    )
+    (command,) = fabrics.commands.values()
+    assert (command.name, command.opcode) == ("Fabrics", 0x7F)
+    assert [d.source.figure_nr for d in command.sqe] == [3]
+    assert not any(d.code == "dwords-unassigned" for d in spec.diagnostics)
+    assert [(o.name, o.selectors) for o in command.operations] == [
+        ("Foo Set", {"FCTYPE": 0}),
+        ("Foo Connect", {"FCTYPE": 1}),
+    ]
+    connect = command.operations[1]
+    (sqe,) = connect.sqe
+    assert (sqe.lower, sqe.upper, sqe.source.figure_nr) == (0, 15, 2)
+    assert [(f.acronym, f.unit, f.range) for f in sqe.fields] == [
+        ("CDW0", "bits", "31:00"),
+        ("FCTYPE", "bits", "39:32"),
+        (None, "bits", "191:40"),
+        ("FOOS", "bits", "511:192"),
+    ]
+    (cqe,) = connect.cqe
+    assert (cqe.lower, cqe.upper) == (0, 3)
+    data = next(s for s in spec.structures if s.source.figure_nr == 5)
+    assert connect.structures == [data.key]
+    assert command.operations[0].sqe == []
+
+
 def test_a_figure_a_description_gives_as_an_example_lays_out_nothing_of_it():
     """PRP1 of the Common Command Format is "the first PRP entry for the
     command; or a PRP List pointer, depending on the command (e.g., the

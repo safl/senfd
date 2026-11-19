@@ -119,8 +119,8 @@ the senfd hash shows whether the reading differs.
 Commands, structures and values
 -------------------------------
 
-The ``kind`` of a command set is ``io``, ``common_io``, ``admin`` or
-``management_interface``. An I/O Command Set specification defines an I/O
+The ``kind`` of a command set is ``io``, ``common_io``, ``admin``,
+``fabrics`` or ``management_interface``. An I/O Command Set specification defines an I/O
 command set, which has the Command Set Identifier that Base 2.4 Figure 337
 gives it in ``identifier``, for example 00h for NVM. Base 2.4 defines some
 I/O commands, such as Flush, for use in all I/O command sets. These commands
@@ -128,6 +128,16 @@ belong to no command set and have no Command Set Identifier. senfd lists
 them as the command set "Common I/O", of the kind ``common_io``. The kind
 ``management_interface`` is for the command sets of the Management Interface
 specification.
+
+The Fabrics commands of Base 2.4 share the opcode 7Fh and differ in their
+Fabrics Command Type, as Figure 29 lists them. senfd gives them as the
+command set "Fabrics", of the kind ``fabrics``, with one command "Fabrics"
+of the opcode 7Fh, whose ``sqe`` is Command Dword 0 of Figure 96. Each
+Fabrics command is an operation of that command, selected by ``FCTYPE``.
+The figure of its submission queue entry, as Figure 635 of Connect, is its
+``sqe``, dwords 0 to 15 with the fields in bits. The figure of its response
+is its ``cqe``, and the figure of the data it transfers, as Figure 636, is
+in its ``structures``. These figures are structures of their own too.
 
 An operation is what a command or a feature does for one value of a
 selecting field, for example each directive operation. Dwords are an
