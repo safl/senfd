@@ -18,7 +18,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Iterable
 
-FORMAT = 6
+FORMAT = 7
 
 # The files of the package that the wheel ships, and so the files whose
 # change can change what senfd makes of a document

@@ -48,7 +48,7 @@
             "description": "Who made the document and of what",
             "properties": {
                 "format": {
-                    "default": 6,
+                    "default": 7,
                     "description": "The format of the data model, the shape its schema gives",
                     "title": "Format",
                     "type": "integer"
@@ -68,6 +68,45 @@
                     "description": "The name of the document it is of, \"merged\" for the merged one",
                     "title": "Stem",
                     "type": "string"
+                },
+                "name": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The name of the specification the document is, without \"NVM Express\",\n\"Specification\" and the revision, for example \"NVM Command Set\" or \"Base\"",
+                    "title": "Name"
+                },
+                "key": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The key of the specification the document is, without its revision, for example\n\"base\", \"nvm\" or \"zns\". None for the merged data model and for a document that is\nno NVM Express specification.",
+                    "title": "Key"
+                },
+                "revision": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "default": null,
+                    "description": "The revision of the specification, for example '2.4'",
+                    "title": "Revision"
                 },
                 "file": {
                     "anyOf": [

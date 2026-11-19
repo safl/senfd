@@ -873,17 +873,56 @@ class SpecDocument(Document):
     was made from and the file's SHA-256, by which a published one is known"""
 
 
+REGEX_DOCUMENT = re.compile(
+    r"NVM Express (?P<name>.+?) Specification,? Revision (?P<revision>[\d\-.]+)"
+)
+
+# The keys of the specifications, by their short names. A specification not listed
+# here is keyed by key_of() its short name.
+DOCUMENT_KEYS = {
+    "Base": "base",
+    "Boot": "boot",
+    "Computational Programs": "cp",
+    "Key Value": "kv",
+    "Management Interface": "mi",
+    "NVM": "nvm",
+    "NVMe over PCIe Transport": "pcie",
+    "NVMe over RDMA Transport": "rdma",
+    "NVMe over TCP Transport": "tcp",
+    "Subsystem Local Memory": "slm",
+    "Zoned Namespace": "zns",
+}
+
+
+def document_parts(document: str) -> Optional[Tuple[str, str]]:
+    """
+    The name and the revision of the specification 'document', for example
+    ("NVM Command Set", "1.3"); None for a document of another name
+    """
+
+    match = REGEX_DOCUMENT.match(document)
+    if not match:
+        return None
+    return match["name"], match["revision"].replace("-", ".")
+
+
+def document_key(document: str) -> Optional[str]:
+    """The key of the specification 'document' without its revision, as 'nvm'"""
+
+    parts = document_parts(document)
+    if parts is None:
+        return None
+    short = re.sub(r" Command Set$", "", parts[0])
+    return DOCUMENT_KEYS.get(short, key_of(short))
+
+
 def document_name(document: str) -> str:
     """A document by a short name, as "Base 2.2" """
 
-    match = re.match(
-        r"NVM Express (?P<name>.+?) Specification,? Revision (?P<revision>[\d\-.]+)",
-        document,
-    )
-    if not match:
+    parts = document_parts(document)
+    if parts is None:
         return document
-    name = re.sub(r" Command Set$", "", match["name"])
-    return f"{name} {match['revision'].replace('-', '.')}"
+    return f"{re.sub(r' Command Set$', '', parts[0])} {parts[1]}"
 
 
 def cite(source: Source) -> str:
@@ -4987,6 +5026,9 @@ class FromNormalizedDocument(Converter):
         document.meta.stem = strip_all_suffixes(path.stem)
         document.meta.file = normalized.meta.file
         document.meta.sha256 = normalized.meta.sha256
+        document.meta.key = document_key(document.meta.stem)
+        parts = document_parts(document.meta.stem)
+        document.meta.name, document.meta.revision = parts or (None, None)
         document.documents[document.meta.stem] = document.meta.model_copy()
         for figure in normalized.figures:
             add_figure(document, figure, document.meta.stem)

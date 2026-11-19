@@ -4292,3 +4292,23 @@ def test_runs_of_two_of_another_width_and_at_offsets_the_data_gives_are_arrays()
         ("Foo Group Descriptor 1", (1, None, None, None)),
         ("Foo Group Descriptor NFGD-1", (None, None, None, None)),
     ]
+
+
+def test_a_document_has_the_key_and_the_revision_of_its_specification(tmp_path):
+    """xNVMe names its headers by the specification without the revision, as "nvm"
+    for "NVM Express NVM Command Set Specification, Revision 1-3", and cites it by
+    its name and revision, as "NVM Command Set 1.3" """
+
+    from senfd.documents.normalized import NormalizedFigureDocument
+    from senfd.documents.spec import FromNormalizedDocument, document_key
+
+    stem = "NVM Express Zoned Namespace Command Set Specification, Revision 1-5 Ratified"
+    path = tmp_path / f"{stem}{NormalizedFigureDocument.SUFFIX_JSON}"
+    path.write_text(NormalizedFigureDocument().model_dump_json(), encoding="utf-8")
+    document, _ = FromNormalizedDocument.convert(path, Namespace())
+
+    assert (document.meta.key, document.meta.revision) == ("zns", "1.5")
+    assert document.meta.name == "Zoned Namespace Command Set"
+    assert document.documents[stem].key == "zns"
+    assert document_key("NVM Express Foo Bar Specification, Revision 2-0") == "foo_bar"
+    assert document_key("example") is None
