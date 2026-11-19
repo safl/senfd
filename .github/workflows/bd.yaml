@@ -38,10 +38,11 @@ jobs:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
 
-    - name: Require that a release pull request holds all of its base
-      env:
-        BASE: ${{ github.event.pull_request.base.ref }}
-      run: .github/scripts/release_ready.sh "$BASE"
+    - name: Require that a release pull request is complete and holds all of its base
+      uses: refenv/gha-project-auto-release/ready@v1
+      with:
+        version-file: src/senfd/__init__.py
+        version-pattern: '^__version__ = "([^"]+)"$'
 
   build:
     runs-on: ${{ matrix.os }}
