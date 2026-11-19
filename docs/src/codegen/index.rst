@@ -58,3 +58,13 @@ The data model is JSON that a :ref:`schema <sec-schema>` validates. A
 generator for another language or for another project's conventions reads
 the same facts from the same file. So does another kind of tool, such as
 the command decoder of an emulator or the expectations of a test suite.
+
+The documents give bit fields by their bits and name no integer that holds
+them. A generator of C needs those integers, and ``senfd.layout.words()``
+gives them: for the bit fields of a layout of a given size, the integers
+of 1, 2, 4 or 8 bytes at offsets that are multiples of their sizes, each
+with the fields that lie in it, counted from its bit 0. MP of the Power
+State Descriptor lies in a ``uint16_t`` at byte 0, and MXPS and NOPS in a
+``uint8_t`` at byte 3. Where every named bit of a wide field lies in its
+first 8 bytes, as in Directives Supported, the result is an array of that
+integer with the fields in element 0.
