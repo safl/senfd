@@ -43,7 +43,7 @@
                     "type": "integer"
                 },
                 "version": {
-                    "default": "0.24.0",
+                    "default": "0.25.0",
                     "description": "The version of senfd that made it",
                     "title": "Version",
                     "type": "string"
