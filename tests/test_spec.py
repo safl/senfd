@@ -78,6 +78,40 @@ def test_the_io_commands_of_every_io_command_set_are_named_common_io():
     assert command_set_name("Admin") == "Admin"
 
 
+def test_a_command_set_has_its_key_its_title_and_the_key_of_its_document():
+    """
+    "Opcodes for NVM Commands" of NVM 1.3 Figure 22 names the NVM Command Set, "Opcodes
+    for I/O Commands" of Base 2.4 Figure 645 the I/O Commands, and "Opcodes for PCIe
+    Commands using an Out-of-Band Mechanism" of MI 2.2 Figure 151 the PCIe Commands
+    """
+
+    from senfd.documents.spec import command_set_title
+
+    assert command_set_title("NVM") == "NVM Command Set"
+    assert command_set_title("Zoned Namespace Command Set I/O") == (
+        "Zoned Namespace Command Set"
+    )
+    assert command_set_title("I/O") == "I/O Commands"
+    assert command_set_title("PCIe Commands using an Out-of-Band Mechanism") == (
+        "PCIe Commands"
+    )
+
+
+def test_the_command_set_of_an_opcode_table_has_its_key_title_and_document():
+    spec = document_of(
+        figure_of(
+            22,
+            "Opcodes for Foo Commands",
+            ("Combined Opcode", "Command"),
+            ("01h", "Foo Write"),
+        ),
+        stem="NVM Express Foo Command Set Specification, Revision 1-0 Ratified",
+    )
+
+    (foo,) = spec.command_sets.values()
+    assert (foo.key, foo.title, foo.document) == ("foo", "Foo Command Set", "foo")
+
+
 def test_a_key_treats_io_as_one_word():
     """
     A key treats "I/O" as one word, as the identifiers of xNVMe do. The key of "Common
