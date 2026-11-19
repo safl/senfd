@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 import senfd.pipeline
-from senfd.documents.spec import SpecDocument, merge
+from senfd.documents.spec import Source, SpecDocument, Structure, merge
 
 OPCODES = ("Function", "Data Transfer", "Combined Opcode", "Command", "Reference")
 
@@ -238,7 +238,7 @@ def test_a_directive_operation_is_an_operation_of_its_command(tmp_path):
     assert [(d.lower, d.fields[1].acronym) for d in reset.sqe] == [(12, "BRC")]
 
     (report,) = commands["foo_directive_receive"].operations
-    assert report.structures == ["Bar Directive - Bar Report"]
+    assert report.structures == ["bar_report"]
     assert "bar_reset" not in spec.unassigned
 
 
@@ -551,9 +551,9 @@ def test_an_operation_takes_no_dwords_of_another_document(tmp_path):
 
 def test_a_register_of_a_format_it_shares_is_named_by_its_section(tmp_path):
     spec = spec_of(Path("example") / "example.docx", tmp_path)
-    (version,) = [st for st in spec.structures if st.name == "FOOVER - Foo Version"]
+    (version,) = [st for st in spec.structures if st.title == "FOOVER - Foo Version"]
 
-    assert (version.kind, version.offset) == ("register", "18h")
+    assert (version.kind, version.offset) == ("register", 0x18)
     assert [f.acronym for f in version.fields] == ["FMJR", "FMNR"]
 
 
@@ -2948,7 +2948,7 @@ def test_a_log_page_is_one_by_identifier_named_by_the_table_of_identifiers():
     assert pages[0x12].structure.name == "Baz Effects"
 
 
-def test_two_structures_of_one_name_are_named_by_kind_or_linking_field():
+def test_two_structures_of_one_name_have_keys_by_kind_or_qualifier_or_linking_field():
     """
     Base 2.4 Figures 216 and 217 are the log page and the data structure "Commands
     Supported and Effects". NVM 1.3 Figure 190 has the caption of Figure 189 and is the
@@ -3002,10 +3002,11 @@ def test_two_structures_of_one_name_are_named_by_kind_or_linking_field():
         ),
     )
     names = {s.source.figure_nr: s.name for s in spec.structures}
-    assert names[479] == "Foo Stamp (Set Features)"
-    assert names[480] == "Foo Stamp (Get Features)"
-    assert names[216] == "Foo Effects"
-    assert names[217] == "Foo Effects Data Structure"
+    keys = {s.source.figure_nr: s.key for s in spec.structures}
+    assert (names[479], keys[479]) == ("Foo Stamp", "foo_stamp_set_features")
+    assert (names[480], keys[480]) == ("Foo Stamp", "foo_stamp_get_features")
+    assert (names[216], keys[216]) == ("Foo Effects", "foo_effects")
+    assert (names[217], keys[217]) == ("Foo Effects", "foo_effects_data_structure")
     assert names[189] == "Reference Controller State"
     assert names[190] == "Reference Namespace State"
     (erratum,) = [e for e in spec.errata if e.code == "caption"]
@@ -4378,3 +4379,114 @@ def test_a_value_of_a_field_named_reserved_has_the_role_reserved():
         ("0h", "field"),
         ("1h to Fh", "reserved"),
     ]
+
+
+def test_a_title_gives_the_name_owner_acronym_and_offset_of_a_structure():
+    """A generator names a structure by its plain name or its acronym, as CC of "CC -
+    Controller Configuration", PXDCAP2 of the PCIe register at "PXCAP + 24h" and CH
+    of "PDU Common Header (CH)", and lays registers out by their offsets"""
+
+    from senfd.documents.spec import name_parts
+
+    def parts(title, kind="other", unit="bytes", qualifier=None):
+        structure = Structure(
+            title=title,
+            name=title,
+            kind=kind,
+            unit=unit,
+            qualifier=qualifier,
+            source=Source(document="example", figure_nr=1),
+        )
+        name_parts(structure)
+        return structure
+
+    cc = parts("CC - Controller Configuration", "register", "bits")
+    assert (cc.name, cc.acronym, cc.owner) == ("Controller Configuration", "CC", None)
+    identify = parts("Identify - Identify Controller", "data_structure")
+    assert (identify.name, identify.owner, identify.acronym) == (
+        "Identify Controller",
+        "Identify",
+        None,
+    )
+    header = parts("PDU Common Header (CH)")
+    assert (header.name, header.acronym, header.qualifier) == ("PDU Common Header", "CH", None)
+    stamp = parts("Timestamp (Set Features)")
+    assert (stamp.name, stamp.acronym, stamp.qualifier) == ("Timestamp", None, "Set Features")
+    name_parts(stamp)
+    assert (stamp.name, stamp.qualifier) == ("Timestamp", "Set Features")
+    bist = parts("BIST - Built-In Self Test (Optional)", "register", "bits")
+    assert (bist.name, bist.acronym, bist.optional) == ("Built-In Self Test", "BIST", True)
+    capability = parts("Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2", unit="bits")
+    assert (capability.kind, capability.acronym, capability.offset_base, capability.offset) == (
+        "register",
+        "PXDCAP2",
+        "PXCAP",
+        0x24,
+    )
+    doorbell = parts("Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail Doorbell", unit="bits")
+    assert (doorbell.acronym, doorbell.offset, doorbell.offset_formula) == (
+        "SQyTDBL",
+        None,
+        "(1000h + ((2y) * (4 << CAP.DSTRD)))",
+    )
+
+
+def test_a_structure_has_a_key_unique_in_its_document_and_its_size():
+    """The keys leave out what the document and the context give, as "Data Structure"
+    and "I/O Command Set Specific", and add it back, then the owner and the qualifier,
+    only where two keys would be the same, as of the Timestamp data structures of Set
+    Features and Get Features, Base 2.4 Figures 479 and 480"""
+
+    stem = "NVM Express Foo Command Set Specification, Revision 1-0"
+    spec = document_of(
+        figure_of(
+            1,
+            "Identify - Identify Namespace Data Structure",
+            ("Bytes", "Description"),
+            ("07:00", "Namespace Size (NSZE): The size."),
+        ),
+        figure_of(
+            2,
+            "Foo Command Set I/O Command Set Specific Identify Namespace Data Structure",
+            ("Bytes", "Description"),
+            ("07:00", "Namespace Capacity (NCAP): The capacity."),
+        ),
+        figure_of(
+            3,
+            "Foo Stamp - Data Structure for Set Features",
+            ("Bytes", "Description"),
+            ("05:00", "Foo Stamp (FSTAMP): The stamp."),
+        ),
+        figure_of(
+            4,
+            "Foo Stamp - Data Structure for Get Features",
+            ("Bytes", "Description"),
+            ("05:00", "Foo Stamp (FSTAMP): The stamp."),
+        ),
+        figure_of(
+            5,
+            "Ding - PRP Entry 1",
+            ("Bits", "Description"),
+            ("63:00", "PRP Entry 1 (PRP1): The entry."),
+        ),
+        figure_of(
+            6,
+            "Ring - PRP Entry 1",
+            ("Bits", "Description"),
+            ("63:00", "PRP Entry 1 (PRP1): The entry."),
+        ),
+        stem=stem,
+    )
+    keys = {s.source.figure_nr: s.key for s in spec.structures}
+    assert keys == {
+        1: "identify_namespace",
+        2: "io_command_set_specific_identify_namespace",
+        3: "foo_stamp_set_features",
+        4: "foo_stamp_get_features",
+        5: "ding_prp_entry_1",
+        6: "ring_prp_entry_1",
+    }
+    names = {s.source.figure_nr: s.name for s in spec.structures}
+    assert (names[1], names[3], names[5]) == ("Identify Namespace", "Foo Stamp", "PRP Entry 1")
+    sizes = {s.source.figure_nr: s.size for s in spec.structures}
+    assert (sizes[1], sizes[3], sizes[5]) == (8, 6, 8)

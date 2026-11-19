@@ -41,7 +41,7 @@ th, td { border: 1px solid black; padding: 4px; text-align: left; vertical-align
 
 <h2>Structures</h2>
 {% for s in document.structures %}
-<h3>{{ s.name }} ({{ s.kind }}, figure {{ s.source.figure_nr }})</h3>
+<h3>{{ s.title }} ({{ s.kind }}, figure {{ s.source.figure_nr }})</h3>
 {{ render_fields(s.fields) }}
 {% endfor %}
 </body>

@@ -502,7 +502,8 @@ class Operation(Model):
     cqe: List[Dwords] = Field(default_factory=list)
     """The completion queue entry dwords of the operation"""
     structures: List[str] = Field(default_factory=list)
-    """The names of the structures the operation transfers"""
+    """The keys of the structures the operation transfers, structures of the
+    document of 'source'"""
     source: Source
     """The figure listing the operation"""
 
@@ -588,17 +589,80 @@ class Structure(Model):
     page, a register or anything else a figure lays out
     """
 
-    name: str
+    title: str
     """The name its caption gives, as 'CC - Controller Configuration'"""
+    name: str
+    """
+    The name of the structure without the parts of its title that 'owner', 'acronym',
+    'optional', 'qualifier' and the offset hold, as "Controller Configuration" of "CC -
+    Controller Configuration" and "Identify Controller" of "Identify - Identify
+    Controller"
+    """
+    owner: Optional[str] = None
+    """
+    What the title names before " - " where that is no acronym: the command, feature,
+    log page or structure the structure is of, as "Identify" of "Identify - Identify
+    Controller"
+    """
+    acronym: Optional[str] = None
+    """
+    The acronym of the structure, as "CC" of "CC - Controller Configuration",
+    "PXDCAP2" of "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2" and
+    "CH" of 'PDU Common Header (CH)'
+    """
+    optional: bool = False
+    """Whether the title marks the structure "(Optional)", as BIST of PCIe 1.4"""
+    key: str = ""
+    """
+    The key of the structure, unique among the structures of its document. It is the
+    key of the name without words that the document and the context give: "Data
+    Structure", the name of the document's command set, and "I/O Command Set
+    Specific" and the like, as "identify_namespace" of NVM 1.3 Figure 123. Where two
+    structures of a document would have the same key, the key of each includes those
+    words, then its owner, its qualifier, its kind and, last, its figure number, as far
+    as it takes to tell them apart, as "timestamp_set_features" and
+    'timestamp_get_features'.
+    """
     kind: CaptionKind
     """What its caption says it is, as "data_structure", "log_page" or
     "register", or 'other'"""
     unit: Unit
     """What its fields' ranges count: "bits" or 'bytes'"""
     qualifier: Optional[str] = None
-    """What the caption says it is of, as 'Log Specific Field'"""
-    offset: Optional[str] = None
-    """Of a register, its offset, as '14h'"""
+    """
+    What the caption says it is of, as "Log Specific Field", or what its title gives
+    in parentheses that is no acronym, as "Set Features" of "Timestamp (Set Features)"
+    or "Event Type 02h"
+    """
+    offset: Optional[int] = None
+    """
+    Of a register, its offset in bytes, as 20 of CC at 14h; of a register of a
+    capability, its offset from 'offset_base', as 2 of 'Offset PMCAP + 2h'
+    """
+    offset_base: Optional[str] = None
+    """
+    The register of the capability that 'offset' counts from, as "PMCAP" of 'Offset
+    PMCAP + 2h'
+    """
+    offset_formula: Optional[str] = None
+    """
+    The offset where the title gives it by a formula, as the doorbell registers of
+    PCIe 1.4 at '(1000h + ((2y) * (4 << CAP.DSTRD)))'
+    """
+    size: Optional[int] = None
+    """
+    The size of the structure in bytes, by the highest bound of its fields. None where
+    a field's range is a formula or open, so that the data gives the size.
+    """
+
+    @model_validator(mode="before")
+    @classmethod
+    def titled(cls, data):
+        """A structure made with a name and no title has its name as its title"""
+
+        if isinstance(data, dict) and "title" not in data and "name" in data:
+            data = {**data, "title": data["name"]}
+        return data
     fields: List[Bits] = Field(default_factory=list)
     """Its fields"""
     notes: List[str] = Field(default_factory=list)
@@ -2300,13 +2364,16 @@ def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> N
         errata += misnumbered(fields, figure.layout.unit, source)
     errata += shared_acronyms(fields, source)
     took(document, errata, unnamed, source)
+    title = subject.name or figure.caption
+    hexadecimal = REGEX_HEX.match(subject.offset or "")
     document.structures.append(
         Structure(
-            name=subject.name or figure.caption,
+            title=title,
+            name=title,
             kind=kind,
             unit=figure.layout.unit,
             qualifier=subject.qualifier,
-            offset=subject.offset,
+            offset=int(hexadecimal["hex"], 16) if hexadecimal else None,
             fields=fields,
             notes=figure.layout.notes,
             source=source,
@@ -2966,12 +3033,12 @@ def link_log_pages(document: SpecDocument) -> None:
         # "Discovery" of Base 2.4 Figures 321 and 322, the structure is the figure whose
         # name is a name that a table gives the log page.
         section = cited(entry, source)
-        named = [s for s in section if log_page_key(s.name) in names[identifier]]
+        named = [s for s in section if log_page_key(s.title) in names[identifier]]
         structure = (
             next(iter(named + section), None)
-            or next((s for s in candidates if log_page_key(s.name) == wanted), None)
+            or next((s for s in candidates if log_page_key(s.title) == wanted), None)
             or next(
-                (s for s in candidates if names_match(log_page_key(s.name), wanted)),
+                (s for s in candidates if names_match(log_page_key(s.title), wanted)),
                 None,
             )
         )
@@ -3034,10 +3101,10 @@ def link_directives(document: SpecDocument, used: set) -> None:
                 name=name,
                 selectors=selectors,
                 structures=[
-                    s.name
+                    s.title
                     for s in document.structures
-                    if alias(s.name).startswith(alias(directive))
-                    and alias(name) in alias(s.name)
+                    if alias(s.title).startswith(alias(directive))
+                    and alias(name) in alias(s.title)
                 ],
                 source=values.source,
             )
@@ -3868,7 +3935,7 @@ def link_runs(document: SpecDocument) -> None:
 
     names = {
         (s.source.document, s.source.figure_nr): alias(
-            re.sub(r"\s*\([^)]*\)", "", s.name)
+            re.sub(r"\s*\([^)]*\)", "", s.title)
         )
         for s in document.structures
     }
@@ -4048,7 +4115,7 @@ def link_structures(document: SpecDocument) -> None:
                 if (structures[key].source.section or "").startswith(source.section)
                 and (structures[key].source.section or "")[len(source.section) :][:1]
                 in ("", ".")
-                and alias(structures[key].name).endswith(f"_{name}")
+                and alias(structures[key].title).endswith(f"_{name}")
             ]
         numbered = re.fullmatch(r"(.+?)\s+\d+", field.name or "")
         if not found and not named and numbered:
@@ -4056,7 +4123,7 @@ def link_structures(document: SpecDocument) -> None:
             found = [
                 key
                 for key in others
-                if alias(structures[key].name.split(" - ")[0]) == subject
+                if alias(structures[key].title.split(" - ")[0]) == subject
                 and [alias(f.name or "") for f in structures[key].fields] != [subject]
             ]
         if not found and field.array:
@@ -4067,8 +4134,8 @@ def link_structures(document: SpecDocument) -> None:
                 if key[0] == source.document
                 and key[1] != source.figure_nr
                 and widths[key] == bits
-                and "_" in alias(structure.name)
-                and f" {alias(structure.name).replace('_', ' ')} " in text
+                and "_" in alias(structure.title)
+                and f" {alias(structure.title).replace('_', ' ')} " in text
             ]
         return structures[found[0]].source if len(found) == 1 else None
 
@@ -4462,7 +4529,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     link_identifiers(document)
     name_by_identifiers(document)
     link_selectors(document)
-    distinct_names(document)
+    name_structures(document)
 
     # A gap where a field was left out as an erratum is that erratum again
     document.errata = [e for e in document.errata if e.code != "gap"]
@@ -4953,73 +5020,216 @@ REGEX_NAMED_VALUE = re.compile(
 STRUCTURE_WORDS = {
     "data_structure": "Data Structure",
     "data_buffer": "Data Buffer",
-    "log_page": "Log Page",
 }
 
+REGEX_OFFSET_TITLE = re.compile(r"^Offset (?P<offset>.+?):\s+(?P<rest>.+)$")
+REGEX_CAPABILITY_OFFSET = re.compile(
+    r"^(?P<base>[A-Z][A-Z0-9]*)(?:\s*\+\s*(?P<offset>[0-9A-Fa-f]+)h?)?$"
+)
+# An acronym in parentheses, as "CH", "ICReq" or 'NSCQED0'
+REGEX_TITLE_ACRONYM = re.compile(r"^(?=(?:[^A-Z]*[A-Z]){2})[A-Z0-9][A-Za-z0-9]*$")
+# What a title gives before " - " where that is an acronym, as "CC", "SQyTDBL" or
+# "MLBAR (BAR0)"
+REGEX_LEFT_ACRONYM = re.compile(
+    r"^(?P<acronym>(?=(?:[^A-Z]*[A-Z]){2})[A-Z][A-Za-z0-9]*)(?: \([A-Z][A-Z0-9]*\))?$"
+)
+REGEX_TRAILING = re.compile(r"^(?P<head>.+?)\s*\((?P<inner>[^()]+)\)$")
+# Words of a name that the document and the context give
+REGEX_CONTEXT_WORDS = re.compile(
+    r"\b(?:I/O )?Command Set (?:Specific|Independent|Dependent)\b(?: -)?\s*",
+    re.IGNORECASE,
+)
 
-def distinct_names(document: SpecDocument) -> None:
+
+def name_parts(structure: Structure) -> None:
     """
-    Give two structures of a document with the same name different names, so that a
-    generator has a name for each. Of a log page and a data structure, for example
-    "Commands Supported and Effects" of Base 2.4 Figures 216 and 217, the log page keeps
-    the name, and the data structure is named with its kind, "Commands Supported and
-    Effects Data Structure". Of two structures of other different kinds, the first keeps
-    the name.
+    Set the name, owner, acronym, optional, qualifier and offset of 'structure' from
+    its title, as "Controller Configuration" and the acronym "CC" of "CC - Controller
+    Configuration"; a title giving an offset makes the structure a register
+    """
 
-    Of two structures of one kind without a qualifier, the later figure takes the name
-    of the one field that links it, where that field names it differently. For example,
-    NVM 1.3 Figure 190 has the caption of Figure 189, "Reference Exported Controller
-    Configuration State", and is the layout of RENSCS, Reference Exported Namespace
-    Configuration State. The caption is a candidate erratum. Of two structures whose
-    qualifiers differ, each is named with its qualifier, for example "Timestamp (Set
-    Features)" and "Timestamp (Get Features)" of Base 2.4 Figures 479 and 480.
+    text = structure.title.strip()
+    if match := REGEX_OFFSET_TITLE.match(text):
+        text = match["rest"]
+        where = match["offset"].strip()
+        if hexadecimal := REGEX_HEX.match(where):
+            structure.offset = int(hexadecimal["hex"], 16)
+        elif capability := REGEX_CAPABILITY_OFFSET.match(where):
+            structure.offset_base = capability["base"]
+            structure.offset = int(capability["offset"] or "0", 16)
+        else:
+            structure.offset_formula = where
+        if structure.unit == "bits":
+            structure.kind = "register"
+    acronym = owner = None
+    while match := REGEX_TRAILING.match(text):
+        inner = match["inner"].strip()
+        if inner.lower() == "optional":
+            structure.optional = True
+        elif acronym is None and REGEX_TITLE_ACRONYM.match(inner):
+            acronym = inner
+        elif structure.qualifier in (None, inner):
+            structure.qualifier = inner
+        else:
+            break
+        text = match["head"].strip()
+    left, dash, right = text.partition(" - ")
+    if dash and right:
+        if left_acronym := REGEX_LEFT_ACRONYM.match(left):
+            acronym = acronym or left_acronym["acronym"]
+        else:
+            owner = left
+        text = right
+    structure.name, structure.owner, structure.acronym = text, owner, acronym
+
+
+def key_candidates(structure: Structure, document_title: Optional[str]) -> List[str]:
+    """
+    The keys that 'structure' can have, by how much they say: the key of its name
+    without the name of the document's command set, "Data Structure" and words such as
+    "I/O Command Set Specific"; with those words; then with its owner, its qualifier,
+    its kind and its figure number. A key that a level adds nothing to is the key of
+    the level before.
+    """
+
+    name = structure.name
+    if document_title and name.startswith(f"{document_title} "):
+        name = name[len(document_title) + 1 :]
+    name = re.sub(r"\s+(?:Data )?Structure$", "", name).strip() or structure.name
+    short = REGEX_CONTEXT_WORDS.sub("", name).strip() or name
+    keys = [alias(short), alias(name)]
+    owner = structure.owner
+    owned = owner and not alias(name).startswith(alias(owner))
+    keys.append(alias(f"{owner} {name}") if owned else keys[-1])
+    qualifier = structure.qualifier
+    keys.append(f"{keys[-1]}_{alias(qualifier)}" if qualifier else keys[-1])
+    word = STRUCTURE_WORDS.get(structure.kind)
+    keys.append(f"{keys[-1]}_{alias(word)}" if word else keys[-1])
+    keys.append(f"{keys[-1]}_figure_{structure.source.figure_nr}")
+    return keys
+
+
+def renamed_by_linking_field(document: SpecDocument) -> None:
+    """
+    Of two structures of a document with one title, one kind and no qualifier, name the
+    later figure by the one field that links it, where that field names it
+    differently. For example, NVM 1.3 Figure 190 has the caption of Figure 189,
+    "Reference Exported Controller Configuration State", and is the layout of RENSCS,
+    Reference Exported Namespace Configuration State. The caption is a candidate
+    erratum.
     """
 
     groups: Dict[Tuple[str, str], List[Structure]] = {}
     for structure in document.structures:
-        key = (structure.source.document, structure.name)
-        groups.setdefault(key, []).append(structure)
+        groups.setdefault((structure.source.document, structure.title), []).append(
+            structure
+        )
     linking: Dict[Tuple[str, Optional[int]], set] = {}
     for field, _ in fields_with_sources(document):
         if field.structure is not None and field.name:
             at = (field.structure.document, field.structure.figure_nr)
             linking.setdefault(at, set()).add(field.name)
-    for (_, name), same in groups.items():
-        if len(same) < 2:
+    for (_, title), same in groups.items():
+        if len(same) < 2 or len({s.kind for s in same}) > 1:
             continue
-        kinds = [s.kind for s in same]
-        if len(set(kinds)) == len(same):
-            keep = next((s for s in same if s.kind == "log_page"), same[0])
-            for structure in same:
-                if structure is not keep and structure.kind in STRUCTURE_WORDS:
-                    structure.name = f"{name} {STRUCTURE_WORDS[structure.kind]}"
-            continue
-        qualifiers = [s.qualifier for s in same]
-        if any(qualifiers):
-            if len(set(qualifiers)) == len(same):
-                for structure in same:
-                    if structure.qualifier:
-                        structure.name = f"{name} ({structure.qualifier})"
-            continue
-        if len(set(kinds)) > 1:
+        if any(s.qualifier for s in same):
             continue
         for structure in same[1:]:
             source = structure.source
             names = linking.get((source.document, source.figure_nr), set())
-            other = next(iter(names)) if len(names) == 1 else name
-            if other == name:
+            other = next(iter(names)) if len(names) == 1 else structure.name
+            if other == structure.name:
                 continue
-            document.errata.append(
-                Erratum(
-                    code="caption",
-                    message=f"Figure {source.figure_nr} has the caption of "
-                    f"Figure {same[0].source.figure_nr}, '{name}', and is "
-                    f"the layout of the field {other}",
-                    found=name,
-                    source=source,
-                )
+            found = Erratum(
+                code="caption",
+                message=f"Figure {source.figure_nr} has the caption of "
+                f"Figure {same[0].source.figure_nr}, '{title}', and is "
+                f"the layout of the field {other}",
+                found=title,
+                source=source,
             )
+            if found not in document.errata:
+                document.errata.append(found)
             structure.name = other
+
+
+def name_structures(document: SpecDocument) -> None:
+    """
+    Give every structure of 'document' the parts of its name, by name_parts(), and a key
+    unique among the structures of its document, the first of key_candidates() that
+    tells it apart from the others; and give the operations the keys of the structures
+    they transfer
+    """
+
+    for structure in document.structures:
+        name_parts(structure)
+    renamed_by_linking_field(document)
+    for structure in document.structures:
+        structure.size = size_of(structure)
+    by_document: Dict[str, List[Structure]] = {}
+    for structure in document.structures:
+        by_document.setdefault(structure.source.document, []).append(structure)
+    for stem, structures in by_document.items():
+        parts = document_parts(stem)
+        title = parts[0] if parts else None
+        candidates = [key_candidates(s, title) for s in structures]
+        at = [0] * len(structures)
+        while True:
+            keys: Dict[str, List[int]] = {}
+            for index in range(len(structures)):
+                keys.setdefault(candidates[index][at[index]], []).append(index)
+            colliding = [indices for indices in keys.values() if len(indices) > 1]
+            if not colliding:
+                break
+            moved = False
+            for indices in colliding:
+                # Of a log page and other structures, the log page keeps the key
+                pages = [i for i in indices if structures[i].kind == "log_page"]
+                for index in indices:
+                    if len(pages) == 1 and index in pages:
+                        continue
+                    if at[index] + 1 < len(candidates[index]):
+                        at[index] += 1
+                        moved = True
+            if not moved:
+                # Structures of one figure, as the layout of a figure read twice, are
+                # told apart by their order
+                for indices in colliding:
+                    for n, index in enumerate(indices[1:], start=2):
+                        candidates[index][at[index]] += f"_{n}"
+                break
+        for index, structure in enumerate(structures):
+            structure.key = candidates[index][at[index]]
+    keys_by_title = {
+        (s.source.document, s.title): s.key for s in document.structures
+    }
+    for operation in operations_of(document):
+        operation.structures = [
+            keys_by_title.get((operation.source.document, title), title)
+            for title in operation.structures
+        ]
+
+
+def size_of(structure: Structure) -> Optional[int]:
+    """
+    The size of 'structure' in bytes by the highest bound of its fields, or None where
+    a range of a field is a formula or open
+    """
+
+    if not structure.fields or any(f.kind != "span" for f in structure.fields):
+        return None
+    upper = max(f.upper for f in structure.fields if f.upper is not None)
+    return upper + 1 if structure.unit == "bytes" else upper // 8 + 1
+
+
+def operations_of(document: SpecDocument) -> Iterator[Operation]:
+    """Every operation of the commands and the features of 'document'"""
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            yield from command.operations
+    for feature in document.features.values():
+        yield from feature.operations
 
 
 def fields_with_sources(

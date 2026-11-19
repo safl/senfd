@@ -71,21 +71,21 @@ class Vocabulary:
             name for page in spec.log_pages.values() for name in page.aliases
         )
         for structure in spec.structures:
-            vocabulary.structures.add(structure.name)
+            vocabulary.structures.add(structure.title)
             # A register is asked for by its acronym, "CC" of "CC - ..."
-            head, dash, _ = structure.name.partition(" - ")
+            head, dash, _ = structure.title.partition(" - ")
             if dash and head.isupper():
                 vocabulary.acronyms.add(head)
                 vocabulary.registers.add(head)
                 vocabulary.add_fields(
                     structure.fields,
-                    (structure.name.lower(), None),
+                    (structure.title.lower(), None),
                     (head.lower(), None),
                 )
             else:
-                vocabulary.add_fields(structure.fields, (structure.name.lower(), None))
+                vocabulary.add_fields(structure.fields, (structure.title.lower(), None))
         titled: Dict[str, List[str]] = {}
-        captioned = [(s.source, s.name) for s in spec.structures] + [
+        captioned = [(s.source, s.title) for s in spec.structures] + [
             (v.source, v.name or "") for v in spec.values
         ]
         for source, caption in captioned:
