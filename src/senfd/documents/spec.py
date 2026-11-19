@@ -527,6 +527,21 @@ class ValueLink(Model):
     """The acronym the description gives the value, as 'ZSE'"""
 
 
+class Delegation(Model):
+    """
+    Fields of a command whose use other fields of it select, as CDW11 to CDW15 of Set
+    Features, which are "Feature specific", selected by FID
+    """
+
+    fields: List[str] = Field(default_factory=list)
+    """The acronyms of the fields, as 'CDW11'"""
+    selectors: List[str] = Field(default_factory=list)
+    """
+    The acronyms of the fields that select their use, as 'FID'; the name the text gives
+    where no field of the command has that name
+    """
+
+
 class Command(Model):
     """A command, by its opcode, with its dwords and its operations"""
 
@@ -547,6 +562,18 @@ class Command(Model):
     """The status values whose "Commands Affected" names the command, as
     00h, Completion Queue Invalid, of Base 2.4 Figure 104 for Create I/O
     Submission Queue"""
+    uses: List[str] = Field(default_factory=list)
+    """
+    The acronyms of the command specific fields the command uses, as its section states
+    them: 'DPTR', 'CDW10' to 'CDW14' of "The Get Log Page command uses the Data Pointer,
+    Command Dword 10, ... fields"
+    """
+    delegated: List[Delegation] = Field(default_factory=list)
+    """
+    The fields whose use other fields select, as its section states them: DPTR, CDW11
+    to CDW13 and CDW15 of Migration Send, "specific to the management operation
+    specified by the Select field", SEL
+    """
     columns: Dict[str, str] = Field(default_factory=dict)
     """The opcode table's other columns of the command, by their keys"""
     typed: Dict[str, "Typed"] = Field(default_factory=dict)
@@ -2473,6 +2500,8 @@ def noted_errata(normalized: NormalizedFigureDocument, stem: str) -> List[Erratu
 def add_figure(document: SpecDocument, figure: NormalizedFigure, stem: str) -> None:
     source = source_of(figure, stem)
     subject = figure.subject
+    for mention in figure.mentions:
+        give_uses(document, mention)
     # A register whose layout is a figure of a format it shares, as VS of the
     # Specification Version Descriptor, is named by the title of its section
     if (
@@ -4363,6 +4392,110 @@ def link_subsections(document: SpecDocument) -> None:
                     entry.selects = by_section.get((source.document, number), [])
 
 
+# A command specific field as a sentence on what a command uses names it
+REGEX_USED = re.compile(
+    r"Data Pointer|Metadata Pointer|Namespace Identifier|PRP Entry (?P<prp>\d)"
+    r"|(?:Command )?Dword (?P<lower>\d+)"
+    r"(?:,? (?:through|to) (?:Command )?Dword (?P<upper>\d+))?"
+)
+USED = {
+    "Data Pointer": "DPTR",
+    "Metadata Pointer": "MPTR",
+    "Namespace Identifier": "NSID",
+}
+REGEX_USES_SENTENCE = re.compile(r"^The (?P<command>.+?) command uses (?P<fields>.+)$")
+# What selects the use of fields, as "specific to the management operation specified
+# by the Select field", "Feature specific", or "may be used based on the Directive
+# Type field and the Directive Operation field"
+REGEX_SELECTED = re.compile(
+    r"(?P<fields>.+?)\s+(?:(?:is|are) (?:specific to .+? specified by (?P<by>.+)"
+    r"|(?P<feature>Feature) specific\b.*)|may be used based on (?P<based>.+))$"
+)
+
+
+def used_fields(text: str) -> List[str]:
+    """The acronyms of the command specific fields that 'text' names, in its order"""
+
+    found: List[str] = []
+    for match in REGEX_USED.finditer(text):
+        if match["prp"]:
+            found.append(f"PRP{match['prp']}")
+        elif match["lower"]:
+            upper = int(match["upper"] or match["lower"])
+            found += [f"CDW{n}" for n in range(int(match["lower"]), upper + 1)]
+        else:
+            found.append(USED[match[0]])
+    return list(dict.fromkeys(found))
+
+
+def give_uses(document: SpecDocument, paragraph: str) -> None:
+    """
+    Set 'uses' and 'delegated' of the command whose section states what it uses in
+    'paragraph', as "The Set Features command uses the Data Pointer and Command Dword
+    10. The use of Command Dword 11, ..., and Command Dword 15 fields are Feature
+    specific."
+    """
+
+    sentences = [s.strip() for s in re.split(r"(?<=\.)\s+", paragraph) if s.strip()]
+    commands: List[Command] = []
+    uses: List[str] = []
+    delegated: List[Delegation] = []
+    for each in sentences:
+        sentence = each.rstrip(".")
+        if match := REGEX_USES_SENTENCE.match(sentence):
+            name = alias(match["command"])
+            commands = [
+                command
+                for command_set in document.command_sets.values()
+                for key, command in command_set.commands.items()
+                if name in (key, alias(re.sub(r"\s*\([^)]*\)$", "", command.name)))
+                or match["command"].lower() == initials(command.name)
+            ]
+            uses = used_fields(match["fields"])
+        elif commands and (match := REGEX_SELECTED.match(sentence)):
+            fields = used_fields(match["fields"])
+            if match["feature"]:
+                selectors = ["Feature Identifier"]
+            else:
+                text = match["by"] or match["based"] or ""
+                selectors = [
+                    re.sub(r"^the\s+|\s+field$", "", part.strip())
+                    for part in re.split(r",?\s+and\s+|,\s+", text)
+                ]
+            if fields and selectors:
+                delegated.append(Delegation(fields=fields, selectors=selectors))
+    for command in commands:
+        command.uses, command.delegated = uses, delegated
+
+
+def link_delegations(document: SpecDocument) -> None:
+    """
+    Name each selector of the fields a command delegates by the acronym of the field of
+    the command's dwords of that name, as SEL of "Select"
+    """
+
+    for command_set in document.command_sets.values():
+        for command in command_set.commands.values():
+            fields = [
+                f
+                for dwords in command.sqe
+                for f in fields_within(dwords.fields)
+                if f.acronym
+            ]
+            for delegation in command.delegated:
+                delegation.selectors = [
+                    next(
+                        (
+                            f.acronym or selector
+                            for f in fields
+                            if alias(f.name or "") == alias(selector)
+                        ),
+                        selector,
+                    )
+                    for selector in delegation.selectors
+                ]
+
+
 def unnest_layouts(document: SpecDocument) -> None:
     """Remove the fields that nest_layouts() gave, so that the links are made anew: a
     field has both 'structure' and 'fields' only where nest_layouts() gave them"""
@@ -5069,6 +5202,7 @@ def resolve(document: SpecDocument) -> SpecDocument:
     name_by_identifiers(document)
     link_selectors(document)
     link_subsections(document)
+    link_delegations(document)
     nest_layouts(document)
     bytes_of_bits(document)
     name_structures(document)

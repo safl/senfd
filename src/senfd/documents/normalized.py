@@ -117,7 +117,8 @@ class NormalizedFigure(BaseModel):
     pdf_page: Optional[int] = None
     section: Optional[str] = None
     section_title: Optional[str] = None
-    # The paragraphs of its section before it that refer to it by number
+    # The paragraphs of its section before it that refer to it by number, or that
+    # state the fields a command uses
     mentions: List[str] = Field(default_factory=list)
     subject: Subject
     shape: Optional[str] = None

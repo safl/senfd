@@ -2,7 +2,7 @@
   "meta": {
     "format": 7,
     "version": "0.23.0",
-    "senfd_sha256": "b196d512bb09a2289ded54bfe38c298ca207ed66e61d03245c95347e29988530",
+    "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
     "stem": "example",
     "name": null,
     "key": null,
@@ -445,6 +445,8 @@
             }
           ],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "01b",
@@ -599,6 +601,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "10b",
@@ -739,6 +743,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "00b",
@@ -1547,6 +1553,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0001 00b",
             "data_transfer": "01b",
@@ -1590,6 +1598,8 @@
             }
           ],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 00b",
             "data_transfer": "10b",
@@ -1677,6 +1687,8 @@
           "operations": [],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 01b",
             "data_transfer": "01b",
@@ -1814,6 +1826,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "01b",
@@ -1872,6 +1886,8 @@
           ],
           "status_values": [],
           "status_codes": [],
+          "uses": [],
+          "delegated": [],
           "columns": {
             "function": "0000 10b",
             "data_transfer": "10b",
@@ -11472,7 +11488,7 @@
     "example": {
       "format": 7,
       "version": "0.23.0",
-      "senfd_sha256": "b196d512bb09a2289ded54bfe38c298ca207ed66e61d03245c95347e29988530",
+      "senfd_sha256": "cc2435b85104590408c424bb88f32ab8767bca235ac61602703ac25f8467e92a",
       "stem": "example",
       "name": null,
       "key": null,
