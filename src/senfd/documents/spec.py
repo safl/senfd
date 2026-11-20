@@ -4753,6 +4753,31 @@ def dwords_of(structure: Optional[Structure]) -> Optional[Dwords]:
     )
 
 
+def lay_out_by_command(command: List[Dwords], dwords: Dwords) -> None:
+    """
+    Give each field of 'dwords', the dwords of an operation, whose description refers
+    to the figure of dwords of 'command' and which holds exactly the bits of those
+    dwords, their fields as its own, as CDW0 of each Fabrics Command Type the fields of
+    Base 2.4 Figure 96
+    """
+
+    for own in command:
+        if not own.fields or own.source.document != dwords.source.document:
+            continue
+        lower = (own.lower - dwords.lower) * 32
+        bounds = (lower, lower + (own.upper - own.lower + 1) * 32 - 1)
+        for field in dwords.fields:
+            if (
+                field.role == "field"
+                and not field.fields
+                and field.structure is None
+                and field.unit == "bits"
+                and (field.lower, field.upper) == bounds
+                and str(own.source.figure_nr) in REGEX_FIGURE.findall(field.description)
+            ):
+                field.fields = [f.model_copy(deep=True) for f in own.fields]
+
+
 def link_fabrics(document: SpecDocument) -> None:
     """
     Give the Fabrics command the operations of the Fabrics Command Types that
@@ -4780,6 +4805,8 @@ def link_fabrics(document: SpecDocument) -> None:
         if not match or not name:
             continue
         sqe = dwords_of(titled.get(alias(f"{name} Command - Submission Queue Entry")))
+        if sqe:
+            lay_out_by_command(command.sqe, sqe)
         cqe = dwords_of(titled.get(alias(f"{name} Response")))
         data = titled.get(alias(f"{name} Command - Data"))
         command.operations.append(

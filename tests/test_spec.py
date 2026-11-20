@@ -3048,6 +3048,12 @@ def test_the_fabrics_commands_are_operations_of_one_command_by_fctype():
         (None, "bits", "191:40"),
         ("FOOS", "bits", "511:192"),
     ]
+    assert [(f.acronym, f.range) for f in sqe.fields[0].fields] == [
+        ("CID", "31:16"),
+        (None, "15:08"),
+        ("OPC", "07:00"),
+    ]
+    assert sqe.fields[1].fields == []
     (cqe,) = connect.cqe
     assert (cqe.lower, cqe.upper) == (0, 3)
     data = next(s for s in spec.structures if s.source.figure_nr == 5)
