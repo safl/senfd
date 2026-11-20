@@ -34,21 +34,29 @@ Candidate errata
 ----------------
 
 Candidate errata are for the authors, and ``senfd errata`` also lists
-them. senfd reports these as candidate errata:
+them. Each candidate erratum has a kind, its ``code`` in the data model.
+senfd reports these kinds:
 
-* A value that is not of the kind its column holds.
-* A range that is not a valid range. Examples are a formula whose
-  parentheses do not match, bounds where the upper bound is below the
-  lower bound, and bits beyond the dwords or bytes that hold them.
-* An acronym that is not an acronym.
-* Bits of a command's dwords that no figure assigns to a field.
-* Bits or bytes that belong to no field, between two fields of a figure
-  that lays out a whole data structure, log page or register. senfd does
-  not report these when the figure leaves out rows there with "..." or
-  gives a formula between the two fields.
-* Ranges headed "Bits" that are bytes, where a field is wider than 64
-  bits and does not start and end at byte boundaries, as in Base 2.4
-  Figures 372 and 373. senfd reads the ranges as bytes.
+* ``value``: a value that is not of the kind its column holds.
+* ``acronym``: an acronym that is not an acronym.
+* ``range``, ``range-outside`` and ``range-reversed``: a range that is not a
+  valid range. These are text that is not a range, as a formula whose
+  parentheses do not match; bits beyond the dwords or bytes that hold them;
+  and bounds where the upper bound is below the lower bound.
+* ``opcode``: a command of a table of opcodes whose opcode is not a value.
+* ``gap``: bits of a command's dwords that no figure assigns to a field.
+* ``layout-gap``: bits or bytes that belong to no field, between two fields
+  of a figure that lays out a whole data structure, log page or register.
+  senfd does not report these when the figure leaves out rows there with
+  "..." or gives a formula between the two fields.
+* ``reference``: a value or a command whose reference cites the section of
+  something else, as the three commands of Base 2.4 Figure 143 whose
+  Reference column gives a section other than the one with their dwords.
+* ``caption``: a figure captioned as another figure, or as a data structure
+  where it lays out the dwords of a command, as Base 2.4 Figure 618.
+* ``unit``: ranges headed "Bits" that are bytes, where a field is wider
+  than 64 bits and does not start and end at byte boundaries, as in Base
+  2.4 Figures 372 and 373. senfd reads the ranges as bytes.
 
 A valid range is a span of numbers, a formula over values that the figure
 names, as "(N*16)+15:N*16", or a value left open, as "n/a". Text that is

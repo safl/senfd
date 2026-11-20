@@ -5,7 +5,9 @@
 import re
 import runpy
 from pathlib import Path
-from typing import List
+from typing import List, get_args
+
+from senfd.documents.spec import ErratumCode
 
 STATIC = re.compile(r"_static/[\w./-]+\.(?:png|svg|cast)")
 
@@ -121,3 +123,10 @@ def test_the_wizard_is_run_with_uvx_alone():
     install = Path("docs/src/install/index.rst").read_text()
     assert ["uv tool install senfd"] in console_blocks(install)
     assert "pipx" not in install
+
+
+def test_the_linting_page_names_each_kind_of_candidate_erratum():
+    page = Path("docs/src/linting/index.rst").read_text()
+    section = page.split("Candidate errata\n")[1].split("Document errors\n")[0]
+
+    assert [c for c in get_args(ErratumCode) if f"``{c}``" not in section] == []
