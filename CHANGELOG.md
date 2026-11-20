@@ -10,6 +10,18 @@ lands on `main`, `.github/workflows/release.yml` checks both, takes the build
 that the pull request's checks tested, publishes it to PyPI, tags it, and
 creates the GitHub release. Release tags are not pushed by hand.
 
+## 0.26.0
+
+The data model takes up two of the improvements that were known after
+0.25.0. CDW0 of the submission queue entry of each Fabrics Command Type has
+the fields of Base 2.4 Figure 96, the Command Dword 0 of the Fabrics command,
+as its `fields`: CID, PSDT, FUSE and OPC, with a reserved field. The format
+of the data model is still 8.
+
+The linting page names the kind, the `code` in the data model, of each
+candidate erratum, and lists the kinds `opcode`, `reference` and `caption`,
+which it left out.
+
 ## 0.25.0
 
 The data model takes up the improvements that were known after 0.24.0. The
