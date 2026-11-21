@@ -646,17 +646,19 @@ test = ["defusedxml (>=0.7.1)"]
 
 [[package]]
 name = "sphinx-autodoc-typehints"
-version = "3.17.5"
+version = "3.17.6"
 description = "Render Python type hints in Sphinx autodoc documentation"
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "sphinx_autodoc_typehints-3.17.5-py3-none-any.whl", hash = "sha256:6cf3aa57b85bb5991ad8892872c87acde794efbd2fd280a73b64c33681c4d2f1"},
-    {file = "sphinx_autodoc_typehints-3.17.5.tar.gz", hash = "sha256:8eaad05b05b765b3bb4c2cf1c1410eacce9d31a156d92cac9eb21a0a9099c90d"},
+    {file = "sphinx_autodoc_typehints-3.17.6-py3-none-any.whl", hash = "sha256:0242291ff90300ca43748ae3f61ae34a39b23ae0f1d43e500621802cde6502b8"},
+    {file = "sphinx_autodoc_typehints-3.17.6.tar.gz", hash = "sha256:d5b8dace7d1b8688869033ab7d5307139b3f02e67d40446e2bafd707a08dad68"},
 ]
 
 [package.dependencies]
+docutils = ">=0.21"
+pygments = ">=2.17"
 sphinx = ">=9.1"
 typing-extensions = {version = ">=4.16", markers = "python_version < \"3.15\""}
 
@@ -832,4 +834,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.13"
-content-hash = "530c99f1f74b9f309096d83b8942f30bffc6d52241c0b7cb1226618bad8f0c5a"
+content-hash = "f993bbe9f0d26799d5a699672f6178eb3e7ab566b5d6952c1c614df775b7de95"
